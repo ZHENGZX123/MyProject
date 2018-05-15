@@ -748,130 +748,18 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_NEARBY_PEOPLE
                         ) {
                     if (!checkIsWxHomePage()) {
-                        boolean backdoor = false;
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                             Log.d("test", "content = " + content);
                             JSONObject o = new JSONObject(content);
                             JSONArray members = o.optJSONArray("members");
-                            backdoor = o.optBoolean("backdoor");
                             content = o.optString("content");
-
 
                             start = o.optInt("start");
                             end = o.optInt("end");
                             String url = o.optString("url");
                             String groupName = o.optString("groupName");
 
-                            if (backdoor) {
-                                if (actionType == TYPE_ADD_GROUP_PEOPLE
-                                        || actionType == TYPE_DELETE_GROUP_PEOPLE
-                                        || actionType == TYPE_AT_GROUP_PEOPLE
-                                        ) {
-                                    int count = members.length();
-                                    if (count < 0 || count > 100) {
-                                        sendTextOnly2("members数量必须是1-100个", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_ADD_FRIEND) {
-                                    int count = members.length();
-                                    if (count < 0 || count > 100) {
-                                        sendTextOnly2("members数量必须是1-100个", true);
-                                        return;
-                                    }
-                                    if (content.length() > 15) {
-                                        sendTextOnly2("请求content太长", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
-                                    if (TextUtils.isEmpty(groupName)) {
-                                        sendTextOnly2("群名称不能为空", true);
-                                        return;
-                                    }
-                                    if (groupName.length() > 15) {
-                                        sendTextOnly2("群名称字数太长", true);
-                                        return;
-                                    }
-                                    int count = members.length();
-                                    if (count < 2 || count > 500) {
-                                        sendTextOnly2("好友数量必须是2-500个", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_FIX_GROUP_NAME) {
-                                    if (TextUtils.isEmpty(groupName)) {
-                                        sendTextOnly2("群名称不能为空", true);
-                                        return;
-                                    }
-                                    if (groupName.length() > 15) {
-                                        sendTextOnly2("群名称字数太长", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
-                                    if (TextUtils.isEmpty(content)) {
-                                        sendTextOnly2("群公告不能为空", true);
-                                        return;
-                                    }
-                                    if (content.length() > 2000) {
-                                        sendTextOnly2("群公告字数太长", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_GROUP_CHAT) {
-                                    if (TextUtils.isEmpty(content)) {
-                                        sendTextOnly2("消息内容不能为空", true);
-                                        return;
-                                    }
-                                    if (content.length() > 5000) {
-                                        sendTextOnly2("消息内容字数太长", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_DELETE_MOMENT) {
-                                    if (TextUtils.isEmpty(content)) {
-                                        sendTextOnly2("朋友圈关键字不能为空", true);
-                                        return;
-                                    }
-                                } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                                    int friendCount = Integer.parseInt(Utils.getParentRemark(getApplication(), 0));
-                                    if (friendCount < start) {
-                                        sendTextOnly2("你输入的命令不正确，当前好友数量是：" + friendCount, true);
-                                        return;
-                                    }
-                                }
-
-                                String text = "";
-                                if (actionType == TYPE_ADD_GROUP_PEOPLE) {
-                                    text = "正在拉人入群，请稍等";
-                                } else if (actionType == TYPE_DELETE_GROUP_PEOPLE) {
-                                    text = "正在踢人出群，请稍等";
-                                } else if (actionType == TYPE_FIX_GROUP_NAME) {
-                                    text = "正在修改群名称，请稍等";
-                                } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
-                                    text = "正在修改群公告，请稍等";
-                                } else if (actionType == TYPE_GROUP_CHAT) {
-                                    text = "正在群发消息，请稍等";
-                                } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
-                                    text = "正在艾特某人，请稍等";
-                                } else if (actionType == TYPE_DELETE_MOMENT) {
-                                    text = "正在删除朋友圈，请稍等";
-                                } else if (actionType == TYPE_ADD_FRIEND) {
-                                    text = "正在添加朋友，请稍等";
-                                } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
-                                    text = "正在创建群组，请稍等";
-                                } else if (actionType == TYPE_GET_ALL_FRIENDS) {
-                                    text = "正在查询数量，请稍等";
-                                } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                                    text = "正在清理僵尸粉，请稍等";
-                                } else if (actionType == TYPE_MISSING_FISH) {
-                                    text = "正在添加漏网之鱼，请稍等";
-                                } else if (actionType == TYPE_FIX_NICKNAME) {
-                                    text = "正在修改昵称，请稍等";
-                                } else if (actionType == TYPE_FIX_ICON) {
-                                    text = "正在修改头像，请稍等";
-                                } else if (actionType == TYPE_NEARBY_PEOPLE) {
-                                    text = "正在添加附近的人，请稍等";
-                                }
-                                sendTextOnly2(text, false);
-                            }
-                            boolean finalBackdoor = backdoor;
                             String finalContent = content;
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -883,7 +771,7 @@ public class AutoReplyService extends AccessibilityService {
                                             checkIsWxHomePage();
                                             if (actionType == TYPE_GET_ALL_FRIENDS) {
                                                 //通讯录
-                                                getAllFriends(finalBackdoor);
+                                                getAllFriends();
                                             } else if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_CLEAR_ZOMBIE_FAN || actionType == TYPE_ADD_FRIEND) {
                                                 //首页右上角工具栏
                                                 findTargetNode(NODE_RELATIVELAYOUT, Integer.MAX_VALUE);
@@ -914,11 +802,7 @@ public class AutoReplyService extends AccessibilityService {
                             }, 3000);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            if (backdoor) {
-                                sendTextOnly2("输入命令有误", true);
-                            } else {
-                                release();
-                            }
+                            release();
                         }
                     }
                 } else {
@@ -1162,12 +1046,12 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private void getAllFriends(boolean finalBackdoor) {
+    private void getAllFriends() {
         tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startCheckFriendList(finalBackdoor);
+                startCheckFriendList();
             }
         }, 3000);
     }
@@ -1373,7 +1257,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private Set<String> friends = new HashSet<>();
 
-    private void startCheckFriendList(boolean backdoor) {
+    private void startCheckFriendList() {
         friends.clear();
         resetMaxReleaseTime(30 * 60 * 1000);
         new Thread() {
@@ -1401,16 +1285,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 FileUtils.saveFile(count + "", "parent.txt");
 
-                if (backdoor) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            searchSenderInWxHomePage(TYPE_GET_ALL_FRIENDS);
-                        }
-                    }, 2000);
-                } else {
-                    release();
-                }
+                release();
             }
         }.start();
     }
@@ -1455,21 +1330,23 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (find) {
-                            int actionType = actions.get(currentActionID).actionType;
-                            if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                                checkFriendInListView1();
-                            } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
-                                checkFriendInListView2();
-                            } else if (actionType == TYPE_ADD_FRIEND) {
-                                boolean find = enterChatView("微信号/QQ号/手机号", actionType);
-                                if (!find) {
-                                    release();
-                                }
-                            }
-
-                        } else {
+                        if (!find) {
                             release();
+                            return;
+                        }
+                        int actionType = actions.get(currentActionID).actionType;
+                        if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                            checkFriendInListView1();
+                        } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
+                            checkFriendInListView2();
+                        } else if (actionType == TYPE_ADD_FRIEND) {
+                            boolean find = findTargetNode(NODE_TEXTVIEW, "微信号/QQ号/手机号", CLICK_NONE, true);
+                            if (!find) {
+                                release();
+                                return;
+                            }
+                            clickSomeWhere(mFindTargetNode);
+                            startAddFriend();
                         }
                     }
                 }, 2000);
@@ -1983,7 +1860,6 @@ public class AutoReplyService extends AccessibilityService {
                         release();
                         return;
                     }
-
                     String content = actions.get(currentActionID).content;
                     if (content.startsWith("[视频]")) {
                         mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -2294,11 +2170,6 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (type == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
-                } else if (type == TYPE_GET_ALL_FRIENDS) {
-                    sendTextOnly2("好友数量：" + Utils.getParentRemark(getApplication(), 0), true);
-                } else if (type == TYPE_ADD_FRIEND) {
-                    clickSomeWhere(mFindTargetNode);
-                    startAddFriend();
                 } else if (type == TYPE_FIX_NICKNAME) {
                     fixFriendNickname(forwardto);
                 }
@@ -2449,7 +2320,14 @@ public class AutoReplyService extends AccessibilityService {
                                                 if (find) {
                                                     findTargetNode(NODE_EDITTEXT, member);
                                                     boolean find = findTargetNode(NODE_TEXTVIEW, member, CLICK_PARENT, false);
-                                                    if (!find) {
+                                                    if (find) {
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
+                                                            }
+                                                        }, 2000);
+                                                    } else {
                                                         //FIXME 这里最好做检测
                                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -2469,7 +2347,6 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            sendTextOnly2("", false);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -2532,12 +2409,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (TextUtils.isEmpty(targetText)) {
                         //根据nodeIndex匹配
                         mFindTargetNode = nodeInfo;
-                        if (targetIndex == Integer.MAX_VALUE) {
-                            continue;
-                        } else {
-                            if (nodeIndex == targetIndex) {
-                                return true;
-                            }
+                        if (targetIndex != Integer.MAX_VALUE && nodeIndex == targetIndex) {
+                            return true;
                         }
                     } else {
                         //根据nodeText匹配
@@ -2563,26 +2436,22 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (className.equals(NODE_EDITTEXT)) {
                     //根据nodeIndex匹配
                     mFindTargetNode = nodeInfo;
-                    if (targetIndex == Integer.MAX_VALUE) {
-                        continue;
-                    } else {
-                        if (nodeIndex == targetIndex) {
-                            if (!TextUtils.isEmpty(targetText)) {
-                                Bundle arguments = new Bundle();
-                                arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
-                                        AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
-                                arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
-                                        true);
-                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
-                                        arguments);
-                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                                ClipData clip = ClipData.newPlainText("label", targetText);
-                                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                clipboardManager.setPrimaryClip(clip);
-                                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                            }
-                            return true;
+                    if (targetIndex != Integer.MAX_VALUE && nodeIndex == targetIndex) {
+                        if (!TextUtils.isEmpty(targetText)) {
+                            Bundle arguments = new Bundle();
+                            arguments.putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT,
+                                    AccessibilityNodeInfo.MOVEMENT_GRANULARITY_WORD);
+                            arguments.putBoolean(AccessibilityNodeInfo.ACTION_ARGUMENT_EXTEND_SELECTION_BOOLEAN,
+                                    true);
+                            nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY,
+                                    arguments);
+                            nodeInfo.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                            ClipData clip = ClipData.newPlainText("label", targetText);
+                            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            clipboardManager.setPrimaryClip(clip);
+                            nodeInfo.performAction(AccessibilityNodeInfo.ACTION_PASTE);
                         }
+                        return true;
                     }
                 } else if (className.equals(NODE_IMAGEVIEW)
                         || className.equals(NODE_FRAMELAYOUT)
@@ -2591,12 +2460,8 @@ public class AutoReplyService extends AccessibilityService {
                         ) {
                     //根据nodeIndex匹配
                     mFindTargetNode = nodeInfo;
-                    if (targetIndex == Integer.MAX_VALUE) {
-                        continue;
-                    } else {
-                        if (nodeIndex == targetIndex) {
-                            return true;
-                        }
+                    if (targetIndex != Integer.MAX_VALUE && nodeIndex == targetIndex) {
+                        return true;
                     }
                 }
             }
@@ -2727,6 +2592,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void clickSomeWhere(AccessibilityNodeInfo node) {
+        Log.d("test", "clickSomeWhere node = " + node.getClassName());
         Rect r = new Rect();
         node.getBoundsInScreen(r);
         // 1.生成点击坐标
@@ -2738,6 +2604,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void longClickSomeWhere(AccessibilityNodeInfo node) {
+        Log.d("test", "longClickSomeWhere node = " + node.getClassName());
         Rect r = new Rect();
         node.getBoundsInScreen(r);
         // 1.生成点击坐标
@@ -3290,6 +3157,7 @@ public class AutoReplyService extends AccessibilityService {
 
     public boolean test(AccessibilityNodeInfo rootNode) {
         int count = rootNode.getChildCount();
+        Log.d("test", "count = " + count);
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
@@ -3297,10 +3165,27 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            Log.d("test", "nodeInfo.xy = " + getNodePosition(nodeInfo));
+
             if (test(nodeInfo)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private String getNodePosition(AccessibilityNodeInfo node) {
+        Rect r = new Rect();
+        node.getBoundsInScreen(r);
+        // 1.生成点击坐标
+        int x = r.width() / 2 + r.left;
+        int y = r.height() / 2 + r.top;
+        return x + " " + y;
+    }
+
+    public void test2() {
+        Log.d("test", "=================findLastMsgViewInListView====================");
+        findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
+        longClickSomeWhere(mFindTargetNode);
     }
 }
