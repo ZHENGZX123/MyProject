@@ -51,6 +51,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
+import static cn.kiway.robot.util.Constant.NODE_FRAMELAYOUT;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
@@ -454,7 +455,16 @@ public class MainActivity extends BaseActivity {
             }
         }, 10000);
 
-        AutoReplyService.instance.sendMsgToServer2();
+        //AutoReplyService.instance.sendMsgToServer2();
+    }
+
+    public void test2(View v) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test2();
+            }
+        }, 10000);
     }
 
     public void sharePic(View view) {
