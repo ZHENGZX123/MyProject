@@ -312,6 +312,8 @@ public class Course1Activity extends BaseActivity {
         }
 
         private void addContent345(ViewHolder holder, AttendItem item) {
+            if (item.questions.size()<=0)
+                return;
             holder.type345RL.removeAllViews();
 
             Question s = item.questions.get(0);
