@@ -81,17 +81,14 @@ import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_ICON;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_NICKNAME;
-import static cn.kiway.robot.entity.Action.TYPE_FRIEND_CIRCLER;
 import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
 import static cn.kiway.robot.entity.Action.TYPE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_MISSING_FISH;
 import static cn.kiway.robot.entity.Action.TYPE_NEARBY_PEOPLE;
-import static cn.kiway.robot.entity.Action.TYPE_PUBLIC_ACCONT_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
-import static cn.kiway.robot.entity.Action.TYPE_SET_FORWARDTO;
-import static cn.kiway.robot.entity.Action.TYPE_SET_FRIEND_CIRCLER_REMARK;
+import static cn.kiway.robot.entity.Action.TYPE_SET_COLLECTOR;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.util.Constant.APPID;
@@ -597,16 +594,10 @@ public class AutoReplyService extends AccessibilityService {
                     if (content.endsWith("请求添加你为朋友")) {
                         action.actionType = TYPE_REQUEST_FRIEND;
                     }
-                    //需要转发到朋友圈，目前只支持链接
-                    else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("[链接]")) {
-                        action.actionType = TYPE_FRIEND_CIRCLER;
-                    } else if (sender.equals(Utils.getFCFrom(this)) && content.startsWith("设置朋友圈备注：")) {
-                        action.actionType = TYPE_SET_FRIEND_CIRCLER_REMARK;
-                    }
                     //来自公众号的消息每一条都要转发：图片还没有做，需要测试
                     else if (content.startsWith("设置转发对象：")) {
                         //设置转发对象有可能丢掉！因为微信可能不弹出通知
-                        action.actionType = TYPE_SET_FORWARDTO;
+                        action.actionType = TYPE_SET_COLLECTOR;
                     }
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") /*|| content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.contains("向你推荐了")*/) {
@@ -638,13 +629,10 @@ public class AutoReplyService extends AccessibilityService {
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_FRIEND_CIRCLER) {
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, false);
-                    } else if (action.actionType == TYPE_PUBLIC_ACCONT_FORWARDING || action.actionType == TYPE_COLLECTOR_FORWARDING) {
+                    } else if (action.actionType == TYPE_COLLECTOR_FORWARDING) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_SET_FORWARDTO) {
+                    } else if (action.actionType == TYPE_SET_COLLECTOR) {
                         String forwardto = action.content.replace("设置转发对象：", "").trim();
                         if (TextUtils.isEmpty(forwardto)) {
                             continue;
@@ -652,15 +640,6 @@ public class AutoReplyService extends AccessibilityService {
                         getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
                         getSharedPreferences("collector", 0).edit().putString("collector", forwardto).commit();
                         toast("设置转发对象成功");
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, false);
-                    } else if (action.actionType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
-                        String remark = action.content.replace("设置朋友圈备注：", "").trim();
-                        if (TextUtils.isEmpty(remark)) {
-                            continue;
-                        }
-                        getSharedPreferences("FCremark", 0).edit().putString("FCremark", remark).commit();
-                        toast("设置朋友圈备注成功");
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, false);
                     } else if (action.actionType == TYPE_REQUEST_FRIEND) {
@@ -2063,43 +2042,17 @@ public class AutoReplyService extends AccessibilityService {
                     backToWxHomePage();
                 }
             }
-        } else if (actionType == TYPE_FRIEND_CIRCLER) {
-            // 找到最后一个链接，点击转发到朋友圈
-            findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
-            if (mFindTargetNode == null) {
-                Log.d("test", "没有找到最后一个链接？郁闷。。。");
-                release();
-                return;
-            }
-            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //找下载按钮
-                    Log.d("test", "-------------------findTopRightButton------------------");
-                    boolean find = findTopRightButton(getRootInActiveWindow(), false);
-                    if (!find) {
-                        Log.d("test", "找不到右上角按钮");
-                        release();
-                    }
-                }
-            }, 10000);//防止页面加载不完整
-        } else if (actionType == TYPE_SET_FORWARDTO || actionType == TYPE_SET_FRIEND_CIRCLER_REMARK) {
+        } else if (actionType == TYPE_SET_COLLECTOR) {
             sendTextOnly2("设置成功！", true);
-        } else if (actionType == TYPE_PUBLIC_ACCONT_FORWARDING || actionType == TYPE_COLLECTOR_FORWARDING) {
+        } else if (actionType == TYPE_COLLECTOR_FORWARDING) {
             // 找到最后一张链接，点击转发给某人
-            if (actionType == TYPE_PUBLIC_ACCONT_FORWARDING) {
-                forwardto = getSharedPreferences("forwardto", 0).getString("forwardto", "");
-            } else if (actionType == TYPE_COLLECTOR_FORWARDING) {
-                forwardto = getSharedPreferences("collector", 0).getString("collector", "我的KW");
-            }
+            forwardto = getSharedPreferences("collector", 0).getString("collector", "我的KW");
             if (TextUtils.isEmpty(forwardto)) {
                 toast("您还没有设置转发对象");
                 //回复给微信
                 sendTextOnly2("您还没有设置转发对象，设置方法：请输入“设置转发对象：昵称”", true);
                 return;
             }
-
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -2110,31 +2063,18 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
 
-                    lastMsgView = null;
+                    //暂时去掉公众号、名片功能
                     Log.d("test", "=================findLastMsgViewInListView====================");
-                    findLastMsgViewInListView(mFindTargetNode);
-                    if (lastMsgView == null) {
+                    findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
+                    if (mFindTargetNode == null) {
                         Log.d("test", "没有找到最后一条消息。。。");
                         release();
                         return;
                     }
-                    //1.如果是名片，判断一下是个人名片还是企业名片.
+
                     String content = actions.get(currentActionID).content;
-                    if (content.contains("向你推荐了")) {
-                        Log.d("test", "=============getLastTextView=============");
-                        findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);
-                        String text = mFindTargetNode.getText().toString().trim();
-                        boolean isPublic = text.equals("公众号名片");
-                        Log.d("test", "isPublic = " + isPublic);
-                        if (isPublic) {
-                            //众号号名片
-                            doLongClickLastMsg();
-                        } else {
-                            //个人名片
-                            sendTextOnly2("个人名片暂时不支持转发", true);
-                        }
-                    } else if (content.startsWith("[视频]")) {
-                        lastMsgView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    if (content.startsWith("[视频]")) {
+                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2866,7 +2806,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                longClickSomeWhere(lastMsgView);
+                longClickSomeWhere(mFindTargetNode);
                 Log.d("test", "执行长按事件");
                 mHandler.postDelayed(new Runnable() {
                     @Override
@@ -3108,34 +3048,7 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    int actionType = actions.get(currentActionID).actionType;
-                                    if (actionType == TYPE_COLLECTOR_FORWARDING) {
-                                        release();
-                                    } else if (actionType == TYPE_PUBLIC_ACCONT_FORWARDING) {
-                                        //给公众号回复一条消息，每天回复一次
-                                        String today = Utils.getToday();
-                                        boolean todaySended = getSharedPreferences("kiway", 0).getBoolean(today, false);
-                                        if (todaySended) {
-                                            release();
-                                            return;
-                                        }
-                                        //1.找到最后的ImageView
-                                        findTargetNode(NODE_IMAGEVIEW, Integer.MAX_VALUE);
-                                        if (mFindTargetNode == null) {
-                                            release();
-                                            return;
-                                        }
-                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                        //2.发送文本内容
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                String sendContent = getSharedPreferences("sendContent", 0).getString("sendContent", "你好，请问客服在吗？");
-                                                sendTextOnly2(sendContent, true);
-                                                getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
-                                            }
-                                        }, 1000);
-                                    }
+                                    release();
                                 }
                             }, 4000);
                         }
@@ -3145,35 +3058,6 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
 
         return true;
-    }
-
-    private AccessibilityNodeInfo lastMsgView = null;
-
-    //这个函数要想办法区分是个人微信、还是公众号。
-    private boolean findLastMsgViewInListView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            //TODO 目前公众号只有文字、链接。个人微信和公众号微信要做到兼容
-            //个人微信发来文字类：android.view.View
-            //个人微信发来的链接、图片、位置、名片：android.widget.FrameLayout
-            //公众号微信发来的文字类：android.view.TextView
-            //公众号微信发来的链接：android.widget.LinearLayout
-            if (/*nodeInfo.getClassName().equals("android.view.View") ||*/ nodeInfo.getClassName().equals("android.widget.FrameLayout")) {
-                lastMsgView = nodeInfo;
-            } else if (nodeInfo.getClassName().equals("android.widget.TextView") && nodeInfo.getParent().getClassName().equals("android.widget.LinearLayout")) {
-                lastMsgView = nodeInfo.getParent();
-            }
-            if (findLastMsgViewInListView(nodeInfo)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean findTopRightButton(AccessibilityNodeInfo rootNode, boolean clearZombie) {
