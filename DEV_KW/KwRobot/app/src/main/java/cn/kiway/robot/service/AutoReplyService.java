@@ -2021,7 +2021,8 @@ public class AutoReplyService extends AccessibilityService {
                         } else if (type == TYPE_ADD_GROUP_PEOPLE
                                 || type == TYPE_DELETE_GROUP_PEOPLE
                                 || type == TYPE_FIX_GROUP_NAME
-                                || type == TYPE_FIX_GROUP_NOTICE) {
+                                || type == TYPE_FIX_GROUP_NOTICE
+                                || type == TYPE_DELETE_GROUP_CHAT) {
                             //群信息
                             findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
                             if (mFindTargetNode == null) {
@@ -2043,6 +2044,28 @@ public class AutoReplyService extends AccessibilityService {
                                             return;
                                         }
                                         fixGroupNameOrNotice();
+                                    } else if (type == TYPE_DELETE_GROUP_CHAT) {
+                                        execRootCmdSilent("input swipe 360 900 360 300");
+                                        execRootCmdSilent("input swipe 360 900 360 300");
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                boolean find = findTargetNode(NODE_TEXTVIEW, "删除并退出", CLICK_PARENT, true);
+                                                if (!find) {
+                                                    release();
+                                                    return;
+                                                }
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        boolean find = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                                        if (!find) {
+                                                            release();
+                                                        }
+                                                    }
+                                                }, 2000);
+                                            }
+                                        }, 2000);
                                     }
                                 }
                             }, 2000);
