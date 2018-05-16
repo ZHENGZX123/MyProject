@@ -533,7 +533,11 @@ public class AutoReplyService extends AccessibilityService {
     private void release() {
         Log.d("test", "release is called");
         mHandler.removeMessages(MSG_ACTION_TIMEOUT);
-        backToRobot();
+
+        //backToRobot
+        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+        startActivity(intent);
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -544,10 +548,6 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private void backToRobot() {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
-        startActivity(intent);
-    }
 
     @Override
     public void onDestroy() {
@@ -756,6 +756,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_FIX_ICON
                         || actionType == TYPE_NEARBY_PEOPLE
                         ) {
+                    //来自后台的命令
                     if (!checkIsWxHomePage()) {
                         try {
                             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -1454,21 +1455,20 @@ public class AutoReplyService extends AccessibilityService {
 
                                                 //1.申请语句，这里要先点一下删除。
                                                 if (!TextUtils.isEmpty(content)) {
-
                                                     clearAndPasteEditText(1, content);
-
                                                 }
                                                 //2.备注
                                                 findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplication(), 1));
 
                                                 //3.点击发送按钮
-                                                findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF, true);
+                                                findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
+                                                
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
                                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                     }
-                                                }, 3000);
+                                                }, 5000);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
@@ -1571,7 +1571,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                findTargetNode(NODE_TEXTVIEW, "确定|删除", CLICK_SELF, true);
+                findTargetNode(NODE_TEXTVIEW, "确定", CLICK_SELF, true);//|删除
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

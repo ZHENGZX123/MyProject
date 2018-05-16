@@ -89,7 +89,6 @@ public class Constant {
     private static final String BACK_DOOR19 = "附近的人";
     private static final String BACK_DOOR20 = "解散群聊";
 
-
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "漏网之鱼"}
     //{"cmd": "添加朋友","members":["18626318013","13267069058"], "content":"你好，可以加个好友吗？"}
