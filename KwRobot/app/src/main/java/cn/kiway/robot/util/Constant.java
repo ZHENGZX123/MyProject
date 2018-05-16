@@ -90,10 +90,10 @@ public class Constant {
     private static final String BACK_DOOR20 = "解散群聊";
 
     //{"cmd": "群里拉人","groupName":"测试群"}
-    //{"cmd": "解散群聊","groupName": "111" }
-    //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  新增type
+    //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  TODO新增type
     //{"cmd": "删除朋友","members":["执着","13267069058"]}
 
+    //{"cmd": "解散群聊","groupName": "最新111" }
     //{"cmd": "清理僵尸粉","start": "1","end":"20"}
     //{"cmd": "漏网之鱼"}
     //{"cmd": "添加朋友","members":["18626318013","13267069058"], "content":"你好，可以加个好友吗？"}
