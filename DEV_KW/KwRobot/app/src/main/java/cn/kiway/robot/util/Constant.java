@@ -90,18 +90,20 @@ public class Constant {
     private static final String BACK_DOOR20 = "解散群聊";
 
     //{"cmd": "群里拉人","groupName":"测试群"}
+    //{"cmd": "清理僵尸粉","start": "1","end":"20"}
+    //{"cmd": "解散群聊","groupName": "111" }
+    //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  新增type
+
     //{"cmd": "漏网之鱼"}
     //{"cmd": "添加朋友","members":["18626318013","13267069058"], "content":"你好，可以加个好友吗？"}
     //{"cmd": "查询好友数量"}
-    //{"cmd": "清理僵尸粉","start": "1","end":"20"}
     //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
-    //{"cmd": "解散群聊","groupName": "111" }
     //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
     //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
-    //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222"}
+    //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "111"}
     //{"cmd": "修改群名称","content":"1","groupName": "111"}
-    //{"cmd": "群发消息","content":"1","groupName": "111"}
-    //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "222" , "content":"xxx"}
+    //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "111jjj" , "content":"xxx"}
+
     //{"cmd": "删除朋友圈","content":"密密麻麻"}
     //{"cmd": "修改昵称","newName":"我是客服888", "oldName":"客服888"}
     //{"cmd": "修改头像","url":"http://upload.jnwb.net/2014/0311/1394514005639.jpg"}

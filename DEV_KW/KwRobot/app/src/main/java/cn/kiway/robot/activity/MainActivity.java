@@ -51,7 +51,6 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
-import static cn.kiway.robot.util.Constant.NODE_FRAMELAYOUT;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
