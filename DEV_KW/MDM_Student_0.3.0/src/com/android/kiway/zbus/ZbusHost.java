@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.kiway.zbus.utils.ZbusUtils;
-import cn.kiway.zbus.vo.PushMessageVo;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
+import cn.kiway.wx.reply.vo.PushMessageVo;
 
+import static com.android.kiway.KWApp.sendUtil;
 import static com.android.kiway.utils.Constant.APPID;
 
 /**
@@ -37,8 +38,9 @@ public class ZbusHost {
 
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             //topic : 上报的 deviceId#userId
-            String topic = Utils.getIMEI(c) + "#" + token;
-            PushMessageVo pushMessageVo = new PushMessageVo();
+            final String topic = Utils.getIMEI(c) + "#" + token;
+
+            final PushMessageVo pushMessageVo = new PushMessageVo();
             pushMessageVo.setTitle(title);
             pushMessageVo.setDescription(desc);
             pushMessageVo.setMessage(msg);
@@ -51,7 +53,21 @@ public class ZbusHost {
             pushMessageVo.setPushType("zbus");
 
             Log.d("test", "sendMSG " + msg.toString());
-            ZbusUtils.sendMsg(topic, pushMessageVo);
+            //ZbusUtils.sendMsg(topic, pushMessageVo);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    if (sendUtil == null) {
+                        sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
+                    }
+                    try {
+                        sendUtil.sendMsg(pushMessageVo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
 
             return true;
         } catch (Exception e) {
@@ -74,8 +90,9 @@ public class ZbusHost {
 
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             //topic : 上报的 deviceId#userId
-            String topic = Utils.getIMEI(c) + "#" + token;
-            PushMessageVo pushMessageVo = new PushMessageVo();
+            final String topic = Utils.getIMEI(c) + "#" + token;
+            Log.d("test", "发送topic = " + topic);
+            final PushMessageVo pushMessageVo = new PushMessageVo();
             pushMessageVo.setTitle(title);
             pushMessageVo.setDescription(desc);
             pushMessageVo.setMessage(msg);
@@ -96,7 +113,20 @@ public class ZbusHost {
             pushMessageVo.setPushType("zbus");
 
             Log.d("test", "sendMSG2 " + msg.toString());
-            ZbusUtils.sendMsg(topic, pushMessageVo);
+            //ZbusUtils.sendMsg(topic, pushMessageVo);
+            new Thread() {
+                @Override
+                public void run() {
+                    if (sendUtil == null) {
+                        sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
+                    }
+                    try {
+                        sendUtil.sendMsg(pushMessageVo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
 
             return true;
         } catch (Exception e) {

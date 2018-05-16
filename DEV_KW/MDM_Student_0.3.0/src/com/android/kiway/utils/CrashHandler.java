@@ -70,14 +70,13 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
-//            try {
-//                Thread.sleep(3000);
-//            } catch (InterruptedException e) {
-//                Log.e(TAG, "error : ", e);
-//            }
-            //退出程序
-            //android.os.Process.killProcess(android.os.Process.myPid());
-            //System.exit(1);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "error : ", e);
+            }
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
         }
     }
 

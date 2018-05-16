@@ -41,6 +41,9 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -57,12 +60,9 @@ import java.util.Date;
 import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
-import cn.kiway.zbus.utils.ZbusUtils;
-import io.zbus.mq.Broker;
-import io.zbus.mq.MessageHandler;
-import io.zbus.mq.MqClient;
-import io.zbus.mq.Producer;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
+import static com.android.kiway.KWApp.consumeUtil;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static com.android.kiway.utils.Constant.APPID;
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //14.距离传感器
         //registerSensor();
         //16.检查版本更新
-      //  checkUpgrade();
+        //  checkUpgrade();
         //17.检查通话功能
         checkTelephoney();
         //18.获取经纬度
@@ -183,7 +183,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }
     }
 
-
     public void initZbus() {
         Log.d("test", "initZbus");
         new Thread() {
@@ -194,25 +193,26 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (TextUtils.isEmpty(token)) {
                         return;
                     }
-                    Broker broker = new Broker(Constant.zbusHost + ":" + Constant.zbusPost);
-                    Producer p = new Producer(broker);
-                    ZbusUtils.init(broker, p);
                     String topic = "kiway_push_" + token;
-                    Log.d("test", "topic = " + topic);
-                    ZbusUtils.consumeMsgs(topic, new MessageHandler() {
+                    Log.d("test", "consume topic = " + topic);
 
+                    consumeUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
+                    consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
                         @Override
-                        public void handle(io.zbus.mq.Message message, MqClient mqClient) throws IOException {
-                            String temp = message.getBodyString();
-                            Log.d("test", "zbus receive message = " + temp);
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                            //消费消费
+                            String msg = new String(body, "utf-8");
+                            System.out.println("consume msg: " + msg);
+                            //处理逻辑
                             try {
-                                String msg = new JSONObject(temp).optString("message");
-                                CommandUtil.handleCommand(getApplicationContext(), msg);
+                                String message = new JSONObject(msg).optString("message");
+                                CommandUtil.handleCommand(getApplicationContext(), message);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                            getChannel().basicAck(envelope.getDeliveryTag(), false);
                         }
-                    }, Constant.zbusHost + ":" + Constant.zbusPost);
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -329,12 +329,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
                 break;
                 case MSG_NETWORK_OK: {
-                    initZbus();
-                    sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
+                    //initZbus();
+                    //sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
                 }
                 break;
                 case MSG_NETWORK_ERR: {
-                    ZbusUtils.close();
+                    //ZbusUtils.close();
                 }
                 break;
                 case MSG_HEARTBEAT: {
@@ -526,6 +526,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
             mLocationClient.stop();
         }
         //ZbusUtils.close();
+        KWApp.closeMQ();
     }
 
 
