@@ -87,6 +87,8 @@ public class Constant {
     private static final String BACK_DOOR17 = "修改头像";
     private static final String BACK_DOOR18 = "检查新版本";
     private static final String BACK_DOOR19 = "附近的人";
+    private static final String BACK_DOOR20 = "解散群聊";
+
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "漏网之鱼"}
@@ -94,6 +96,7 @@ public class Constant {
     //{"cmd": "查询好友数量"}
     //{"cmd": "清理僵尸粉","start": "1","end":"20"}
     //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
+    //{"cmd": "解散群聊","groupName": "111" }
     //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
     //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
     //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "222"}
@@ -128,6 +131,7 @@ public class Constant {
         backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
+        backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";

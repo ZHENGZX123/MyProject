@@ -9,7 +9,6 @@ public class ReturnMessage {
     public int returnType;
     public String content;
     public String fileName;
-    public boolean returnFinished;
 
     public ReturnMessage(int returnType, String content) {
         this.returnType = returnType;
@@ -24,7 +23,6 @@ public class ReturnMessage {
         return "ReturnMessage{" +
                 "returnType=" + returnType +
                 ", content='" + content + '\'' +
-                ", returnFinished=" + returnFinished +
                 '}';
     }
 }
