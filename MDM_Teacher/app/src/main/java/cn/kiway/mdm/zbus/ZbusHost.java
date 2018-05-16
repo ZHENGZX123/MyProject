@@ -18,8 +18,8 @@ import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
 import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.zbus.utils.ZbusUtils;
-import cn.kiway.zbus.vo.PushMessageVo;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
+import cn.kiway.wx.reply.vo.PushMessageVo;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.mdm.KWApplication.students;
@@ -29,7 +29,17 @@ import static cn.kiway.mdm.KWApplication.students;
  */
 
 public class ZbusHost {
+    public static RabbitMQUtils consumeUtil;
+    public static RabbitMQUtils sendUtil;
 
+    public static void closeMQ() {
+        if (consumeUtil != null) {
+            consumeUtil.close();
+        }
+        if (sendUtil != null) {
+            sendUtil.close();
+        }
+    }
     public static void tongji(final Activity c, final KnowledgePoint kp, final OnListener onListener) {
         new Thread() {
             @Override
@@ -537,9 +547,23 @@ public class ZbusHost {
         pushMessageVo.setPushType("zbus");
 
         Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-        ZbusUtils.sendMsg(topic, pushMessageVo);
+       // ZbusUtils.sendMsg(topic, pushMessageVo);
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                if (sendUtil == null) {
+                    sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
+                }
+                try {
+                    sendUtil.sendMsg(pushMessageVo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Countly.sharedInstance().recordEvent(title);
+            }
+        }.start();
 
-        Countly.sharedInstance().recordEvent(title);
     }
 
 

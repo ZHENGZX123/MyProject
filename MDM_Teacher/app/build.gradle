@@ -17,8 +17,8 @@ android {
         applicationId "cn.kiway.mdm.teacher"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 12
-        versionName "0.1.2"
+        versionCode 15
+        versionName "0.1.5"
         jackOptions {
             enabled true
         }
@@ -90,11 +90,6 @@ dependencies {
     compile files('libs/gson-2.8.0.jar')
     compile 'com.android.support:multidex:1.0.0'
     compile files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')
-    compile files('libs/hutool-all-3.2.3.jar')
-    compile files('libs/netty-all-4.0.51.Final.jar')
-    compile files('libs/fastjson-1.2.24.jar')
-    compile files('libs/push-server-zbus-1.0.0.jar')
-    compile files('libs/zbus-0.11.3.jar')
     compile project(':AgoraPusher')
     compile project(':qsvideoplayer')
     compile project(':ImagePicker')
@@ -103,5 +98,10 @@ dependencies {
     compile 'com.zhijieeeeee:pieviewlibrary:2.0.3'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
     compile 'ly.count:sdk-android:14.12'
-
+    compile files('libs/amqp-client-4.1.0.jar')
+    compile files('libs/fastjson-1.2.47.jar')
+    compile files('libs/logback-classic-1.1.11.jar')
+    compile files('libs/logback-core-1.1.11.jar')
+    compile files('libs/wx-reply-rabbitMQ-1.0-SNAPSHOT.jar')
+    compile files('libs/slf4j-api-1.7.25.jar')
 }

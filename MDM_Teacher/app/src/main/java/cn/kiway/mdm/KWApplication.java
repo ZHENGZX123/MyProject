@@ -31,6 +31,7 @@ import ly.count.android.api.Countly;
 
 import static cn.kiway.mdm.util.Constant.countlyAppKey;
 import static cn.kiway.mdm.util.Constant.countlyUrl;
+import static cn.kiway.mdm.zbus.ZbusHost.closeMQ;
 
 /**
  * Created by Administrator on 2017/7/5.
@@ -69,6 +70,14 @@ public class KWApplication extends Application {
         Countly.sharedInstance().init(this, countlyUrl, countlyAppKey);
 
         MobSDK.init(this);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "addShutdownHook");
+                closeMQ();
+            }
+        });
     }
 
     /**

@@ -30,6 +30,9 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import com.soundcloud.android.crop.Crop;
 
 import org.json.JSONException;
@@ -38,6 +41,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -55,9 +59,7 @@ import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
 import cn.kiway.mdm.zbus.ZbusHost;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
-import cn.kiway.zbus.utils.ZbusUtils;
-import io.zbus.mq.Broker;
-import io.zbus.mq.Producer;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
@@ -71,20 +73,64 @@ import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
+import static cn.kiway.mdm.zbus.ZbusHost.consumeUtil;
 
 
 public class MainActivity extends BaseActivity {
 
-    private Dialog dialog_download;
-    public ProgressDialog pd;
-    private WebView wv;
-    public static MainActivity instance;
-    private long time;
-    private JsAndroidInterface jsInterface;
     public static final int MSG_NETWORK_OK = 1;
     public static final int MSG_NETWORK_ERR = 2;
     public static final int MSG_HEARTBEAT = 3;
+    public static MainActivity instance;
+    public ProgressDialog pd;
+    ZbusMessageHandler zbusMessageHandler;
+    public Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            if (msg.what == MSG_NETWORK_OK) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                rl_nonet.setVisibility(View.GONE);
+                Log.d("test", "有网络");
+                //initZbus();
+                //sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
+            } else if (msg.what == MSG_NETWORK_ERR) {
+                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
+                rl_nonet.setVisibility(View.VISIBLE);
+                Log.d("test", "无网络");
+                ///ZbusUtils.close();
+            } else if (msg.what == MSG_HEARTBEAT) {
+                for (int i = 0; i < 3; i++) {
+                    ZbusHost.heartbeat(getApplicationContext(), "heartbeat1");
+                }
+            } else if (msg.what == 4) {
+                // 下载完成后安装
+                String savedFilePath = (String) msg.obj;
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
+                startActivity(intent);
+                finish();
+            }
+        }
+    };
+    private Dialog dialog_download;
+    private WebView wv;
+    private long time;
+    private JsAndroidInterface jsInterface;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
+            KWApplication.recordService = binder.getRecordService();
+            KWApplication.recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
+        }
 
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,21 +165,6 @@ public class MainActivity extends BaseActivity {
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
-            KWApplication.recordService = binder.getRecordService();
-            KWApplication.recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-        }
-    };
-
     //初始化zbus
     public void initZbus() {
         Log.d("test", "initZbus");
@@ -145,14 +176,35 @@ public class MainActivity extends BaseActivity {
                     if (TextUtils.isEmpty(userId)) {
                         return;
                     }
-                    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util.Constant.zbusPost);
-                    Producer p = new Producer(broker);
-                    ZbusUtils.init(broker, p);
-                    String topic = "kiway_push_" + userId;
-                    Log.d("test", "topic = " + topic);
 
-                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), cn.kiway.mdm.util.Constant.zbusHost + ":"
-                            + cn.kiway.mdm.util.Constant.zbusPost);
+//                    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util
+// .Constant.zbusPost);
+//                    Producer p = new Producer(broker);
+//                    ZbusUtils.init(broker, p);
+//
+//                    Log.d("test", "topic = " + topic);
+//                    consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, topic, topic, cn.kiway.mdm
+// .util.Constant.zbusPost);
+//                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), cn.kiway.mdm.util.Constant.zbusHost + ":"
+//                            + cn.kiway.mdm.util.Constant.zbusPost);
+                    String topic = "kiway_push_" + userId;
+                    consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, topic, topic, cn.kiway.mdm
+                            .util.Constant.zbusPost);
+                    consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
+                        @Override
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties
+                                properties, byte[] body) throws IOException {
+                            //消费消费
+                            String msg = new String(body, "utf-8");
+                            System.out.println("consume msg: " + msg);
+                            //处理逻辑
+                            if (zbusMessageHandler == null)
+                                zbusMessageHandler = new ZbusMessageHandler();
+                            zbusMessageHandler.handle(msg);
+                            getChannel().basicAck(envelope.getDeliveryTag(), false);
+                        }
+                    });
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -293,14 +345,15 @@ public class MainActivity extends BaseActivity {
             } else {
                 uploadFile(filePath, true);
             }
-        } if (requestCode == AppConstant.REQUEST_CODE.CAMERA && resultCode == RESULT_OK) {
+        }
+        if (requestCode == AppConstant.REQUEST_CODE.CAMERA && resultCode == RESULT_OK) {
             String img_path = data.getStringExtra(AppConstant.KEY.IMG_PATH);
             //需要裁剪的图片路径
             Uri sourceUri = Uri.fromFile(new File(img_path));
             //裁剪完毕的图片存放路径
             Uri destinationUri = Uri.fromFile(new File(img_path.split("\\.")[0] + "1.png"));
             Crop.of(sourceUri, destinationUri).start(this);
-        }else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+        } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
             final Uri resultUri = Crop.getOutput(data);
             //压缩图片
             Luban.with(this).load(resultUri.getPath()).ignoreBy(100).setTargetDir(getPath()).setCompressListener(new OnCompressListener() {
@@ -423,36 +476,6 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            if (msg.what == MSG_NETWORK_OK) {
-                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-                rl_nonet.setVisibility(View.GONE);
-                Log.d("test", "有网络");
-                initZbus();
-                sendEmptyMessageDelayed(MSG_HEARTBEAT, 1000);
-            } else if (msg.what == MSG_NETWORK_ERR) {
-                RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
-                rl_nonet.setVisibility(View.VISIBLE);
-                Log.d("test", "无网络");
-                ZbusUtils.close();
-            } else if (msg.what == MSG_HEARTBEAT) {
-                for (int i = 0; i < 3; i++) {
-                    ZbusHost.heartbeat(getApplicationContext(), "heartbeat1");
-                }
-            } else if (msg.what == 4) {
-                // 下载完成后安装
-                String savedFilePath = (String) msg.obj;
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                startActivity(intent);
-                finish();
-            }
-        }
-    };
-
     private void downloadSilently(String apkUrl, String version) {
         final String savedFilePath = "/mnt/sdcard/cache/mdm_teacher_" + version + ".apk";
         if (new File(savedFilePath).exists()) {
@@ -531,7 +554,8 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
-        ZbusUtils.close();
+        // ZbusUtils.close();
+        ZbusHost.closeMQ();
     }
 
 }
