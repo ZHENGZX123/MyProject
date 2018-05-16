@@ -34,7 +34,6 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -983,8 +982,8 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                     //2.保存图片
-                    boolean ret = saveImage(getApplication(), bmp);
-                    if (!ret) {
+                    String localPath = saveImage(getApplication(), bmp, true);
+                    if (localPath == null) {
                         release();
                         return;
                     }
@@ -2713,9 +2712,7 @@ public class AutoReplyService extends AccessibilityService {
 
     }
 
-    //---------------发送图片---------------------------------------
-
-    public String saveImage2(Context context, Bitmap bmp) {
+    public String saveImage(Context context, Bitmap bmp, boolean insertDB) {
         if (bmp == null) {
             return null;
         }
@@ -2731,47 +2728,19 @@ public class AutoReplyService extends AccessibilityService {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
 
-        String localPath = file.getAbsolutePath();
-        return localPath;
-    }
 
-    public boolean saveImage(Context context, Bitmap bmp) {
-        if (bmp == null) {
-            return false;
-        }
-        // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
-        if (!appDir.exists()) {
-            appDir.mkdirs();
-        }
-        String fileName = currentTimeMillis() + ".jpg";
-        File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
+            if (insertDB) {
+                MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                        file.getAbsolutePath(), file.getName(), null);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+            }
 
-            insertDB(context, file);
-
-            return true;
+            return file.getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
-    }
-
-    private void insertDB(Context context, File file) throws FileNotFoundException {
-        // 其次把文件插入到系统图库
-        MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                file.getAbsolutePath(), file.getName(), null);
-        // 最后通知图库更新
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+        return null;
     }
 
     private void sendImageOnly2(String url) {
@@ -2782,7 +2751,7 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
         //2.保存图片
-        String localPath = saveImage2(getApplication(), bmp);
+        String localPath = saveImage(getApplication(), bmp, false);
         if (localPath == null) {
             release();
             return;
@@ -2812,8 +2781,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendFileOnly2(String url, String fileName) {
-        //int index = url.lastIndexOf("/");
-        //String fileName = url.substring(index + 1);
         //1.下载
         String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
 
@@ -2871,7 +2838,7 @@ public class AutoReplyService extends AccessibilityService {
                 Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
                 if (bmp != null) {
                     //2.保存图片
-                    localPath = saveImage2(getApplication(), bmp);
+                    localPath = saveImage(getApplication(), bmp, false);
                 }
             }
 
@@ -2910,7 +2877,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "image = " + image);
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(image, KWApplication.getLoaderOptions());
                     if (bmp != null) {
-                        String localPath = saveImage2(getApplication(), bmp);
+                        String localPath = saveImage(getApplication(), bmp, false);
                         Log.d("test", "localPath = " + localPath);
                         imageUris.add(Uri.fromFile(new File(localPath)));
                     }
@@ -2932,7 +2899,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (!TextUtils.isEmpty(imageUrl)) {
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl, KWApplication.getLoaderOptions());
                     if (bmp != null) {
-                        localPath = saveImage2(getApplication(), bmp);
+                        localPath = saveImage(getApplication(), bmp, false);
                     }
                 }
 
