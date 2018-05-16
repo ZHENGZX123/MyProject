@@ -88,6 +88,7 @@ public class Constant {
     private static final String BACK_DOOR18 = "检查新版本";
     private static final String BACK_DOOR19 = "附近的人";
     private static final String BACK_DOOR20 = "解散群聊";
+    private static final String BACK_DOOR21 = "删除朋友";
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  TODO新增type
@@ -134,6 +135,7 @@ public class Constant {
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
     }
 
     public static final String HEART_BEAT_TESTER = "心跳测试使者";
