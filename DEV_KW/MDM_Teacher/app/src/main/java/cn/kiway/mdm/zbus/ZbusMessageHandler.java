@@ -15,19 +15,14 @@ import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.activity.ResultDetailActivity;
 import cn.kiway.mdm.activity.StudentGridActivity;
 import cn.kiway.mdm.entity.Student;
-import io.zbus.mq.Message;
-import io.zbus.mq.MessageHandler;
-import io.zbus.mq.MqClient;
 
 /**
  * Created by Administrator on 2018/1/2.
  */
 
-public class ZbusMessageHandler implements MessageHandler {
-
-    @Override
-    public void handle(Message message, MqClient mqClient) throws IOException {
-        String temp = message.getBodyString();
+public class ZbusMessageHandler  {
+public ZbusMessageHandler(){}
+    public void handle(String temp) throws IOException {
         Log.d("test", "getBodyString = " + temp);
         //{"studentIMEI":"890406562707861","command":"sign"}
         try {
