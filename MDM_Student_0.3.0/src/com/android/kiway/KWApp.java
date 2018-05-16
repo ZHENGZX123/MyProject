@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import org.xutils.x;
 
 import cn.kiway.mdmsdk.MDMHelper;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static com.android.kiway.utils.AppListUtils.isAppInstalled;
 import static com.android.kiway.utils.Constant.ZHIHUIKETANGPG;
@@ -243,6 +244,9 @@ public class KWApp extends Application {
         }
     };
 
+    public static RabbitMQUtils consumeUtil;
+    public static RabbitMQUtils sendUtil;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -253,6 +257,23 @@ public class KWApp extends Application {
         huaweiPush(this);
         //xutils
         x.Ext.init(this);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "addShutdownHook");
+                closeMQ();
+            }
+        });
+    }
+
+    public static void closeMQ() {
+        if (consumeUtil != null) {
+            consumeUtil.close();
+        }
+        if (sendUtil != null) {
+            sendUtil.close();
+        }
     }
 
 

@@ -17,7 +17,7 @@ public class Constant {
     //public static final String APPKEY = "d67f10fa6b95e82f50cd52acbdac2fc25c585408";
 
     public static final String zbusHost = "mdm.kiway.cn";//"192.168.8.161"; mdm.kiway.cn
-    public static final String zbusPost = "15556";
+    public static final int zbusPost = 5673;//15555
     public static String currentTeacher = "";
 
     public static final String serverUrl = "http://mdm.kiway.cn:8083/";
