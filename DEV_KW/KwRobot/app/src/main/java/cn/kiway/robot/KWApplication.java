@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
@@ -47,7 +46,7 @@ public class KWApplication extends Application {
         Log.d("test", "APP onCreate");
         x.Ext.init(this);
         initImageCache();
-        CrashHandler.getInstance().init(this);
+        //CrashHandler.getInstance().init(this);
         saveDefaultFile("file.png", R.mipmap.file);
         saveDefaultFile("video.png", R.mipmap.video);
 
@@ -62,14 +61,18 @@ public class KWApplication extends Application {
     }
 
     public static void closeMQ() {
+        Log.d("test", "closeMQ");
         if (consumeUtil != null) {
             consumeUtil.close();
+            consumeUtil = null;
         }
         if (sendUtil != null) {
             sendUtil.close();
+            sendUtil = null;
         }
         if (sendUtil2 != null) {
             sendUtil2.close();
+            sendUtil2 = null;
         }
     }
 

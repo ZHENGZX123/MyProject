@@ -15,10 +15,9 @@ public class Constant {
     public static final String APPID = "930a4b41b8c92d30f790a6bf01bfe78a";
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
-    public static String host = "robot.kiway.cn";
-    public static String port = "5676";
-
-    public static String clientUrl = "http://robot.kiway.cn";
+    public static String host = "";
+    public static String port = "";
+    public static String clientUrl = "";
 
     public static final String testImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
 
@@ -68,9 +67,53 @@ public class Constant {
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
+    public static final String HEART_BEAT_TESTER = "心跳测试使者";
+
+    public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下序号或关键字发送咨询招生相关问题。谢谢！";
+
+    public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下序号或关键字发送咨询招生相关问题，谢谢！\n" +
+            "1、计生证明或者计划生育证明\n" +
+            "2、租房或者住房\n" +
+            "3、台湾或者香港\n" +
+            "4、户籍\n" +
+            "5、网上报名\n" +
+            "6、验核材料\n" +
+            "7、录取\n";
+    public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
+
+    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下序号或关键字咨询：";
+
+    public static final String GROUP_INVIT_CMD = "groupInvitCmd";
+    public static final String FORGET_FISH_CMD = "forgetFishCmd";
+    public static final String ADD_FRIEND_CMD = "addFriendCmd";
+    public static final String FIND_FRIEND_COUNT_CMD = "findFriendCountCmd";
+    public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";
+    public static final String GROUP_CHAT_CMD = "groupChatCmd";
+    public static final String INVITE_GROUP_CMD = "invitGroupCmd";
+    public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";
+    public static final String UPDATE_GROUP_NOTICE_CMD = "updateGroupNoticeCmd";
+    public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
+    public static final String SEND_GROUP_MSG_CMD = "sendGroupMsgCmd";
+    public static final String AT_PERSONS_CMD = "atPersonsCmd";
+    public static final String UPDATE_NICKNAME_CMD = "updateNickNameCmd";
+    public static final String UPDATE_AVATAR_CMD = "updateAvatarCmd";
+    public static final String CHECK_NEW_VERSION_CMD = "checkNewVersionCmd";
+    public static final String PERSION_NEARBY_CMD = "persionNearbyCmd";
+
+    public static final String SEND_FRIEND_CIRCLE_CMD = "sendFriendCircleCmd";
+    public static final String SEND_FRIEND_CIRCLE_REPLY_CMD = "sendFriendCircleReplyCmd";
+    public static final String DELETE_FRIEND_CIRCLE_CMD = "deleteFriendCircleCmd";
+    public static final String DELETE_FRIEND_CIRCLE_REPLY_CMD = "deleteFriendCircleReplyCmd";
+
+    public static Map<String, String> replies = new HashMap<>();
+
+    static {
+        replies.put(SEND_FRIEND_CIRCLE_CMD, SEND_FRIEND_CIRCLE_REPLY_CMD);
+        replies.put(DELETE_FRIEND_CIRCLE_CMD, DELETE_FRIEND_CIRCLE_REPLY_CMD);
+    }
+
     public static final String BACK_DOOR1 = "开维一本万利";
     public static final String BACK_DOOR2 = "开维前程似锦";
-
     private static final String BACK_DOOR4 = "清理僵尸粉";
     private static final String BACK_DOOR5 = "查询好友数量";
     private static final String BACK_DOOR6 = "发起群聊";
@@ -89,6 +132,7 @@ public class Constant {
     private static final String BACK_DOOR19 = "附近的人";
     private static final String BACK_DOOR20 = "解散群聊";
     private static final String BACK_DOOR21 = "删除朋友";
+    private static final String BACK_DOOR22 = "发朋友圈";
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  TODO新增type
@@ -112,12 +156,17 @@ public class Constant {
     //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" }
 
 
-    static Map<String, Integer> backdoors = new LinkedHashMap<>();
+    public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
+        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
+        backdoors.put(DELETE_FRIEND_CIRCLE_CMD, Action.TYPE_DELETE_MOMENT);
+
+        backdoors.put(BACK_DOOR22, Action.TYPE_SEND_MOMENT);
+        backdoors.put(SEND_FRIEND_CIRCLE_CMD, Action.TYPE_SEND_MOMENT);
+
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
-
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
@@ -127,7 +176,6 @@ public class Constant {
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
         backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
         backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
@@ -137,21 +185,4 @@ public class Constant {
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
     }
-
-    public static final String HEART_BEAT_TESTER = "心跳测试使者";
-
-    public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下序号或关键字发送咨询招生相关问题。谢谢！";
-
-    public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下序号或关键字发送咨询招生相关问题，谢谢！\n" +
-            "1、计生证明或者计划生育证明\n" +
-            "2、租房或者住房\n" +
-            "3、台湾或者香港\n" +
-            "4、户籍\n" +
-            "5、网上报名\n" +
-            "6、验核材料\n" +
-            "7、录取\n";
-    public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
-
-    public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下序号或关键字咨询：";
-
 }
