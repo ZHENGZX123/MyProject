@@ -43,6 +43,7 @@ public class Action {
     public static final int TYPE_NEARBY_PEOPLE = 126;//附近的人
     public static final int TYPE_DELETE_GROUP_CHAT = 127;//解散群聊
     public static final int TYPE_DELETE_FRIEND = 128;//主动搜索并添加好友
+    public static final int TYPE_SEND_MOMENT = 129;
 
 
     public PendingIntent intent;
@@ -51,6 +52,7 @@ public class Action {
     public ArrayList<ReturnMessage> returnMessages = new ArrayList<>();
     public int actionType; //事件类型
     public boolean replied;
+    public Command command;
 
     @Override
     public String toString() {

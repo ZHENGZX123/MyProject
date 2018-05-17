@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -47,6 +46,7 @@ import java.util.Set;
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.entity.Command;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
@@ -102,6 +102,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
+import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
@@ -110,8 +111,11 @@ import static cn.kiway.robot.util.Constant.NODE_IMAGEBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_IMAGEVIEW;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
+import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
+import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
+import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static java.lang.System.currentTimeMillis;
 
@@ -230,16 +234,16 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     JSONObject o = new JSONObject(recv.msg);
-                    //新增后台发的命令
-                    if (o.has("type")) {
-                        int type = o.getInt("type");
-                        if (type == 1 || type == 2) {
-                            mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
-                            currentActionID = 9999;
-                            actioningFlag = true;
-
-                            shareToWechatMoments(recv.msg);
+                    if (o.has("cmd")) {
+                        Command command = new Command();
+                        command.cmd = o.optString("cmd");
+                        command.id = o.optString("id");
+                        command.token = o.optString("token");
+                        command.content = o.optString("content");
+                        if (TextUtils.isEmpty(command.content)) {
+                            command.content = o.optJSONObject("content").toString();
                         }
+                        doActionCommand(recv.msg, command);
                         return;
                     }
                     long id = o.optLong("id");
@@ -255,8 +259,8 @@ public class AutoReplyService extends AccessibilityService {
 
                     Action action = actions.get(id);
                     if (action == null) {
-                        Log.d("test", "action null , doFindUsableAction");
-                        doFindUsableAction(o);
+                        Log.d("test", "action null , doFindAUsableAction");
+                        doFindAUsableAction(o);
                     } else {
                         if (action.replied && recv.msg.contains("\"returnType\":1") && recv.msg.contains("客服正忙")) {
                             Log.d("test", "action.replied");
@@ -272,7 +276,34 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void doFindUsableAction(JSONObject o) {
+    private void doActionCommand(String msg, Command command) {
+        if (actions.size() < 1) {
+            toast("需要至少有1个家长消息");
+            return;
+        }
+        Long firstKey = actions.keySet().iterator().next();
+        Action firstA = actions.get(firstKey);
+        firstA.sender = "后台";
+        firstA.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
+        ;
+        firstA.actionType = backdoors.get(command.cmd);
+        firstA.command = command;
+
+        String cmd = command.cmd;
+        switch (cmd) {
+            case SEND_FRIEND_CIRCLE_CMD:
+                mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                currentActionID = firstKey;
+                actioningFlag = true;
+                shareToWechatMoments(command.content);
+                break;
+            case DELETE_FRIEND_CIRCLE_CMD:
+                doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
+                break;
+        }
+    }
+
+    private void doFindAUsableAction(JSONObject o) {
         try {
             String sender = o.getString("sender");
             String content = o.getString("content");
@@ -302,9 +333,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 Log.d("test", "开始执行action = " + id);
                 int size = returnMessage.length();
-                if (size == 0) {
-                    return;
-                }
+
                 action.returnMessages.clear();
                 int imageCount = 0;
                 int linkCount = 0;
@@ -392,7 +421,7 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 //断开后3秒重连
-                                //ZbusUtils.close();
+                                KWApplication.closeMQ();
                                 try {
                                     sleep(3000);
                                 } catch (InterruptedException e) {
@@ -452,12 +481,10 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setInstallationId(installationId);
 
                     Log.d("test", "sendMsgToServer = " + topic + " , msg = " + msg + ", url = " + url);
-
                     if (sendUtil == null) {
-                        sendUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
+                        sendUtil = new RabbitMQUtils(Constant.host, topic, topic, Constant.port);
                     }
                     sendUtil.sendMsg(pushMessageVo);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -465,7 +492,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    public synchronized void sendMsgToServer2() {
+    public synchronized void sendMsgToServer2(int statusCode, Command command) {
         new Thread() {
             @Override
             public void run() {
@@ -473,14 +500,13 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     String topic = "kiway_wx_reply_result_react";
                     String msg = new JSONObject()
-                            .put("cmd", "sendFriendCircleReplyCmd")
-                            .put("id", "4d65cd6es6w5")
-                            .put("type", "sendFriendCircleReplyCmd")
-                            .put("token", "12345")
+                            .put("cmd", replies.get(command.cmd))
+                            .put("type", replies.get(command.cmd))
+                            .put("id", command.id)
+                            .put("token", command.token)
+                            .put("statusCode", statusCode)
                             .toString();
-
                     Log.d("test", "sendMsgToServer2 = " + topic + " , msg = " + msg);
-
                     if (sendUtil2 == null) {
                         sendUtil2 = new RabbitMQUtils(Constant.host, topic, topic, port);
                     }
@@ -536,6 +562,11 @@ public class AutoReplyService extends AccessibilityService {
         //backToRobot
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
+
+        Command command = actions.get(currentActionID).command;
+        if (command != null) {
+            sendMsgToServer2(200, command);
+        }
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -759,76 +790,14 @@ public class AutoReplyService extends AccessibilityService {
                         ) {
                     //来自后台的命令
                     if (!checkIsWxHomePage()) {
-                        try {
-                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                            Log.d("test", "content = " + content);
-                            JSONObject o = new JSONObject(content);
-                            content = o.optString("content");
-                            start = o.optInt("start");
-                            end = o.optInt("end");
-                            String url = o.optString("url");
-                            String groupName = o.optString("groupName");
-                            JSONArray members = o.optJSONArray("members");
-
-                            String finalContent = content;
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            checkIsWxHomePage();
-                                            if (actionType == TYPE_GET_ALL_FRIENDS) {
-                                                //通讯录
-                                                getAllFriends();
-                                            } else if (actionType == TYPE_CREATE_GROUP_CHAT
-                                                    || actionType == TYPE_CLEAR_ZOMBIE_FAN
-                                                    || actionType == TYPE_ADD_FRIEND) {
-                                                //首页-右上角工具栏
-                                                findTargetNode(NODE_RELATIVELAYOUT, Integer.MAX_VALUE);
-                                                if (mFindTargetNode == null) {
-                                                    release();
-                                                    return;
-                                                }
-                                                mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                                selectToolbar();
-                                            } else if (actionType == TYPE_DELETE_MOMENT) {
-                                                //我-相册
-                                                deleteMoment();
-                                            } else if (actionType == TYPE_MISSING_FISH) {
-                                                //通讯录-新的朋友
-                                                addMissingFish();
-                                            } else if ((actionType == TYPE_FIX_NICKNAME && isMe()) || actionType == TYPE_FIX_ICON) {
-                                                //我-个人信息
-                                                fixMyNicknameOrIcon(actionType, url);
-                                            } else if (actionType == TYPE_NEARBY_PEOPLE) {
-                                                //发现-附近的人
-                                                addNearbyPeople(finalContent);
-                                            } else if (actionType == TYPE_DELETE_GROUP_CHAT
-                                                    || actionType == TYPE_ADD_GROUP_PEOPLE
-                                                    || actionType == TYPE_DELETE_GROUP_PEOPLE
-                                                    || actionType == TYPE_FIX_GROUP_NAME
-                                                    || actionType == TYPE_FIX_GROUP_NOTICE
-                                                    || actionType == TYPE_GROUP_CHAT
-                                                    || actionType == TYPE_AT_GROUP_PEOPLE) {
-                                                //通讯录-群聊-关于群的操作
-                                                searchTargetInWxGroupPage(actionType, groupName);
-                                            } else if (actionType == TYPE_DELETE_FRIEND) {
-
-                                                startDeleteFriend(members);
-                                            } else {
-                                                searchTargetInWxHomePage(actionType);
-                                            }
-                                        }
-                                    }, 2000);
-                                }
-                            }, 3000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            release();
-                        }
+                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                     }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            doActionCommandByType(actionType);
+                        }
+                    }, 2000);
                 } else {
                     //聊天有关，需要容错
                     Log.d("test", "========================checkIsWxHomePage============");
@@ -848,6 +817,74 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }
                 break;
+        }
+    }
+
+    private void doActionCommandByType(int actionType) {
+        try {
+            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            Log.d("test", "content = " + content);
+            JSONObject o = new JSONObject(content);
+            content = o.optString("content");
+            start = o.optInt("start");
+            end = o.optInt("end");
+            String url = o.optString("url");
+            String groupName = o.optString("groupName");
+            JSONArray members = o.optJSONArray("members");
+
+            String finalContent = content;
+
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    checkIsWxHomePage();
+                    if (actionType == TYPE_GET_ALL_FRIENDS) {
+                        //通讯录
+                        getAllFriends();
+                    } else if (actionType == TYPE_CREATE_GROUP_CHAT
+                            || actionType == TYPE_CLEAR_ZOMBIE_FAN
+                            || actionType == TYPE_ADD_FRIEND) {
+                        //首页-右上角工具栏
+                        findTargetNode(NODE_RELATIVELAYOUT, Integer.MAX_VALUE);
+                        if (mFindTargetNode == null) {
+                            release();
+                            return;
+                        }
+                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        selectToolbar();
+                    } else if (actionType == TYPE_DELETE_MOMENT) {
+                        //我-相册
+                        deleteMoment();
+                    } else if (actionType == TYPE_MISSING_FISH) {
+                        //通讯录-新的朋友
+                        addMissingFish();
+                    } else if ((actionType == TYPE_FIX_NICKNAME && isMe()) || actionType == TYPE_FIX_ICON) {
+                        //我-个人信息
+                        fixMyNicknameOrIcon(actionType, url);
+                    } else if (actionType == TYPE_NEARBY_PEOPLE) {
+                        //发现-附近的人
+                        addNearbyPeople(finalContent);
+                    } else if (actionType == TYPE_DELETE_GROUP_CHAT
+                            || actionType == TYPE_ADD_GROUP_PEOPLE
+                            || actionType == TYPE_DELETE_GROUP_PEOPLE
+                            || actionType == TYPE_FIX_GROUP_NAME
+                            || actionType == TYPE_FIX_GROUP_NOTICE
+                            || actionType == TYPE_GROUP_CHAT
+                            || actionType == TYPE_AT_GROUP_PEOPLE) {
+                        //通讯录-群聊-关于群的操作
+                        searchTargetInWxGroupPage(actionType, groupName);
+                    } else if (actionType == TYPE_DELETE_FRIEND) {
+
+                        startDeleteFriend(members);
+                    } else {
+                        searchTargetInWxHomePage(actionType);
+                    }
+                }
+            }, 2000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            release();
         }
     }
 
@@ -2627,8 +2664,8 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void toast(String txt) {
-        if (AutoReplyService.instance != null) {
-            Toast.makeText(AutoReplyService.instance.getApplication(), txt, Toast.LENGTH_LONG).show();
+        if (MainActivity.instance != null) {
+            MainActivity.instance.toast(txt);
         }
     }
 

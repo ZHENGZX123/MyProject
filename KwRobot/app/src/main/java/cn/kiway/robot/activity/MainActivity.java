@@ -57,7 +57,6 @@ import static cn.kiway.robot.util.Utils.getCurrentVersion;
 
 public class MainActivity extends BaseActivity {
 
-
     public static MainActivity instance;
     private Button start;
 
@@ -447,14 +446,12 @@ public class MainActivity extends BaseActivity {
 //                "\"content\":\"学位房\"}";
 //        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
 
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-            }
-        }, 10000);
-
-        //AutoReplyService.instance.sendMsgToServer2();
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+//            }
+//        }, 10000);
     }
 
     public void test2(View v) {
