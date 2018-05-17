@@ -227,6 +227,9 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private String yiminID;
+    private String yiminToken;
+
     public void handleZbusMsg(ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
         new Thread() {
@@ -238,6 +241,8 @@ public class AutoReplyService extends AccessibilityService {
                         Command command = new Command();
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
+                        yiminID = command.id;
+                        yiminToken = command.token;
                         command.token = o.optString("token");
                         command.content = o.optString("content");
                         if (TextUtils.isEmpty(command.content)) {
@@ -480,7 +485,7 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setPushType("zbus");
                     pushMessageVo.setInstallationId(installationId);
 
-                    Log.d("test", "sendMsgToServer = " + topic + " , msg = " + msg + ", url = " + url);
+                    Log.d("test", "sendMsgToServer topic = " + topic + " , msg = " + msg + ", url = " + url);
                     if (sendUtil == null) {
                         sendUtil = new RabbitMQUtils(Constant.host, topic, topic, Constant.port);
                     }
@@ -506,7 +511,7 @@ public class AutoReplyService extends AccessibilityService {
                             .put("token", command.token)
                             .put("statusCode", statusCode)
                             .toString();
-                    Log.d("test", "sendMsgToServer2 = " + topic + " , msg = " + msg);
+                    Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
                     if (sendUtil2 == null) {
                         sendUtil2 = new RabbitMQUtils(Constant.host, topic, topic, port);
                     }
@@ -769,7 +774,7 @@ public class AutoReplyService extends AccessibilityService {
                                 release();
                             }
                         }
-                    }, 3000);
+                    }, 2000);
                 } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN
                         || actionType == TYPE_GET_ALL_FRIENDS
                         || actionType == TYPE_CREATE_GROUP_CHAT
@@ -788,33 +793,42 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_FIX_ICON
                         || actionType == TYPE_NEARBY_PEOPLE
                         ) {
-                    //来自后台的命令
-                    if (!checkIsWxHomePage()) {
-                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                    }
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            doActionCommandByType(actionType);
+                            //来自后台的命令
+                            if (!checkIsWxHomePage()) {
+                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                            }
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    doActionCommandByType(actionType);
+                                }
+                            }, 2000);
                         }
                     }, 2000);
                 } else {
                     //聊天有关，需要容错
-                    Log.d("test", "========================checkIsWxHomePage============");
-                    if (checkIsWxHomePage()) {
-                        //1.如果已经使用过的action，进来会去到首页
-                        searchTargetInWxHomePage(1);
-                    } else {
-                        String targetSender = actions.get(currentActionID).sender;
-                        //2.容错判断
-                        boolean isCorrectPage = findTargetNode(NODE_TEXTVIEW, targetSender, CLICK_NONE, false);
-                        Log.d("test", "isCorrectPage = " + isCorrectPage);
-                        if (isCorrectPage) {
-                            doChatByActionType();
-                        } else {
-                            backToWxHomePage();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (checkIsWxHomePage()) {
+                                //1.如果已经使用过的action，进来会去到首页
+                                searchTargetInWxHomePage(1);
+                            } else {
+                                String targetSender = actions.get(currentActionID).sender;
+                                //2.容错判断
+                                boolean isCorrectPage = findTargetNode(NODE_TEXTVIEW, targetSender, CLICK_NONE, false);
+                                Log.d("test", "isCorrectPage = " + isCorrectPage);
+                                if (isCorrectPage) {
+                                    doChatByActionType();
+                                } else {
+                                    backToWxHomePage();
+                                }
+                            }
                         }
-                    }
+                    }, 2000);
                 }
                 break;
         }
@@ -838,6 +852,7 @@ public class AutoReplyService extends AccessibilityService {
                 @Override
                 public void run() {
                     checkIsWxHomePage();
+
                     if (actionType == TYPE_GET_ALL_FRIENDS) {
                         //通讯录
                         getAllFriends();
@@ -2720,13 +2735,10 @@ public class AutoReplyService extends AccessibilityService {
                                                             //找到文本框输入文字发送
                                                             String welcome = getSharedPreferences("welcome", 0).getString
                                                                     ("welcome", DEFAULT_WELCOME);
-                                                            boolean find = findTargetNode(NODE_EDITTEXT, welcome);
-                                                            release();
-                                                            if (find) {
-                                                                String current = System.currentTimeMillis() + "";
-                                                                Utils.uploadFriend(getApplication(), nickname, remark + " " +
-                                                                        nickname, current, current);
-                                                            }
+                                                            sendTextOnly(welcome, true);
+                                                            String current = System.currentTimeMillis() + "";
+                                                            Utils.uploadFriend(getApplication(), nickname, remark + " " +
+                                                                    nickname, current, current);
                                                         }
                                                     }, 3000);
                                                 } else {
@@ -3094,20 +3106,43 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public boolean test(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        Log.d("test", "count = " + count);
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
+        new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "sendMsgToServer2");
+                try {
+                    String topic = "kiway_wx_reply_result_react";
+                    String msg = new JSONObject()
+                            .put("cmd", "sendFriendCircleReplyCmd")
+                            .put("type", "sendFriendCircleReplyCmd")
+                            .put("id", yiminID)
+                            .put("token", yiminToken)
+                            .put("statusCode", 200)
+                            .toString();
+                    Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
+                    if (sendUtil2 == null) {
+                        sendUtil2 = new RabbitMQUtils(Constant.host, topic, topic, port);
+                    }
+                    sendUtil2.sendMsgs(msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            //Log.d("test", "nodeInfo.xy = " + getNodePosition(nodeInfo));
-            if (test(nodeInfo)) {
-                return true;
-            }
-        }
+        }.start();
+//        int count = rootNode.getChildCount();
+//        Log.d("test", "count = " + count);
+//        for (int i = 0; i < count; i++) {
+//            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+//            if (nodeInfo == null) {
+//                continue;
+//            }
+//            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+//            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+//            //Log.d("test", "nodeInfo.xy = " + getNodePosition(nodeInfo));
+//            if (test(nodeInfo)) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
