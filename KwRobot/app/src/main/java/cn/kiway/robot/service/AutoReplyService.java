@@ -227,8 +227,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private String yiminID;
-    private String yiminToken;
 
     public void handleZbusMsg(ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
@@ -241,8 +239,6 @@ public class AutoReplyService extends AccessibilityService {
                         Command command = new Command();
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
-                        yiminID = command.id;
-                        yiminToken = command.token;
                         command.token = o.optString("token");
                         command.content = o.optString("content");
                         if (TextUtils.isEmpty(command.content)) {
