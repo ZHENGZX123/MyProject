@@ -100,6 +100,7 @@ import static cn.kiway.robot.util.Constant.CLICK_PARENT;
 import static cn.kiway.robot.util.Constant.CLICK_SELF;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
+import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
@@ -218,8 +219,8 @@ public class AutoReplyService extends AccessibilityService {
             currentActionID = id;
             actions.get(currentActionID).intent.send();
 
-            if (maxReleaseTime < 60000) {
-                maxReleaseTime = 60000;
+            if (maxReleaseTime < DEFAULT_RELEASE_TIME) {
+                maxReleaseTime = DEFAULT_RELEASE_TIME;
             }
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
         } catch (Exception e) {
@@ -297,7 +298,7 @@ public class AutoReplyService extends AccessibilityService {
         String cmd = command.cmd;
         switch (cmd) {
             case SEND_FRIEND_CIRCLE_CMD:
-                mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                 currentActionID = firstKey;
                 actioningFlag = true;
                 shareToWechatMoments(command.content);
@@ -370,7 +371,7 @@ public class AutoReplyService extends AccessibilityService {
 
                 if (imageCount > 0) {
                     //图片
-                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                     currentActionID = id;
                     actioningFlag = true;
                     new Thread() {
@@ -382,19 +383,19 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 if (videoCount > 0) {
                     //  视频
-                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                     currentActionID = id;
                     actioningFlag = true;
                     sendVideoOnly2();
                 } else if (fileCount > 0) {
                     //文件
-                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                     currentActionID = id;
                     actioningFlag = true;
                     sendFileOnly2(action.returnMessages.get(0).content, action.returnMessages.get(0).fileName);
                 } else if (linkCount > 0) {
                     //链接
-                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, 60000);
+                    mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                     currentActionID = id;
                     actioningFlag = true;
                     new Thread() {
@@ -560,7 +561,15 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.sendMessage(msg);
     }
 
-    private void release(boolean success) {
+    private synchronized void release(boolean success) {
+        if (!mHandler.hasMessages(MSG_ACTION_TIMEOUT)) {
+            Log.d("test", "no MSG_ACTION_TIMEOUT");
+            return;
+        }
+        if (currentActionID == -1) {
+            Log.d("test", "currentActionID is -1");
+            return;
+        }
         Log.d("test", "release is called");
         mHandler.removeMessages(MSG_ACTION_TIMEOUT);
 
@@ -568,9 +577,12 @@ public class AutoReplyService extends AccessibilityService {
         Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
         startActivity(intent);
 
-        Command command = actions.get(currentActionID).command;
-        if (command != null) {
-            sendMsgToServer2(success ? 200 : 500, command);
+        Action action = actions.get(currentActionID);
+        if (action != null) {
+            Command command = action.command;
+            if (command != null) {
+                sendMsgToServer2(success ? 200 : 500, command);
+            }
         }
 
         mHandler.postDelayed(new Runnable() {
@@ -1251,13 +1263,14 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     getMoment = false;
                     int tryCount = 20;//尝试下拉次数
-                    resetMaxReleaseTime(tryCount * 10000);
+                    resetMaxReleaseTime(tryCount * 15000);
 
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     JSONObject o = new JSONObject(content);
                     String text = o.optString("content");
 
                     for (int i = 0; i < tryCount; i++) {
+                        Log.d("test", "tryCount = " + tryCount);
                         if (getMoment) {
                             break;
                         }
@@ -1276,6 +1289,9 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         //scroll
                         execRootCmdSilent("input swipe 360 900 360 300");
+                    }
+                    if (!getMoment) {
+                        release(false);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2965,6 +2981,11 @@ public class AutoReplyService extends AccessibilityService {
                         imageUris.add(Uri.fromFile(new File(localPath)));
                     }
                 }
+                if (imageUris.size() == 0) {
+                    release(false);
+                    return;
+                }
+
                 Intent intent = new Intent();
                 ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
                 intent.setComponent(comp);
@@ -3022,7 +3043,6 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-
                                 release(true);
                             }
                         }, 3000);

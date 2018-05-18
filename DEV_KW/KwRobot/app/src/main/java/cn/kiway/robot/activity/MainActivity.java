@@ -590,6 +590,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
             } else if (msg.what == 5) {
+                KWApplication.closeMQ();
                 String savedFilePath = (String) msg.obj;
                 String cmd = "pm install -r " + savedFilePath;
                 int ret = RootCmd.execRootCmdSilent(cmd);
