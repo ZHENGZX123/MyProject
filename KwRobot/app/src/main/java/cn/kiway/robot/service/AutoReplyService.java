@@ -24,6 +24,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.rabbitmq.client.Channel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +35,7 @@ import org.xutils.x;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +55,6 @@ import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
@@ -61,8 +62,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static android.util.Base64.NO_WRAP;
-import static cn.kiway.robot.KWApplication.sendUtil;
-import static cn.kiway.robot.KWApplication.sendUtil2;
+import static cn.kiway.robot.KWApplication.rabbitMQUtils;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AT_GROUP_PEOPLE;
@@ -454,6 +454,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendMsgToServer");
+                Channel chanel = null;
                 try {
                     String name = getSharedPreferences("kiway", 0).getString("name", "");
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
@@ -487,12 +488,17 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setInstallationId(installationId);
 
                     Log.d("test", "sendMsgToServer topic = " + topic + " , msg = " + msg + ", url = " + url);
-                    if (sendUtil == null) {
-                        sendUtil = new RabbitMQUtils(Constant.host, topic, topic, Constant.port);
-                    }
-                    sendUtil.sendMsg(pushMessageVo);
+                    chanel = rabbitMQUtils.createChannel(topic, topic);
+                    rabbitMQUtils.sendMsg(pushMessageVo, chanel);
+
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        chanel.abort();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }.start();
@@ -503,6 +509,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendMsgToServer2");
+                Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
                     String msg = new JSONObject()
@@ -513,12 +520,20 @@ public class AutoReplyService extends AccessibilityService {
                             .put("statusCode", statusCode)
                             .toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
-                    if (sendUtil2 == null) {
-                        sendUtil2 = new RabbitMQUtils(Constant.host, topic, topic, port);
-                    }
-                    sendUtil2.sendMsgs(msg);
+
+                    chanel = rabbitMQUtils.createChannel(topic, topic);
+                    rabbitMQUtils.sendMsgs(msg, chanel);
+
+                    //channels.add(chanel);
+
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        chanel.abort();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }.start();
@@ -1270,7 +1285,7 @@ public class AutoReplyService extends AccessibilityService {
                     String text = o.optString("content");
 
                     for (int i = 0; i < tryCount; i++) {
-                        Log.d("test", "tryCount = " + tryCount);
+                        Log.d("test", "current try = " + i);
                         if (getMoment) {
                             break;
                         }

@@ -14,14 +14,19 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.rabbitmq.client.Channel;
 
 import org.xutils.x;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
@@ -36,9 +41,8 @@ public class KWApplication extends Application {
     public static String defaultFile = ROOT + "/downloads/file.png";
     public static String defaultVideo = ROOT + "/downloads/video.png";
 
-    public static RabbitMQUtils consumeUtil;
-    public static RabbitMQUtils sendUtil;
-    public static RabbitMQUtils sendUtil2;
+    public static RabbitMQUtils rabbitMQUtils;
+    public static List<Channel> channels = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -50,6 +54,8 @@ public class KWApplication extends Application {
         saveDefaultFile("file.png", R.mipmap.file);
         saveDefaultFile("video.png", R.mipmap.video);
 
+        initMQ();
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -60,20 +66,34 @@ public class KWApplication extends Application {
         });
     }
 
+    private void initMQ() {
+        new Thread() {
+            @Override
+            public void run() {
+                rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
+            }
+        }.start();
+    }
+
     public static void closeMQ() {
         Log.d("test", "closeMQ");
-        if (consumeUtil != null) {
-            consumeUtil.close();
-            consumeUtil = null;
-        }
-        if (sendUtil != null) {
-            sendUtil.close();
-            sendUtil = null;
-        }
-        if (sendUtil2 != null) {
-            sendUtil2.close();
-            sendUtil2 = null;
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                for (Channel c : channels) {
+                    try {
+                        c.abort();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (rabbitMQUtils != null) {
+                    rabbitMQUtils.close();
+                    rabbitMQUtils = null;
+                }
+            }
+        }.start();
     }
 
     public void saveDefaultFile(String fileName, int id) {

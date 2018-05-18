@@ -12,6 +12,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
@@ -36,16 +37,15 @@ import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.service.AutoReplyService;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
-import static cn.kiway.robot.KWApplication.consumeUtil;
+import static cn.kiway.robot.KWApplication.channels;
+import static cn.kiway.robot.KWApplication.rabbitMQUtils;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
-import static cn.kiway.robot.util.Constant.port;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -247,8 +247,9 @@ public class Utils {
                 try {
                     String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
-                    consumeUtil = new RabbitMQUtils(Constant.host, topic, topic, port);
-                    consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
+                    Channel channel = rabbitMQUtils.createChannel(topic,topic);
+                    channels.add(channel);
+                    rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             //消费消费
@@ -264,9 +265,9 @@ public class Utils {
                                 }
                             }
                             //手动消息确认
-                            getChannel().basicAck(envelope.getDeliveryTag(), false);
+                            channel.basicAck(envelope.getDeliveryTag(), false);
                         }
-                    });
+                    },channel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
