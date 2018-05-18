@@ -16,25 +16,23 @@ public class Constant {
     public static final String APPKEY = "c83f643092046c0328624fe59aeec6548dac256c";
 
     public static String host = "";
-    public static String port = "";
+    public static Integer port = 0;
     public static String clientUrl = "";
 
     public static final String testImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
+
     public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
 
     static {
 
 //        host = "robot.kiway.cn";
-//        port = "5676";
+//        port = 5676;
 //        clientUrl = "http://robot.kiway.cn";
 
         host = "rbtest.kiway.cn";
-        port = "5672";
+        port = 5672;
         clientUrl = "http://rbtest.kiway.cn";
 
-//        host = "192.168.8.161";
-//        port = "15555";
-//        clientUrl = "http://192.168.8.161:8081";
     }
 
     //NODE类型
