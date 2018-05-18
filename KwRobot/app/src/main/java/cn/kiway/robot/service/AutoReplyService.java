@@ -912,12 +912,21 @@ public class AutoReplyService extends AccessibilityService {
         new Thread() {
             @Override
             public void run() {
-                int count = members.length();
-                for (int i = 0; i < count; i++) {
-                    String member = members.optString(i);
-                    //searchAndEnterChatView();
-                    //searchTargetInWxHomePage();
-                    //sleep(30000);
+                try {
+                    int count = members.length();
+                    for (int i = 0; i < count; i++) {
+                        String member = members.optString(i);
+                        currentZombie = member;
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN);//TYPE_DELETE_FRIEND
+                            }
+                        });
+                        sleep(30000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
@@ -1952,7 +1961,7 @@ public class AutoReplyService extends AccessibilityService {
                         //不需要base64
                         target = actions.get(currentActionID).sender;
                     }
-                    searchAndEnterChatView(target, type);
+                    enterChatView(target, type);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1974,7 +1983,7 @@ public class AutoReplyService extends AccessibilityService {
                             release(false);
                             return;
                         }
-                        searchAndEnterChatView(groupName, actionType);
+                        enterChatView(groupName, actionType);
                     }
                 }, 3000);
             }
@@ -2065,7 +2074,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
-    private void searchAndEnterChatView(String target, int type) {
+    private void enterChatView(String target, int type) {
         findTargetNode(NODE_EDITTEXT, target);
         mHandler.postDelayed(new Runnable() {
             @Override
