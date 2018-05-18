@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.service.AutoReplyService;
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.KWApplication.channels;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
@@ -247,7 +248,10 @@ public class Utils {
                 try {
                     String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic = " + topic);
-                    Channel channel = rabbitMQUtils.createChannel(topic,topic);
+                    if (rabbitMQUtils == null) {
+                        rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
+                    }
+                    Channel channel = rabbitMQUtils.createChannel(topic, topic);
                     channels.add(channel);
                     rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
                         @Override
@@ -267,7 +271,7 @@ public class Utils {
                             //手动消息确认
                             channel.basicAck(envelope.getDeliveryTag(), false);
                         }
-                    },channel);
+                    }, channel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
