@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.kiway.robot.util.Constant;
-import cn.kiway.robot.util.FileUtils;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 
@@ -50,29 +48,17 @@ public class KWApplication extends Application {
         Log.d("test", "APP onCreate");
         x.Ext.init(this);
         initImageCache();
-        //CrashHandler.getInstance().init(this);
+
         saveDefaultFile("file.png", R.mipmap.file);
         saveDefaultFile("video.png", R.mipmap.video);
-
-        initMQ();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 Log.d("test", "addShutdownHook");
-                FileUtils.saveFile("shutdown", "shutdown.txt");
                 closeMQ();
             }
         });
-    }
-
-    private void initMQ() {
-        new Thread() {
-            @Override
-            public void run() {
-                rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
-            }
-        }.start();
     }
 
     public static void closeMQ() {
@@ -80,9 +66,9 @@ public class KWApplication extends Application {
         new Thread() {
             @Override
             public void run() {
-                for (Channel c : channels) {
+                for (Channel channel : channels) {
                     try {
-                        c.abort();
+                        channel.abort();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

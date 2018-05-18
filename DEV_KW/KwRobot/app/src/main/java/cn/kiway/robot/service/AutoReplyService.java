@@ -35,7 +35,6 @@ import org.xutils.x;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -496,7 +495,7 @@ public class AutoReplyService extends AccessibilityService {
                 } finally {
                     try {
                         chanel.abort();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -524,14 +523,12 @@ public class AutoReplyService extends AccessibilityService {
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsgs(msg, chanel);
 
-                    //channels.add(chanel);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     try {
                         chanel.abort();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
