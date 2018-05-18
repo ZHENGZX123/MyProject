@@ -10,5 +10,6 @@ public class Command {
     public String id;
     public String content;
     public String token;
-    
+    public boolean success;
+
 }
