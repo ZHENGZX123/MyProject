@@ -20,6 +20,7 @@ public class Constant {
     public static String clientUrl = "";
 
     public static final String testImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
+    public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
 
     static {
 
@@ -115,7 +116,7 @@ public class Constant {
     public static final String BACK_DOOR1 = "开维一本万利";
     public static final String BACK_DOOR2 = "开维前程似锦";
     private static final String BACK_DOOR4 = "清理僵尸粉";
-    private static final String BACK_DOOR5 = "查询好友数量";
+    private static final String BACK_DOOR5 = "查询好友数量";//这个作用不大，准备改成所有好友
     private static final String BACK_DOOR6 = "发起群聊";
     private static final String BACK_DOOR7 = "拉人入群";
     private static final String BACK_DOOR8 = "踢人出群";
@@ -136,7 +137,7 @@ public class Constant {
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  TODO新增type
-    //{"cmd": "删除朋友","members":["执着","13267069058"]}
+    //{"cmd": "删除朋友","members":["执着","13267069058"]}  TODO等待测试
 
     //{"cmd": "解散群聊","groupName": "最新111" }
     //{"cmd": "清理僵尸粉","start": "1","end":"20"}

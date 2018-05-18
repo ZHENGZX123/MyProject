@@ -76,7 +76,6 @@ public class KWApplication extends Application {
         }
     }
 
-
     public void saveDefaultFile(String fileName, int id) {
         new Thread() {
             @Override
