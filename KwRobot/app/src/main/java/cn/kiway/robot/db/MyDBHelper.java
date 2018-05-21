@@ -208,10 +208,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import cn.kiway.robot.entity.AddFriend;
 
 //易敏有接口了，数据库还用吗。
 public class MyDBHelper extends SQLiteOpenHelper {
@@ -229,11 +235,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  displayname text,  nickname text , roomowner text,wxid " +
             "text,wxno text)";
 
+    private static final String TABLE_ADDFRIEND = "AddFriend";
+    private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
+            + TABLE_ADDFRIEND
+            + "   (id integer primary key autoincrement,  requesttime text , cellphone  text ,  status  text   ) ";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 1);
+        super(c, DB_NAME, null, 2);
     }
 
     @Override
@@ -243,6 +253,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_ROOM);
         db.execSQL(CREATE_TABLE_WX_ROOM);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
+        db.execSQL(CREATE_TABLE_ADDFRIEND);
     }
 
     @Override
@@ -250,6 +263,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         this.db = db;
         db.execSQL(CREATE_TABLE_WX_PEOPLE);
         db.execSQL(CREATE_TABLE_WX_ROOM);
+        db.execSQL(CREATE_TABLE_ADDFRIEND);
     }
 
     public void addWxPeople(JSONArray array) {
@@ -332,5 +346,67 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
         db.close();
         return array;
+    }
+
+
+    //-------------------------------AddFriend-----------------------------
+    public ArrayList<AddFriend> getAddFriends() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_ADDFRIEND, null, null, null, null, null, null);
+
+        ArrayList<AddFriend> addFriends = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+            String cellphone = cur.getString(cur.getColumnIndex("cellphone"));
+            int status = cur.getInt(cur.getColumnIndex("status"));
+
+            AddFriend a = new AddFriend();
+            a.id = id;
+            a.cellphone = cellphone;
+            a.requesttime = requesttime;
+            a.status = status;
+
+            addFriends.add(a);
+
+        }
+        cur.close();
+        db.close();
+        return addFriends;
+    }
+
+    public void addAddFriend(AddFriend a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("requesttime", a.requesttime);
+        values.put("cellphone", a.cellphone);
+        values.put("status", a.status);
+        db.insert(TABLE_ADDFRIEND, null, values);
+        db.close();
+    }
+
+    public void updateAddFriend(AddFriend a) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("requesttime", a.requesttime);
+        cv.put("cellphone", a.cellphone);
+        cv.put("status", a.status);
+        String[] args = {a.id + ""};
+        db.update(TABLE_ADDFRIEND, cv, "id=?", args);
+        db.close();
+    }
+
+    public void deleteAddFriend(String cellphone) {
+        if (TextUtils.isEmpty(cellphone)) {
+            return;
+        }
+        if (db == null)
+            db = getWritableDatabase();
+        Log.d("test", "删除记录:" + cellphone);
+        db.delete(TABLE_ADDFRIEND, "cellphone=?", new String[]{cellphone});
+        db.close();
     }
 }

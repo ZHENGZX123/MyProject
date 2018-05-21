@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="10dp"
-        android:text="该页面需要xposed环境，目前仅供测试"/>
+        android:text="该页面需要xposed环境，目前仅供测试" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="getFriend"
-        android:text="获取好友列表"/>
+        android:text="获取好友列表" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="groupSendText"
-        android:text="群发好友文字"/>
+        android:text="群发好友文字" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="groupSendImage"
-        android:text="群发好友图片"/>
+        android:text="群发好友图片" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="message"
-        android:text="开启消息监听"/>
+        android:text="开启消息监听" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="getWxInfo"
-        android:text="获取个人信息"/>
+        android:text="获取个人信息" />
 
     <Button
         android:id="@+id/wx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="getFriendCircle"
-        android:text="获取所有好友的朋友圈"/>
+        android:text="获取所有好友的朋友圈" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,14 +59,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="经度"/>
+            android:hint="经度" />
 
         <EditText
             android:id="@+id/longitude"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="经度"/>
+            android:hint="经度" />
     </LinearLayout>
 
     <Button
@@ -74,6 +74,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="chageJinWei"
-        android:text="修改经纬度"/>
+        android:text="修改经纬度" />
 
 </LinearLayout>

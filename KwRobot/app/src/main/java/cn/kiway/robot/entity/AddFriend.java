@@ -12,6 +12,7 @@ public class AddFriend {
     public static final int STATUS_NOT_EXISTED = 4;//该用户不存在
     public static final int STATUS_STATUS_EXCEPTION = 5;//该用户状态异常
 
+
     public int id;
     public String requesttime;
     public String cellphone;

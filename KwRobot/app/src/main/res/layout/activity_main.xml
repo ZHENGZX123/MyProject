@@ -124,8 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="Xposed"
-            android:text="xposed操作"
-            android:visibility="gone" />
+            android:text="xposed操作" />
 
         <Button
             android:layout_width="wrap_content"
