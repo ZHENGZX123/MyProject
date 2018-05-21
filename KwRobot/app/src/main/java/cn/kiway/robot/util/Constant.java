@@ -42,7 +42,10 @@ public class Constant {
     public static final String NODE_IMAGEVIEW = "android.widget.ImageView";
     public static final String NODE_FRAMELAYOUT = "android.widget.FrameLayout";
     public static final String NODE_RELATIVELAYOUT = "android.widget.RelativeLayout";
+    public static final String NODE_LINEARLAYOUT = "android.widget.LinearLayout";
     public static final String NODE_IMAGEBUTTON = "android.widget.ImageButton";
+    public static final String NODE_CHECKBOX = "android.widget.CheckBox";
+    public static final String NODE_RADIOBUTTON = "android.widget.RadioButton";
 
     //点击类型
     public static final int CLICK_NONE = Integer.MIN_VALUE;
@@ -120,7 +123,7 @@ public class Constant {
     private static final String BACK_DOOR8 = "踢人出群";
     private static final String BACK_DOOR9 = "修改群名称";
     private static final String BACK_DOOR10 = "修改群公告";
-    private static final String BACK_DOOR11 = "群发消息";
+    private static final String BACK_DOOR11 = "群发消息";//“群内聊天”
     private static final String BACK_DOOR12 = "艾特某人";
     private static final String BACK_DOOR13 = "删除朋友圈";
     private static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
@@ -153,7 +156,6 @@ public class Constant {
     //{"cmd": "修改昵称","newName":"客服888", "oldName":"客服888" , "me":true}
     //{"cmd": "修改头像","url":"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2988428321,2844769018&fm=58&bpow=400&bpoh=600"}
     //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" }
-
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
