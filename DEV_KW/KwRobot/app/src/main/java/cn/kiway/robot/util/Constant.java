@@ -25,13 +25,13 @@ public class Constant {
 
     static {
 
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
 
     }
 

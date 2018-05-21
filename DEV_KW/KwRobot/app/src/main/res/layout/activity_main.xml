@@ -131,15 +131,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test"
-            android:visibility="gone"
             android:text="测试用" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="test2"
-            android:visibility="gone"
-            android:text="测试用2" />
+            android:text="测试用2"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"

@@ -764,17 +764,26 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("maptrix", "窗口状态变化");
                 String className = event.getClassName().toString();
                 Log.d("test", "className = " + className);
-                if (!className.startsWith("com.tencent.mm")) {
-                    Log.d("maptrix", "当前不是微信页面return3");
+
+                if (className.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
+                    //视频通话，挂断并关闭页面即可。
+                    findTargetNode(NODE_TEXTVIEW, "挂断", -1, true);
+                    release(false);
                     return;
                 }
+
+                boolean find1 = findTargetNode(NODE_BUTTON, "取消", CLICK_NONE, false);
+                boolean find2 = findTargetNode(NODE_BUTTON, "下载安装", CLICK_NONE, true);
+                Log.d("test", "find1 = " + find1);
+                Log.d("test", "find2 = " + find2);
+
+                if (find1 && find2) {
+                    Log.d("test", "微信更新提示框");
+                    findTargetNode(NODE_BUTTON, "取消", CLICK_SELF, false);
+                }
+
                 if (currentActionID == -1) {
                     Log.d("maptrix", "没有事件，return1");
-                    if (className.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
-                        //视频通话，挂断并关闭页面即可。
-                        findTargetNode(NODE_TEXTVIEW, "挂断", -1, true);
-                        release(false);
-                    }
                     return;
                 }
                 if (actioningFlag) {
@@ -3047,11 +3056,11 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        findTargetNode(NODE_TEXTVIEW, "发布|发表", CLICK_SELF, true);
+                        boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                release(true);
+                                release(find);
                             }
                         }, 3000);
                     }
