@@ -30,6 +30,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
@@ -42,6 +43,8 @@ import java.util.List;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
+import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
@@ -65,6 +68,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_UPGRADE = 33;
     private static final int MSG_WELCOME = 44;
     private static final int MSG_GET_QA = 55;
+    private static final int MSG_GET_CELLPHONES = 66;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -83,6 +87,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_UPGRADE);
         mHandler.sendEmptyMessage(MSG_WELCOME);
         mHandler.sendEmptyMessage(MSG_GET_QA);
+        //mHandler.sendEmptyMessage(MSG_GET_CELLPHONES);
     }
 
     private void initView() {
@@ -446,15 +451,14 @@ public class MainActivity extends BaseActivity {
 //                "\"content\":\"学位房\"}";
 //        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
 
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-            }
-        }, 10000);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+//            }
+//        }, 10000);
 
-//        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.homework.teacher");
-//        startActivity(intent);
+        getCellPhones();
     }
 
     public void test2(View v) {
@@ -619,9 +623,95 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_GET_QA);
                 getQA();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_QA, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_CELLPHONES) {
+                mHandler.removeMessages(MSG_GET_CELLPHONES);
+                getCellPhones();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 24 * 60 * 60 * 1000);
             }
         }
     };
+
+    private void getCellPhones() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String url = clientUrl + "/users?status=0&areaCode=440302&current=1&size=1";
+                    Log.d("test", "url = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "getCellPhones  = " + ret);
+                    JSONObject o = new JSONObject(ret);
+                    JSONObject data = o.getJSONObject("data");
+                    JSONArray list = data.getJSONArray("list");
+                    int count = list.length();
+                    if (count == 0) {
+                        return;
+                    }
+                    long currentTime = System.currentTimeMillis();
+                    ArrayList<AddFriend> allPhones = new MyDBHelper(getApplicationContext()).getAddFriends();
+                    ArrayList<AddFriend> requests = new ArrayList<>();
+                    for (int i = 0; i < count; i++) {
+                        JSONObject temp = list.getJSONObject(i);
+
+                        AddFriend af = new AddFriend();
+                        af.requesttime = Utils.longToDate(currentTime);
+                        af.phone = temp.getString("phone").trim();
+
+                        boolean has = checkHasRequested(af.phone, allPhones);
+                        if (has) {
+                            Log.d("test", af.phone + "之前已经申请过了");
+                        } else {
+                            Log.d("test", af.phone + "还没有申请过");
+                            requests.add(af);
+                        }
+                    }
+
+                    if (requests.size() == 0) {
+                        return;
+                    }
+
+                    doRequestFriends(requests);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void doRequestFriends(ArrayList<AddFriend> requests) {
+        JSONObject o = null;
+        try {
+            o = new JSONObject();
+            o.put("cmd", "addFriendCmd");
+            o.put("id", "84f119408d6441358d24b668323f0a23");
+            JSONObject content = new JSONObject();
+            JSONArray members = new JSONArray();
+            for (AddFriend af : requests) {
+                members.put(af.phone);
+            }
+            content.put("content", "你好，可以加个好友吗？");
+            content.put("members", members);
+            o.put("content", content);
+            o.put("token", "1526895528997");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String temp = o.toString();
+        Log.d("test", "temp = " + temp);
+        AutoReplyService.instance.sendReplyImmediately(temp, false);
+    }
+
+    private boolean checkHasRequested(String phone, ArrayList<AddFriend> allPhones) {
+        for (AddFriend af : allPhones) {
+            if (af.phone.equals(phone)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void downloadSilently(String apkUrl, String version) {
         final String savedFilePath = "/mnt/sdcard/cache/kw_robot_" + version + ".apk";

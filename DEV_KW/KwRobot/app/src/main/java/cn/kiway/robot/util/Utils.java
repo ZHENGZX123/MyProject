@@ -437,4 +437,19 @@ public class Utils {
         }
         return false;
     }
+
+
+    public static long dateToLong(String currentTime) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = sdf.parse(currentTime);
+        long lTime = dt.getTime();
+        return lTime;
+    }
+
+    public static String longToDate(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = new Date(time);
+        String str = sdf.format(date);
+        return str;
+    }
 }

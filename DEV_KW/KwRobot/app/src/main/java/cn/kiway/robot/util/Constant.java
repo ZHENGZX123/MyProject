@@ -87,7 +87,7 @@ public class Constant {
 
     public static final String GROUP_INVIT_CMD = "groupInvitCmd";
     public static final String FORGET_FISH_CMD = "forgetFishCmd";
-    public static final String ADD_FRIEND_CMD = "addFriendCmd";
+
     public static final String FIND_FRIEND_COUNT_CMD = "findFriendCountCmd";
     public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";
     public static final String GROUP_CHAT_CMD = "groupChatCmd";
@@ -106,12 +106,15 @@ public class Constant {
     public static final String SEND_FRIEND_CIRCLE_REPLY_CMD = "sendFriendCircleReplyCmd";
     public static final String DELETE_FRIEND_CIRCLE_CMD = "deleteFriendCircleCmd";
     public static final String DELETE_FRIEND_CIRCLE_REPLY_CMD = "deleteFriendCircleReplyCmd";
+    public static final String ADD_FRIEND_CMD = "addFriendCmd";
+    public static final String ADD_FRIEND_REPLY_CMD = "addFriendReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
     static {
         replies.put(SEND_FRIEND_CIRCLE_CMD, SEND_FRIEND_CIRCLE_REPLY_CMD);
         replies.put(DELETE_FRIEND_CIRCLE_CMD, DELETE_FRIEND_CIRCLE_REPLY_CMD);
+        replies.put(ADD_FRIEND_CMD, ADD_FRIEND_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -138,10 +141,10 @@ public class Constant {
 
 
     //{"cmd": "群里拉人","groupName":"测试群"}
-    //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  TODO新增type
+    //{"cmd": "群发消息","content":"1", "msgType":"1", "groupName": "111"}  TODO新增type
+
     //{"cmd": "删除朋友","members":["执着","13267069058"]}
     //{"cmd": "群发助手","content":"1", "members":["浪翻云","胡翻翻"]}
-
     //{"cmd": "解散群聊","groupName": "最新111" }
     //{"cmd": "清理僵尸粉","start": "1","end":"20"}
     //{"cmd": "漏网之鱼"}
@@ -164,9 +167,10 @@ public class Constant {
     static {
         backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
         backdoors.put(DELETE_FRIEND_CIRCLE_CMD, Action.TYPE_DELETE_MOMENT);
-
         backdoors.put(BACK_DOOR22, Action.TYPE_SEND_MOMENT);
         backdoors.put(SEND_FRIEND_CIRCLE_CMD, Action.TYPE_SEND_MOMENT);
+        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
+        backdoors.put(ADD_FRIEND_CMD, Action.TYPE_ADD_FRIEND);
 
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
@@ -178,7 +182,6 @@ public class Constant {
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
         backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
         backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
