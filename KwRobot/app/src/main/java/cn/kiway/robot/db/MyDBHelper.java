@@ -238,12 +238,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_ADDFRIEND = "AddFriend";
     private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
             + TABLE_ADDFRIEND
-            + "   (id integer primary key autoincrement,  requesttime text , cellphone  text ,  status  text   ) ";
+            + "   (id integer primary key autoincrement,  requesttime text , phone  text ,  status  text   ) ";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 2);
+        super(c, DB_NAME, null, 3);
     }
 
     @Override
@@ -359,12 +359,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             int id = cur.getInt(cur.getColumnIndex("id"));
             String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
-            String cellphone = cur.getString(cur.getColumnIndex("cellphone"));
+            String cellphone = cur.getString(cur.getColumnIndex("phone"));
             int status = cur.getInt(cur.getColumnIndex("status"));
 
             AddFriend a = new AddFriend();
             a.id = id;
-            a.cellphone = cellphone;
+            a.phone = cellphone;
             a.requesttime = requesttime;
             a.status = status;
 
@@ -381,7 +381,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("requesttime", a.requesttime);
-        values.put("cellphone", a.cellphone);
+        values.put("phone", a.phone);
         values.put("status", a.status);
         db.insert(TABLE_ADDFRIEND, null, values);
         db.close();
@@ -392,7 +392,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("requesttime", a.requesttime);
-        cv.put("cellphone", a.cellphone);
+        cv.put("phone", a.phone);
         cv.put("status", a.status);
         String[] args = {a.id + ""};
         db.update(TABLE_ADDFRIEND, cv, "id=?", args);
@@ -406,7 +406,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         Log.d("test", "删除记录:" + cellphone);
-        db.delete(TABLE_ADDFRIEND, "cellphone=?", new String[]{cellphone});
+        db.delete(TABLE_ADDFRIEND, "phone=?", new String[]{cellphone});
         db.close();
     }
 }

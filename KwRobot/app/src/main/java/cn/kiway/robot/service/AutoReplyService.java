@@ -91,6 +91,7 @@ import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_COLLECTOR;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
+import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
@@ -291,7 +292,6 @@ public class AutoReplyService extends AccessibilityService {
         Action firstA = actions.get(firstKey);
         firstA.sender = "后台";
         firstA.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
-        ;
         firstA.actionType = backdoors.get(command.cmd);
         firstA.command = command;
 
@@ -304,6 +304,7 @@ public class AutoReplyService extends AccessibilityService {
                 shareToWechatMoments(command.content);
                 break;
             case DELETE_FRIEND_CIRCLE_CMD:
+            case ADD_FRIEND_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -997,15 +998,10 @@ public class AutoReplyService extends AccessibilityService {
                                                         }, 2000);
                                                     }
                                                 }, 2000);
-
-
                                             }
                                         }, 2000);
-
-
                                     }
                                 }, 2000);
-
                             }
                         }, 2000);
                     }
@@ -1114,7 +1110,7 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("test", "friends count = " + peoples.size());
                 int count = peoples.size();
 
-                resetMaxReleaseTime(20000 * count);
+                resetMaxReleaseTime(21000 * count);
 
 
                 new Thread() {
@@ -1553,14 +1549,21 @@ public class AutoReplyService extends AccessibilityService {
 
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     JSONObject o = new JSONObject(content);
-                    JSONArray members = o.getJSONArray("members");
+                    JSONArray members = null;
+                    if (o.has("members")) {
+                        members = o.getJSONArray("members");
+                        content = o.getString("content");
+                    } else {
+                        members = o.getJSONObject("content").getJSONArray("members");
+                        content = o.getJSONObject("content").getString("content");
+                    }
                     int count = members.length();
 
-                    resetMaxReleaseTime(30000 * count);
+                    resetMaxReleaseTime(31000 * count);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
-                        addFriend(member);
+                        addFriend(member, content);
                         sleep(30000);
                     }
                     release(true);
@@ -1572,7 +1575,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void addFriend(String member) {
+    private void addFriend(String member, String content) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1602,10 +1605,6 @@ public class AutoReplyService extends AccessibilityService {
                                             @Override
                                             public void run() {
                                                 try {
-                                                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                                                    JSONObject o = new JSONObject(content);
-                                                    content = o.optString("content");
-
                                                     //1.申请语句
                                                     if (!TextUtils.isEmpty(content)) {
                                                         clearAndPasteEditText(1, content);
@@ -2189,7 +2188,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
-    private void enterChatView(String target, int type) {
+    private void enterChatView(String target, int actionType) {
         findTargetNode(NODE_EDITTEXT, target);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -2202,16 +2201,16 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (type == 1) {
+                        if (actionType == 1) {
                             //开始聊天
                             doChatByActionType();
-                        } else if (type == TYPE_CLEAR_ZOMBIE_FAN) {
+                        } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
                             deleteFriend(target);
-                        } else if (type == TYPE_ADD_GROUP_PEOPLE
-                                || type == TYPE_DELETE_GROUP_PEOPLE
-                                || type == TYPE_FIX_GROUP_NAME
-                                || type == TYPE_FIX_GROUP_NOTICE
-                                || type == TYPE_DELETE_GROUP_CHAT) {
+                        } else if (actionType == TYPE_ADD_GROUP_PEOPLE
+                                || actionType == TYPE_DELETE_GROUP_PEOPLE
+                                || actionType == TYPE_FIX_GROUP_NAME
+                                || actionType == TYPE_FIX_GROUP_NOTICE
+                                || actionType == TYPE_DELETE_GROUP_CHAT) {
                             //群信息
                             findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
                             if (mFindTargetNode == null) {
@@ -2223,17 +2222,17 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (type == TYPE_ADD_GROUP_PEOPLE || type == TYPE_DELETE_GROUP_PEOPLE) {
-                                        addOrDeleteGroupPeople(type);
-                                    } else if (type == TYPE_FIX_GROUP_NOTICE || type == TYPE_FIX_GROUP_NAME) {
-                                        String target = type == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
+                                    if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
+                                        addOrDeleteGroupPeople(actionType);
+                                    } else if (actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
+                                        String target = actionType == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
                                         boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
                                         if (!find) {
                                             release(false);
                                             return;
                                         }
                                         fixGroupNameOrNotice();
-                                    } else if (type == TYPE_DELETE_GROUP_CHAT) {
+                                    } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
                                         execRootCmdSilent("input swipe 360 900 360 300");
                                         execRootCmdSilent("input swipe 360 900 360 300");
                                         mHandler.postDelayed(new Runnable() {
@@ -2258,8 +2257,8 @@ public class AutoReplyService extends AccessibilityService {
                                     }
                                 }
                             }, 2000);
-                        } else if (type == TYPE_GROUP_CHAT) {
-                            //这里应该调用 doChatByActionType();？？？
+                        } else if (actionType == TYPE_GROUP_CHAT) {
+                            //文字的跳进来发，其他的走分享
                             try {
                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                                 JSONObject o = new JSONObject(content);
@@ -2268,10 +2267,10 @@ public class AutoReplyService extends AccessibilityService {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else if (type == TYPE_AT_GROUP_PEOPLE) {
+                        } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                             //循环开始艾特人
                             startAtPeople();
-                        } else if (type == TYPE_FIX_NICKNAME) {
+                        } else if (actionType == TYPE_FIX_NICKNAME) {
                             //好友信息
                             fixFriendNickname(target);
                         }
@@ -2436,7 +2435,7 @@ public class AutoReplyService extends AccessibilityService {
                     JSONArray members = o.getJSONArray("members");
                     int count = members.length();
 
-                    resetMaxReleaseTime(count * 15000 + 5000);
+                    resetMaxReleaseTime(count * 16000 + 5000);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);

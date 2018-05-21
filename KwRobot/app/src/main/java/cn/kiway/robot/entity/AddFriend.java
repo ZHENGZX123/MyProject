@@ -15,7 +15,7 @@ public class AddFriend {
 
     public int id;
     public String requesttime;
-    public String cellphone;
+    public String phone;
     public int status;
 
 }
