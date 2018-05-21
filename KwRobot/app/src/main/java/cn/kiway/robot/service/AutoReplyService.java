@@ -137,6 +137,8 @@ public class AutoReplyService extends AccessibilityService {
     public ArrayList<ZbusRecv> zbusRecvs = new ArrayList<>();
     //家长busy次数
     public HashMap<String, Integer> busyCountMap = new HashMap<>();
+    //当前微信页面
+    private String currentWechatPage;
 
     //心跳
     private long lastHearBeatID;
@@ -762,10 +764,10 @@ public class AutoReplyService extends AccessibilityService {
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 Log.d("maptrix", "窗口状态变化");
-                String className = event.getClassName().toString();
-                Log.d("test", "className = " + className);
+                currentWechatPage = event.getClassName().toString();
+                Log.d("test", "currentWechatPage = " + currentWechatPage);
 
-                if (className.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
+                if (currentWechatPage.equals("com.tencent.mm.plugin.voip.ui.VideoActivity")) {
                     //视频通话，挂断并关闭页面即可。
                     findTargetNode(NODE_TEXTVIEW, "挂断", -1, true);
                     release(false);
@@ -1511,45 +1513,52 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         findTargetNode(NODE_TEXTVIEW, member, CLICK_PARENT, false);
+
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_NONE, true);
-                                if (mFindTargetNode == null) {
-                                    //已经是好友,返回即可
-                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                } else {
-                                    //还不是好友
-                                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                                                JSONObject o = new JSONObject(content);
-                                                content = o.optString("content");
+                                if (currentWechatPage.equals("com.tencent.mm.plugin.fts.ui.FTSAddFriendUI")) {
+                                    Log.d("test", "没有跳页");
+                                    boolean find = findTargetNode(NODE_TEXTVIEW, "该用户不存在");
+                                    //其他情况。。。
+                                } else if (currentWechatPage.equals("com.tencent.mm.plugin.profile.ui.ContactInfoUI")) {
+                                    findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_NONE, true);
+                                    if (mFindTargetNode == null) {
+                                        //已经是好友,返回即可
+                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                    } else {
+                                        //还不是好友
+                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                                    JSONObject o = new JSONObject(content);
+                                                    content = o.optString("content");
 
-                                                //1.申请语句，这里要先点一下删除。
-                                                if (!TextUtils.isEmpty(content)) {
-                                                    clearAndPasteEditText(1, content);
-                                                }
-                                                //2.备注
-                                                findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplication(), 1));
-
-                                                //3.点击发送按钮
-                                                findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
-
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                    //1.申请语句
+                                                    if (!TextUtils.isEmpty(content)) {
+                                                        clearAndPasteEditText(1, content);
                                                     }
-                                                }, 5000);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
+                                                    //2.备注
+                                                    findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplication(), 1));
+
+                                                    //3.点击发送按钮
+                                                    findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
+
+                                                    mHandler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                        }
+                                                    }, 5000);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
-                                        }
-                                    }, 3000);
+                                        }, 3000);
+                                    }
                                 }
                             }
                         }, 3000);
