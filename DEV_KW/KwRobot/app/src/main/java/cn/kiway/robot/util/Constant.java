@@ -117,13 +117,12 @@ public class Constant {
     public static final String BACK_DOOR1 = "开维一本万利";
     public static final String BACK_DOOR2 = "开维前程似锦";
     private static final String BACK_DOOR4 = "清理僵尸粉";
-    private static final String BACK_DOOR5 = "查询好友数量";//这个作用不大，准备改成所有好友
     private static final String BACK_DOOR6 = "发起群聊";
     private static final String BACK_DOOR7 = "拉人入群";
     private static final String BACK_DOOR8 = "踢人出群";
     private static final String BACK_DOOR9 = "修改群名称";
     private static final String BACK_DOOR10 = "修改群公告";
-    private static final String BACK_DOOR11 = "群发消息";//“群内聊天”
+    private static final String BACK_DOOR11 = "群发消息";
     private static final String BACK_DOOR12 = "艾特某人";
     private static final String BACK_DOOR13 = "删除朋友圈";
     private static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
@@ -135,10 +134,13 @@ public class Constant {
     private static final String BACK_DOOR20 = "解散群聊";
     private static final String BACK_DOOR21 = "删除朋友";
     private static final String BACK_DOOR22 = "发朋友圈";
+    private static final String BACK_DOOR23 = "群发助手";
+
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","content":"1", "type":"1", "groupName": "111"}  TODO新增type
-    //{"cmd": "删除朋友","members":["执着","13267069058"]}  TODO等待测试
+    //{"cmd": "删除朋友","members":["执着","13267069058"]}
+    //{"cmd": "群发助手","content":"1", "members":["浪翻云","胡翻翻"]}
 
     //{"cmd": "解散群聊","groupName": "最新111" }
     //{"cmd": "清理僵尸粉","start": "1","end":"20"}
@@ -169,7 +171,6 @@ public class Constant {
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
-        backdoors.put(BACK_DOOR5, Action.TYPE_GET_ALL_FRIENDS);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
@@ -185,5 +186,7 @@ public class Constant {
         backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
+        backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
+
     }
 }

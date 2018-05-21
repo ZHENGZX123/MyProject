@@ -81,8 +81,8 @@ import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_ICON;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_NICKNAME;
-import static cn.kiway.robot.entity.Action.TYPE_GET_ALL_FRIENDS;
 import static cn.kiway.robot.entity.Action.TYPE_GROUP_CHAT;
+import static cn.kiway.robot.entity.Action.TYPE_GROUP_SEND_HELPER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_MISSING_FISH;
@@ -738,23 +738,24 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (action.actionType == TYPE_REQUEST_FRIEND) {
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_GET_ALL_FRIENDS
-                            || action.actionType == TYPE_CLEAR_ZOMBIE_FAN
-                            || action.actionType == TYPE_CREATE_GROUP_CHAT
-                            || action.actionType == TYPE_DELETE_GROUP_CHAT
-                            || action.actionType == TYPE_ADD_GROUP_PEOPLE
-                            || action.actionType == TYPE_DELETE_GROUP_PEOPLE
-                            || action.actionType == TYPE_FIX_GROUP_NAME
-                            || action.actionType == TYPE_FIX_GROUP_NOTICE
-                            || action.actionType == TYPE_GROUP_CHAT
-                            || action.actionType == TYPE_AT_GROUP_PEOPLE
-                            || action.actionType == TYPE_DELETE_MOMENT
-                            || action.actionType == TYPE_ADD_FRIEND
-                            || action.actionType == TYPE_DELETE_FRIEND
-                            || action.actionType == TYPE_MISSING_FISH
-                            || action.actionType == TYPE_FIX_NICKNAME
-                            || action.actionType == TYPE_FIX_ICON
-                            || action.actionType == TYPE_NEARBY_PEOPLE) {
+                    } else if (
+                            action.actionType == TYPE_CLEAR_ZOMBIE_FAN
+                                    || action.actionType == TYPE_CREATE_GROUP_CHAT
+                                    || action.actionType == TYPE_DELETE_GROUP_CHAT
+                                    || action.actionType == TYPE_ADD_GROUP_PEOPLE
+                                    || action.actionType == TYPE_DELETE_GROUP_PEOPLE
+                                    || action.actionType == TYPE_FIX_GROUP_NAME
+                                    || action.actionType == TYPE_FIX_GROUP_NOTICE
+                                    || action.actionType == TYPE_GROUP_CHAT
+                                    || action.actionType == TYPE_AT_GROUP_PEOPLE
+                                    || action.actionType == TYPE_DELETE_MOMENT
+                                    || action.actionType == TYPE_ADD_FRIEND
+                                    || action.actionType == TYPE_DELETE_FRIEND
+                                    || action.actionType == TYPE_MISSING_FISH
+                                    || action.actionType == TYPE_FIX_NICKNAME
+                                    || action.actionType == TYPE_FIX_ICON
+                                    || action.actionType == TYPE_NEARBY_PEOPLE
+                                    || action.actionType == TYPE_GROUP_SEND_HELPER) {
                         action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
                         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
                         sendReplyImmediately(fakeRecv, true);
@@ -807,7 +808,6 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 2000);
                 } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN
-                        || actionType == TYPE_GET_ALL_FRIENDS
                         || actionType == TYPE_CREATE_GROUP_CHAT
                         || actionType == TYPE_DELETE_GROUP_CHAT
                         || actionType == TYPE_ADD_GROUP_PEOPLE
@@ -823,6 +823,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_FIX_NICKNAME
                         || actionType == TYPE_FIX_ICON
                         || actionType == TYPE_NEARBY_PEOPLE
+                        || actionType == TYPE_GROUP_SEND_HELPER
                         ) {
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -890,10 +891,7 @@ public class AutoReplyService extends AccessibilityService {
                 @Override
                 public void run() {
                     checkIsWxHomePage();
-                    if (actionType == TYPE_GET_ALL_FRIENDS) {
-                        //通讯录
-                        getAllFriends();
-                    } else if (actionType == TYPE_CREATE_GROUP_CHAT
+                    if (actionType == TYPE_CREATE_GROUP_CHAT
                             || actionType == TYPE_CLEAR_ZOMBIE_FAN
                             || actionType == TYPE_ADD_FRIEND) {
                         //首页-右上角工具栏
@@ -926,8 +924,10 @@ public class AutoReplyService extends AccessibilityService {
                         //通讯录-群聊-关于群的操作
                         searchTargetInWxGroupPage(actionType, groupName);
                     } else if (actionType == TYPE_DELETE_FRIEND) {
-
                         startDeleteFriend(members);
+                    } else if (actionType == TYPE_GROUP_SEND_HELPER) {
+                        //我-设置
+                        groupSendHelper();
                     } else {
                         searchTargetInWxHomePage(actionType);
                     }
@@ -937,6 +937,81 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void groupSendHelper() {
+        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean find = findTargetNode(NODE_TEXTVIEW, "设置", CLICK_PARENT, true);
+                if (!find) {
+                    release(false);
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean find = findTargetNode(NODE_TEXTVIEW, "通用", CLICK_PARENT, true);
+                        if (!find) {
+                            release(false);
+                            return;
+                        }
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean find = findTargetNode(NODE_TEXTVIEW, "辅助功能", CLICK_PARENT, true);
+                                if (!find) {
+                                    release(false);
+                                    return;
+                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        boolean find = findTargetNode(NODE_TEXTVIEW, "群发助手", CLICK_PARENT, true);
+                                        if (!find) {
+                                            release(false);
+                                            return;
+                                        }
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                boolean find = findTargetNode(NODE_TEXTVIEW, "开始群发", CLICK_PARENT, true);
+                                                if (!find) {
+                                                    release(false);
+                                                    return;
+                                                }
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        boolean find = findTargetNode(NODE_BUTTON, "新建群发", CLICK_SELF, true);
+                                                        if (!find) {
+                                                            release(false);
+                                                            return;
+                                                        }
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                checkFriendInListView2();
+                                                            }
+                                                        }, 2000);
+                                                    }
+                                                }, 2000);
+
+
+                                            }
+                                        }, 2000);
+
+
+                                    }
+                                }, 2000);
+
+                            }
+                        }, 2000);
+                    }
+                }, 2000);
+            }
+        }, 2000);
     }
 
     private void startDeleteFriend(JSONArray members) {
@@ -1225,16 +1300,6 @@ public class AutoReplyService extends AccessibilityService {
         return oldName.equals(me);
     }
 
-    private void getAllFriends() {
-        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startCheckFriendList();
-            }
-        }, 3000);
-    }
-
     private boolean adding_missing_fish = false;
 
     private void addMissingFish() {
@@ -1266,6 +1331,7 @@ public class AutoReplyService extends AccessibilityService {
                                     break;
                                 }
                             }
+                            adding_missing_fish = false;
                             release(true);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -1437,63 +1503,6 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void startCheckFriendList() {
-        friends.clear();
-        resetMaxReleaseTime(30 * 60 * 1000);
-        new Thread() {
-            @Override
-            public void run() {
-                //FIXME 有漏掉的现象？
-                while (true) {
-                    boolean isBottom = findTargetNode(NODE_TEXTVIEW, "位联系人", CLICK_NONE, false);
-                    findFriendView(getRootInActiveWindow());
-                    if (isBottom) {
-                        break;
-                    }
-                    execRootCmdSilent("input swipe 360 900 360 300");
-                    try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                int count = friends.size();
-                Log.d("test", "friends.size = " + count);
-                for (String f : friends) {
-                    Log.d("test", "friend =====>" + f);
-                }
-                FileUtils.saveFile(count + "", "parent.txt");
-
-                release(true);
-            }
-        }.start();
-    }
-
-    //可以和findNearbyPeopleInListView重构成一个
-    private void findFriendView(AccessibilityNodeInfo rootNode) {
-        int count = rootNode.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            if (nodeInfo.getClassName().equals("android.view.View") && nodeInfo.getText() != null) {
-                String nickname = nodeInfo.getText().toString();
-                String me = getSharedPreferences("kiway", 0).getString("name", "");
-                if (nickname.equals("微信团队") || nickname.equals("文件传输助手") || nickname.equals(me)) {
-                    Log.d("test", "not add nickname = " + nickname);
-                } else {
-                    Log.d("test", "add nickname = " + nickname);
-                    friends.add(nickname);
-                }
-            }
-            findFriendView(nodeInfo);
-        }
-    }
-
     //首页右上角工具栏
     private void selectToolbar() {
         mHandler.postDelayed(new Runnable() {
@@ -1652,7 +1661,6 @@ public class AutoReplyService extends AccessibilityService {
                         sleep(3000);
                         doCheckFriend1(getRootInActiveWindow());
                     }
-                    //点一下确定。建群时间比较长
                     clickSureButton();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1699,7 +1707,6 @@ public class AutoReplyService extends AccessibilityService {
                         });
                         Thread.sleep(3000);
                     }
-                    //点一下确定。建群时间比较长
                     clickSureButton();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1718,7 +1725,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetNode(NODE_TEXTVIEW, "确定|删除", CLICK_SELF, false);//确定(16)
+                boolean find = findTargetNode(NODE_TEXTVIEW, "确定|删除|下一步", CLICK_SELF, false);//确定(16)
                 if (!find) {
                     release(false);
                     return;
@@ -1812,6 +1819,15 @@ public class AutoReplyService extends AccessibilityService {
                                     release(true);
                                 }
                             }, 2000);
+                        } else if (type == TYPE_GROUP_SEND_HELPER) {
+                            try {
+                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                JSONObject o = new JSONObject(content);
+                                String text = o.optString("content");
+                                sendTextOnly(text, true);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, 5000);
@@ -2243,7 +2259,7 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 2000);
                         } else if (type == TYPE_GROUP_CHAT) {
-                            //这里应该调用 doChatByActionType();
+                            //这里应该调用 doChatByActionType();？？？
                             try {
                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                                 JSONObject o = new JSONObject(content);
