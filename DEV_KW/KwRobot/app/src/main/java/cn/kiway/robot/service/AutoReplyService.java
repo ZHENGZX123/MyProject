@@ -772,13 +772,10 @@ public class AutoReplyService extends AccessibilityService {
                     return;
                 }
 
+                //check wechat upgrade
                 boolean find1 = findTargetNode(NODE_BUTTON, "取消", CLICK_NONE, false);
-                boolean find2 = findTargetNode(NODE_BUTTON, "下载安装", CLICK_NONE, true);
-                Log.d("test", "find1 = " + find1);
-                Log.d("test", "find2 = " + find2);
-
+                boolean find2 = findTargetNode(NODE_BUTTON, "立即安装|下载安装", CLICK_NONE, true);
                 if (find1 && find2) {
-                    Log.d("test", "微信更新提示框");
                     findTargetNode(NODE_BUTTON, "取消", CLICK_SELF, false);
                 }
 
@@ -2456,7 +2453,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private boolean doFindTargetNode(AccessibilityNodeInfo rootNode, String className, int targetIndex, String targetText, int clickType, boolean equals) {
-
+        if (rootNode == null) {
+            return false;
+        }
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);

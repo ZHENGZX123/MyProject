@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -147,10 +148,11 @@ public class WeChatActivity extends BaseActivity {
             JSONArray param = new JSONArray();
             for (int i = 0; i < wxPeopleList.length(); i++) {
                 JSONObject item = new JSONObject();
-                item.put("nickname", wxPeopleList.optJSONObject(i).optString("nickname"));//昵称
-                item.put("remark", wxPeopleList.optJSONObject(i).optString("remark"));//备注
-                item.put("wxId", wxPeopleList.optJSONObject(i).optString("wxid"));//微信id
-                item.put("wxNo", wxPeopleList.optJSONObject(i).optString("wxno"));//微信号
+                JSONObject o = wxPeopleList.optJSONObject(i);
+                item.put("nickname", o.optString("nickname"));//昵称
+                item.put("remark", TextUtils.isEmpty(o.optString("remark")) ? o.optString("nickname") : o.optString("remark"));//备注
+                item.put("wxId", o.optString("wxid"));//微信id
+                item.put("wxNo", TextUtils.isEmpty(o.optString("wxno")) ? o.optString("wxid") : o.optString("wxno"));//微信号
                 item.put("robotId", robotId);
                 param.put(item);
             }
@@ -228,7 +230,6 @@ public class WeChatActivity extends BaseActivity {
             startActivity(intent);
         }
     }
-
 
     private void getWxPeople() {
         try {
