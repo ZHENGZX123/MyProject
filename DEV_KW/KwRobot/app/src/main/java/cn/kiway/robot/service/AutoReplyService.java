@@ -105,10 +105,13 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
+import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
 import static cn.kiway.robot.util.Constant.NODE_FRAMELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_IMAGEBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_IMAGEVIEW;
+import static cn.kiway.robot.util.Constant.NODE_LINEARLAYOUT;
+import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
@@ -973,61 +976,118 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        peoples.clear();
-                        findNearbyPeopleInListView(getRootInActiveWindow());
-                        Log.d("test", "friends count = " + peoples.size());
-                        int count = peoples.size();
+                        if (currentWechatPage.equals("com.tencent.mm.plugin.nearby.ui.NearbyPersonalInfoUI")) {
+                            SupplementInfo(content);
+                        } else {
+                            boolean find = findTargetNode(NODE_BUTTON, "开始查看", CLICK_SELF, true);
+                            if (find) {
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findTargetNode(NODE_CHECKBOX, "下次不提示", CLICK_SELF, true);
+                                        findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //补充个人信息
+                                                if (currentWechatPage.equals("com.tencent.mm.plugin.nearby.ui.NearbyPersonalInfoUI")) {
+                                                    SupplementInfo(content);
+                                                } else {
+                                                    doAddNearByPeople(content);
+                                                }
+                                            }
+                                        }, 2000);
+                                    }
+                                }, 1000);
+                            } else {
+                                doAddNearByPeople(content);
+                            }
+                        }
+                    }
+                }, 2000);
+            }
+        }, 3000);
+    }
 
-                        resetMaxReleaseTime(20000 * count);
+    private void SupplementInfo(String content) {
+        findTargetNode(NODE_RADIOBUTTON, "男", CLICK_SELF, true);
+        findTargetNode(NODE_TEXTVIEW, "地区*", CLICK_PARENT, true);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findTargetNode(NODE_LINEARLAYOUT, 3);
+                if (mFindTargetNode != null) {
+                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            findTargetNode(NODE_TEXTVIEW, "下一步", CLICK_SELF, true);
+                            doAddNearByPeople(content);
+                        }
+                    }, 2000);
+                }
+            }
+        }, 5000);
+    }
 
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                for (int i = 0; i < count; i++) {
-                                    int finalI = i;
-                                    mHandler.post(new Runnable() {
+    private void doAddNearByPeople(String content) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                peoples.clear();
+                findNearbyPeopleInListView(getRootInActiveWindow());
+                Log.d("test", "friends count = " + peoples.size());
+                int count = peoples.size();
+
+                resetMaxReleaseTime(20000 * count);
+
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < count; i++) {
+                            int finalI = i;
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AccessibilityNodeInfo p = peoples.get(finalI);
+                                    p.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                    //打招呼
+                                    mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            AccessibilityNodeInfo p = peoples.get(finalI);
-                                            p.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                            //打招呼
+                                            boolean find = findTargetNode(NODE_BUTTON, "打招呼", CLICK_SELF, true);
+                                            if (!find) {
+                                                return;
+                                            }
                                             mHandler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    boolean find = findTargetNode(NODE_BUTTON, "打招呼", CLICK_SELF, true);
-                                                    if (!find) {
-                                                        return;
-                                                    }
+                                                    findTargetNode(NODE_EDITTEXT, content);
+                                                    findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
                                                     mHandler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            findTargetNode(NODE_EDITTEXT, content);
-                                                            findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
-                                                            mHandler.postDelayed(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                                                }
-                                                            }, 3000);
+                                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                         }
                                                     }, 3000);
                                                 }
                                             }, 3000);
                                         }
-                                    });
-                                    try {
-                                        sleep(20000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
+                                    }, 3000);
                                 }
-                                release(true);
+                            });
+                            try {
+                                sleep(20000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        }.start();
+                        }
+                        release(true);
                     }
-                }, 8000);
+                }.start();
             }
-        }, 3000);
+        }, 8000);
     }
 
     private boolean findNearbyPeopleInListView(AccessibilityNodeInfo rootNode) {
@@ -2474,7 +2534,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo.getClassName().equals(className)) {
                 nodeIndex++;
 
-                if (className.equals(NODE_TEXTVIEW) || className.equals(NODE_BUTTON)) {
+                if (className.equals(NODE_TEXTVIEW) || className.equals(NODE_BUTTON) || className.equals(NODE_CHECKBOX) || className.equals(NODE_RADIOBUTTON)) {
                     if (TextUtils.isEmpty(targetText)) {
                         //根据nodeIndex匹配
                         mFindTargetNode = nodeInfo;
@@ -2526,6 +2586,7 @@ public class AutoReplyService extends AccessibilityService {
                         || className.equals(NODE_FRAMELAYOUT)
                         || className.equals(NODE_RELATIVELAYOUT)
                         || className.equals(NODE_IMAGEBUTTON)
+                        || className.equals(NODE_LINEARLAYOUT)
                         ) {
                     //根据nodeIndex匹配
                     mFindTargetNode = nodeInfo;
