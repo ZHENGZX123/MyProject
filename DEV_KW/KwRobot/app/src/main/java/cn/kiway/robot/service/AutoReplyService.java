@@ -54,7 +54,6 @@ import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
-import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
@@ -162,6 +161,8 @@ public class AutoReplyService extends AccessibilityService {
 
     //附近的人
     private ArrayList<AccessibilityNodeInfo> peoples = new ArrayList<>();
+
+    private final Object object = new Object();
 
     @Override
     public void onCreate() {
@@ -1580,13 +1581,14 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     int count = members.length();
 
-                    resetMaxReleaseTime(60000 * count);
+                    resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
                         addFriend(member, content);
-                        //FIXME sleepTime要考虑验证消息的长度
-                        sleep(30000);
+                        synchronized (object) {
+                            object.wait(DEFAULT_RELEASE_TIME);
+                        }
                     }
                     release(true);
                 } catch (Exception e) {
@@ -1598,6 +1600,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void addFriend(String member, String content) {
+        Log.d("test", "addFriend member = " + member);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1615,11 +1618,15 @@ public class AutoReplyService extends AccessibilityService {
                                     Log.d("test", "没有跳页");
                                     boolean find = findTargetNode(NODE_TEXTVIEW, "该用户不存在");
                                     //其他情况。。。
+                                    notifyObj(2000);
                                 } else if (currentWechatPage.equals("com.tencent.mm.plugin.profile.ui.ContactInfoUI")) {
+
                                     findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_NONE, true);
+
                                     if (mFindTargetNode == null) {
                                         //已经是好友,返回即可
                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                        notifyObj(3000);
                                     } else {
                                         //还不是好友
                                         //0.寻找昵称
@@ -1638,7 +1645,7 @@ public class AutoReplyService extends AccessibilityService {
                                             }
                                         }
 
-                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                        findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_SELF, true);
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
@@ -1657,6 +1664,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         @Override
                                                         public void run() {
                                                             performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                            notifyObj(8000);
                                                         }
                                                     }, 5000);
                                                 } catch (Exception e) {
@@ -1672,6 +1680,23 @@ public class AutoReplyService extends AccessibilityService {
                 }, 3000);
             }
         });
+    }
+
+    private void notifyObj(long sleepTime) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d("test", "notifyAll");
+                synchronized (object) {
+                    object.notifyAll();
+                }
+            }
+        }.start();
     }
 
     private void checkFriendInListView1() {
@@ -2511,7 +2536,7 @@ public class AutoReplyService extends AccessibilityService {
                                                                 public void run() {
                                                                     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                                     //删掉@
-                                                                    RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
+                                                                    execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                                 }
                                                             }, 1000);
                                                         }
@@ -2685,7 +2710,7 @@ public class AutoReplyService extends AccessibilityService {
     private void clearAndPasteEditText(int index, String newContent) {
         int length = getTextLengthInEditText(index, newContent);
         for (int i = 0; i < length; i++) {
-            RootCmd.execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
+            execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
         }
         if (length != -1) {
             findTargetNode(NODE_EDITTEXT, newContent);
@@ -2797,8 +2822,7 @@ public class AutoReplyService extends AccessibilityService {
         int x = r.width() / 2 + r.left;
         int y = r.height() / 2 + r.top;
         // 2.执行su命令
-        int ret = execRootCmdSilent("input tap " + x + " " + y);
-        Log.d("test", "execRootCmdSilent ret = " + ret);
+        execRootCmdSilent("input tap " + x + " " + y);
     }
 
     private void longClickSomeWhere(AccessibilityNodeInfo node) {
@@ -2809,14 +2833,12 @@ public class AutoReplyService extends AccessibilityService {
         int x = r.width() / 2 + r.left;
         int y = r.height() / 2 + r.top;
         // 2.执行su命令
-        int ret = execRootCmdSilent("input touchscreen swipe " + x + " " + y + " " + x + " " + y + " 2000");
-        Log.d("test", "execRootCmdSilent ret = " + ret);
+        execRootCmdSilent("input touchscreen swipe " + x + " " + y + " " + x + " " + y + " 2000");
     }
 
     private void clickSomeWhere(int x, int y) {
         // 2.执行su命令
-        int ret = execRootCmdSilent("input tap " + x + " " + y);
-        Log.d("test", "execRootCmdSilent ret = " + ret);
+        execRootCmdSilent("input tap " + x + " " + y);
     }
 
     private void refreshUI1() {
