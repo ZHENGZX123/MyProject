@@ -179,9 +179,9 @@ public class Constant {
         backdoors.put(UPDATE_NICKNAME_CMD, Action.TYPE_FIX_NICKNAME);
         backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
         backdoors.put(UPDATE_AVATAR_CMD, Action.TYPE_FIX_ICON);
-
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
+
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
