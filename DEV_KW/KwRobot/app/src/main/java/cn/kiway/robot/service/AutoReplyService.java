@@ -108,6 +108,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
+import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
@@ -161,10 +162,6 @@ public class AutoReplyService extends AccessibilityService {
 
     //附近的人
     private ArrayList<AccessibilityNodeInfo> peoples = new ArrayList<>();
-
-    //好友
-    private Set<String> friends = new HashSet<>();
-
 
     @Override
     public void onCreate() {
@@ -278,7 +275,13 @@ public class AutoReplyService extends AccessibilityService {
                             Log.d("test", "action.replied");
                             return;
                         }
-                        //TODO 如果是第一个action，sender和content可能会被串改
+                        //判断action是否被篡改
+                        if (action.sender.equals(HOUTAI)) {
+                            action.actionType = TYPE_TEXT;
+                            action.sender = o.optString("sender");
+                            action.content = o.optString("content");
+                            action.command = null;
+                        }
                         JSONArray returnMessage = o.getJSONArray("returnMessage");
                         doHandleZbusMsg(id, action, returnMessage, recv.realReply);
                     }
@@ -297,7 +300,7 @@ public class AutoReplyService extends AccessibilityService {
         }
         Long firstKey = actions.keySet().iterator().next();
         Action firstA = actions.get(firstKey);
-        firstA.sender = "后台";
+        firstA.sender = HOUTAI;
         firstA.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
         firstA.actionType = backdoors.get(command.cmd);
         firstA.command = command;
@@ -331,6 +334,7 @@ public class AutoReplyService extends AccessibilityService {
             firstA.sender = sender;
             firstA.content = content;
             firstA.actionType = TYPE_TEXT;
+            firstA.command = null;
             //因为使用的是别人的action，所以realReply是false
             doHandleZbusMsg(firstKey, firstA, returnMessage, false);
         } catch (Exception e) {
@@ -845,7 +849,6 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            //来自后台的命令
                             if (!checkIsWxHomePage()) {
                                 performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                             }
