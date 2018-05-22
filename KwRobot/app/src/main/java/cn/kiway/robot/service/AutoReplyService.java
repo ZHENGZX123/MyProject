@@ -278,6 +278,7 @@ public class AutoReplyService extends AccessibilityService {
                             Log.d("test", "action.replied");
                             return;
                         }
+                        //TODO 如果是第一个action，sender和content可能会被串改
                         JSONArray returnMessage = o.getJSONArray("returnMessage");
                         doHandleZbusMsg(id, action, returnMessage, recv.realReply);
                     }
