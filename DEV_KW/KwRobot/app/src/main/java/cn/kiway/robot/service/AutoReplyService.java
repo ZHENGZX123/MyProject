@@ -1576,11 +1576,12 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     int count = members.length();
 
-                    resetMaxReleaseTime(31000 * count);
+                    resetMaxReleaseTime(60000 * count);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
                         addFriend(member, content);
+                        //FIXME sleepTime要考虑验证消息的长度
                         sleep(30000);
                     }
                     release(true);
@@ -3194,20 +3195,31 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 String sender = actions.get(currentActionID).sender;
                 //找文本框
-                boolean find = findTargetNode(NODE_EDITTEXT, sender);
-                if (!find) {
-                    release(false);
-                    return;
-                }
-                findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
+                findTargetNode(NODE_EDITTEXT, sender);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        release(true);
+                        boolean find = findTargetNode(NODE_TEXTVIEW, sender, CLICK_PARENT, false);
+                        if (!find) {
+                            release(false);
+                            return;
+                        }
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        release(true);
+                                    }
+                                }, 2000);
+                            }
+                        }, 2000);
                     }
-                }, 2000);
+                }, 1000);
             }
-        }, 4000);
+        }, 5000);
     }
 
     private String getCollectorForwardingContent() {

@@ -471,18 +471,18 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//            }
-//        }, 10000);
 //        AddFriend a = new MyDBHelper(getApplicationContext()).getAddFriendByRemark("11 10 执着");
 //        Log.d("test", "a  = " + a);
 //        ArrayList<AddFriend> afs = new MyDBHelper(getApplicationContext()).getAddFriends();
 //        for (AddFriend af : afs) {
 //            Log.d("test", "af = " + af);
 //        }
+
+//        Platform.ShareParams sp = new Platform.ShareParams();
+//        sp.setImagePath(localPath);
+//        sp.setShareType(Platform.SHARE_IMAGE);
+//        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+//        wx.share(sp);
     }
 
     public void sharePic(View view) {
