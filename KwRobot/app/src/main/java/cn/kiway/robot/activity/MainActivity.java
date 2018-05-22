@@ -299,8 +299,9 @@ public class MainActivity extends BaseActivity {
                 String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + " 接收次数：" + recvCount + "，回复次数：" +
-                        replyCount);
+                String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + " 接收次数：" + recvCount + "回复次数：" +
+                        replyCount + " areaCode：" + areaCode);
             }
         });
     }
@@ -483,6 +484,9 @@ public class MainActivity extends BaseActivity {
 //        sp.setShareType(Platform.SHARE_IMAGE);
 //        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
 //        wx.share(sp);
+
+        String loginWxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+        Log.d("test", "loginWxNo = " + loginWxNo);
     }
 
     public void sharePic(View view) {
@@ -623,8 +627,7 @@ public class MainActivity extends BaseActivity {
                         }
                         String savedFilePath = (String) msg.obj;
                         String cmd = "pm install -r " + savedFilePath;
-                        int ret = RootCmd.execRootCmdSilent(cmd);
-                        Log.d("test", "execRootCmdSilent ret = " + ret);
+                        RootCmd.execRootCmdSilent(cmd);
                     }
                 }.start();
             } else if (msg.what == MSG_NETWORK_OK) {
