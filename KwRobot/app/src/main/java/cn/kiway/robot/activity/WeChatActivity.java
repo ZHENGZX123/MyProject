@@ -26,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import cn.kiway.robot.R;
@@ -52,7 +54,7 @@ public class WeChatActivity extends BaseActivity {
     Task task = null;
     SharedPreferences sharedPreferences;
     EditText latitude, longitude;
-
+    public static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,11 +194,33 @@ public class WeChatActivity extends BaseActivity {
     public void getFriendCircle(View view) {
         //1.获取所有好友的朋友圈
         //2.上报给易敏
+        execRootCmd("chmod -R 777 " + WX_ROOT_PATH);
         ((Button) findViewById(R.id.wx)).setText(R.string.exporting_sns);
         ((Button) findViewById(R.id.wx)).setEnabled(false);
         new RunningTask().execute();
     }
-
+    /**
+     * 执行linux指令
+     *
+     * @param paramString
+     */
+    public void execRootCmd(String paramString) {
+        try {
+            Process localProcess = Runtime.getRuntime().exec("su");
+            Object localObject = localProcess.getOutputStream();
+            DataOutputStream localDataOutputStream = new DataOutputStream((OutputStream) localObject);
+            String str = String.valueOf(paramString);
+            localObject = str + "\n";
+            localDataOutputStream.writeBytes((String) localObject);
+            localDataOutputStream.flush();
+            localDataOutputStream.writeBytes("exit\n");
+            localDataOutputStream.flush();
+            localProcess.waitFor();
+            localObject = localProcess.exitValue();
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+    }
 
     class RunningTask extends AsyncTask<Void, Void, Void> {
 

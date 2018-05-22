@@ -52,14 +52,15 @@ public class Config {
     static public String SNS_OBJECT_FROM_BIN_METHOD;
 
     static public void initWeChatVersion(String version) {
-        for (int i=0;i<VERSIONS.length;i++) {
-            if (VERSIONS[i].equals(version)) {
-                Config.setConstants(i);
-                Config.ready = true;
-                return;
-            }
-        }
-        Config.ready = false;
+//        for (int i=0;i<VERSIONS.length;i++) {
+//            if (VERSIONS[i].equals(version)) {
+//                Config.setConstants(i);
+//                Config.ready = true;
+//                return;
+//            }
+//        }
+        Config.setConstants(0);
+        Config.ready = true;
     }
 
     static private void setConstants(int index) {

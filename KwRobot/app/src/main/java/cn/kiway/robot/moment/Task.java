@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,6 +14,7 @@ import org.json.JSONObject;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,6 +25,8 @@ import java.util.List;
 import cn.kiway.robot.R;
 import cn.kiway.robot.moment.model.SnsInfo;
 import dalvik.system.DexClassLoader;
+
+import static cn.kiway.robot.activity.WeChatActivity.WX_ROOT_PATH;
 
 /**
  * Created by chiontang on 2/17/16.
@@ -61,23 +63,67 @@ public class Task {
         context.startActivity(launchIntent);
 
     }
-
+    private List<File> mWxDbPathList = new ArrayList<>();
+    private static final String WX_DB_DIR_PATH = WX_ROOT_PATH + "MicroMsg";
+    private static final String WX_DB_FILE_NAME = "SnsMicroMsg.db";
     public void copySnsDB() throws Throwable {
-        String dataDir = Environment.getDataDirectory().getAbsolutePath();
+//        String dataDir = Environment.getDataDirectory().getAbsolutePath();
+ //      String destDir = Config.EXT_DIR;
+//        Process su = Runtime.getRuntime().exec("su");
+//        DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
+//        outputStream.writeBytes("mount -o remount,rw " + dataDir + "\n");
+//        outputStream.writeBytes("cd " + dataDir + "/data/" + Config.WECHAT_PACKAGE + "/MicroMsg\n");
+//        outputStream.writeBytes("ls | while read line; do cp ${line}/SnsMicroMsg.db " + destDir + "/ ; done \n");
+//        outputStream.writeBytes("sleep 1\n");
+//        outputStream.writeBytes("chmod 777 " + destDir + "/SnsMicroMsg.db\n");
+//        outputStream.writeBytes("exit\n");
+//        outputStream.flush();
+//        outputStream.close();
+//        Thread.sleep(1000);
+        mWxDbPathList.clear();
+        File wxDataDir = new File(WX_DB_DIR_PATH);
+        searchFile(wxDataDir, WX_DB_FILE_NAME);
         String destDir = Config.EXT_DIR;
-        Process su = Runtime.getRuntime().exec("su");
-        DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
-        outputStream.writeBytes("mount -o remount,rw " + dataDir + "\n");
-        outputStream.writeBytes("cd " + dataDir + "/data/" + Config.WECHAT_PACKAGE + "/MicroMsg\n");
-        outputStream.writeBytes("ls | while read line; do cp ${line}/SnsMicroMsg.db " + destDir + "/ ; done \n");
-        outputStream.writeBytes("sleep 1\n");
-        outputStream.writeBytes("chmod 777 " + destDir + "/SnsMicroMsg.db\n");
-        outputStream.writeBytes("exit\n");
-        outputStream.flush();
-        outputStream.close();
-        Thread.sleep(1000);
-    }
+        File file = mWxDbPathList.get(0);
+        String newPath=destDir + "/SnsMicroMsg.db";
+        try {
+            int byteRead = 0;
+            File oldFile = new File(file.getAbsolutePath());
+            if (oldFile.exists()) { //文件存在时
+                InputStream inStream = new FileInputStream(file.getAbsolutePath()); //读入原文件
+                FileOutputStream fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[1444];
+                while ((byteRead = inStream.read(buffer)) != -1) {
+                    fs.write(buffer, 0, byteRead);
+                }
+                inStream.close();
+            }
+        } catch (Exception e) {
+            System.out.println("复制单个文件操作出错");
+            e.printStackTrace();
 
+        }
+    }
+    /**
+     * 递归查询微信本地数据库文件
+     *
+     * @param file     目录
+     * @param fileName 需要查找的文件名称
+     */
+    private void searchFile(File file, String fileName) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File childFile : files) {
+                    searchFile(childFile, fileName);
+                }
+            }
+        } else {
+            if (fileName.equals(file.getName())) {
+                mWxDbPathList.add(file);
+            }
+        }
+    }
     public void testRoot() {
         try {
             Process su = Runtime.getRuntime().exec("su");
