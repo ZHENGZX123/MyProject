@@ -119,6 +119,7 @@ import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
+import static cn.kiway.robot.util.Constant.UPDATE_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
@@ -517,13 +518,22 @@ public class AutoReplyService extends AccessibilityService {
                 Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
-                    String msg = new JSONObject()
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                    JSONObject o = new JSONObject()
                             .put("cmd", replies.get(command.cmd))
                             .put("type", replies.get(command.cmd))
                             .put("id", command.id)
                             .put("token", command.token)
-                            .put("statusCode", statusCode)
-                            .toString();
+                            .put("statusCode", statusCode);
+
+                    if (command.cmd.equals(UPDATE_NICKNAME_CMD)) {
+                        o.put("robotId", robotId);
+                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        String newName = new JSONObject(content).optString("newName");
+                        o.put("newName", newName);
+                    }
+
+                    String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
 
                     chanel = rabbitMQUtils.createChannel(topic, topic);
@@ -913,7 +923,8 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_MISSING_FISH) {
                         //通讯录-新的朋友
                         addMissingFish();
-                    } else if ((actionType == TYPE_FIX_NICKNAME && isMe(oldName)) || actionType == TYPE_FIX_ICON) {
+                    } else if (actionType == TYPE_FIX_NICKNAME || actionType == TYPE_FIX_ICON) {
+                        //(actionType == TYPE_FIX_NICKNAME && isMe(oldName))
                         //我-个人信息
                         fixMyNicknameOrIcon(actionType, url);
                     } else if (actionType == TYPE_NEARBY_PEOPLE) {
