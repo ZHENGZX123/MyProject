@@ -613,11 +613,20 @@ public class MainActivity extends BaseActivity {
                 finish();
             } else if (msg.what == 5) {
                 KWApplication.closeMQ();
-
-                String savedFilePath = (String) msg.obj;
-                String cmd = "pm install -r " + savedFilePath;
-                int ret = RootCmd.execRootCmdSilent(cmd);
-                Log.d("test", "execRootCmdSilent ret = " + ret);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        String savedFilePath = (String) msg.obj;
+                        String cmd = "pm install -r " + savedFilePath;
+                        int ret = RootCmd.execRootCmdSilent(cmd);
+                        Log.d("test", "execRootCmdSilent ret = " + ret);
+                    }
+                }.start();
             } else if (msg.what == MSG_NETWORK_OK) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.GONE);
@@ -659,8 +668,8 @@ public class MainActivity extends BaseActivity {
                     }
                     Log.d("test", "areaCode = " + areaCode);
                     //hardcode
-                    areaCode = "440302";
-                    String url = clientUrl + "/users?status=0&areaCode=" + areaCode + "&current=" + current + "&size=1";
+                    //areaCode = "440302";
+                    String url = clientUrl + "/users?status=0&areaCode=" + areaCode + "&current=" + current + "&size=10";
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
