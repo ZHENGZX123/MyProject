@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 
@@ -50,6 +51,7 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         MobSDK.init(this);
+        CrashHandler.getInstance().init(this);
 
         saveDefaultFile("file.png", R.mipmap.file);
         saveDefaultFile("video.png", R.mipmap.video);
