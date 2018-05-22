@@ -46,7 +46,9 @@ import java.util.Set;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
+import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.Action;
+import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Command;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
@@ -91,6 +93,7 @@ import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SET_COLLECTOR;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
+import static cn.kiway.robot.entity.AddFriend.STATUS_ADDING;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
@@ -121,6 +124,7 @@ import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
+import static cn.kiway.robot.util.Utils.getParentRemark;
 import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
@@ -666,7 +670,7 @@ public class AutoReplyService extends AccessibilityService {
                             Log.d("test", "图片接收被过滤");
                             continue;
                         }
-                        if (Utils.isUselessContent(content)) {
+                        if (Utils.isUselessContent(getApplicationContext(), sender, content)) {
                             continue;
                         }
                     } else if (ticker.endsWith("请求添加你为朋友")) {
@@ -1600,6 +1604,22 @@ public class AutoReplyService extends AccessibilityService {
                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                     } else {
                                         //还不是好友
+                                        //0.寻找昵称
+                                        String remarkIndex = Utils.getParentRemark(getApplication(), 1);
+                                        findTargetNode(NODE_TEXTVIEW, 3);
+                                        if (mFindTargetNode != null) {
+                                            String remark = remarkIndex + " " + mFindTargetNode.getText().toString();
+                                            Log.d("test", "remark = " + remark);
+                                            AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(member);
+                                            Log.d("test", "af = " + af);
+                                            if (af != null) {
+                                                af.remark = remark;
+                                                af.status = STATUS_ADDING;
+                                                new MyDBHelper(getApplicationContext()).updateAddFriend(af);
+                                                Utils.updateUserStatus(member, STATUS_ADDING);
+                                            }
+                                        }
+
                                         mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
@@ -1610,7 +1630,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         clearAndPasteEditText(1, content);
                                                     }
                                                     //2.备注
-                                                    findTargetNode(NODE_EDITTEXT, 2, Utils.getParentRemark(getApplication(), 1));
+                                                    findTargetNode(NODE_EDITTEXT, 2, remarkIndex);
 
                                                     //3.点击发送按钮
                                                     findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
@@ -2828,7 +2848,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        remark = Utils.getParentRemark(getApplication(), 1);
+                        remark = getParentRemark(getApplication(), 1);
                         findTargetNode(NODE_EDITTEXT, remark);
 
                         mHandler.postDelayed(new Runnable() {
