@@ -17,7 +17,14 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,20 +34,25 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
+import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.KWApplication.channels;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
+import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
@@ -139,8 +151,17 @@ public class Utils {
         return c.getSharedPreferences("getPic", 0).getBoolean("getPic", true);
     }
 
-    public static boolean isUselessContent(String content) {
-        return content.equals("我通过了你的朋友验证请求，现在我们可以开始聊天了");
+    public static boolean isUselessContent(Context c, String name, String content) {
+        if (content.equals("我通过了你的朋友验证请求，现在我们可以开始聊天了")) {
+            AddFriend af = new MyDBHelper(c).getAddFriendByRemark(name);
+            if (af != null) {
+                af.status = STATUS_ADD_SUCCESS;
+                new MyDBHelper(c).updateAddFriend(af);
+                Utils.updateUserStatus(af.phone, STATUS_ADD_SUCCESS);
+            }
+            return true;
+        }
+        return false;
     }
 
     public static String getCurrentVersion(Context c) {
@@ -451,5 +472,39 @@ public class Utils {
         java.util.Date date = new Date(time);
         String str = sdf.format(date);
         return str;
+    }
+
+    public static void updateUserStatus(String phone, int status) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String url = clientUrl + "/users/status";
+                    Log.d("test", "url = " + url);
+                    Log.d("test", "phone = " + phone + " staqtus = " + status);
+                    HttpPut httpRequest = new HttpPut(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+
+                    List<NameValuePair> values = new ArrayList<>();
+                    values.add(new BasicNameValuePair("phone", phone));
+                    values.add(new BasicNameValuePair("status", "" + status));
+                    UrlEncodedFormEntity urlEntity = new UrlEncodedFormEntity(values,
+                            "UTF-8");
+                    httpRequest.setEntity(urlEntity);
+
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "ret = " + ret);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public static boolean checkHasRequested(Context c, String phone) {
+        AddFriend af = new MyDBHelper(c).getAddFriendByPhone(phone);
+        return !(af == null);
     }
 }

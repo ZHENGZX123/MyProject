@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_UPGRADE);
         mHandler.sendEmptyMessage(MSG_WELCOME);
         mHandler.sendEmptyMessage(MSG_GET_QA);
-        //mHandler.sendEmptyMessage(MSG_GET_CELLPHONES);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
     }
 
     private void initView() {
@@ -451,23 +451,38 @@ public class MainActivity extends BaseActivity {
 //                "\"content\":\"学位房\"}";
 //        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
 
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+            }
+        }, 10000);
+
+//        Utils.updateUserStatus("18626318013", 2);
+//        getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
+//        getCellPhones();
+
+//        ArrayList<AddFriend> requests = new ArrayList();
+//        AddFriend af = new AddFriend();
+//        af.phone = "18565808596";
+//        requests.add(af);
+//        doRequestFriends(requests);
+
+    }
+
+    public void test2(View v) {
 //        mHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
 //                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
 //            }
 //        }, 10000);
-
-        getCellPhones();
-    }
-
-    public void test2(View v) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.test2();
-            }
-        }, 10000);
+//        AddFriend a = new MyDBHelper(getApplicationContext()).getAddFriendByRemark("11 10 执着");
+//        Log.d("test", "a  = " + a);
+//        ArrayList<AddFriend> afs = new MyDBHelper(getApplicationContext()).getAddFriends();
+//        for (AddFriend af : afs) {
+//            Log.d("test", "af = " + af);
+//        }
     }
 
     public void sharePic(View view) {
@@ -636,7 +651,16 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    String url = clientUrl + "/users?status=0&areaCode=440302&current=1&size=1";
+                    int current = getSharedPreferences("currentUser", 0).getInt("currentUser", 1);
+                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    if (TextUtils.isEmpty(areaCode)) {
+                        toast("areaCode为空");
+                        return;
+                    }
+                    Log.d("test", "areaCode = " + areaCode);
+                    //hardcode
+                    areaCode = "440302";
+                    String url = clientUrl + "/users?status=0&areaCode=" + areaCode + "&current=" + current + "&size=1";
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
@@ -650,17 +674,16 @@ public class MainActivity extends BaseActivity {
                     if (count == 0) {
                         return;
                     }
+                    getSharedPreferences("currentUser", 0).edit().putInt("currentUser", current + 1).commit();
+
                     long currentTime = System.currentTimeMillis();
-                    ArrayList<AddFriend> allPhones = new MyDBHelper(getApplicationContext()).getAddFriends();
                     ArrayList<AddFriend> requests = new ArrayList<>();
                     for (int i = 0; i < count; i++) {
                         JSONObject temp = list.getJSONObject(i);
-
                         AddFriend af = new AddFriend();
                         af.requesttime = Utils.longToDate(currentTime);
                         af.phone = temp.getString("phone").trim();
-
-                        boolean has = checkHasRequested(af.phone, allPhones);
+                        boolean has = Utils.checkHasRequested(getApplicationContext(), af.phone);
                         if (has) {
                             Log.d("test", af.phone + "之前已经申请过了");
                         } else {
@@ -668,11 +691,9 @@ public class MainActivity extends BaseActivity {
                             requests.add(af);
                         }
                     }
-
                     if (requests.size() == 0) {
                         return;
                     }
-
                     doRequestFriends(requests);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -691,6 +712,8 @@ public class MainActivity extends BaseActivity {
             JSONArray members = new JSONArray();
             for (AddFriend af : requests) {
                 members.put(af.phone);
+                //添加进数据库
+                new MyDBHelper(getApplicationContext()).addAddFriend(af);
             }
             content.put("content", "你好，可以加个好友吗？");
             content.put("members", members);
@@ -701,16 +724,7 @@ public class MainActivity extends BaseActivity {
         }
         String temp = o.toString();
         Log.d("test", "temp = " + temp);
-        AutoReplyService.instance.sendReplyImmediately(temp, false);
-    }
-
-    private boolean checkHasRequested(String phone, ArrayList<AddFriend> allPhones) {
-        for (AddFriend af : allPhones) {
-            if (af.phone.equals(phone)) {
-                return true;
-            }
-        }
-        return false;
+        AutoReplyService.instance.sendReplyImmediately(temp, true);
     }
 
     private void downloadSilently(String apkUrl, String version) {

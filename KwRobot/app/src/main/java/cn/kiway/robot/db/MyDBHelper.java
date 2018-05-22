@@ -208,8 +208,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -238,12 +236,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_ADDFRIEND = "AddFriend";
     private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
             + TABLE_ADDFRIEND
-            + "   (id integer primary key autoincrement,  requesttime text , phone  text ,  status  text   ) ";
+            + "   (id integer primary key autoincrement,  requesttime text , phone  text ,  remark text , status  text   ) ";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 3);
+        super(c, DB_NAME, null, 6);
     }
 
     @Override
@@ -359,21 +357,75 @@ public class MyDBHelper extends SQLiteOpenHelper {
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             int id = cur.getInt(cur.getColumnIndex("id"));
             String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
-            String cellphone = cur.getString(cur.getColumnIndex("phone"));
+            String phone = cur.getString(cur.getColumnIndex("phone"));
+            String remark = cur.getString(cur.getColumnIndex("remark"));
             int status = cur.getInt(cur.getColumnIndex("status"));
 
-            AddFriend a = new AddFriend();
-            a.id = id;
-            a.phone = cellphone;
-            a.requesttime = requesttime;
-            a.status = status;
+            AddFriend af = new AddFriend();
+            af.id = id;
+            af.phone = phone;
+            af.remark = remark;
+            af.requesttime = requesttime;
+            af.status = status;
 
-            addFriends.add(a);
+            addFriends.add(af);
 
         }
         cur.close();
         db.close();
         return addFriends;
+    }
+
+    public AddFriend getAddFriendByPhone(String phone) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_ADDFRIEND, null, "phone=?", new String[]{phone + ""}, null, null, null);
+
+        AddFriend af = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+            phone = cur.getString(cur.getColumnIndex("phone"));
+            String remark = cur.getString(cur.getColumnIndex("remark"));
+            int status = cur.getInt(cur.getColumnIndex("status"));
+
+            af = new AddFriend();
+            af.id = id;
+            af.phone = phone;
+            af.remark = remark;
+            af.requesttime = requesttime;
+            af.status = status;
+        }
+        cur.close();
+        db.close();
+
+        return af;
+    }
+
+    public AddFriend getAddFriendByRemark(String remark) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_ADDFRIEND, null, "remark like ?", new String[]{"%" + remark + "%"}, null, null, null);
+
+        AddFriend af = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+            String phone = cur.getString(cur.getColumnIndex("phone"));
+            remark = cur.getString(cur.getColumnIndex("remark"));
+            int status = cur.getInt(cur.getColumnIndex("status"));
+
+            af = new AddFriend();
+            af.id = id;
+            af.phone = phone;
+            af.remark = remark;
+            af.requesttime = requesttime;
+            af.status = status;
+        }
+        cur.close();
+        db.close();
+
+        return af;
     }
 
     public void addAddFriend(AddFriend a) {
@@ -382,6 +434,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("requesttime", a.requesttime);
         values.put("phone", a.phone);
+        values.put("remark", a.remark);
         values.put("status", a.status);
         db.insert(TABLE_ADDFRIEND, null, values);
         db.close();
@@ -393,20 +446,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("requesttime", a.requesttime);
         cv.put("phone", a.phone);
+        cv.put("remark", a.remark);
         cv.put("status", a.status);
         String[] args = {a.id + ""};
         db.update(TABLE_ADDFRIEND, cv, "id=?", args);
         db.close();
     }
 
-    public void deleteAddFriend(String cellphone) {
-        if (TextUtils.isEmpty(cellphone)) {
-            return;
-        }
+    public void deleteAddFriends() {
         if (db == null)
             db = getWritableDatabase();
-        Log.d("test", "删除记录:" + cellphone);
-        db.delete(TABLE_ADDFRIEND, "phone=?", new String[]{cellphone});
+        db.delete(TABLE_ADDFRIEND, null, null);
         db.close();
     }
 }
