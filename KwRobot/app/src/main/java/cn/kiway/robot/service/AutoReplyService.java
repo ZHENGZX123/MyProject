@@ -291,6 +291,7 @@ public class AutoReplyService extends AccessibilityService {
     private void doActionCommand(String msg, Command command) {
         if (actions.size() < 1) {
             toast("需要至少有1个家长消息");
+            sendMsgToServer2(500, command);
             return;
         }
         Long firstKey = actions.keySet().iterator().next();
