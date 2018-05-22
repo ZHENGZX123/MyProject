@@ -97,8 +97,6 @@ public class Constant {
     public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
     public static final String SEND_GROUP_MSG_CMD = "sendGroupMsgCmd";
     public static final String AT_PERSONS_CMD = "atPersonsCmd";
-    public static final String UPDATE_NICKNAME_CMD = "updateNickNameCmd";
-    public static final String UPDATE_AVATAR_CMD = "updateAvatarCmd";
     public static final String CHECK_NEW_VERSION_CMD = "checkNewVersionCmd";
     public static final String PERSION_NEARBY_CMD = "persionNearbyCmd";
 
@@ -108,6 +106,10 @@ public class Constant {
     public static final String DELETE_FRIEND_CIRCLE_REPLY_CMD = "deleteFriendCircleReplyCmd";
     public static final String ADD_FRIEND_CMD = "addFriendCmd";
     public static final String ADD_FRIEND_REPLY_CMD = "addFriendReplyCmd";
+    public static final String UPDATE_NICKNAME_CMD = "updateNickNameCmd";
+    public static final String UPDATE_NICKNAME_REPLY_CMD = "updateNickNameReplyCmd";
+    public static final String UPDATE_AVATAR_CMD = "updateAvatarCmd";
+    public static final String UPDATE_AVATAR_REPLY_CMD = "updateAvatarReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -115,6 +117,8 @@ public class Constant {
         replies.put(SEND_FRIEND_CIRCLE_CMD, SEND_FRIEND_CIRCLE_REPLY_CMD);
         replies.put(DELETE_FRIEND_CIRCLE_CMD, DELETE_FRIEND_CIRCLE_REPLY_CMD);
         replies.put(ADD_FRIEND_CMD, ADD_FRIEND_REPLY_CMD);
+        replies.put(UPDATE_NICKNAME_CMD, UPDATE_NICKNAME_REPLY_CMD);
+        replies.put(UPDATE_AVATAR_CMD, UPDATE_AVATAR_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -171,6 +175,10 @@ public class Constant {
         backdoors.put(SEND_FRIEND_CIRCLE_CMD, Action.TYPE_SEND_MOMENT);
         backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
         backdoors.put(ADD_FRIEND_CMD, Action.TYPE_ADD_FRIEND);
+        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
+        backdoors.put(UPDATE_NICKNAME_CMD, Action.TYPE_FIX_NICKNAME);
+        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
+        backdoors.put(UPDATE_AVATAR_CMD, Action.TYPE_FIX_ICON);
 
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
@@ -183,8 +191,7 @@ public class Constant {
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
-        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
-        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
+
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
