@@ -119,6 +119,7 @@ import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
+import static cn.kiway.robot.util.Constant.UPDATE_AVATAR_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
@@ -249,9 +250,14 @@ public class AutoReplyService extends AccessibilityService {
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
                         command.token = o.optString("token");
-                        command.content = o.optString("content");
-                        if (TextUtils.isEmpty(command.content)) {
-                            command.content = o.optJSONObject("content").toString();
+
+                        if (o.has("content")) {
+                            command.content = o.optString("content");
+                            if (TextUtils.isEmpty(command.content)) {
+                                command.content = o.optJSONObject("content").toString();
+                            }
+                        } else if (o.has("oldName") || o.has("url")) {
+                            command.content = Base64.encodeToString(recv.msg.getBytes(), NO_WRAP);
                         }
                         doActionCommand(recv.msg, command);
                         return;
@@ -316,6 +322,8 @@ public class AutoReplyService extends AccessibilityService {
                 break;
             case DELETE_FRIEND_CIRCLE_CMD:
             case ADD_FRIEND_CMD:
+            case UPDATE_NICKNAME_CMD:
+            case UPDATE_AVATAR_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -529,9 +537,12 @@ public class AutoReplyService extends AccessibilityService {
                     JSONObject o = new JSONObject()
                             .put("cmd", replies.get(command.cmd))
                             .put("type", replies.get(command.cmd))
-                            .put("id", command.id)
                             .put("token", command.token)
                             .put("statusCode", statusCode);
+
+                    if (!TextUtils.isEmpty(command.id)) {
+                        o.put("id", command.id);
+                    }
 
                     if (command.cmd.equals(UPDATE_NICKNAME_CMD)) {
                         o.put("robotId", robotId);
@@ -1205,6 +1216,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void fixMyNicknameOrIcon(int actionType, String url) {
+        Log.d("test", "fixMyNicknameOrIcon , url = " + url);
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
         new Thread() {
@@ -2979,7 +2991,7 @@ public class AutoReplyService extends AccessibilityService {
             return null;
         }
         // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM");
+        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM/Camera/");
         if (!appDir.exists()) {
             appDir.mkdirs();
         }
@@ -2991,6 +3003,9 @@ public class AutoReplyService extends AccessibilityService {
             fos.flush();
             fos.close();
 
+            Log.d("test", "path = " + file.getAbsolutePath());
+            Log.d("test", "name = " + file.getName());
+            Log.d("test", "size = " + file.length());
 
             if (insertDB) {
                 MediaStore.Images.Media.insertImage(context.getContentResolver(),

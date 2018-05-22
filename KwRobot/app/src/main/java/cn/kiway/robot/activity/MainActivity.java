@@ -300,8 +300,8 @@ public class MainActivity extends BaseActivity {
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
                 String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + " 接收次数：" + recvCount + "回复次数：" +
-                        replyCount + " areaCode：" + areaCode);
+                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + "\n接收次数：" + recvCount + "回复次数：" +
+                        replyCount + "\nareaCode：" + areaCode);
             }
         });
     }

@@ -165,7 +165,7 @@ public class Constant {
     //{"cmd": "删除朋友圈","content":"快捷键"}
     //{"cmd": "检查新版本"}
     //{"cmd": "修改昵称","newName":"客服888", "oldName":"客服888" , "me":true}
-    //{"cmd": "修改头像","url":"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2988428321,2844769018&fm=58&bpow=400&bpoh=600"}
+    //{"cmd": "修改头像","url":"http://pic.92to.com/201611/18/20150823115832203.jpg"}
     //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" }
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
