@@ -1178,14 +1178,15 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private boolean findNearbyPeopleInListView(AccessibilityNodeInfo rootNode) {
+        if (rootNode == null) {
+            return false;
+        }
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.LinearLayout") && nodeInfo.getChildCount() >= 3) {
                 String nickname = nodeInfo.getChild(0).getText().toString();
                 Log.d("test", "find nickname = " + nickname);
@@ -1433,7 +1434,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                getMoment = checkMomentInListView(text);
+                                getMoment = getMomentInListView(text);
                                 Log.d("test", "getMoment = " + getMoment);
                             }
                         });
@@ -1455,7 +1456,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private boolean checkMomentInListView(String text) {
+    private boolean getMomentInListView(String text) {
         boolean find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT, false);
         if (!find) {
             return false;
@@ -1921,14 +1922,15 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (rootNode == null) {
+                    return;
+                }
                 int count = rootNode.getChildCount();
                 for (int i = 0; i < count; i++) {
                     AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
                     if (nodeInfo == null) {
                         continue;
                     }
-                    Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-                    Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
                     if (nodeInfo.getClassName().equals("android.widget.CheckBox")) {
                         AccessibilityNodeInfo prevNode = rootNode.getChild(i - 1);
                         String nickname = prevNode.getText().toString();
@@ -1953,8 +1955,6 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo == null) {
                 continue;
             }
-            Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
             if (nodeInfo.getClassName().equals("android.widget.ImageButton")) {
                 if (i - 2 < 0) {
                     continue;
@@ -2181,6 +2181,9 @@ public class AutoReplyService extends AccessibilityService {
     private AccessibilityNodeInfo faxianView;
 
     private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
+        if (rootNode == null) {
+            return;
+        }
         int count = rootNode.getChildCount();
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
@@ -3260,6 +3263,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     public boolean test(AccessibilityNodeInfo rootNode) {
+        if (rootNode == null) {
+            return false;
+        }
         int count = rootNode.getChildCount();
         Log.d("test", "count = " + count);
         for (int i = 0; i < count; i++) {
