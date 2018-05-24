@@ -45,6 +45,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
+import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
@@ -61,6 +62,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_WELCOME = 44;
     private static final int MSG_GET_QA = 55;
     private static final int MSG_GET_CELLPHONES = 66;
+    private static final int MSG_GET_VALIDATION = 77;
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -79,6 +81,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_UPGRADE);
         mHandler.sendEmptyMessage(MSG_WELCOME);
         mHandler.sendEmptyMessage(MSG_GET_QA);
+        mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
         mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
     }
 
@@ -310,6 +313,38 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
+    public void getValidation() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    if (TextUtils.isEmpty(areaCode)) {
+                        toast("areaCode为空");
+                        return;
+                    }
+                    Log.d("test", "areaCode = " + areaCode);
+
+                    String url = clientUrl + "/static/download/version/label.json";
+                    Log.d("test", "url1 = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "getValidation  = " + ret);
+                    JSONObject obj = new JSONObject(ret);
+                    String validation = obj.optString(areaCode);
+                    if (TextUtils.isEmpty(validation)) {
+                        validation = DEFAULT_VALIDATION;
+                    }
+                    getSharedPreferences("validation", 0).edit().putString("validation", validation).commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     public void test(View v) {
 //        String fakeRecv = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
 //                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\"," +
@@ -467,6 +502,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_GET_QA);
                 getQA();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_QA, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_VALIDATION) {
+                mHandler.removeMessages(MSG_GET_VALIDATION);
+                getValidation();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_VALIDATION, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_CELLPHONES) {
                 mHandler.removeMessages(MSG_GET_CELLPHONES);
                 getCellPhones();
@@ -549,7 +588,8 @@ public class MainActivity extends BaseActivity {
                 //添加进数据库
                 new MyDBHelper(getApplicationContext()).addAddFriend(af);
             }
-            content.put("content", "你好，可以加个好友吗？");
+            String validation = getSharedPreferences("validation", 0).getString("validation", DEFAULT_VALIDATION);
+            content.put("content", validation);
             content.put("members", members);
             o.put("content", content);
             o.put("token", "1526895528997");
