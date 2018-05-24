@@ -48,6 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.kiway.robot.KWApplication;
+import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.service.AutoReplyService;
@@ -160,7 +161,7 @@ public class Utils {
             if (af != null) {
                 af.status = STATUS_ADD_SUCCESS;
                 new MyDBHelper(c).updateAddFriend(af);
-                Utils.updateUserStatus(af.phone, STATUS_ADD_SUCCESS);
+                Utils.updateUserStatus(af.phone, name, STATUS_ADD_SUCCESS);
             }
             return true;
         }
@@ -477,7 +478,7 @@ public class Utils {
         return str;
     }
 
-    public static void updateUserStatus(String phone, int status) {
+    public static void updateUserStatus(String phone, String name, int status) {
         new Thread() {
             @Override
             public void run() {
@@ -491,6 +492,10 @@ public class Utils {
                     List<NameValuePair> values = new ArrayList<>();
                     values.add(new BasicNameValuePair("phone", phone));
                     values.add(new BasicNameValuePair("status", "" + status));
+                    if (status == STATUS_ADD_SUCCESS) {
+                        values.add(new BasicNameValuePair("nickName", name));
+                    }
+
                     UrlEncodedFormEntity urlEntity = new UrlEncodedFormEntity(values,
                             "UTF-8");
                     httpRequest.setEntity(urlEntity);
@@ -530,5 +535,57 @@ public class Utils {
         PendingIntent pi2 = PendingIntent.getBroadcast(c, 0, intent2, 0);
         //发送短信
         manager.sendTextMessage(phoneNumber, null, message, pi1, pi2);
+    }
+
+
+    private static int lastStatus = -1;
+
+    //status： 1机器人正常 2机器人异常 3微信正常 4微信异常
+    public static void updateOpenIdOrStatus(MainActivity act, Object o) {
+        if (act == null) {
+            return;
+        }
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String xtoken = act.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    Log.d("test", "xtoken = " + xtoken);
+                    client.addHeader("x-auth-token", xtoken);
+                    String url = clientUrl + "/robot/" + robotId;
+                    Log.d("test", "updateOpenIdOrStatus url = " + url);
+
+                    com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
+                    if (o instanceof String) {
+                        param.put("openId", o);
+                    } else if (o instanceof Integer) {
+                        if (lastStatus == (int) o) {
+                            Log.d("test", "状态一致，本次不上报");
+                            return;
+                        }
+                        param.put("status", o);
+                        lastStatus = (int) o;
+                    }
+                    Log.d("test", "param = " + param.toString());
+
+                    client.put(act, url, param, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "updateOpenIdOrStatus onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "updateOpenIdOrStatus onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
     }
 }
