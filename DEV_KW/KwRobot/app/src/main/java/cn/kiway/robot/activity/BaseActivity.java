@@ -1,15 +1,19 @@
 package cn.kiway.robot.activity;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -21,6 +25,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.util.List;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.util.RootCmd;
@@ -185,5 +190,29 @@ public class BaseActivity extends Activity {
         }
         msg.obj = savedFilePath;
         mHandler.sendMessage(msg);
+    }
+
+    public boolean isServiceEnabled() {
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(Context
+                .ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> accessibilityServices = accessibilityManager
+                .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo info : accessibilityServices) {
+            if (info.getId().equals(getPackageName() + "/.service.AutoReplyService")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void doStartService() {
+        try {
+            toast("选择“开维客服机器人“-选择“打开”");
+            Intent accessibleIntent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivity(accessibleIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            toast("该手机不支持微信自动回复功能");
+        }
     }
 }

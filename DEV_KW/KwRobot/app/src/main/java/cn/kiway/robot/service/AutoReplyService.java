@@ -1337,7 +1337,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() / 762 * 120);
+                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
 
                 new Thread() {
                     @Override
@@ -2162,7 +2162,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() / 762 * 180);
+                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -3344,5 +3344,93 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "=================findLastMsgViewInListView====================");
         findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
         longClickSomeWhere(mFindTargetNode);
+    }
+
+    public void registerWechat() {
+        //循环检测是否有“注册”按钮
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    boolean hasRegisterButton = false;
+                    int tryCount = 0;
+
+                    while (!hasRegisterButton) {
+                        sleep(5000);
+                        //TODO这里要做兼容
+
+                        hasRegisterButton = findTargetNode(NODE_BUTTON, "注册", CLICK_SELF, true);
+                        if (hasRegisterButton) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    findTargetNode(NODE_EDITTEXT, 1, "陈晨");
+                                    findTargetNode(NODE_EDITTEXT, 3, "kiway123");
+                                    String phoneNumber = Utils.getPhoneNumber(getApplicationContext());
+                                    if (TextUtils.isEmpty(phoneNumber)) {
+                                        Utils.sendSMS(getApplicationContext(), "10010", "CXHM");
+                                    } else {
+                                        findTargetNode(NODE_EDITTEXT, 2, phoneNumber);
+                                        clickRegisterWechat();
+                                    }
+                                }
+                            }, 2000);
+                        }
+
+                        Log.d("test", "hasRegisterButton = " + hasRegisterButton);
+                        tryCount++;
+                        if (!hasRegisterButton && tryCount == 10) {
+                            toast("一直没有找到“注册”按钮");
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public void doFullFillCellPhone(String phoneNumber) {
+        findTargetNode(NODE_EDITTEXT, 2, phoneNumber);
+        clickRegisterWechat();
+    }
+
+    private void clickRegisterWechat() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findTargetNode(NODE_BUTTON, "注册", CLICK_SELF, true);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //隐私保护
+                        findTargetNode(NODE_TEXTVIEW, "同意", CLICK_SELF, true);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //安全校验
+                                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 430 / 762);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int startX = DensityUtil.getScreenWidth() * 90 / 428;
+                                        int endX = DensityUtil.getScreenWidth() * 338 / 428;
+                                        int y = DensityUtil.getScreenHeight() * 412 / 762;
+                                        execRootCmdSilent("input swipe " + startX + " " + y + " " + endX + " " + y);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                            }
+                                        }, 8000);
+                                    }
+                                }, 8000);
+                            }
+                        }, 8000);
+                    }
+                }, 8000);
+            }
+        }, 2000);
     }
 }

@@ -14,7 +14,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_margin="30dp"
             android:text="开维客服机器人"
             android:textColor="#000000"
             android:textSize="30sp" />
@@ -144,19 +143,32 @@
 
 
     <Button
+        android:id="@+id/upgrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:onClick="checkNewVersion"
+        android:text="检测新版本" />
+
+    <Button
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="注册微信号" />
+        android:layout_toRightOf="@+id/upgrade"
+        android:onClick="registerWechat"
+        android:text="注册微信号"
+        android:visibility="gone" />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/register"
-        android:onClick="checkNewVersion"
-        android:text="检测新版本" />
-
+        android:layout_toRightOf="@+id/upgrade"
+        android:onClick="test"
+        android:text="测试用"
+        android:visibility="gone" />
 
 </RelativeLayout>
