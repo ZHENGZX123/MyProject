@@ -93,6 +93,8 @@ import static cn.kiway.robot.entity.Action.TYPE_SET_COLLECTOR;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADDING;
+import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
+import static cn.kiway.robot.entity.AddFriend.STATUS_NOT_EXISTED;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
@@ -1628,8 +1630,7 @@ public class AutoReplyService extends AccessibilityService {
                             public void run() {
                                 if (currentWechatPage.equals("com.tencent.mm.plugin.fts.ui.FTSAddFriendUI")) {
                                     Log.d("test", "没有跳页");
-                                    boolean find = findTargetNode(NODE_TEXTVIEW, "该用户不存在");
-                                    //其他情况。。。
+                                    updateUserStatus(member, "该用户不存在", STATUS_NOT_EXISTED);
                                     notifyObj(2000);
                                 } else if (currentWechatPage.equals("com.tencent.mm.plugin.profile.ui.ContactInfoUI")) {
 
@@ -1638,24 +1639,18 @@ public class AutoReplyService extends AccessibilityService {
                                     if (mFindTargetNode == null) {
                                         //已经是好友,返回即可
                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                        findTargetNode(NODE_TEXTVIEW, 3);
+                                        String remark = mFindTargetNode.getText().toString();
+                                        updateUserStatus(member, remark, STATUS_ADD_SUCCESS);
                                         notifyObj(3000);
                                     } else {
                                         //还不是好友
                                         //0.寻找昵称
                                         String remarkIndex = Utils.getParentRemark(getApplication(), 1);
                                         findTargetNode(NODE_TEXTVIEW, 3);
-                                        if (mFindTargetNode != null) {
-                                            String remark = remarkIndex + " " + mFindTargetNode.getText().toString();
-                                            Log.d("test", "remark = " + remark);
-                                            AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(member);
-                                            Log.d("test", "af = " + af);
-                                            if (af != null) {
-                                                af.remark = remark;
-                                                af.status = STATUS_ADDING;
-                                                new MyDBHelper(getApplicationContext()).updateAddFriend(af);
-                                                Utils.updateUserStatus(member, STATUS_ADDING);
-                                            }
-                                        }
+                                        String remark = remarkIndex + " " + mFindTargetNode.getText().toString();
+                                        updateUserStatus(member, remark, STATUS_ADDING);
+
 
                                         findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_SELF, true);
                                         mHandler.postDelayed(new Runnable() {
@@ -1692,6 +1687,17 @@ public class AutoReplyService extends AccessibilityService {
                 }, 3000);
             }
         });
+    }
+
+    private void updateUserStatus(String photo, String remark, int status) {
+        AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(photo);
+        Log.d("test", "af = " + af);
+        if (af != null) {
+            af.remark = remark;
+            af.status = status;
+            new MyDBHelper(getApplicationContext()).updateAddFriend(af);
+            Utils.updateUserStatus(photo, status);
+        }
     }
 
     private void notifyObj(long sleepTime) {

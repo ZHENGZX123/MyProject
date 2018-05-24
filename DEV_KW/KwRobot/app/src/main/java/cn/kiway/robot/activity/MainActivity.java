@@ -209,8 +209,10 @@ public class MainActivity extends BaseActivity {
                 int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
                 int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
                 String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                nameTV.setText("帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + "\n接收次数：" + recvCount + "回复次数：" +
-                        replyCount + "\nareaCode：" + areaCode);
+                nameTV.setText(
+                        "帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + "\n"
+                                + "接收次数：" + recvCount + " 回复次数：" + replyCount + "\n"
+                                + "areaCode：" + areaCode);
             }
         });
     }
@@ -342,8 +344,9 @@ public class MainActivity extends BaseActivity {
 //        for (AddFriend af : afs) {
 //            Log.d("test", "af = " + af);
 //        }
-        int a = 100;
-        System.out.println(a / 0);
+        //new MyDBHelper(getApplicationContext()).deleteAddFriends();
+        getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
+        getCellPhones();
     }
 
     public void sharePic(View view) {
@@ -477,6 +480,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
+                    if (!isServiceEnabled()) {
+                        toast("服务未开启，不能主动加好友");
+                        return;
+                    }
+
                     int current = getSharedPreferences("currentUser", 0).getInt("currentUser", 1);
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
                     if (TextUtils.isEmpty(areaCode)) {

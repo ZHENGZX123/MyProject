@@ -484,7 +484,7 @@ public class Utils {
                 try {
                     String url = clientUrl + "/users/status";
                     Log.d("test", "url = " + url);
-                    Log.d("test", "phone = " + phone + " staqtus = " + status);
+                    Log.d("test", "phone = " + phone + " status = " + status);
                     HttpPut httpRequest = new HttpPut(url);
                     DefaultHttpClient client = new DefaultHttpClient();
 
