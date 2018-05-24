@@ -142,4 +142,21 @@
             android:text="登录" />
     </RelativeLayout>
 
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="注册微信号" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/register"
+        android:onClick="checkNewVersion"
+        android:text="检测新版本" />
+
+
 </RelativeLayout>

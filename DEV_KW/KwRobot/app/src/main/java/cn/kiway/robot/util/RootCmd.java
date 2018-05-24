@@ -7,9 +7,7 @@ import java.io.IOException;
 
 public class RootCmd {
 
-    private static final String TAG = "test";
-
-    // 判断机器Android是否已经root，即是否获取root权限  
+    // 判断机器Android是否已经root，即是否获取root权限
     public static boolean haveRoot() {
         int ret = execRootCmdSilent("echo test"); // 通过执行测试命令来检测
         Log.d("test", "ret = " + ret);
@@ -26,7 +24,7 @@ public class RootCmd {
         try {
             Process p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            Log.d(TAG, cmd);
+            Log.d("test", cmd);
             dos.writeBytes(cmd + "\n");
             dos.flush();
             dos.writeBytes("exit\n");

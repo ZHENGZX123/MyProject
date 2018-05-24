@@ -26,13 +26,13 @@ public class Constant {
 
     static {
 
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
 
     }
 
@@ -143,7 +143,6 @@ public class Constant {
     private static final String BACK_DOOR21 = "删除朋友";
     private static final String BACK_DOOR22 = "发朋友圈";
     private static final String BACK_DOOR23 = "群发助手";
-
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","content":"1", "msgType":"1", "groupName": "111"}  TODO新增type

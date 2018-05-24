@@ -139,4 +139,8 @@ public class LoginActivity extends BaseActivity {
             dismissPD();
         }
     }
+
+    public void register(View view) {
+
+    }
 }

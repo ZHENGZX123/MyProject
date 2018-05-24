@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,8 +31,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -123,64 +120,6 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public void checkFCFrom(View v) {
-        String forwardfrom = getSharedPreferences("FCFrom", 0).getString("FCFrom", "朋友圈使者");
-        EditText et = new EditText(this);
-        et.setSingleLine();
-        et.setText(forwardfrom);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("当前朋友圈使者：" + forwardfrom)
-                .setView(et)
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = et.getText().toString().trim();
-                        if (TextUtils.isEmpty(content)) {
-                            toast("不能为空");
-                            return;
-                        }
-                        getSharedPreferences("FCFrom", 0).edit().putString("FCFrom", content).commit();
-                    }
-                }).setPositiveButton("取消", null).create();
-        dialog.show();
-    }
-
-    public void checkFCRemark(View v) {
-        String remark = getSharedPreferences("FCremark", 0).getString("FCremark", "");
-        if (TextUtils.isEmpty(remark)) {
-            toast("您还没有设置朋友圈备注");
-        } else {
-            toast("当前朋友圈备注：" + remark);
-        }
-    }
-
-    public void setForwardFrom(View v) {
-        startActivity(new Intent(this, SetPublicAccountActivity.class));
-        if (true) {
-            return;
-        }
-        String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom",
-                "wxid_cokkmqud47e121的接口测试号");
-        EditText et = new EditText(this);
-        et.setSingleLine();
-        et.setText(forwardfrom);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("当前转发人：" + forwardfrom)
-                .setView(et)
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = et.getText().toString().trim();
-                        if (TextUtils.isEmpty(content)) {
-                            toast("不能为空");
-                            return;
-                        }
-                        getSharedPreferences("forwardfrom", 0).edit().putString("forwardfrom", content).commit();
-                    }
-                }).setPositiveButton("取消", null).create();
-        dialog.show();
-    }
-
     public void setCollector(View view) {
         String oldCollector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
         EditText et = new EditText(this);
@@ -210,31 +149,6 @@ public class MainActivity extends BaseActivity {
                 }).setPositiveButton("取消", null).create();
         dialog.show();
     }
-
-    public void setOpenId(View view) {
-        String openId = getSharedPreferences("openId", 0).getString("openId", "osP5zwJ-lEdJVGD-_5_WyvQL9Evo");
-        EditText et = new EditText(this);
-        et.setSingleLine();
-        et.setText(openId);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("当前openId：" + openId)
-                .setView(et)
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = et.getText().toString().trim();
-                        if (TextUtils.isEmpty(content)) {
-                            toast("不能为空");
-                            return;
-                        }
-                        getSharedPreferences("openId", 0).edit().putString("openId", content).commit();
-
-                        updateOpenIdOrStatus(content);
-                    }
-                }).setPositiveButton("取消", null).create();
-        dialog.show();
-    }
-
 
     @Override
     protected void onResume() {
@@ -339,36 +253,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void reLogin(View view) {
-        //ZbusUtils.close();
         KWApplication.closeMQ();
 
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
-    }
-
-    public void checkNewVersion(View view) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String url = clientUrl + "/static/download/version/zip_robot.json";
-                    Log.d("test", "url = " + url);
-                    HttpGet httpRequest = new HttpGet(url);
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "new version = " + ret);
-                    Message msg = new Message();
-                    msg.what = 2;
-                    msg.obj = ret;
-                    mHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mHandler.sendEmptyMessage(3);
-                }
-            }
-        }.start();
     }
 
     private void getQA() {
@@ -580,50 +469,7 @@ public class MainActivity extends BaseActivity {
 
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.what == 2) {
-                String ret = (String) msg.obj;
-                try {
-                    //1.apk更新
-                    Log.d("test", "新版本返回值" + ret);
-                    String apkVersion = new JSONObject(ret).getString("apkCode");
-                    String apkUrl = new JSONObject(ret).getString("apkUrl");
-                    if (getCurrentVersion(getApplicationContext()).compareTo(apkVersion) < 0) {
-                        toast("有新的版本，正在后台下载，请稍等");
-                        downloadSilently(apkUrl, apkVersion);
-                    } else {
-                        toast("已经是最新版本");
-                    }
-                } catch (Exception e) {
-                    mHandler.sendEmptyMessage(3);
-                    e.printStackTrace();
-                }
-            } else if (msg.what == 3) {
-                toast("检查更新失败");
-            } else if (msg.what == 4) {
-                // 下载完成后安装
-                String savedFilePath = (String) msg.obj;
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(savedFilePath)), "application/vnd.android.package-archive");
-                startActivity(intent);
-                finish();
-            } else if (msg.what == 5) {
-                KWApplication.closeMQ();
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        String savedFilePath = (String) msg.obj;
-                        String cmd = "pm install -r " + savedFilePath;
-                        RootCmd.execRootCmdSilent(cmd);
-                    }
-                }.start();
-            } else if (msg.what == MSG_NETWORK_OK) {
+            if (msg.what == MSG_NETWORK_OK) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
@@ -730,57 +576,6 @@ public class MainActivity extends BaseActivity {
         String temp = o.toString();
         Log.d("test", "temp = " + temp);
         AutoReplyService.instance.sendReplyImmediately(temp, true);
-    }
-
-    private void downloadSilently(String apkUrl, String version) {
-        final String savedFilePath = "/mnt/sdcard/cache/kw_robot_" + version + ".apk";
-        if (new File(savedFilePath).exists()) {
-            Log.d("test", "该文件已经下载好了");
-            askforInstall(savedFilePath);
-            return;
-        }
-        RequestParams params = new RequestParams(apkUrl);
-        params.setSaveFilePath(savedFilePath);
-        params.setAutoRename(false);
-        params.setAutoResume(true);
-        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
-            @Override
-            public void onSuccess(File result) {
-                Log.d("test", "onSuccess");
-                //成功后弹出对话框询问，是否安装
-                askforInstall(savedFilePath);
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Log.d("test", "onError");
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                Log.d("test", "onCancelled");
-            }
-
-            @Override
-            public void onFinished() {
-                Log.d("test", "onFinished");
-            }
-        });
-    }
-
-    private void askforInstall(final String savedFilePath) {
-        startInstall(savedFilePath);
-    }
-
-    private void startInstall(String savedFilePath) {
-        Message msg = new Message();
-        if (RootCmd.haveRoot()) {
-            msg.what = 5;
-        } else {
-            msg.what = 4;
-        }
-        msg.obj = savedFilePath;
-        mHandler.sendMessage(msg);
     }
 
     public void clickInstruction(View view) {
