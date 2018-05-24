@@ -1,9 +1,12 @@
 package cn.kiway.robot.util;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -506,5 +509,26 @@ public class Utils {
     public static boolean checkHasRequested(Context c, String phone) {
         AddFriend af = new MyDBHelper(c).getAddFriendByPhone(phone);
         return !(af == null);
+    }
+
+    public static String getPhoneNumber(Context c) {
+        TelephonyManager mTelephonyMgr;
+        mTelephonyMgr = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        String number = mTelephonyMgr.getLine1Number();
+        Log.d("test", "number = " + number);
+        return number;
+    }
+
+    public static void sendSMS(Context c, String phoneNumber, String message) {
+        //获取短信管理器
+        SmsManager manager = SmsManager.getDefault();
+        //自定一两个intent,发送两个隐式意图,这两个隐式意图自己定义
+        Intent intent1 = new Intent("com.example.SENT");
+        ;
+        Intent intent2 = new Intent("com.example.DELIVERY");
+        PendingIntent pi1 = PendingIntent.getBroadcast(c, 0, intent1, 0);//延迟意图
+        PendingIntent pi2 = PendingIntent.getBroadcast(c, 0, intent2, 0);
+        //发送短信
+        manager.sendTextMessage(phoneNumber, null, message, pi1, pi2);
     }
 }

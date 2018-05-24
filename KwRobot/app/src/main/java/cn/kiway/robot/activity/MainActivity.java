@@ -1,19 +1,15 @@
 package cn.kiway.robot.activity;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.AlertDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -36,7 +32,6 @@ import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
@@ -220,32 +215,12 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private boolean isServiceEnabled() {
-        AccessibilityManager accessibilityManager = (AccessibilityManager) getSystemService(Context
-                .ACCESSIBILITY_SERVICE);
-        List<AccessibilityServiceInfo> accessibilityServices = accessibilityManager
-                .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-        for (AccessibilityServiceInfo info : accessibilityServices) {
-            if (info.getId().equals(getPackageName() + "/.service.AutoReplyService")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void clickNetwork(View view) {
         startActivity(new Intent(this, NoNetActivity.class));
     }
 
     public void start(View view) {
-        try {
-            toast("选择“开维客服机器人“-选择“打开”");
-            Intent accessibleIntent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            startActivity(accessibleIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-            toast("该手机不支持微信自动回复功能");
-        }
+        doStartService();
     }
 
     public void filter(View view) {
