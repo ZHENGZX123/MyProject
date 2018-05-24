@@ -166,6 +166,7 @@ public class AutoReplyService extends AccessibilityService {
     private ArrayList<AccessibilityNodeInfo> peoples = new ArrayList<>();
 
     private final Object object = new Object();
+    private int checkCount;
 
     @Override
     public void onCreate() {
@@ -433,43 +434,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         });
-    }
-
-    private void doCheckZbusStatus(long id, String msg) {
-        //检测心跳：心跳测试使者 100007
-        if (msg.contains(HEART_BEAT_TESTER) && msg.contains("100007")) {
-            if (msg.contains("客服已下线") || msg.contains("客服正忙")) {
-                if (id != lastHearBeatID) {
-                    zbusFailureCount++;
-                    Log.d("test", "心跳测试：zbus断开 FailureCount = " + zbusFailureCount);
-                    if (zbusFailureCount % 3 == 0) {
-                        if (MainActivity.instance != null) {
-                            MainActivity.instance.updateOpenIdOrStatus(2);
-                        }
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                //断开后3秒重连
-                                KWApplication.closeMQ();
-                                try {
-                                    sleep(3000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                Utils.initZbus(getApplication());
-                            }
-                        }.start();
-                    }
-                }
-            } else {
-                Log.d("test", "心跳测试：zbus正常");
-                lastHearBeatID = id;
-                zbusFailureCount = 0;
-                if (MainActivity.instance != null) {
-                    MainActivity.instance.updateOpenIdOrStatus(1);
-                }
-            }
-        }
     }
 
     public synchronized void sendMsgToServer(long id, Action action) {
@@ -813,12 +777,8 @@ public class AutoReplyService extends AccessibilityService {
                     return;
                 }
 
-                //check wechat upgrade
-                boolean find1 = findTargetNode(NODE_BUTTON, "取消", CLICK_NONE, false);
-                boolean find2 = findTargetNode(NODE_BUTTON, "立即安装|下载安装", CLICK_NONE, true);
-                if (find1 && find2) {
-                    findTargetNode(NODE_BUTTON, "取消", CLICK_SELF, false);
-                }
+                //检查一些异常的情况
+                checkWechatExceptionStatus();
 
                 if (currentActionID == -1) {
                     Log.d("maptrix", "没有事件，return1");
@@ -903,6 +863,29 @@ public class AutoReplyService extends AccessibilityService {
                     }, 2000);
                 }
                 break;
+        }
+    }
+
+    private void checkWechatExceptionStatus() {
+        checkCount++;
+        if (checkCount % 20 != 0) {
+            return;
+        }
+        Log.d("test", "checkWechatExceptionStatus");
+        //1、微信更新弹出框
+        boolean find1 = findTargetNode(NODE_BUTTON, "取消", CLICK_NONE, false);
+        boolean find2 = findTargetNode(NODE_BUTTON, "立即安装|下载安装", CLICK_NONE, true);
+        if (find1 && find2) {
+            findTargetNode(NODE_BUTTON, "取消", CLICK_SELF, false);
+        }
+        //2、TODO微信封号弹出框、退到登录页面
+        boolean find3 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
+        boolean find4 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);
+        boolean find5 = findTargetNode(NODE_BUTTON, "更多", CLICK_NONE, true);
+        if (find3 && find4 && find5) {
+            Utils.updateOpenIdOrStatus(MainActivity.instance, 4);
+        } else {
+            Utils.updateOpenIdOrStatus(MainActivity.instance, 3);
         }
     }
 
@@ -1696,7 +1679,7 @@ public class AutoReplyService extends AccessibilityService {
             af.remark = remark;
             af.status = status;
             new MyDBHelper(getApplicationContext()).updateAddFriend(af);
-            Utils.updateUserStatus(photo, status);
+            Utils.updateUserStatus(photo, remark, status);
         }
     }
 
