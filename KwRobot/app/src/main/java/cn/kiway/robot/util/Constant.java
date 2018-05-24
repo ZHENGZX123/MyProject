@@ -74,6 +74,8 @@ public class Constant {
 
     public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下序号或关键字发送咨询招生相关问题。谢谢！";
 
+    public static final String DEFAULT_VALIDATION = "您好，可以加个好友吗？";
+
     public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下序号或关键字发送咨询招生相关问题，谢谢！\n" +
             "1、计生证明或者计划生育证明\n" +
             "2、租房或者住房\n" +
