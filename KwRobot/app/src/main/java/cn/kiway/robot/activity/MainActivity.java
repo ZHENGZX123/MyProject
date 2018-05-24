@@ -478,15 +478,8 @@ public class MainActivity extends BaseActivity {
 //        for (AddFriend af : afs) {
 //            Log.d("test", "af = " + af);
 //        }
-
-//        Platform.ShareParams sp = new Platform.ShareParams();
-//        sp.setImagePath(localPath);
-//        sp.setShareType(Platform.SHARE_IMAGE);
-//        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-//        wx.share(sp);
-
-        String loginWxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-        Log.d("test", "loginWxNo = " + loginWxNo);
+        int a = 100;
+        System.out.println(a / 0);
     }
 
     public void sharePic(View view) {
