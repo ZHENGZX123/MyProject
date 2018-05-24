@@ -1337,7 +1337,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                clickSomeWhere(DensityUtil.getScreenWidth() / 2, 296);//FIXME
+                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() / 762 * 120);
 
                 new Thread() {
                     @Override
@@ -2162,7 +2162,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                clickSomeWhere(DensityUtil.getScreenWidth() / 2, 452);//FIXME
+                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() / 762 * 180);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -2830,10 +2830,8 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "clickSomeWhere node = " + node.getClassName());
         Rect r = new Rect();
         node.getBoundsInScreen(r);
-        // 1.生成点击坐标
         int x = r.width() / 2 + r.left;
         int y = r.height() / 2 + r.top;
-        // 2.执行su命令
         execRootCmdSilent("input tap " + x + " " + y);
     }
 
@@ -2841,15 +2839,12 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "longClickSomeWhere node = " + node.getClassName());
         Rect r = new Rect();
         node.getBoundsInScreen(r);
-        // 1.生成点击坐标
         int x = r.width() / 2 + r.left;
         int y = r.height() / 2 + r.top;
-        // 2.执行su命令
         execRootCmdSilent("input touchscreen swipe " + x + " " + y + " " + x + " " + y + " 2000");
     }
 
     private void clickSomeWhere(int x, int y) {
-        // 2.执行su命令
         execRootCmdSilent("input tap " + x + " " + y);
     }
 
