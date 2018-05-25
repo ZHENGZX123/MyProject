@@ -1,4 +1,4 @@
-package cn.kiway.robot.broadcast;
+package cn.kiway.robot.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
