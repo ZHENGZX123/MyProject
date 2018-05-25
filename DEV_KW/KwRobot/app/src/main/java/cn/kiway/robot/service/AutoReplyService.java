@@ -1572,24 +1572,17 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     sleep(3000);
-
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     JSONObject o = new JSONObject(content);
-                    JSONArray members = null;
-                    if (o.has("members")) {
-                        members = o.getJSONArray("members");
-                        content = o.getString("content");
-                    } else {
-                        members = o.getJSONObject("content").getJSONArray("members");
-                        content = o.getJSONObject("content").getString("content");
-                    }
+                    JSONArray members = o.optJSONArray("members");
+                    String message = o.optString("message");
                     int count = members.length();
 
                     resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
-                        addFriend(member, content);
+                        addFriend(member, message);
                         synchronized (object) {
                             object.wait(DEFAULT_RELEASE_TIME);
                         }
