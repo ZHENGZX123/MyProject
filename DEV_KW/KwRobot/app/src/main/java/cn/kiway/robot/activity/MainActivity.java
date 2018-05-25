@@ -58,8 +58,10 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.activity.WeChatActivity.WX_ROOT_PATH;
+import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
+import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.WX_DB_DIR_PATH;
 import static cn.kiway.robot.util.Constant.WX_SP_UIN_PATH;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -78,9 +80,10 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_UPGRADE = 33;
     private static final int MSG_WELCOME = 44;
     private static final int MSG_GET_QA = 55;
-    private static final int MSG_GET_CELLPHONES = 66;
+    private static final int MSG_GET_CELLPHONES = 66;//主动根据号码加好友
     private static final int MSG_GET_VALIDATION = 77;
-    private static final int MSG_GET_ALL_FRIENDS = 88;
+    private static final int MSG_ADD_NEARBY = 88;    //主动加附近的人
+    private static final int MSG_GET_ALL_FRIENDS = 99;//上报所有好友
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -102,7 +105,8 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_GET_QA);
         mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
         mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 60 * 60 * 1000);
+        //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 100 * 60 * 1000);
 
     }
 
@@ -357,7 +361,8 @@ public class MainActivity extends BaseActivity {
         //getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
         //getCellPhones();
 //        Utils.uploadFriend(this, "5之", "4 5之", "test2", "test2");
-        getAllFriends();
+//        getAllFriends();
+        addNearBy();
     }
 
     public void sharePic(View view) {
@@ -485,14 +490,33 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
                 getAllFriends();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_CELLPHONES) {
                 mHandler.removeMessages(MSG_GET_CELLPHONES);
                 getCellPhones();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_ADD_NEARBY) {
+                mHandler.removeMessages(MSG_ADD_NEARBY);
+                addNearBy();
+                mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 24 * 60 * 60 * 1000);
             }
         }
     };
+
+    private void addNearBy() {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("cmd", PERSION_NEARBY_CMD);
+            o.put("id", "84f119408d6441358d24b668323f0a23");
+            o.put("content", DEFAULT_VALIDATION);
+            o.put("token", "1526895528997");
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private List<File> mWxDbPathList = new ArrayList<>();
     private long latestModified;
@@ -651,7 +675,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
     private String initCurrWxUin() {
         String Uin = null;
         File file = new File(WX_SP_UIN_PATH);
@@ -735,10 +758,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void doRequestFriends(ArrayList<AddFriend> requests) {
-        JSONObject o = null;
         try {
-            o = new JSONObject();
-            o.put("cmd", "addFriendCmd");
+            JSONObject o = new JSONObject();
+            o.put("cmd", ADD_FRIEND_CMD);
             o.put("id", "84f119408d6441358d24b668323f0a23");
             JSONObject content = new JSONObject();
             JSONArray members = new JSONArray();
@@ -752,19 +774,18 @@ public class MainActivity extends BaseActivity {
             content.put("members", members);
             o.put("content", content);
             o.put("token", "1526895528997");
+
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String temp = o.toString();
-        Log.d("test", "temp = " + temp);
-        AutoReplyService.instance.sendReplyImmediately(temp, true);
     }
 
     public void clickInstruction(View view) {
         startActivity(new Intent(this, InstructionActivity.class));
     }
-
-    //-----------------------------新增功能------------------------
 
     public void Xposed(View view) {
         //1.获取所有的好友
