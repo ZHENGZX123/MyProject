@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_GET_QA);
         mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
         mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
+
     }
 
     private void initView() {
@@ -329,8 +330,9 @@ public class MainActivity extends BaseActivity {
 //            Log.d("test", "af = " + af);
 //        }
         //new MyDBHelper(getApplicationContext()).deleteAddFriends();
-        getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
-        getCellPhones();
+        //getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
+        //getCellPhones();
+        Utils.uploadFriend(this, "5之", "4 5之", "test2", "test2");
     }
 
     public void sharePic(View view) {
@@ -429,7 +431,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
     public Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == MSG_NETWORK_OK) {
@@ -474,16 +475,14 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
 
-                    int current = getSharedPreferences("currentUser", 0).getInt("currentUser", 1);
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
                     if (TextUtils.isEmpty(areaCode)) {
                         toast("areaCode为空");
                         return;
                     }
                     Log.d("test", "areaCode = " + areaCode);
-                    //hardcode
-                    //areaCode = "440302";
-                    String url = clientUrl + "/users?status=0&areaCode=" + areaCode + "&current=" + current + "&size=10";
+
+                    String url = clientUrl + "/users?status=0&areaCode=" + areaCode + "&current=1&size=10";
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
@@ -497,7 +496,6 @@ public class MainActivity extends BaseActivity {
                     if (count == 0) {
                         return;
                     }
-                    getSharedPreferences("currentUser", 0).edit().putInt("currentUser", current + 1).commit();
 
                     long currentTime = System.currentTimeMillis();
                     ArrayList<AddFriend> requests = new ArrayList<>();

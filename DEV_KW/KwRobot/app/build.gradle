@@ -91,12 +91,6 @@ dependencies {
     compile 'org.xutils:xutils:3.5.0'
     compile files('libs/wtoolsdk.jar')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    //zbus
-    //    compile files('libs/fastjson-1.2.24.jar')
-    //    compile files('libs/hutool-all-3.2.3.jar')
-    //    compile files('libs/netty-all-4.0.51.Final.jar')
-    //    compile files('libs/zbus-0.11.3.jar')
-    //    compile files('libs/wx-reply-zbus-1.0-SNAPSHOT.jar')
     //rabbitMQ
     compile files('libs/fastjson-1.2.47.jar')
     compile files('libs/logback-classic-1.1.11.jar')
@@ -104,7 +98,8 @@ dependencies {
     compile files('libs/slf4j-api-1.7.25.jar')
     compile files('libs/amqp-client-4.1.0.jar')
     compile files('libs/wx-reply-rabbitMQ-1.0-SNAPSHOT.jar')
-  //  compile project(':tencentmaplitelib')
+    //xposed相关
+    //compile project(':tencentmaplitelib')
     provided 'de.robv.android.xposed:api:82'
     compile 'com.android.support:multidex:1.0.0'
 }

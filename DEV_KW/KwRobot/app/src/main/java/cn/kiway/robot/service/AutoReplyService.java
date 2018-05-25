@@ -878,6 +878,7 @@ public class AutoReplyService extends AccessibilityService {
         if (find1 && find2) {
             findTargetNode(NODE_BUTTON, "取消", CLICK_SELF, false);
         }
+
         //2、TODO微信封号弹出框、退到登录页面
         boolean find3 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
         boolean find4 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);

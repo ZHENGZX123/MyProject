@@ -106,12 +106,12 @@
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="MobGUI-2018.0523.1923" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.1.4" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-3.1.4" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.1.4" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-3.2.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="logback-classic-1.1.11" level="project" />
-    <orderEntry type="library" exported="" name="OneKeyShare-3.1.4" level="project" />
+    <orderEntry type="library" exported="" name="OneKeyShare-3.2.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.25" level="project" />
     <orderEntry type="library" exported="" name="MobTools-2018.0523.1923" level="project" />
@@ -121,7 +121,7 @@
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="logback-core-1.1.11" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.47" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.1.4" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="api-82" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />

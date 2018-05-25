@@ -57,7 +57,7 @@ public class SnsInfoAdapter extends ArrayAdapter<SnsInfo> {
             viewHolder.snsTimeTextView = snsTimeTextView;
             viewHolder.photoContainer = photoContainer;
 
-            for (int i=0;i<10;i++) {
+            for (int i = 0; i < 10; i++) {
                 ImageView snsImageView = new ImageView(getContext());
                 viewHolder.imageViewList.add(snsImageView);
             }
@@ -65,11 +65,13 @@ public class SnsInfoAdapter extends ArrayAdapter<SnsInfo> {
             view.setTag(viewHolder);
 
         } else {
-            viewHolder = (ViewHolder)view.getTag();
+            viewHolder = (ViewHolder) view.getTag();
         }
 
         viewHolder.selectedCheckBox.setText(snsInfo.authorName);
+        Log.d("test", "snsInfo.authorName = " + snsInfo.authorName);
         viewHolder.selectedCheckBox.setChecked(snsInfo.selected);
+        Log.d("test", "snsInfo.content = " + snsInfo.content);
         viewHolder.snsContentTextView.setText(snsInfo.content);
         viewHolder.snsTimeTextView.setText(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(new Date(snsInfo.timestamp * 1000)));
         viewHolder.selectedCheckBox.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +83,7 @@ public class SnsInfoAdapter extends ArrayAdapter<SnsInfo> {
         });
 
         viewHolder.photoContainer.removeAllViews();
-        for (int i=0;i<snsInfo.mediaList.size();i++) {
+        for (int i = 0; i < snsInfo.mediaList.size(); i++) {
             ImageView snsImageView = null;
             try {
                 snsImageView = viewHolder.imageViewList.get(i);
