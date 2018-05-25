@@ -50,6 +50,7 @@ import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Command;
+import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
@@ -2916,8 +2917,9 @@ public class AutoReplyService extends AccessibilityService {
                                                                 ("welcome", DEFAULT_WELCOME);
                                                         sendTextOnly(welcome, true);
                                                         String current = System.currentTimeMillis() + "";
-                                                        Utils.uploadFriend(getApplication(), nickname, remark + " " +
-                                                                nickname, current, current);
+                                                        ArrayList<Friend> friends = new ArrayList<>();
+                                                        friends.add(new Friend(nickname, remark + " " + nickname, current, current));
+                                                        Utils.uploadFriend(getApplication(), friends);
                                                     }
                                                 }, 3000);
                                             }

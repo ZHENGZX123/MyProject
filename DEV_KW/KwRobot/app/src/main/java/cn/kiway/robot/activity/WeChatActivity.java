@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,11 +16,7 @@ import com.easy.wtool.sdk.OnMessageListener;
 import com.easy.wtool.sdk.OnTaskEndListener;
 import com.easy.wtool.sdk.TaskEndEvent;
 import com.easy.wtool.sdk.WToolSDK;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +34,6 @@ import cn.kiway.robot.util.WxUtils;
 
 import static cn.kiway.robot.hook.TencentLocationManagerHook.XSPlatitude;
 import static cn.kiway.robot.hook.TencentLocationManagerHook.XSPlongitude;
-import static cn.kiway.robot.util.Constant.clientUrl;
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 /**
@@ -108,9 +102,7 @@ public class WeChatActivity extends BaseActivity {
 
     public void getFriend(View view) {
         //1.获取所有的好友
-        //2.上报给易敏
         getWxPeople();
-        uploadFriend();
     }
 
     public void message(View view) {
@@ -134,45 +126,6 @@ public class WeChatActivity extends BaseActivity {
             Log.e("----", result);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void uploadFriend() {
-        try {
-            String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
-            String url = clientUrl + "/freind/all";
-            Log.d("test", "freind url = " + url);
-            JSONArray param = new JSONArray();
-            for (int i = 0; i < wxPeopleList.length(); i++) {
-                JSONObject item = new JSONObject();
-                JSONObject o = wxPeopleList.optJSONObject(i);
-                item.put("nickname", o.optString("nickname"));//昵称
-                item.put("remark", TextUtils.isEmpty(o.optString("remark")) ? o.optString("nickname") : o.optString("remark"));//备注
-                item.put("wxId", o.optString("wxid"));//微信id
-                item.put("wxNo", TextUtils.isEmpty(o.optString("wxno")) ? o.optString("wxid") : o.optString("wxno"));//微信号
-                item.put("robotId", robotId);
-                param.put(item);
-            }
-            Log.d("test", "freind param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "freind onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "freind onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
         }
     }
 
