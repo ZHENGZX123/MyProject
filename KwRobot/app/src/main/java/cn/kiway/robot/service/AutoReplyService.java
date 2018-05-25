@@ -330,13 +330,16 @@ public class AutoReplyService extends AccessibilityService {
                 shareToWechatMoments(command.content);
                 break;
             case DELETE_FRIEND_CIRCLE_CMD:
-            case ADD_FRIEND_CMD:
+
             case UPDATE_NICKNAME_CMD:
             case UPDATE_AVATAR_CMD:
             case PERSION_NEARBY_CMD:
             case FORGET_FISH_CMD:
             case UPDATE_FRIEND_NICKNAME_CMD:
             case DELETE_FRIEND_CMD:
+                doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
+                break;
+            case ADD_FRIEND_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -931,7 +934,6 @@ public class AutoReplyService extends AccessibilityService {
             String url = o.optString("url");
             String groupName = o.optString("groupName");
             JSONArray members = o.optJSONArray("members");
-            String oldName = o.optString("oldName");
 
             String finalContent = content;
 
