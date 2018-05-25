@@ -109,6 +109,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
+import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
@@ -330,6 +331,7 @@ public class AutoReplyService extends AccessibilityService {
             case UPDATE_NICKNAME_CMD:
             case UPDATE_AVATAR_CMD:
             case PERSION_NEARBY_CMD:
+            case FORGET_FISH_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }

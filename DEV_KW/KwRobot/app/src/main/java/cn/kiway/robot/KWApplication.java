@@ -17,6 +17,8 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.rabbitmq.client.Channel;
 
+import org.xutils.x;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +48,7 @@ public class KWApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d("test", "APP onCreate");
-//        x.Ext.init(this);
+        x.Ext.init(this);
         initImageCache();
         MobSDK.init(this);
         CrashHandler.getInstance().init(this);

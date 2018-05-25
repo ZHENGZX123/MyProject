@@ -61,6 +61,7 @@ import static cn.kiway.robot.activity.WeChatActivity.WX_ROOT_PATH;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
+import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.WX_DB_DIR_PATH;
 import static cn.kiway.robot.util.Constant.WX_SP_UIN_PATH;
@@ -75,15 +76,16 @@ public class MainActivity extends BaseActivity {
     public static MainActivity instance;
     private Button start;
 
-    public static final int MSG_NETWORK_OK = 11;
-    public static final int MSG_NETWORK_ERR = 22;
-    private static final int MSG_UPGRADE = 33;
-    private static final int MSG_WELCOME = 44;
-    private static final int MSG_GET_QA = 55;
-    private static final int MSG_GET_CELLPHONES = 66;//主动根据号码加好友
-    private static final int MSG_GET_VALIDATION = 77;
-    private static final int MSG_ADD_NEARBY = 88;    //主动加附近的人
-    private static final int MSG_GET_ALL_FRIENDS = 99;//上报所有好友
+    public static final int MSG_NETWORK_OK = 101;
+    public static final int MSG_NETWORK_ERR = 102;
+    private static final int MSG_UPGRADE = 103;
+    private static final int MSG_WELCOME = 104;
+    private static final int MSG_GET_QA = 105;
+    private static final int MSG_GET_CELLPHONES = 106;//主动根据号码加好友
+    private static final int MSG_GET_VALIDATION = 107;
+    private static final int MSG_ADD_NEARBY = 108;    //主动加附近的人
+    private static final int MSG_MISSING_FISH = 109;    //主动加附近的人
+    private static final int MSG_GET_ALL_FRIENDS = 110;//上报所有好友
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -106,8 +108,8 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
         mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 100 * 60 * 1000);
-
+        mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
     }
 
     private void initView() {
@@ -362,7 +364,8 @@ public class MainActivity extends BaseActivity {
         //getCellPhones();
 //        Utils.uploadFriend(this, "5之", "4 5之", "test2", "test2");
 //        getAllFriends();
-        addNearBy();
+//        addNearBy();
+        missingFish();
     }
 
     public void sharePic(View view) {
@@ -499,9 +502,28 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_ADD_NEARBY);
                 addNearBy();
                 mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_MISSING_FISH) {
+                mHandler.removeMessages(MSG_MISSING_FISH);
+                missingFish();
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 24 * 60 * 60 * 1000);
             }
+
         }
     };
+
+    private void missingFish() {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("cmd", FORGET_FISH_CMD);
+            o.put("id", "84f119408d6441358d24b668323f0a23");
+            o.put("token", "1526895528997");
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void addNearBy() {
         try {
