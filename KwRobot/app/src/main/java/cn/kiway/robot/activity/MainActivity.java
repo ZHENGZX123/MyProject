@@ -784,7 +784,6 @@ public class MainActivity extends BaseActivity {
             JSONObject o = new JSONObject();
             o.put("cmd", ADD_FRIEND_CMD);
             o.put("id", "84f119408d6441358d24b668323f0a23");
-            JSONObject content = new JSONObject();
             JSONArray members = new JSONArray();
             for (AddFriend af : requests) {
                 members.put(af.phone);
@@ -792,9 +791,8 @@ public class MainActivity extends BaseActivity {
                 new MyDBHelper(getApplicationContext()).addAddFriend(af);
             }
             String validation = getSharedPreferences("validation", 0).getString("validation", DEFAULT_VALIDATION);
-            content.put("content", validation);
-            content.put("members", members);
-            o.put("content", content);
+            o.put("members", members);
+            o.put("message", validation);
             o.put("token", "1526895528997");
 
             String temp = o.toString();
