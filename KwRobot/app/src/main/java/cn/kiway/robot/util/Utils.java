@@ -51,6 +51,7 @@ import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
+import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
@@ -353,27 +354,26 @@ public class Utils {
         }
     }
 
-    public static void uploadFriend(Context c, String nickname, String remark, String wxId, String wxNo) {
+    public static void uploadFriend(Context c, ArrayList<Friend> friends) {
         try {
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
 
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            Log.d("test", "xtoken = " + xtoken);
-            client.addHeader("x-auth-token", xtoken);
 
             String url = clientUrl + "/freind/all";
             Log.d("test", "freind url = " + url);
 
             JSONArray param = new JSONArray();
-            JSONObject o1 = new JSONObject();
-            o1.put("nickname", nickname);//昵称
-            o1.put("remark", remark);//备注
-            o1.put("wxId", wxId);//微信id
-            o1.put("wxNo", wxNo);//微信号
-            o1.put("robotId", robotId);
-            param.put(o1);
+            for (Friend f : friends) {
+                JSONObject o = new JSONObject();
+                o.put("nickname", f.nickname);//昵称
+                o.put("remark", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);//备注
+                o.put("wxId", f.wxId);//微信id
+                o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
+                o.put("robotId", robotId);
+                param.put(o);
+            }
 
             Log.d("test", "freind param = " + param.toString());
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");

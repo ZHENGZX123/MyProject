@@ -201,4 +201,11 @@ public class Constant {
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
 
     }
+
+
+    public static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
+
+    public static final String WX_SP_UIN_PATH = WX_ROOT_PATH + "shared_prefs/auth_info_key_prefs.xml";
+
+    public static final String WX_DB_DIR_PATH = WX_ROOT_PATH + "MicroMsg";
 }
