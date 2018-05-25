@@ -114,6 +114,7 @@ public class Parser {
 
         matchSns.ready = true;
         matchSns.authorName = (String)nickname;
+
         field = aqiObject.getClass().getField(Config.PROTOCAL_SNS_OBJECT_COMMENTS_FIELD);
         LinkedList list = (LinkedList)field.get(aqiObject);
         for (int i=0;i<list.size();i++) {

@@ -62,7 +62,11 @@ public class Config {
         Config.setConstants(0);
         Config.ready = true;
     }
+    static public void initWeChatVersion() {
 
+        Config.setConstants(0);
+        Config.ready = true;
+    }
     static private void setConstants(int index) {
         PROTOCAL_SNS_DETAIL_CLASS = PROTOCAL_SNS_DETAIL_CLASSES[index];
         PROTOCAL_SNS_DETAIL_METHOD = PROTOCAL_SNS_DETAIL_METHODS[index];

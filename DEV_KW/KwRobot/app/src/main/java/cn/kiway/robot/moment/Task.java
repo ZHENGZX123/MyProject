@@ -188,7 +188,7 @@ public class Task {
 
         try {
 
-            Config.initWeChatVersion("6.3.13.64_r4488992");
+            Config.initWeChatVersion();
             DexClassLoader cl = new DexClassLoader(
                     outputAPKFile.getAbsolutePath(),
                     context.getDir("outdex", 0).getAbsolutePath(),
