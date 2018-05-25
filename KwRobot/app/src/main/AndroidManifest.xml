@@ -120,5 +120,10 @@
         <meta-data
             android:name="xposedminversion"
             android:value="54" />
+        <receiver android:name=".receiver.MyBroadcastReceiver">
+            <intent-filter>
+                <action android:name="cn.kiway.robot.receiver"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

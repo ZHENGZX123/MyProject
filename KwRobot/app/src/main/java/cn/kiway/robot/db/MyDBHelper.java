@@ -208,6 +208,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -233,15 +234,22 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  displayname text,  nickname text , roomowner text,wxid " +
             "text,wxno text)";
 
+
     private static final String TABLE_ADDFRIEND = "AddFriend";
     private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
             + TABLE_ADDFRIEND
             + "   (id integer primary key autoincrement,  requesttime text , phone  text ,  remark text , status  text   ) ";
 
+    private static final String TABLE_MESSAGE= "message";
+    private static final String CREATE_TABLE_MESSAGE= " create table  IF NOT EXISTS "
+            + TABLE_MESSAGE
+            + "   (id integer primary key autoincrement,  content text , talker  text ,  createTime long , talkerType  integer ,isSend integer  ) ";
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 6);
+        super(c, DB_NAME, null,7);
     }
 
     @Override
@@ -254,6 +262,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
+        db.execSQL(CREATE_TABLE_MESSAGE);
     }
 
     @Override
@@ -262,6 +272,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_WX_PEOPLE);
         db.execSQL(CREATE_TABLE_WX_ROOM);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
+        db.execSQL(CREATE_TABLE_MESSAGE);
     }
 
     public void addWxPeople(JSONArray array) {
@@ -459,4 +470,34 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.delete(TABLE_ADDFRIEND, null, null);
         db.close();
     }
+
+    public void addMessage( String content,String talker,long createTime,int talkerType,int isSend) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("content", content);
+        values.put("talker", talker);
+        values.put("createTime",createTime);
+        values.put("talkerType", talkerType);
+        values.put("isSend", isSend);
+        db.insert(TABLE_MESSAGE, null, values);
+        db.close();
+    }
+    public void getMessages() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_MESSAGE, null, null, null, null, null, null);
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String content = cur.getString(cur.getColumnIndex("content"));
+            String talker = cur.getString(cur.getColumnIndex("talker"));
+            long createTime = cur.getLong(cur.getColumnIndex("createTime"));
+            int talkerType = cur.getInt(cur.getColumnIndex("talkerType"));
+            int isSend = cur.getInt(cur.getColumnIndex("isSend"));
+            Log.e("----",content+""+talker+""+createTime+""+talkerType+""+isSend);
+        }
+        cur.close();
+        db.close();
+    }
+
 }
