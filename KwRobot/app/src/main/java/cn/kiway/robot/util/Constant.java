@@ -90,23 +90,22 @@ public class Constant {
 
     public static final String GROUP_INVIT_CMD = "groupInvitCmd";
     public static final String FORGET_FISH_CMD = "forgetFishCmd";
-
-    public static final String FIND_FRIEND_COUNT_CMD = "findFriendCountCmd";
-    public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";
+    public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";//清理僵尸粉，暂时不做了
     public static final String GROUP_CHAT_CMD = "groupChatCmd";
-    public static final String INVITE_GROUP_CMD = "invitGroupCmd";
-    public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";
+    public static final String INVITE_GROUP_CMD = "invitGroupCmd";//加人
+    public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";//踢人
     public static final String UPDATE_GROUP_NOTICE_CMD = "updateGroupNoticeCmd";
     public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
     public static final String SEND_GROUP_MSG_CMD = "sendGroupMsgCmd";
     public static final String AT_PERSONS_CMD = "atPersonsCmd";
     public static final String CHECK_NEW_VERSION_CMD = "checkNewVersionCmd";
-    public static final String PERSION_NEARBY_CMD = "persionNearbyCmd";
 
     public static final String SEND_FRIEND_CIRCLE_CMD = "sendFriendCircleCmd";
     public static final String SEND_FRIEND_CIRCLE_REPLY_CMD = "sendFriendCircleReplyCmd";
     public static final String DELETE_FRIEND_CIRCLE_CMD = "deleteFriendCircleCmd";
     public static final String DELETE_FRIEND_CIRCLE_REPLY_CMD = "deleteFriendCircleReplyCmd";
+    public static final String PERSION_NEARBY_CMD = "persionNearbyCmd";
+    public static final String PERSION_NEARBY_REPLY_CMD = "persionNearbyReplyCmd";
     public static final String ADD_FRIEND_CMD = "addFriendCmd";
     public static final String ADD_FRIEND_REPLY_CMD = "addFriendReplyCmd";
     public static final String UPDATE_NICKNAME_CMD = "updateNickNameCmd";
@@ -120,6 +119,7 @@ public class Constant {
         replies.put(SEND_FRIEND_CIRCLE_CMD, SEND_FRIEND_CIRCLE_REPLY_CMD);
         replies.put(DELETE_FRIEND_CIRCLE_CMD, DELETE_FRIEND_CIRCLE_REPLY_CMD);
         replies.put(ADD_FRIEND_CMD, ADD_FRIEND_REPLY_CMD);
+        replies.put(PERSION_NEARBY_CMD, PERSION_NEARBY_REPLY_CMD);
         replies.put(UPDATE_NICKNAME_CMD, UPDATE_NICKNAME_REPLY_CMD);
         replies.put(UPDATE_AVATAR_CMD, UPDATE_AVATAR_REPLY_CMD);
     }
@@ -171,6 +171,8 @@ public class Constant {
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
+        backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
+        backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
         backdoors.put(DELETE_FRIEND_CIRCLE_CMD, Action.TYPE_DELETE_MOMENT);
         backdoors.put(BACK_DOOR22, Action.TYPE_SEND_MOMENT);
@@ -181,8 +183,8 @@ public class Constant {
         backdoors.put(UPDATE_NICKNAME_CMD, Action.TYPE_FIX_NICKNAME);
         backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
         backdoors.put(UPDATE_AVATAR_CMD, Action.TYPE_FIX_ICON);
-        backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
-        backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
+        backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
+        backdoors.put(PERSION_NEARBY_CMD , Action.TYPE_NEARBY_PEOPLE);
 
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
@@ -193,9 +195,7 @@ public class Constant {
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
-
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
-        backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);

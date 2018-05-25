@@ -121,6 +121,7 @@ import static cn.kiway.robot.util.Constant.NODE_LINEARLAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
+import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_AVATAR_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_NICKNAME_CMD;
@@ -328,6 +329,7 @@ public class AutoReplyService extends AccessibilityService {
             case ADD_FRIEND_CMD:
             case UPDATE_NICKNAME_CMD:
             case UPDATE_AVATAR_CMD:
+            case PERSION_NEARBY_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -1131,11 +1133,11 @@ public class AutoReplyService extends AccessibilityService {
 
                 resetMaxReleaseTime(21000 * count);
 
-
                 new Thread() {
                     @Override
                     public void run() {
                         for (int i = 0; i < count; i++) {
+
                             int finalI = i;
                             mHandler.post(new Runnable() {
                                 @Override
@@ -1148,6 +1150,7 @@ public class AutoReplyService extends AccessibilityService {
                                         public void run() {
                                             boolean find = findTargetNode(NODE_BUTTON, "打招呼", CLICK_SELF, true);
                                             if (!find) {
+                                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                 return;
                                             }
                                             mHandler.postDelayed(new Runnable() {
@@ -1177,7 +1180,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }.start();
             }
-        }, 8000);
+        }, 10000);
     }
 
     private boolean findNearbyPeopleInListView(AccessibilityNodeInfo rootNode) {
