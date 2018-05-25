@@ -79,6 +79,7 @@ import static cn.kiway.robot.entity.Action.TYPE_DELETE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_DELETE_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_DELETE_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_FILE;
+import static cn.kiway.robot.entity.Action.TYPE_FIX_FRIEND_NICKNAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_ICON;
@@ -109,6 +110,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
+import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.HOUTAI;
@@ -125,6 +127,7 @@ import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_AVATAR_CMD;
+import static cn.kiway.robot.util.Constant.UPDATE_FRIEND_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
@@ -262,7 +265,7 @@ public class AutoReplyService extends AccessibilityService {
                             if (TextUtils.isEmpty(command.content)) {
                                 command.content = o.optJSONObject("content").toString();
                             }
-                        } else if (o.has("oldName") || o.has("url")) {
+                        } else {
                             command.content = Base64.encodeToString(recv.msg.getBytes(), NO_WRAP);
                         }
                         doActionCommand(recv.msg, command);
@@ -332,6 +335,8 @@ public class AutoReplyService extends AccessibilityService {
             case UPDATE_AVATAR_CMD:
             case PERSION_NEARBY_CMD:
             case FORGET_FISH_CMD:
+            case UPDATE_FRIEND_NICKNAME_CMD:
+            case DELETE_FRIEND_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -504,7 +509,6 @@ public class AutoReplyService extends AccessibilityService {
                 Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
-                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                     JSONObject o = new JSONObject()
                             .put("cmd", replies.get(command.cmd))
                             .put("type", replies.get(command.cmd))
@@ -515,11 +519,30 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("id", command.id);
                     }
 
-                    if (command.cmd.equals(UPDATE_NICKNAME_CMD)) {
-                        o.put("robotId", robotId);
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+
+                    if (command.cmd.equals(UPDATE_NICKNAME_CMD) || command.cmd.equals(UPDATE_FRIEND_NICKNAME_CMD)) {
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        o.put("robotId", robotId);
                         String newName = new JSONObject(content).optString("newName");
+                        String oldName = new JSONObject(content).optString("oldName");
                         o.put("newName", newName);
+                        o.put("oldName", oldName);
+                    } else if (command.cmd.equals(DELETE_FRIEND_CMD)) {
+                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        o.put("robotId", robotId);
+                        JSONArray members = new JSONArray();
+
+                        JSONArray recvMembers = new JSONObject(content).optJSONArray("members");
+                        int count = recvMembers.length();
+                        for (int i = 0; i < count; i++) {
+                            String remark = recvMembers.getString(i);
+                            JSONObject m = new JSONObject();
+                            m.put("phone", "");
+                            m.put("remark", remark);
+                            members.put(m);
+                        }
+                        o.put("members", members);
                     }
 
                     String msg = o.toString();
@@ -757,6 +780,7 @@ public class AutoReplyService extends AccessibilityService {
                                     || action.actionType == TYPE_DELETE_FRIEND
                                     || action.actionType == TYPE_MISSING_FISH
                                     || action.actionType == TYPE_FIX_NICKNAME
+                                    || action.actionType == TYPE_FIX_FRIEND_NICKNAME
                                     || action.actionType == TYPE_FIX_ICON
                                     || action.actionType == TYPE_NEARBY_PEOPLE
                                     || action.actionType == TYPE_GROUP_SEND_HELPER) {
@@ -821,6 +845,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_DELETE_FRIEND
                         || actionType == TYPE_MISSING_FISH
                         || actionType == TYPE_FIX_NICKNAME
+                        || actionType == TYPE_FIX_FRIEND_NICKNAME
                         || actionType == TYPE_FIX_ICON
                         || actionType == TYPE_NEARBY_PEOPLE
                         || actionType == TYPE_GROUP_SEND_HELPER
@@ -932,7 +957,6 @@ public class AutoReplyService extends AccessibilityService {
                         //通讯录-新的朋友
                         addMissingFish();
                     } else if (actionType == TYPE_FIX_NICKNAME || actionType == TYPE_FIX_ICON) {
-                        //(actionType == TYPE_FIX_NICKNAME && isMe(oldName))
                         //我-个人信息
                         fixMyNicknameOrIcon(actionType, url);
                     } else if (actionType == TYPE_NEARBY_PEOPLE) {
@@ -1039,9 +1063,10 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     int count = members.length();
+                    resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
+
                     for (int i = 0; i < count; i++) {
-                        String member = members.optString(i);
-                        currentZombie = member;
+                        currentZombie = members.optString(i);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1050,6 +1075,7 @@ public class AutoReplyService extends AccessibilityService {
                         });
                         sleep(30000);
                     }
+                    release(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1576,6 +1602,7 @@ public class AutoReplyService extends AccessibilityService {
                     JSONObject o = new JSONObject(content);
                     JSONArray members = o.optJSONArray("members");
                     String message = o.optString("message");
+
                     int count = members.length();
 
                     resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
@@ -1596,7 +1623,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void addFriend(String member, String content) {
+    private void addFriend(String member, String message) {
         Log.d("test", "addFriend member = " + member);
         mHandler.post(new Runnable() {
             @Override
@@ -1641,8 +1668,8 @@ public class AutoReplyService extends AccessibilityService {
                                             public void run() {
                                                 try {
                                                     //1.申请语句
-                                                    if (!TextUtils.isEmpty(content)) {
-                                                        clearAndPasteEditText(1, content);
+                                                    if (!TextUtils.isEmpty(message)) {
+                                                        clearAndPasteEditText(1, message);
                                                     }
                                                     //2.备注
                                                     findTargetNode(NODE_EDITTEXT, 2, remarkIndex);
@@ -2128,7 +2155,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     String target = "";
-                    if (type == TYPE_FIX_NICKNAME) {
+                    if (type == TYPE_FIX_FRIEND_NICKNAME) {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         JSONObject o = new JSONObject(content);
                         target = o.optString("oldName");
@@ -2254,14 +2281,18 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
+    // 注意可能有循环的操作，不能release
     private void enterChatView(String target, int actionType) {
         findTargetNode(NODE_EDITTEXT, target);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                //TODO 这里可以优化一下，判断是否搜索到结果。因为搜华仔会打开webview。。。
                 findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);
                 if (mFindTargetNode == null) {
-                    release(false);
+                    if (actionType != TYPE_CLEAR_ZOMBIE_FAN) {
+                        release(false);
+                    }
                     return;
                 }
                 mHandler.postDelayed(new Runnable() {
@@ -2336,7 +2367,7 @@ public class AutoReplyService extends AccessibilityService {
                         } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                             //循环开始艾特人
                             startAtPeople();
-                        } else if (actionType == TYPE_FIX_NICKNAME) {
+                        } else if (actionType == TYPE_FIX_FRIEND_NICKNAME) {
                             //好友信息
                             fixFriendNickname(target);
                         }
