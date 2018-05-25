@@ -113,6 +113,10 @@ public class Constant {
     public static final String UPDATE_AVATAR_REPLY_CMD = "updateAvatarReplyCmd";
     public static final String FORGET_FISH_CMD = "forgetFishCmd";
     public static final String FORGET_FISH_REPLY_CMD = "forgetFishReplyCmd";
+    public static final String UPDATE_FRIEND_NICKNAME_CMD = "updateFriendNickNameCmd";
+    public static final String UPDATE_FRIEND_NICKNAME_REPLY_CMD = "updateFriendNickNameReplyCmd";
+    public static final String DELETE_FRIEND_CMD = "deleteFriendCmd";
+    public static final String DELETE_FRIEND_REPLY_CMD = "deleteFriendReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -124,6 +128,9 @@ public class Constant {
         replies.put(UPDATE_NICKNAME_CMD, UPDATE_NICKNAME_REPLY_CMD);
         replies.put(UPDATE_AVATAR_CMD, UPDATE_AVATAR_REPLY_CMD);
         replies.put(FORGET_FISH_CMD, FORGET_FISH_REPLY_CMD);
+        replies.put(UPDATE_FRIEND_NICKNAME_CMD, UPDATE_FRIEND_NICKNAME_REPLY_CMD);
+        replies.put(DELETE_FRIEND_CMD, DELETE_FRIEND_REPLY_CMD);
+
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -147,6 +154,8 @@ public class Constant {
     private static final String BACK_DOOR21 = "删除朋友";
     private static final String BACK_DOOR22 = "发朋友圈";
     private static final String BACK_DOOR23 = "群发助手";
+    private static final String BACK_DOOR24 = "修改好友昵称";
+
 
     //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","content":"1", "msgType":"1", "groupName": "111"}  TODO新增type
@@ -189,6 +198,11 @@ public class Constant {
         backdoors.put(PERSION_NEARBY_CMD, Action.TYPE_NEARBY_PEOPLE);
         backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
         backdoors.put(FORGET_FISH_CMD, Action.TYPE_MISSING_FISH);
+        backdoors.put(BACK_DOOR24, Action.TYPE_FIX_FRIEND_NICKNAME);
+        backdoors.put(UPDATE_FRIEND_NICKNAME_CMD, Action.TYPE_FIX_FRIEND_NICKNAME);
+        backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
+        backdoors.put(DELETE_FRIEND_CMD, Action.TYPE_DELETE_FRIEND);
+
 
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
@@ -201,7 +215,7 @@ public class Constant {
 
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
+
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
 
     }

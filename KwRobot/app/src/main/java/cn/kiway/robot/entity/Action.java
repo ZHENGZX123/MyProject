@@ -44,6 +44,7 @@ public class Action {
     public static final int TYPE_DELETE_FRIEND = 128;//主动搜索并添加好友
     public static final int TYPE_SEND_MOMENT = 129;
     public static final int TYPE_GROUP_SEND_HELPER = 130;
+    public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
 
 
     public PendingIntent intent;
