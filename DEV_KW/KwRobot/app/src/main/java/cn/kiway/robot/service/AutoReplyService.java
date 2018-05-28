@@ -1888,6 +1888,7 @@ public class AutoReplyService extends AccessibilityService {
                                                                             release(false);
                                                                             return;
                                                                         }
+                                                                        clickSomeWhere(mFindTargetNode.getParent().getChild(1));
 
                                                                         findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
                                                                         if (mFindTargetNode == null) {
