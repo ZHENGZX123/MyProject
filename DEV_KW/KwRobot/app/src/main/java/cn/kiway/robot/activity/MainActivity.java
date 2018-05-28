@@ -341,8 +341,6 @@ public class MainActivity extends BaseActivity {
         }, 10000);
 
 //        Utils.updateUserStatus("18626318013", 2);
-//        getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
-//        getCellPhones();
 
 //        ArrayList<AddFriend> requests = new ArrayList();
 //        AddFriend af = new AddFriend();
@@ -359,13 +357,13 @@ public class MainActivity extends BaseActivity {
 //        for (AddFriend af : afs) {
 //            Log.d("test", "af = " + af);
 //        }
-        //new MyDBHelper(getApplicationContext()).deleteAddFriends();
-        //getSharedPreferences("currentUser", 0).edit().putInt("currentUser", 1).commit();
-        //getCellPhones();
 //        Utils.uploadFriend(this, "5之", "4 5之", "test2", "test2");
 //        getAllFriends();
 //        addNearBy();
-        missingFish();
+//        missingFish();
+
+        new MyDBHelper(getApplicationContext()).deleteAddFriends();
+        getCellPhones();
     }
 
     public void sharePic(View view) {
