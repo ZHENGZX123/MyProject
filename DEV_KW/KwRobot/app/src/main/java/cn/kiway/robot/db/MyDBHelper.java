@@ -214,8 +214,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import cn.kiway.robot.entity.AddFriend;
 
 //易敏有接口了，数据库还用吗。
@@ -240,8 +238,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_ADDFRIEND
             + "   (id integer primary key autoincrement,  requesttime text , phone  text ,  remark text , status  text   ) ";
 
-    private static final String TABLE_MESSAGE= "message";
-    private static final String CREATE_TABLE_MESSAGE= " create table  IF NOT EXISTS "
+    private static final String TABLE_MESSAGE = "message";
+    private static final String CREATE_TABLE_MESSAGE = " create table  IF NOT EXISTS "
             + TABLE_MESSAGE
             + "   (id integer primary key autoincrement,  content text , talker  text ,  createTime long , talkerType  integer ,isSend integer  ) ";
 
@@ -249,7 +247,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null,7);
+        super(c, DB_NAME, null, 7);
     }
 
     @Override
@@ -444,18 +442,19 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addMessage( String content,String talker,long createTime,int talkerType,int isSend) {
+    public void addMessage(String content, String talker, long createTime, int talkerType, int isSend) {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("content", content);
         values.put("talker", talker);
-        values.put("createTime",createTime);
+        values.put("createTime", createTime);
         values.put("talkerType", talkerType);
         values.put("isSend", isSend);
         db.insert(TABLE_MESSAGE, null, values);
         db.close();
     }
+
     public void getMessages() {
         if (db == null)
             db = getWritableDatabase();
@@ -467,7 +466,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             long createTime = cur.getLong(cur.getColumnIndex("createTime"));
             int talkerType = cur.getInt(cur.getColumnIndex("talkerType"));
             int isSend = cur.getInt(cur.getColumnIndex("isSend"));
-            Log.e("----",content+""+talker+""+createTime+""+talkerType+""+isSend);
+            Log.e("----", content + "" + talker + "" + createTime + "" + talkerType + "" + isSend);
         }
         cur.close();
         db.close();

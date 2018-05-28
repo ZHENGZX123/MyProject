@@ -64,6 +64,7 @@ import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static com.mob.tools.utils.DeviceHelper.getApplication;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -156,13 +157,13 @@ public class Utils {
         return c.getSharedPreferences("getPic", 0).getBoolean("getPic", true);
     }
 
-    public static boolean isUselessContent(Context c, String name, String content) {
+    public static boolean isUselessContent(Context c, String remark, String content) {
         if (content.equals("我通过了你的朋友验证请求，现在我们可以开始聊天了")) {
-            AddFriend af = new MyDBHelper(c).getAddFriendByRemark(name);
+            AddFriend af = new MyDBHelper(c).getAddFriendByRemark(remark);
             if (af != null) {
                 af.status = STATUS_ADD_SUCCESS;
                 new MyDBHelper(c).updateAddFriend(af);
-                Utils.updateUserStatus(af.phone, name, STATUS_ADD_SUCCESS);
+                Utils.updateUserStatus(af.phone, remark, STATUS_ADD_SUCCESS);
             }
             return true;
         }
@@ -478,7 +479,7 @@ public class Utils {
         return str;
     }
 
-    public static void updateUserStatus(String phone, String name, int status) {
+    public static void updateUserStatus(String phone, String remark, int status) {
         new Thread() {
             @Override
             public void run() {
@@ -493,7 +494,7 @@ public class Utils {
                     values.add(new BasicNameValuePair("phone", phone));
                     values.add(new BasicNameValuePair("status", "" + status));
                     if (status == STATUS_ADD_SUCCESS) {
-                        values.add(new BasicNameValuePair("nickName", name));
+                        values.add(new BasicNameValuePair("nickName", remark));
                     }
 
                     UrlEncodedFormEntity urlEntity = new UrlEncodedFormEntity(values,
@@ -509,11 +510,13 @@ public class Utils {
                 }
             }
         }.start();
-    }
 
-    public static boolean checkHasRequested(Context c, String phone) {
-        AddFriend af = new MyDBHelper(c).getAddFriendByPhone(phone);
-        return !(af == null);
+        if (status == STATUS_ADD_SUCCESS) {
+            String current = System.currentTimeMillis() + "";
+            ArrayList<Friend> friends = new ArrayList<>();
+            friends.add(new Friend(Utils.getNicknameFromRemark(remark), remark, current, current));
+            Utils.uploadFriend(getApplication(), friends);
+        }
     }
 
     public static String getPhoneNumber(Context c) {
@@ -587,5 +590,18 @@ public class Utils {
                 }
             }
         });
+    }
+
+    public static String getNicknameFromRemark(String remark) {
+        try {
+            String nickname = remark.split(" ")[1];
+            if (TextUtils.isEmpty(nickname)) {
+                return remark;
+            }
+            return nickname;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return remark;
+        }
     }
 }
