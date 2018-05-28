@@ -214,6 +214,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import cn.kiway.robot.entity.AddFriend;
 
 //易敏有接口了，数据库还用吗。
@@ -357,6 +359,34 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
 
     //-------------------------------AddFriend-----------------------------
+
+    public ArrayList<AddFriend> getAllAddFriends() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_ADDFRIEND, null, null, null, null, null, null);
+
+        ArrayList<AddFriend> addFriends = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String requesttime = cur.getString(cur.getColumnIndex("requesttime"));
+            String phone = cur.getString(cur.getColumnIndex("phone"));
+            String remark = cur.getString(cur.getColumnIndex("remark"));
+            int status = cur.getInt(cur.getColumnIndex("status"));
+
+            AddFriend af = new AddFriend();
+            af.id = id;
+            af.phone = phone;
+            af.remark = remark;
+            af.requesttime = requesttime;
+            af.status = status;
+
+            addFriends.add(af);
+
+        }
+        cur.close();
+        db.close();
+        return addFriends;
+    }
 
     public AddFriend getAddFriendByPhone(String phone) {
         if (db == null)

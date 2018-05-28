@@ -604,4 +604,15 @@ public class Utils {
             return remark;
         }
     }
+
+    public static String getPhoneFromRemark(Context c, String remark) {
+        AddFriend af = new MyDBHelper(c).getAddFriendByRemark(remark);
+        if (af == null) {
+            return "";
+        }
+        if (TextUtils.isEmpty(af.phone)) {
+            return "";
+        }
+        return af.phone;
+    }
 }
