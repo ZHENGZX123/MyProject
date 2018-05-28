@@ -326,13 +326,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-//        String fakeRecv = "{\"sender\":\"小辉小号\",\"me\":\"客服888\"," +
-//                "\"returnMessage\":[{\"content\":\"http://upload.jnwb.net/2014/0311/1394514005639.jpg\"," +
-//                "\"returnType\":2}]," +
-//                "\"id\":9999,\"time\":1523342900085," +
-//                "\"content\":\"学位房\"}";
-//        AutoReplyService.instance.sendReplyImmediately(fakeRecv, false);
-
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -347,7 +340,6 @@ public class MainActivity extends BaseActivity {
 //        af.phone = "18565808596";
 //        requests.add(af);
 //        doRequestFriends(requests);
-
     }
 
     public void test2(View v) {
@@ -751,19 +743,16 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
 
-                    long currentTime = System.currentTimeMillis();
-                    ArrayList<AddFriend> requests = new ArrayList<>();
+                    ArrayList<String> requests = new ArrayList<>();
                     for (int i = 0; i < count; i++) {
                         JSONObject temp = list.getJSONObject(i);
-                        AddFriend af = new AddFriend();
-                        af.requesttime = Utils.longToDate(currentTime);
-                        af.phone = temp.getString("phone").trim();
-                        boolean has = Utils.checkHasRequested(getApplicationContext(), af.phone);
-                        if (has) {
-                            Log.d("test", af.phone + "之前已经申请过了");
+                        String phone = temp.getString("phone").trim();
+                        AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(phone);
+                        if (af == null) {
+                            Log.d("test", phone + "还没有申请过");
+                            requests.add(phone);
                         } else {
-                            Log.d("test", af.phone + "还没有申请过");
-                            requests.add(af);
+                            Log.d("test", phone + "已经申请过了");
                         }
                     }
                     if (requests.size() == 0) {
@@ -777,16 +766,14 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    private void doRequestFriends(ArrayList<AddFriend> requests) {
+    private void doRequestFriends(ArrayList<String> requests) {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", ADD_FRIEND_CMD);
             o.put("id", "84f119408d6441358d24b668323f0a23");
             JSONArray members = new JSONArray();
-            for (AddFriend af : requests) {
-                members.put(af.phone);
-                //添加进数据库
-                new MyDBHelper(getApplicationContext()).addAddFriend(af);
+            for (String phone : requests) {
+                members.put(phone);
             }
             String validation = getSharedPreferences("validation", 0).getString("validation", DEFAULT_VALIDATION);
             o.put("members", members);

@@ -337,8 +337,6 @@ public class AutoReplyService extends AccessibilityService {
             case FORGET_FISH_CMD:
             case UPDATE_FRIEND_NICKNAME_CMD:
             case DELETE_FRIEND_CMD:
-                doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
-                break;
             case ADD_FRIEND_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
@@ -1627,6 +1625,15 @@ public class AutoReplyService extends AccessibilityService {
 
     private void addFriend(String member, String message) {
         Log.d("test", "addFriend member = " + member);
+
+        AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(member);
+        if (af == null) {
+            af = new AddFriend();
+            af.requesttime = Utils.longToDate(System.currentTimeMillis());
+            af.phone = member;
+            new MyDBHelper(getApplicationContext()).addAddFriend(af);
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1701,14 +1708,14 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private void updateUserStatus(String photo, String remark, int status) {
-        AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(photo);
+    private void updateUserStatus(String phone, String remark, int status) {
+        AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(phone);
         Log.d("test", "af = " + af);
         if (af != null) {
             af.remark = remark;
             af.status = status;
             new MyDBHelper(getApplicationContext()).updateAddFriend(af);
-            Utils.updateUserStatus(photo, remark, status);
+            Utils.updateUserStatus(phone, remark, status);
         }
     }
 
@@ -1876,6 +1883,12 @@ public class AutoReplyService extends AccessibilityService {
                                                                 mHandler.postDelayed(new Runnable() {
                                                                     @Override
                                                                     public void run() {
+                                                                        findTargetNode(NODE_TEXTVIEW, "消息免打扰", CLICK_NONE, true);
+                                                                        if (mFindTargetNode == null) {
+                                                                            release(false);
+                                                                            return;
+                                                                        }
+
                                                                         findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
                                                                         if (mFindTargetNode == null) {
                                                                             release(false);
@@ -2283,14 +2296,14 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
-    // 注意可能有循环的操作，不能release
+    // 注意可能有循环的操作，比如删除好友，不能release
     private void enterChatView(String target, int actionType) {
         findTargetNode(NODE_EDITTEXT, target);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //TODO 这里可以优化一下，判断是否搜索到结果。因为搜华仔会打开webview。。。
-                findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);
+                findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);//昵称不完全搜索，所以是false
                 if (mFindTargetNode == null) {
                     if (actionType != TYPE_CLEAR_ZOMBIE_FAN) {
                         release(false);
