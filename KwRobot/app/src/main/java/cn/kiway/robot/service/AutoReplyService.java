@@ -539,7 +539,7 @@ public class AutoReplyService extends AccessibilityService {
                         for (int i = 0; i < count; i++) {
                             String remark = recvMembers.getString(i);
                             JSONObject m = new JSONObject();
-                            m.put("phone", "");
+                            m.put("phone", Utils.getPhoneFromRemark(getApplication(), remark));
                             m.put("remark", remark);
                             members.put(m);
                         }

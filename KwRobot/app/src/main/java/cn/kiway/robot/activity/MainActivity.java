@@ -357,8 +357,12 @@ public class MainActivity extends BaseActivity {
 //        new MyDBHelper(getApplicationContext()).deleteAddFriends();
 //        getCellPhones();
 
+//        getAllFriends();
 
-        getAllFriends();
+        ArrayList<AddFriend> afs = new MyDBHelper(this).getAllAddFriends();
+        for (AddFriend af : afs) {
+            Log.d("test", "af = " + af);
+        }
     }
 
     public void sharePic(View view) {
