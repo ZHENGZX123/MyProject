@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
-        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
     }
 
     private void initView() {
@@ -354,8 +354,11 @@ public class MainActivity extends BaseActivity {
 //        addNearBy();
 //        missingFish();
 
-        new MyDBHelper(getApplicationContext()).deleteAddFriends();
-        getCellPhones();
+//        new MyDBHelper(getApplicationContext()).deleteAddFriends();
+//        getCellPhones();
+
+
+        getAllFriends();
     }
 
     public void sharePic(View view) {
@@ -574,6 +577,7 @@ public class MainActivity extends BaseActivity {
                 System.out.println("count = " + count);
 
                 File file = latestFile;
+
                 System.out.println("file = " + file.getAbsolutePath());
                 String copyFilePath = mCurrApkPath + COPY_WX_DATA_DB;
 
