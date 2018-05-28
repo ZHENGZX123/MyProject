@@ -124,6 +124,7 @@ public class BaseActivity extends Activity {
                 finish();
             } else if (msg.what == 5) {
                 KWApplication.closeMQ();
+                String savedFilePath = (String) msg.obj;
                 new Thread() {
                     @Override
                     public void run() {
@@ -132,7 +133,6 @@ public class BaseActivity extends Activity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        String savedFilePath = (String) msg.obj;
                         String cmd = "pm install -r " + savedFilePath;
                         RootCmd.execRootCmdSilent(cmd);
                     }
