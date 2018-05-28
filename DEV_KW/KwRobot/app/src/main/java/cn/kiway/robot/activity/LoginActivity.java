@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import org.xutils.common.util.DensityUtil;
 
 import cn.kiway.robot.R;
-import cn.kiway.robot.service.AutoReplyService;
-import cn.kiway.robot.util.NetworkUtil;
 
 import static cn.kiway.robot.R.id.username;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -144,44 +142,4 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    public void registerWechat(View view) {
-        //0.提示wifi
-        boolean is3G = NetworkUtil.is3G(this);
-        if (!is3G) {
-            toast("请不要使用wifi来注册微信，容易被封号");
-            //代码自动关闭wifi
-            return;
-        }
-
-        //1.判断服务是否开启
-        if (!isServiceEnabled()) {
-            toast("服务尚未开启，请先打开服务");
-            doStartService();
-            return;
-        }
-
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
-        startActivity(intent);
-
-        AutoReplyService.instance.registerWechat();
-    }
-
-    public void test(View v) {
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//            }
-//        }, 10000);
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int startX = DensityUtil.getScreenWidth() * 90 / 428;
-                int endX = DensityUtil.getScreenWidth() * 338 / 428;
-                int y = DensityUtil.getScreenHeight() * 412 / 762;
-                execRootCmdSilent("input swipe " + startX + " " + y + " " + endX + " " + y);
-            }
-        }, 5000);
-    }
 }
