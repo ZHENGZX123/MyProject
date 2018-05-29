@@ -788,4 +788,21 @@ public class Utils {
         }
         return null;
     }
+
+    //null:private
+    //string:group
+    public static String isFromGroup(Context c, String name) {
+        int lastLeft = name.lastIndexOf("(");
+        int lastRight = name.lastIndexOf(")");
+        if (lastRight != -1 && lastLeft != -1 && (lastRight - lastLeft > 1)) {
+            name = name.substring(0, lastLeft);
+        }
+        ArrayList<Group> groups = new MyDBHelper(c).getWXGroups();
+        for (Group group : groups) {
+            if (name.equals(group.groupName)) {
+                return group.clientGroupId;
+            }
+        }
+        return null;
+    }
 }

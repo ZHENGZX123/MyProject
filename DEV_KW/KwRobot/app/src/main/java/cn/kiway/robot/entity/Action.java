@@ -54,6 +54,8 @@ public class Action {
     public int actionType; //事件类型
     public boolean replied;
     public Command command;
+    public long id;
+    public String clientGroupId;
 
     @Override
     public String toString() {
