@@ -116,6 +116,8 @@ import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.GROUP_CHAT_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.HOUTAI;
+import static cn.kiway.robot.util.Constant.MODE_KEFU;
+import static cn.kiway.robot.util.Constant.MODE_YINGXIAO;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
@@ -135,6 +137,7 @@ import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
+import static cn.kiway.robot.util.Constant.workMode;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.getParentRemark;
@@ -211,10 +214,17 @@ public class AutoReplyService extends AccessibilityService {
                 if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     return;
                 }
-                if (zbusRecvs.size() == 0) {
+                if (currentActionID == -2) {
                     return;
                 }
                 if (currentActionID != -1) {
+                    return;
+                }
+                if (preActions.size() > 0) {
+                    previewAction(preActions.remove(0));
+                    return;
+                }
+                if (zbusRecvs.size() == 0) {
                     return;
                 }
                 handleZbusMsg(zbusRecvs.remove(0));
@@ -236,6 +246,40 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
     };
+
+    private void previewAction(Action action) {
+        currentActionID = -2;
+        try {
+            action.intent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+        //如果这个时候刚好打开聊天页面，send打开的就是微信主页，就无法判断出是来自个人还是群。
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //判断是来自个人还是群组
+                findTargetNode(NODE_TEXTVIEW, 1);
+                String title = mFindTargetNode.getText().toString();
+                Log.d("test", "previewAction title = " + title);
+
+                String clientGroupId = Utils.isFromGroup(getApplicationContext(), title);
+                Log.d("test", "isFromGroup clientGroupId = " + clientGroupId);
+                action.clientGroupId = clientGroupId;
+
+                Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+                startActivity(intent);
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dispatchAction(action.id, action);
+                        currentActionID = -1;
+                    }
+                }, 2000);
+            }
+        }, 2000);
+    }
 
     private void launchWechat(long id, long maxReleaseTime) {
         try {
@@ -498,7 +542,9 @@ public class AutoReplyService extends AccessibilityService {
                     e.printStackTrace();
                 } finally {
                     try {
-                        chanel.abort();
+                        if (chanel != null) {
+                            chanel.abort();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -669,6 +715,9 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service destroy");
     }
 
+    //没有拉起-分配的intents
+    private ArrayList<Action> preActions = new ArrayList<>();
+
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         int eventType = event.getEventType();
@@ -730,9 +779,11 @@ public class AutoReplyService extends AccessibilityService {
                     }
 
                     //1.预先加入map
-                    long id = currentTimeMillis();
+                    long id = System.currentTimeMillis();
+                    Log.d("test", "id = " + id);
                     PendingIntent intent = ((Notification) event.getParcelableData()).contentIntent;
                     Action action = new Action();
+                    action.id = id;
                     action.sender = sender;
                     action.content = content;
                     action.intent = intent;
@@ -762,62 +813,11 @@ public class AutoReplyService extends AccessibilityService {
 
                     actions.put(id, action);
 
-                    if (action.actionType == TYPE_TEXT) {
-                        //刷新界面
-                        refreshUI1();
-                        //文字的话直接走zbus
-                        sendMsgToServer(id, action);
-                        sendReply20sLater(id, action);
-                    } else if (action.actionType == TYPE_AUTO_MATCH) {
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, false);
-                    } else if (action.actionType == TYPE_BACK_DOOR) {
-                        String ret = getBackDoorByKey(content.trim());
-                        action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_COLLECTOR_FORWARDING) {
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_SET_COLLECTOR) {
-                        String forwardto = action.content.replace("设置转发对象：", "").trim();
-                        if (TextUtils.isEmpty(forwardto)) {
-                            continue;
-                        }
-                        getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
-                        getSharedPreferences("collector", 0).edit().putString("collector", forwardto).commit();
-                        toast("设置转发对象成功");
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, false);
-                    } else if (action.actionType == TYPE_REQUEST_FRIEND) {
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (
-                            action.actionType == TYPE_CLEAR_ZOMBIE_FAN
-                                    || action.actionType == TYPE_CREATE_GROUP_CHAT
-                                    || action.actionType == TYPE_DELETE_GROUP_CHAT
-                                    || action.actionType == TYPE_ADD_GROUP_PEOPLE
-                                    || action.actionType == TYPE_DELETE_GROUP_PEOPLE
-                                    || action.actionType == TYPE_FIX_GROUP_NAME
-                                    || action.actionType == TYPE_FIX_GROUP_NOTICE
-                                    || action.actionType == TYPE_GROUP_CHAT
-                                    || action.actionType == TYPE_AT_GROUP_PEOPLE
-                                    || action.actionType == TYPE_DELETE_MOMENT
-                                    || action.actionType == TYPE_ADD_FRIEND
-                                    || action.actionType == TYPE_DELETE_FRIEND
-                                    || action.actionType == TYPE_MISSING_FISH
-                                    || action.actionType == TYPE_FIX_NICKNAME
-                                    || action.actionType == TYPE_FIX_FRIEND_NICKNAME
-                                    || action.actionType == TYPE_FIX_ICON
-                                    || action.actionType == TYPE_NEARBY_PEOPLE
-                                    || action.actionType == TYPE_GROUP_SEND_HELPER) {
-                        action.content = Base64.encodeToString(content.getBytes(), NO_WRAP);
-                        String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
-                        sendReplyImmediately(fakeRecv, true);
-                    } else if (action.actionType == TYPE_CHECK_NEW_VERSION) {
-                        if (MainActivity.instance != null) {
-                            MainActivity.instance.checkNewVersion(null);
-                        }
+                    if (action.actionType != TYPE_REQUEST_FRIEND && workMode == MODE_YINGXIAO) {
+                        Log.d("test", "MODE_YINGXIAO");
+                        preActions.add(action);
+                    } else if (workMode == MODE_KEFU) {
+                        dispatchAction(id, action);
                     }
                 }
                 break;
@@ -836,6 +836,10 @@ public class AutoReplyService extends AccessibilityService {
                 //检查一些异常的情况
                 checkWechatExceptionStatus();
 
+                if (currentActionID == -2) {
+                    Log.d("maptrix", "特殊时间，return0");
+                    return;
+                }
                 if (currentActionID == -1) {
                     Log.d("maptrix", "没有事件，return1");
                     return;
@@ -920,6 +924,66 @@ public class AutoReplyService extends AccessibilityService {
                     }, 2000);
                 }
                 break;
+        }
+    }
+
+    private void dispatchAction(long id, Action action) {
+        if (action.actionType == TYPE_TEXT) {
+            //刷新界面
+            refreshUI1();
+            //文字的话直接走zbus
+            sendMsgToServer(id, action);
+            sendReply20sLater(id, action);
+        } else if (action.actionType == TYPE_AUTO_MATCH) {
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            sendReplyImmediately(fakeRecv, false);
+        } else if (action.actionType == TYPE_BACK_DOOR) {
+            String ret = getBackDoorByKey(action.content.trim());
+            action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            sendReplyImmediately(fakeRecv, true);
+        } else if (action.actionType == TYPE_COLLECTOR_FORWARDING) {
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            sendReplyImmediately(fakeRecv, true);
+        } else if (action.actionType == TYPE_SET_COLLECTOR) {
+            String forwardto = action.content.replace("设置转发对象：", "").trim();
+            if (TextUtils.isEmpty(forwardto)) {
+                return;
+            }
+            getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
+            getSharedPreferences("collector", 0).edit().putString("collector", forwardto).commit();
+            toast("设置转发对象成功");
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            sendReplyImmediately(fakeRecv, false);
+        } else if (action.actionType == TYPE_REQUEST_FRIEND) {
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            sendReplyImmediately(fakeRecv, true);
+        } else if (
+                action.actionType == TYPE_CLEAR_ZOMBIE_FAN
+                        || action.actionType == TYPE_CREATE_GROUP_CHAT
+                        || action.actionType == TYPE_DELETE_GROUP_CHAT
+                        || action.actionType == TYPE_ADD_GROUP_PEOPLE
+                        || action.actionType == TYPE_DELETE_GROUP_PEOPLE
+                        || action.actionType == TYPE_FIX_GROUP_NAME
+                        || action.actionType == TYPE_FIX_GROUP_NOTICE
+                        || action.actionType == TYPE_GROUP_CHAT
+                        || action.actionType == TYPE_AT_GROUP_PEOPLE
+                        || action.actionType == TYPE_DELETE_MOMENT
+                        || action.actionType == TYPE_ADD_FRIEND
+                        || action.actionType == TYPE_DELETE_FRIEND
+                        || action.actionType == TYPE_MISSING_FISH
+                        || action.actionType == TYPE_FIX_NICKNAME
+                        || action.actionType == TYPE_FIX_FRIEND_NICKNAME
+                        || action.actionType == TYPE_FIX_ICON
+                        || action.actionType == TYPE_NEARBY_PEOPLE
+                        || action.actionType == TYPE_GROUP_SEND_HELPER) {
+            action.content = Base64.encodeToString(action.content.getBytes(), NO_WRAP);
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            sendReplyImmediately(fakeRecv, true);
+        } else if (action.actionType == TYPE_CHECK_NEW_VERSION) {
+            if (MainActivity.instance != null) {
+                MainActivity.instance.checkNewVersion(null);
+            }
         }
     }
 
