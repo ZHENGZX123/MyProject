@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_ADD_NEARBY = 108;    //主动加附近的人
     private static final int MSG_MISSING_FISH = 109;    //主动加附近的人
     private static final int MSG_GET_ALL_FRIENDS = 110;//上报所有好友
+    private static final int MSG_GET_ALL_GROUPS = 111;//上报所有群组
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -98,6 +99,7 @@ public class MainActivity extends BaseActivity {
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
+        mHandler.sendEmptyMessage(MSG_GET_ALL_GROUPS);
     }
 
     private void initView() {
@@ -347,7 +349,9 @@ public class MainActivity extends BaseActivity {
 
         //getAllFriends();
 //        getAllGroups();
-        getGroupIdByName("啊啊啊");
+//        getGroupIdByName("啊啊啊");
+
+        getAllGroups();
 
 //        ArrayList<AddFriend> afs = new MyDBHelper(this).getAllAddFriends();
 //        for (AddFriend af : afs) {
@@ -481,6 +485,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
                 getAllFriends();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_ALL_GROUPS) {
+                mHandler.removeMessages(MSG_GET_ALL_GROUPS);
+                getAllGroups();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_CELLPHONES) {
                 mHandler.removeMessages(MSG_GET_CELLPHONES);
                 getCellPhones();
@@ -549,26 +557,17 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db");
-                    doGetGroups(getApplicationContext(), dbFile, password, null);
+                    ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
+                    if (groups != null && groups.size() > 0) {
+                        new MyDBHelper(getApplicationContext()).deleteWXGroups();
+                        for (Group group : groups) {
+                            new MyDBHelper(getApplicationContext()).addWXGroup(group);
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-            }
-        }.start();
-    }
-
-    private void getGroupIdByName(String groupName) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db");
-                    Group g = doGetGroups(getApplicationContext(), dbFile, password, groupName).get(0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         }.start();
     }

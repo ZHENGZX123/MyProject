@@ -547,7 +547,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         o.put("members", members);
                     } else if (command.cmd.equals(GROUP_CHAT_CMD)) {
-                        
+
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o = new JSONObject(content);
                         o.put("cmd", replies.get(command.cmd));
@@ -565,6 +565,7 @@ public class AutoReplyService extends AccessibilityService {
                             if (!TextUtils.isEmpty(temp)) {
                                 clientGroupId = temp;
                             }
+                            new MyDBHelper(getApplicationContext()).addWXGroup(groups.get(0));
                         }
                         o.put("clientGroupId", clientGroupId);
                     }
