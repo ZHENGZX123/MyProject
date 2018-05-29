@@ -90,7 +90,6 @@ public class Constant {
 
     public static final String GROUP_INVIT_CMD = "groupInvitCmd";
     public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";//清理僵尸粉，暂时不做了
-    public static final String GROUP_CHAT_CMD = "groupChatCmd";
     public static final String INVITE_GROUP_CMD = "invitGroupCmd";//加人
     public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";//踢人
     public static final String UPDATE_GROUP_NOTICE_CMD = "updateGroupNoticeCmd";
@@ -117,6 +116,8 @@ public class Constant {
     public static final String UPDATE_FRIEND_NICKNAME_REPLY_CMD = "updateFriendNickNameReplyCmd";
     public static final String DELETE_FRIEND_CMD = "deleteFriendCmd";
     public static final String DELETE_FRIEND_REPLY_CMD = "deleteFriendReplyCmd";
+    public static final String GROUP_CHAT_CMD = "groupChatCmd";
+    public static final String GROUP_CHAT_REPLY_CMD = "groupChatReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -130,7 +131,7 @@ public class Constant {
         replies.put(FORGET_FISH_CMD, FORGET_FISH_REPLY_CMD);
         replies.put(UPDATE_FRIEND_NICKNAME_CMD, UPDATE_FRIEND_NICKNAME_REPLY_CMD);
         replies.put(DELETE_FRIEND_CMD, DELETE_FRIEND_REPLY_CMD);
-
+        replies.put(GROUP_CHAT_CMD, GROUP_CHAT_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -202,20 +203,19 @@ public class Constant {
         backdoors.put(UPDATE_FRIEND_NICKNAME_CMD, Action.TYPE_FIX_FRIEND_NICKNAME);
         backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
         backdoors.put(DELETE_FRIEND_CMD, Action.TYPE_DELETE_FRIEND);
+        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
+        backdoors.put(GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
 
 
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
-        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
-
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
-
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
 
     }
