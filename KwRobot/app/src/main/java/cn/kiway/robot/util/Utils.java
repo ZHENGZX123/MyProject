@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -19,6 +20,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabaseHook;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -28,13 +32,22 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.common.util.LogUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +65,7 @@ import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
+import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
@@ -62,9 +76,14 @@ import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
+import static cn.kiway.robot.util.Constant.WX_DB_DIR_PATH;
+import static cn.kiway.robot.util.Constant.WX_ROOT_PATH;
+import static cn.kiway.robot.util.Constant.WX_SP_UIN_PATH;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static com.mob.tools.utils.DeviceHelper.getApplication;
+import static com.mob.tools.utils.ResHelper.copyFile;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -614,5 +633,156 @@ public class Utils {
             return "";
         }
         return af.phone;
+    }
+
+    public static String getMD5(String info) {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(info.getBytes("UTF-8"));
+            byte[] encryption = md5.digest();
+
+            StringBuffer strBuf = new StringBuffer();
+            for (int i = 0; i < encryption.length; i++) {
+                if (Integer.toHexString(0xff & encryption[i]).length() == 1) {
+                    strBuf.append("0").append(Integer.toHexString(0xff & encryption[i]));
+                } else {
+                    strBuf.append(Integer.toHexString(0xff & encryption[i]));
+                }
+            }
+
+            return strBuf.toString();
+        } catch (NoSuchAlgorithmException e) {
+            return "";
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
+    }
+
+    public static String initDbPassword(Context c) {
+        execRootCmdSilent("chmod -R 777 " + WX_ROOT_PATH);
+        execRootCmdSilent("chmod  777 /data/data/com.tencent.mm/shared_prefs/auth_info_key_prefs.xml");
+        String uin = initCurrWxUin();
+        TelephonyManager phone = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = phone.getDeviceId();
+        Log.d("test", "imei = " + imei);
+
+        if (TextUtils.isEmpty(imei) || TextUtils.isEmpty(uin)) {
+            LogUtil.e("初始化数据库密码失败：imei或uid为空");
+            return null;
+        }
+        String md5 = getMD5(imei + uin);
+        System.out.println(imei + uin + "初始数值");
+        System.out.println(md5 + "MD5");
+        String password = md5.substring(0, 7).toLowerCase();
+        Log.d("test", "password = " + password);
+        return password;
+    }
+
+    private static String initCurrWxUin() {
+        String Uin = null;
+        File file = new File(WX_SP_UIN_PATH);
+        try {
+            FileInputStream in = new FileInputStream(file);
+            SAXReader saxReader = new SAXReader();
+            Document document = saxReader.read(in);
+            Element root = document.getRootElement();
+            List<Element> elements = root.elements();
+            for (Element element : elements) {
+                if ("_auth_uin".equals(element.attributeValue("name"))) {
+                    Uin = element.attributeValue("value");
+                }
+            }
+            return Uin;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.e("获取微信uid失败，请检查auth_info_key_prefs文件权限");
+        }
+        return null;
+    }
+
+    public static File getWxDBFile(String dbName) {
+        long latestModified = 0;
+        ArrayList<File> dbs = findDBFile(dbName);
+        File latestFile = null;
+        for (File f : dbs) {
+            if (f.lastModified() > latestModified) {
+                latestModified = f.lastModified();
+                latestFile = f;
+            }
+        }
+        if (latestFile == null) {
+            return null;
+        }
+        String copyFilePath = "/data/data/cn.kiway.robot/" + dbName;
+        copyFile(latestFile.getAbsolutePath(), copyFilePath);
+
+        return new File(copyFilePath);
+    }
+
+    public static ArrayList<File> findDBFile(String dbName) {
+        ArrayList<File> dbs = new ArrayList<>();
+        File wxDataDir = new File(WX_DB_DIR_PATH);
+        doFindDBFile(wxDataDir, dbName, dbs);
+        return dbs;
+    }
+
+    private static void doFindDBFile(File file, String fileName, ArrayList<File> dbs) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File childFile : files) {
+                    doFindDBFile(childFile, fileName, dbs);
+                }
+            }
+        } else {
+            if (fileName.equals(file.getName())) {
+                dbs.add(file);
+            }
+        }
+    }
+
+    public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password, String groupName) {
+        Log.d("test", "doGetGroups");
+        if (dbFile == null) {
+            return null;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return null;
+        }
+        SQLiteDatabase.loadLibs(c);
+        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
+            public void preKey(SQLiteDatabase database) {
+            }
+
+            public void postKey(SQLiteDatabase database) {
+                database.rawExecSQL("PRAGMA cipher_migrate;");
+            }
+        };
+
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+            Cursor c1 = null;
+            String sql = "";
+            if (TextUtils.isEmpty(groupName)) {
+                sql = "select username , nickname from rContact where type = 3";
+            } else {
+                sql = "select username , nickname from rContact where type = 3 and nickname = '" + groupName + "'";
+            }
+            Log.d("test", "sql = " + sql);
+            c1 = db.rawQuery(sql, null);
+            ArrayList<Group> groups = new ArrayList<>();
+            while (c1.moveToNext()) {
+                String username = c1.getString(c1.getColumnIndex("username"));  //clientGroupId
+                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //groupName
+                groups.add(new Group(username, nickname));
+            }
+            Log.d("test", "groups = " + groups);
+            c1.close();
+            db.close();
+            return groups;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

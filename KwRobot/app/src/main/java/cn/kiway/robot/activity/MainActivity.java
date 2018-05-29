@@ -2,14 +2,12 @@ package cn.kiway.robot.activity;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -27,28 +25,20 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xutils.common.util.LogUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
+import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
@@ -57,19 +47,17 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
-import static cn.kiway.robot.activity.WeChatActivity.WX_ROOT_PATH;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
-import static cn.kiway.robot.util.Constant.WX_DB_DIR_PATH;
-import static cn.kiway.robot.util.Constant.WX_SP_UIN_PATH;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
-import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
+import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
-import static com.mob.tools.utils.ResHelper.copyFile;
+import static cn.kiway.robot.util.Utils.getWxDBFile;
+import static cn.kiway.robot.util.Utils.initDbPassword;
 
 public class MainActivity extends BaseActivity {
 
@@ -357,12 +345,14 @@ public class MainActivity extends BaseActivity {
 //        new MyDBHelper(getApplicationContext()).deleteAddFriends();
 //        getCellPhones();
 
-//        getAllFriends();
+        //getAllFriends();
+//        getAllGroups();
+        getGroupIdByName("啊啊啊");
 
-        ArrayList<AddFriend> afs = new MyDBHelper(this).getAllAddFriends();
-        for (AddFriend af : afs) {
-            Log.d("test", "af = " + af);
-        }
+//        ArrayList<AddFriend> afs = new MyDBHelper(this).getAllAddFriends();
+//        for (AddFriend af : afs) {
+//            Log.d("test", "af = " + af);
+//        }
     }
 
     public void sharePic(View view) {
@@ -537,65 +527,59 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private List<File> mWxDbPathList = new ArrayList<>();
-    private long latestModified;
-    private String mCurrApkPath = "/data/data/cn.kiway.robot/";
-    private static final String COPY_WX_DATA_DB = "wx_data.db";
-
     private void getAllFriends() {
         new Thread() {
             @Override
             public void run() {
-                // 获取root权限
-                execRootCmdSilent("chmod -R 777 " + WX_ROOT_PATH);
-                execRootCmdSilent("chmod  777 /data/data/com.tencent.mm/shared_prefs/auth_info_key_prefs.xml");
-                // 获取微信的Uid
-                String Uin = initCurrWxUin();
-
-                // 获取 IMEI 唯一识别码
-                TelephonyManager phone = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String IMEI = phone.getDeviceId();
-                System.out.println("IMEI" + IMEI);
-
-                // 根据imei和uin生成的md5码，获取数据库的密码（去前七位的小写字母）
-                String password = initDbPassword(IMEI, Uin);
-                System.out.println(password + "数据库的密码");
-
-                //  递归查询微信本地数据库文件
-                mWxDbPathList.clear();
-                File wxDataDir = new File(WX_DB_DIR_PATH);
-                searchFile(wxDataDir, "EnMicroMsg.db");
-
-                File latestFile = null;
-                for (File f : mWxDbPathList) {
-                    System.out.println("f = " + f.lastModified());
-                    if (f.lastModified() > latestModified) {
-                        latestModified = f.lastModified();
-                        latestFile = f;
-                    }
+                try {
+                    String password = initDbPassword(getApplicationContext());
+                    File dbFile = getWxDBFile("EnMicroMsg.db");
+                    doGetFriends(dbFile, password);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                System.out.println("查询数据库文件");
-
-                int count = mWxDbPathList.size();
-                System.out.println("count = " + count);
-
-                File file = latestFile;
-
-                System.out.println("file = " + file.getAbsolutePath());
-                String copyFilePath = mCurrApkPath + COPY_WX_DATA_DB;
-
-                System.out.println("copyFilePath = " + copyFilePath);
-                //将微信数据库拷贝出来，因为直接连接微信的db，会导致微信崩溃
-                copyFile(file.getAbsolutePath(), copyFilePath);
-                File copyWxDataDb = new File(copyFilePath);
-                openWxDb(copyWxDataDb, password);
             }
         }.start();
     }
 
-    private void openWxDb(File dbFile, String password) {
+    private void getAllGroups() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String password = initDbPassword(getApplicationContext());
+                    File dbFile = getWxDBFile("EnMicroMsg.db");
+                    doGetGroups(getApplicationContext(), dbFile, password, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+            }
+        }.start();
+    }
+
+    private void getGroupIdByName(String groupName) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String password = initDbPassword(getApplicationContext());
+                    File dbFile = getWxDBFile("EnMicroMsg.db");
+                    Group g = doGetGroups(getApplicationContext(), dbFile, password, groupName).get(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void doGetFriends(File dbFile, String password) {
+        if (dbFile == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return;
+        }
         SQLiteDatabase.loadLibs(this);
         SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
             public void preKey(SQLiteDatabase database) {
@@ -607,29 +591,17 @@ public class MainActivity extends BaseActivity {
         };
 
         try {
-            //打开数据库连接
             SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
-            Cursor c1 = db.rawQuery("select * from rcontact where username not like 'gh_%' and verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536 and type<>1", null);
-            c1.moveToFirst();
-            int columnCount = c1.getColumnCount();
-            for (int i = 0; i < columnCount; i++) {
-                System.out.println("column = " + c1.getColumnName(i));
-            }
-            c1.moveToFirst();
+            Cursor c1 = db.rawQuery("select username,alias,nickname,conRemark from rcontact where username not like 'gh_%' and verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536 and type<>1", null);
             ArrayList<Friend> friends = new ArrayList<>();
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("username"));  //wxID
                 String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
-
-                System.out.println("usename = " + username);
-                System.out.println("alias = " + alias);
-                System.out.println("nickname = " + nickname);
-                System.out.println("conRemark = " + conRemark);
-
                 friends.add(new Friend(nickname, conRemark, username, alias));
             }
+            Log.d("test", "friends = " + friends);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -640,83 +612,7 @@ public class MainActivity extends BaseActivity {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtil.e("读取数据库信息失败");
         }
-    }
-
-    private void searchFile(File file, String fileName) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File childFile : files) {
-                    searchFile(childFile, fileName);
-                }
-            }
-        } else {
-            if (fileName.equals(file.getName())) {
-                mWxDbPathList.add(file);
-            }
-        }
-    }
-
-    private String initDbPassword(String imei, String uin) {
-        if (TextUtils.isEmpty(imei) || TextUtils.isEmpty(uin)) {
-            LogUtil.e("初始化数据库密码失败：imei或uid为空");
-            return null;
-        }
-        String md5 = getMD5(imei + uin);
-        System.out.println(imei + uin + "初始数值");
-        System.out.println(md5 + "MD5");
-        String password = md5.substring(0, 7).toLowerCase();
-        System.out.println("加密后" + password);
-        return password;
-    }
-
-    public String getMD5(String info) {
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.update(info.getBytes("UTF-8"));
-            byte[] encryption = md5.digest();
-
-            StringBuffer strBuf = new StringBuffer();
-            for (int i = 0; i < encryption.length; i++) {
-                if (Integer.toHexString(0xff & encryption[i]).length() == 1) {
-                    strBuf.append("0").append(Integer.toHexString(0xff & encryption[i]));
-                } else {
-                    strBuf.append(Integer.toHexString(0xff & encryption[i]));
-                }
-            }
-
-            return strBuf.toString();
-        } catch (NoSuchAlgorithmException e) {
-            return "";
-        } catch (UnsupportedEncodingException e) {
-            return "";
-        }
-    }
-
-    private String initCurrWxUin() {
-        String Uin = null;
-        File file = new File(WX_SP_UIN_PATH);
-        try {
-            FileInputStream in = new FileInputStream(file);
-            SAXReader saxReader = new SAXReader();
-            Document document = saxReader.read(in);
-            Element root = document.getRootElement();
-            List<Element> elements = root.elements();
-            for (Element element : elements) {
-                if ("_auth_uin".equals(element.attributeValue("name"))) {
-                    Uin = element.attributeValue("value");
-                }
-            }
-
-            return Uin;
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogUtil.e("获取微信uid失败，请检查auth_info_key_prefs文件权限");
-        }
-
-        return null;
     }
 
     private void getCellPhones() {

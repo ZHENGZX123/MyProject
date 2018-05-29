@@ -51,6 +51,7 @@ import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Command;
 import cn.kiway.robot.entity.Friend;
+import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
@@ -112,6 +113,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
+import static cn.kiway.robot.util.Constant.GROUP_CHAT_CMD;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
@@ -134,7 +136,10 @@ import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
+import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.getParentRemark;
+import static cn.kiway.robot.util.Utils.getWxDBFile;
+import static cn.kiway.robot.util.Utils.initDbPassword;
 import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
@@ -330,7 +335,6 @@ public class AutoReplyService extends AccessibilityService {
                 shareToWechatMoments(command.content);
                 break;
             case DELETE_FRIEND_CIRCLE_CMD:
-
             case UPDATE_NICKNAME_CMD:
             case UPDATE_AVATAR_CMD:
             case PERSION_NEARBY_CMD:
@@ -338,6 +342,7 @@ public class AutoReplyService extends AccessibilityService {
             case UPDATE_FRIEND_NICKNAME_CMD:
             case DELETE_FRIEND_CMD:
             case ADD_FRIEND_CMD:
+            case GROUP_CHAT_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -510,30 +515,27 @@ public class AutoReplyService extends AccessibilityService {
                 Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
-                    JSONObject o = new JSONObject()
-                            .put("cmd", replies.get(command.cmd))
-                            .put("type", replies.get(command.cmd))
-                            .put("token", command.token)
-                            .put("statusCode", statusCode);
+                    //TODO JSONObject可以优化
+                    JSONObject o = new JSONObject();
+                    o.put("cmd", replies.get(command.cmd));
+                    o.put("type", replies.get(command.cmd));
+                    o.put("token", command.token);
+                    o.put("statusCode", statusCode);
 
                     if (!TextUtils.isEmpty(command.id)) {
                         o.put("id", command.id);
                     }
 
                     String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-
                     if (command.cmd.equals(UPDATE_NICKNAME_CMD) || command.cmd.equals(UPDATE_FRIEND_NICKNAME_CMD)) {
-                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o.put("robotId", robotId);
-                        String newName = new JSONObject(content).optString("newName");
-                        String oldName = new JSONObject(content).optString("oldName");
-                        o.put("newName", newName);
-                        o.put("oldName", oldName);
+                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        o.put("newName", new JSONObject(content).optString("newName"));
+                        o.put("oldName", new JSONObject(content).optString("oldName"));
                     } else if (command.cmd.equals(DELETE_FRIEND_CMD)) {
-                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o.put("robotId", robotId);
+                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         JSONArray members = new JSONArray();
-
                         JSONArray recvMembers = new JSONObject(content).optJSONArray("members");
                         int count = recvMembers.length();
                         for (int i = 0; i < count; i++) {
@@ -544,6 +546,27 @@ public class AutoReplyService extends AccessibilityService {
                             members.put(m);
                         }
                         o.put("members", members);
+                    } else if (command.cmd.equals(GROUP_CHAT_CMD)) {
+                        
+                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        o = new JSONObject(content);
+                        o.put("cmd", replies.get(command.cmd));
+                        o.put("type", replies.get(command.cmd));
+                        o.put("token", command.token);
+                        o.put("statusCode", statusCode);
+
+                        String groupName = o.optString("name");
+                        String password = initDbPassword(getApplicationContext());
+                        File dbFile = getWxDBFile("EnMicroMsg.db");
+                        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, groupName);
+                        String clientGroupId = System.currentTimeMillis() + "";
+                        if (groups != null && groups.size() > 0) {
+                            String temp = groups.get(0).clientGroupId;
+                            if (!TextUtils.isEmpty(temp)) {
+                                clientGroupId = temp;
+                            }
+                        }
+                        o.put("clientGroupId", clientGroupId);
                     }
 
                     String msg = o.toString();
@@ -556,7 +579,9 @@ public class AutoReplyService extends AccessibilityService {
                     e.printStackTrace();
                 } finally {
                     try {
-                        chanel.abort();
+                        if (chanel != null) {
+                            chanel.abort();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1783,13 +1808,14 @@ public class AutoReplyService extends AccessibilityService {
                     checkedFriends.clear();
 
                     for (int i = 0; i < count; i++) {
-                        String temp = members.getString(i);
-                        int length = getTextLengthInEditText(1, temp);
+                        JSONObject temp = members.getJSONObject(i);
+                        String member = temp.optString("remark");
+                        int length = getTextLengthInEditText(1, member);
                         long sleepTime = 3000 + length * 2000;
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                clearAndPasteEditText(1, temp);
+                                clearAndPasteEditText(1, member);
                             }
                         });
                         Thread.sleep(sleepTime);
@@ -1861,11 +1887,10 @@ public class AutoReplyService extends AccessibilityService {
                                         public void run() {
                                             try {
                                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                                                Log.d("test", "content = " + content);
                                                 JSONObject o = new JSONObject(content);
-                                                String groupName = o.optString("groupName");
+                                                String name = o.optString("name");
 
-                                                findTargetNode(NODE_EDITTEXT, groupName);
+                                                findTargetNode(NODE_EDITTEXT, name);
 
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
@@ -1883,12 +1908,12 @@ public class AutoReplyService extends AccessibilityService {
                                                                 mHandler.postDelayed(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        findTargetNode(NODE_TEXTVIEW, "消息免打扰", CLICK_NONE, true);
+                                                                        /*findTargetNode(NODE_TEXTVIEW, "消息免打扰", CLICK_NONE, true);
                                                                         if (mFindTargetNode == null) {
                                                                             release(false);
                                                                             return;
                                                                         }
-                                                                        clickSomeWhere(mFindTargetNode.getParent().getChild(1));
+                                                                        clickSomeWhere(mFindTargetNode.getParent().getChild(1));*/
 
                                                                         findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
                                                                         if (mFindTargetNode == null) {
