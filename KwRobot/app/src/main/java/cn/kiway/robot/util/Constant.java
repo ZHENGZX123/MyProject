@@ -221,9 +221,10 @@ public class Constant {
     }
 
 
-    public static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
+    //机器人工作模式
+    public static final int MODE_KEFU = 0;
+    public static final int MODE_YINGXIAO = 1;
 
-    public static final String WX_SP_UIN_PATH = WX_ROOT_PATH + "shared_prefs/auth_info_key_prefs.xml";
+    public static int workMode = MODE_KEFU;
 
-    public static final String WX_DB_DIR_PATH = WX_ROOT_PATH + "MicroMsg";
 }

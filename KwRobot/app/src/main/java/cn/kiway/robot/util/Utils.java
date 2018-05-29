@@ -76,9 +76,6 @@ import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
-import static cn.kiway.robot.util.Constant.WX_DB_DIR_PATH;
-import static cn.kiway.robot.util.Constant.WX_ROOT_PATH;
-import static cn.kiway.robot.util.Constant.WX_SP_UIN_PATH;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
@@ -657,6 +654,12 @@ public class Utils {
             return "";
         }
     }
+
+    public static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
+
+    public static final String WX_SP_UIN_PATH = WX_ROOT_PATH + "shared_prefs/auth_info_key_prefs.xml";
+
+    public static final String WX_DB_DIR_PATH = WX_ROOT_PATH + "MicroMsg";
 
     public static String initDbPassword(Context c) {
         execRootCmdSilent("chmod -R 777 " + WX_ROOT_PATH);

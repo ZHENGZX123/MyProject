@@ -217,6 +217,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cn.kiway.robot.entity.AddFriend;
+import cn.kiway.robot.entity.Group;
 
 //易敏有接口了，数据库还用吗。
 public class MyDBHelper extends SQLiteOpenHelper {
@@ -234,7 +235,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  displayname text,  nickname text , roomowner text,wxid " +
             "text,wxno text)";
 
-
     private static final String TABLE_ADDFRIEND = "AddFriend";
     private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
             + TABLE_ADDFRIEND
@@ -246,10 +246,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  content text , talker  text ,  createTime long , talkerType  integer ,isSend integer  ) ";
 
 
+    private static final String TABLE_WX_GROUP = "WX_GROUP";
+    private static final String CREATE_TABLE_WX_GROUP = " create table  IF NOT EXISTS "
+            + TABLE_WX_GROUP
+            + "   (id integer primary key autoincrement,  clientGroupId text , groupName  text ) ";
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 7);
+        super(c, DB_NAME, null, 10);
     }
 
     @Override
@@ -262,8 +268,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
         db.execSQL(CREATE_TABLE_MESSAGE);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_GROUP);
+        db.execSQL(CREATE_TABLE_WX_GROUP);
     }
 
     @Override
@@ -273,6 +283,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_WX_ROOM);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_MESSAGE);
+        db.execSQL(CREATE_TABLE_WX_GROUP);
     }
 
     public void addWxPeople(JSONArray array) {
@@ -311,6 +322,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
         }
+        cur.close();
         db.close();
         return array;
     }
@@ -353,10 +365,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
         }
+        cur.close();
         db.close();
         return array;
     }
-
 
     //-------------------------------AddFriend-----------------------------
 
@@ -502,4 +514,40 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+
+    public void addWXGroup(Group group) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("clientGroupId", group.clientGroupId);
+        values.put("groupName", group.groupName);
+        db.insert(TABLE_WX_GROUP, null, values);
+        db.close();
+    }
+
+    public ArrayList<Group> getWXGroups() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_WX_GROUP, null, null, null, null, null, null);
+
+        ArrayList<Group> groups = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String clientGroupId = cur.getString(cur.getColumnIndex("clientGroupId"));
+            String groupName = cur.getString(cur.getColumnIndex("groupName"));
+            Group g = new Group(clientGroupId, groupName);
+            groups.add(g);
+        }
+        cur.close();
+        db.close();
+
+        return groups;
+    }
+
+    public void deleteWXGroups() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_WX_GROUP, null, null);
+        db.close();
+    }
 }
