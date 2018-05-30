@@ -336,7 +336,7 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "action null , doFindAUsableAction");
                         doFindAUsableAction(o);
                     } else {
-                        if (action.replied && recv.msg.contains("\"returnType\":1") && recv.msg.contains("客服正忙")) {
+                        if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.contains("客服正忙") || recv.msg.contains("客服已下线"))) {
                             Log.d("test", "action.replied");
                             return;
                         }
@@ -517,7 +517,7 @@ public class AutoReplyService extends AccessibilityService {
                             .put("areaCode", areaCode)
                             .toString();
 
-                    //topic : robotId#userId
+                    //topic : robotId#wxNo
                     String topic = robotId + "#" + wxNo;
                     String url = Constant.host + ":" + port;
                     PushMessageVo pushMessageVo = new PushMessageVo();
@@ -638,6 +638,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendReply20sLater(long id, Action action) {
+        if (workMode == MODE_YINGXIAO) {
+            return;
+        }
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
 
@@ -792,7 +795,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (content.endsWith("请求添加你为朋友")) {
                         action.actionType = TYPE_REQUEST_FRIEND;
                     }
-                    //来自公众号的消息每一条都要转发：图片还没有做，需要测试
+                    //设置转发对象
                     else if (content.startsWith("设置转发对象：")) {
                         //设置转发对象有可能丢掉！因为微信可能不弹出通知
                         action.actionType = TYPE_SET_COLLECTOR;

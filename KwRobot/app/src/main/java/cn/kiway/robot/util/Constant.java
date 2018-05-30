@@ -207,9 +207,9 @@ public class Constant {
         backdoors.put(GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
 
 
-        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
+        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
@@ -224,7 +224,6 @@ public class Constant {
     //机器人工作模式
     public static final int MODE_KEFU = 0;
     public static final int MODE_YINGXIAO = 1;
-
-    public static int workMode = MODE_KEFU;
+    public static int workMode = MODE_YINGXIAO;
 
 }
