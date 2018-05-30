@@ -364,6 +364,7 @@ public class MainActivity extends BaseActivity {
 //        }
 
         String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
 
         try {
             AsyncHttpClient client = new AsyncHttpClient();
@@ -375,14 +376,16 @@ public class MainActivity extends BaseActivity {
             JSONArray param = new JSONArray();
             JSONObject o1 = new JSONObject();
             o1.put("clientGroupId", "888888@chatroom");
-            o1.put("name", "test");
+            o1.put("name", "新增的一个群");
             o1.put("robotId", robotId);
+            o1.put("userId", wxNo);
             param.put(o1);
 
             JSONObject o2 = new JSONObject();
             o2.put("clientGroupId", "1527562385963");
             o2.put("name", "啊啊啊");
             o2.put("robotId", robotId);
+            o2.put("userId", wxNo);
             param.put(o2);
 
             Log.d("test", "groups/name/change param = " + param.toString());
@@ -609,7 +612,7 @@ public class MainActivity extends BaseActivity {
                             new MyDBHelper(getApplicationContext()).addWXGroup(group);
                         }
 
-
+                        Utils.uploadGroup(MainActivity.this, groups);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -244,7 +244,7 @@ public class Utils {
             param.put("appId", APPID);
             param.put("type", "huawei");
             param.put("deviceId", imei);
-            param.put("userId", wxNo);//userId
+            param.put("userId", wxNo);
             param.put("module", "student");
             param.put("robotId", robotId);
             Log.d("test", "installationPush param = " + param.toString());
@@ -804,5 +804,47 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static void uploadGroup(MainActivity act, ArrayList<Group> groups) {
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
+                String wxNo = act.getSharedPreferences("kiway", 0).getString("wxNo", "");
+
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    //String url = "http://192.168.8.161:8081/groups/name/change";
+                    String url = clientUrl + "/groups/name/change";
+                    Log.d("test", "groups/name/change url = " + url);
+                    JSONArray param = new JSONArray();
+                    for (Group g : groups) {
+                        JSONObject o = new JSONObject();
+                        o.put("clientGroupId", g.clientGroupId);
+                        o.put("name", g.groupName);
+                        o.put("robotId", robotId);
+                        o.put("userId" , wxNo);
+                        param.put(o);
+                    }
+                    Log.d("test", "groups/name/change param = " + param.toString());
+                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                    client.put(act, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "groups/name/change onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "groups/name/change onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
     }
 }
