@@ -514,7 +514,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
     public void addWXGroup(Group group) {
         if (db == null)
             db = getWritableDatabase();
@@ -542,6 +541,23 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
 
         return groups;
+    }
+
+    public Group getGroupById(String clientGroupId) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_WX_GROUP, null, "clientGroupId=?", new String[]{clientGroupId}, null, null, null);
+        Group g = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            clientGroupId = cur.getString(cur.getColumnIndex("clientGroupId"));
+            String groupName = cur.getString(cur.getColumnIndex("groupName"));
+            g = new Group(clientGroupId, groupName);
+
+        }
+        cur.close();
+        db.close();
+        return g;
     }
 
     public void deleteWXGroups() {

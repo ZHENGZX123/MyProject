@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,16 +17,8 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
-
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteDatabaseHook;
-
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -59,7 +50,9 @@ import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
+import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
+import static cn.kiway.robot.util.Utils.doGetPeopleInGroup;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -363,47 +356,19 @@ public class MainActivity extends BaseActivity {
 //            Log.d("test", "af = " + af);
 //        }
 
-        String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-
-            String url = "http://192.168.8.161:8081/groups/name/change";
-            Log.d("test", "groups/name/change url = " + url);
-
-            JSONArray param = new JSONArray();
-            JSONObject o1 = new JSONObject();
-            o1.put("clientGroupId", "888888@chatroom");
-            o1.put("name", "新增的一个群");
-            o1.put("robotId", robotId);
-            o1.put("userId", wxNo);
-            param.put(o1);
-
-            JSONObject o2 = new JSONObject();
-            o2.put("clientGroupId", "1527562385963");
-            o2.put("name", "啊啊啊");
-            o2.put("robotId", robotId);
-            o2.put("userId", wxNo);
-            param.put(o2);
-
-            Log.d("test", "groups/name/change param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.put(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "groups/name/change onSuccess = " + ret);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String password = initDbPassword(getApplicationContext());
+                    File dbFile = getWxDBFile("EnMicroMsg.db");
+                    doGetGroups(getApplicationContext(), dbFile, password, null);
+                    //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "groups/name/change onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
+            }
+        }.start();
 
     }
 
@@ -590,7 +555,13 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db");
-                    doGetFriends(dbFile, password);
+                    ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.uploadFriend(getApplication(), friends);
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -620,48 +591,6 @@ public class MainActivity extends BaseActivity {
 
             }
         }.start();
-    }
-
-    private void doGetFriends(File dbFile, String password) {
-        if (dbFile == null) {
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return;
-        }
-        SQLiteDatabase.loadLibs(this);
-        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
-            public void preKey(SQLiteDatabase database) {
-            }
-
-            public void postKey(SQLiteDatabase database) {
-                database.rawExecSQL("PRAGMA cipher_migrate;"); //兼容2.0的数据库
-            }
-        };
-
-        try {
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
-            Cursor c1 = db.rawQuery("select username,alias,nickname,conRemark from rcontact where username not like 'gh_%' and verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536 and type<>1", null);
-            ArrayList<Friend> friends = new ArrayList<>();
-            while (c1.moveToNext()) {
-                String username = c1.getString(c1.getColumnIndex("username"));  //wxID
-                String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
-                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
-                String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
-                friends.add(new Friend(nickname, conRemark, username, alias));
-            }
-            Log.d("test", "friends = " + friends);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.uploadFriend(getApplication(), friends);
-                }
-            });
-            c1.close();
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void getCellPhones() {
