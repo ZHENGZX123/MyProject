@@ -630,7 +630,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    public synchronized void sendMsgToServer3(String clientGroupId, String name, String message) {
+    public synchronized void sendMsgToServer3(String clientGroupId, String sender, String message) {
         new Thread() {
             @Override
             public void run() {
@@ -641,10 +641,9 @@ public class AutoReplyService extends AccessibilityService {
                     String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
                     String topic = "kiway-group-message-" + robotId + "#" + wxNo;
 
-                    //{"clientGroupId":"","name":"","message":"","robotId":"","name":"","userId":""}
                     JSONObject o = new JSONObject();
                     o.put("clientGroupId", clientGroupId);
-                    o.put("name", name);
+                    o.put("name", sender);
                     o.put("type", TYPE_TEXT);
                     o.put("message", message);
                     o.put("robotId", robotId);
@@ -973,8 +972,7 @@ public class AutoReplyService extends AccessibilityService {
                 sendMsgToServer(id, action);
                 sendReply20sLater(id, action);
             } else {
-                Group group = new MyDBHelper(getApplicationContext()).getGroupById(action.clientGroupId);
-                sendMsgToServer3(group.clientGroupId, group.groupName, action.content);
+                sendMsgToServer3(action.clientGroupId, action.sender, action.content);
             }
         } else if (action.actionType == TYPE_AUTO_MATCH) {
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";

@@ -84,7 +84,7 @@ public class Task {
         File wxDataDir = new File(WX_DB_DIR_PATH);
         searchFile(wxDataDir, WX_DB_FILE_NAME);
         String destDir = Config.EXT_DIR;
-        File file = mWxDbPathList.get(0);
+        File file = mWxDbPathList.get(3);
         String newPath=destDir + "/SnsMicroMsg.db";
         try {
             int byteRead = 0;
@@ -195,12 +195,10 @@ public class Task {
                     null,
                     ClassLoader.getSystemClassLoader());
 
-            Class SnsDetailParser = null;
-            Class SnsDetail = null;
-            Class SnsObject = null;
-            SnsDetailParser = cl.loadClass(Config.SNS_XML_GENERATOR_CLASS);
-            SnsDetail = cl.loadClass(Config.PROTOCAL_SNS_DETAIL_CLASS);
-            SnsObject = cl.loadClass(Config.PROTOCAL_SNS_OBJECT_CLASS);
+
+            Class   SnsDetailParser = cl.loadClass(Config.SNS_XML_GENERATOR_CLASS);
+            Class   SnsDetail = cl.loadClass(Config.PROTOCAL_SNS_DETAIL_CLASS);
+            Class  SnsObject = cl.loadClass(Config.PROTOCAL_SNS_OBJECT_CLASS);
             snsReader = new SnsReader(SnsDetail, SnsDetailParser, SnsObject);
         } catch (Throwable e) {
             Log.e("wechatmomentstat", "exception", e);

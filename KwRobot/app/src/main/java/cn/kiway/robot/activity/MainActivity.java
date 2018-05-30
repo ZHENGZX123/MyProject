@@ -52,7 +52,6 @@ import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
-import static cn.kiway.robot.util.Utils.doGetPeopleInGroup;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -97,7 +96,7 @@ public class MainActivity extends BaseActivity {
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
-        mHandler.sendEmptyMessage(MSG_GET_ALL_GROUPS);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 60 * 1000);
     }
 
     private void initView() {
@@ -356,19 +355,22 @@ public class MainActivity extends BaseActivity {
 //            Log.d("test", "af = " + af);
 //        }
 
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db");
-                    doGetGroups(getApplicationContext(), dbFile, password, null);
-                    //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        getAllFriends();
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    String password = initDbPassword(getApplicationContext());
+//                    File dbFile = getWxDBFile("SnsMicroMsg.db");
+////                    doGetGroups(getApplicationContext(), dbFile, password, null);
+//                    //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
+//                    doGetMoments(getApplicationContext(), dbFile);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
 
     }
 
