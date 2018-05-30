@@ -17,4 +17,14 @@ public class Friend {
         this.wxId = wxId;
         this.wxNo = wxNo;
     }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "nickname='" + nickname + '\'' +
+                ", remark='" + remark + '\'' +
+                ", wxId='" + wxId + '\'' +
+                ", wxNo='" + wxNo + '\'' +
+                '}';
+    }
 }

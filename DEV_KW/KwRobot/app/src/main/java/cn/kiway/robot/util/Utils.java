@@ -711,7 +711,7 @@ public class Utils {
         if (latestFile == null) {
             return null;
         }
-        String copyFilePath = "/data/data/cn.kiway.robot/" + dbName;
+        String copyFilePath = "/data/data/cn.kiway.robot/" + dbName ;
         copyFile(latestFile.getAbsolutePath(), copyFilePath);
 
         return new File(copyFilePath);
@@ -759,7 +759,7 @@ public class Utils {
 
         try {
             SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
-            Cursor c1 = db.rawQuery("select username,alias,nickname,conRemark from rcontact where username not like 'gh_%' and verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536 and type<>1", null);
+            Cursor c1 = db.rawQuery("select username,alias,nickname,conRemark from rcontact where type = 7", null);
             ArrayList<Friend> friends = new ArrayList<>();
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("username"));  //wxID
@@ -921,5 +921,40 @@ public class Utils {
                 }
             }
         });
+    }
+
+
+    public static ArrayList<String> doGetMoments(Context c, File dbFile) {
+        Log.d("test", "doGetMoments");
+        if (dbFile == null) {
+            return null;
+        }
+        SQLiteDatabase.loadLibs(c);
+        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
+            public void preKey(SQLiteDatabase database) {
+            }
+
+            public void postKey(SQLiteDatabase database) {
+                database.rawExecSQL("PRAGMA cipher_migrate;");
+            }
+        };
+
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, null, null, hook);
+            String sql = "select  *  from SnsInfo ";
+            Log.d("test", "sql = " + sql);
+            Cursor c1 = db.rawQuery(sql, null);
+            ArrayList<String> peoples = new ArrayList<>();
+            while (c1.moveToNext()) {
+                byte[] content = c1.getBlob(c1.getColumnIndex("content"));
+                Log.d("test", "content = " + new String(content));
+            }
+            c1.close();
+            db.close();
+            return peoples;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
