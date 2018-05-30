@@ -105,6 +105,7 @@ import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.CLICK_NONE;
 import static cn.kiway.robot.util.Constant.CLICK_PARENT;
 import static cn.kiway.robot.util.Constant.CLICK_SELF;
+import static cn.kiway.robot.util.Constant.CREATE_GROUP_CHAT_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
@@ -114,9 +115,7 @@ import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.GROUP_CHAT_CMD;
-import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.HOUTAI;
-import static cn.kiway.robot.util.Constant.MODE_KEFU;
 import static cn.kiway.robot.util.Constant.MODE_YINGXIAO;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
@@ -150,7 +149,6 @@ public class AutoReplyService extends AccessibilityService {
     public static int MSG_ACTION_TIMEOUT = 1;
     public static int MSG_INSERT_QUEUE = 2;
     public static int MSG_TRAVERSAL_QUEUE = 3;
-    public static int MSG_HEART_BEAT = 4;
 
     public static AutoReplyService instance;
 
@@ -188,7 +186,6 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service oncreate");
         instance = this;
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
-        //mHandler.sendEmptyMessage(MSG_HEART_BEAT);
     }
 
     private Handler mHandler = new Handler() {
@@ -229,20 +226,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 handleZbusMsg(zbusRecvs.remove(0));
                 return;
-            }
-            if (msg.what == MSG_HEART_BEAT) {
-                mHandler.removeMessages(MSG_HEART_BEAT);
-                mHandler.sendEmptyMessageDelayed(MSG_HEART_BEAT, 10 * 60 * 1000);
-                Log.d("test", "发送了一个心跳");
-                //创建一个假事件作为心跳
-                Action action = new Action();
-                action.sender = HEART_BEAT_TESTER;
-                action.content = "100007";
-                action.actionType = TYPE_TEXT;
-                long id = System.currentTimeMillis();
-
-                sendMsgToServer(id, action);
-                sendReply20sLater(id, action);
             }
         }
     };
@@ -308,7 +291,6 @@ public class AutoReplyService extends AccessibilityService {
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
                         command.token = o.optString("token");
-
                         if (o.has("content")) {
                             command.content = o.optString("content");
                             if (TextUtils.isEmpty(command.content)) {
@@ -320,14 +302,24 @@ public class AutoReplyService extends AccessibilityService {
                         doActionCommand(recv.msg, command);
                         return;
                     }
+                    if (o.has("clientGroupId")) {
+                        Log.d("test", "来自群的消息TODO");
+                        String clientGroupId = o.optString("clientGroupId");
+                        Group g = new MyDBHelper(getApplicationContext()).getGroupById(clientGroupId);
+                        if (g == null) {
+                            toast("该群不存在或已经被删除");
+                            return;
+                        }
+                        o.put("cmd", GROUP_CHAT_CMD);//TODO 群发助手！！！
+                        Command command = new Command();
+                        command.content = Base64.encodeToString(o.toString().getBytes(), NO_WRAP);
+                        doActionCommand(o.toString(), command);
+                        return;
+                    }
+
                     long id = o.optLong("id");
                     if (id == 0) {
                         Log.d("test", "没有id！！！");
-                        return;
-                    }
-                    //doCheckZbusStatus(id, recv.msg);
-                    //心跳测试不用拉起微信
-                    if (recv.msg.contains(HEART_BEAT_TESTER)) {
                         return;
                     }
 
@@ -386,6 +378,7 @@ public class AutoReplyService extends AccessibilityService {
             case UPDATE_FRIEND_NICKNAME_CMD:
             case DELETE_FRIEND_CMD:
             case ADD_FRIEND_CMD:
+            case CREATE_GROUP_CHAT_CMD:
             case GROUP_CHAT_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
@@ -505,8 +498,8 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     String name = getSharedPreferences("kiway", 0).getString("name", "");
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
-                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                     String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                     String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
 
                     String msg = new JSONObject()
@@ -592,7 +585,7 @@ public class AutoReplyService extends AccessibilityService {
                             members.put(m);
                         }
                         o.put("members", members);
-                    } else if (command.cmd.equals(GROUP_CHAT_CMD)) {
+                    } else if (command.cmd.equals(CREATE_GROUP_CHAT_CMD)) {
 
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o = new JSONObject(content);
@@ -618,6 +611,47 @@ public class AutoReplyService extends AccessibilityService {
 
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
+
+                    chanel = rabbitMQUtils.createChannel(topic, topic);
+                    rabbitMQUtils.sendMsgs(msg, chanel);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (chanel != null) {
+                            chanel.abort();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
+
+    public synchronized void sendMsgToServer3(String clientGroupId, String name, String message) {
+        new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "sendMsgToServer3");
+                Channel chanel = null;
+                try {
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                    String topic = "kiway-group-message-" + robotId + "#" + wxNo;
+
+                    //{"clientGroupId":"","name":"","message":"","robotId":"","name":"","userId":""}
+                    JSONObject o = new JSONObject();
+                    o.put("clientGroupId", clientGroupId);
+                    o.put("name", name);
+                    o.put("type", TYPE_TEXT);
+                    o.put("message", message);
+                    o.put("robotId", robotId);
+                    o.put("userId", wxNo);
+
+                    String msg = o.toString();
+                    Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
 
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsgs(msg, chanel);
@@ -816,10 +850,10 @@ public class AutoReplyService extends AccessibilityService {
 
                     actions.put(id, action);
 
-                    if (action.actionType != TYPE_REQUEST_FRIEND && workMode == MODE_YINGXIAO) {
+                    if (action.actionType == TYPE_TEXT && workMode == MODE_YINGXIAO) {
                         Log.d("test", "MODE_YINGXIAO");
                         preActions.add(action);
-                    } else if (workMode == MODE_KEFU) {
+                    } else {
                         dispatchAction(id, action);
                     }
                 }
@@ -935,8 +969,13 @@ public class AutoReplyService extends AccessibilityService {
             //刷新界面
             refreshUI1();
             //文字的话直接走zbus
-            sendMsgToServer(id, action);
-            sendReply20sLater(id, action);
+            if (TextUtils.isEmpty(action.clientGroupId)) {
+                sendMsgToServer(id, action);
+                sendReply20sLater(id, action);
+            } else {
+                Group group = new MyDBHelper(getApplicationContext()).getGroupById(action.clientGroupId);
+                sendMsgToServer3(group.clientGroupId, group.groupName, action.content);
+            }
         } else if (action.actionType == TYPE_AUTO_MATCH) {
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, false);
@@ -1023,6 +1062,7 @@ public class AutoReplyService extends AccessibilityService {
             start = o.optInt("start");
             end = o.optInt("end");
             String url = o.optString("url");
+            String clientGroupId = o.optString("clientGroupId");
             String groupName = o.optString("groupName");
             JSONArray members = o.optJSONArray("members");
 
@@ -1060,9 +1100,12 @@ public class AutoReplyService extends AccessibilityService {
                             || actionType == TYPE_DELETE_GROUP_PEOPLE
                             || actionType == TYPE_FIX_GROUP_NAME
                             || actionType == TYPE_FIX_GROUP_NOTICE
-                            || actionType == TYPE_GROUP_CHAT
                             || actionType == TYPE_AT_GROUP_PEOPLE) {
                         //通讯录-群聊-关于群的操作
+                        searchTargetInWxGroupPage(actionType, groupName);
+                    } else if (actionType == TYPE_GROUP_CHAT) {
+                        //通讯录-群聊-关于群的操作
+                        String groupName = new MyDBHelper(getApplicationContext()).getGroupById(clientGroupId).groupName;
                         searchTargetInWxGroupPage(actionType, groupName);
                     } else if (actionType == TYPE_DELETE_FRIEND) {
                         startDeleteFriend(members);
@@ -2396,7 +2439,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //TODO 这里可以优化一下，判断是否搜索到结果。因为搜华仔会打开webview。。。
+                //TODO 这里可以优化一下，判断是否搜索到结果。因为搜华仔会打开webview耗内存
                 findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);//昵称不完全搜索，所以是false
                 if (mFindTargetNode == null) {
                     if (actionType != TYPE_CLEAR_ZOMBIE_FAN) {
@@ -2468,7 +2511,7 @@ public class AutoReplyService extends AccessibilityService {
                             try {
                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                                 JSONObject o = new JSONObject(content);
-                                String text = o.optString("content");
+                                String text = o.optString("message");
                                 sendTextOnly(text, true);
                             } catch (Exception e) {
                                 e.printStackTrace();

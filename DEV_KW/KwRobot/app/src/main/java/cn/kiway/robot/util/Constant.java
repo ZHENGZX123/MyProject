@@ -70,8 +70,6 @@ public class Constant {
         qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
-    public static final String HEART_BEAT_TESTER = "心跳测试使者";
-
     public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下序号或关键字发送咨询招生相关问题。谢谢！";
 
     public static final String DEFAULT_VALIDATION = "您好，可以加个好友吗？";
@@ -116,8 +114,9 @@ public class Constant {
     public static final String UPDATE_FRIEND_NICKNAME_REPLY_CMD = "updateFriendNickNameReplyCmd";
     public static final String DELETE_FRIEND_CMD = "deleteFriendCmd";
     public static final String DELETE_FRIEND_REPLY_CMD = "deleteFriendReplyCmd";
-    public static final String GROUP_CHAT_CMD = "groupChatCmd";
-    public static final String GROUP_CHAT_REPLY_CMD = "groupChatReplyCmd";
+    public static final String CREATE_GROUP_CHAT_CMD = "groupChatCmd";//发起群聊
+    public static final String CREATE_GROUP_CHAT_REPLY_CMD = "groupChatReplyCmd";
+    public static final String GROUP_CHAT_CMD = "chatInGroupCmd";//群发消息
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -131,7 +130,7 @@ public class Constant {
         replies.put(FORGET_FISH_CMD, FORGET_FISH_REPLY_CMD);
         replies.put(UPDATE_FRIEND_NICKNAME_CMD, UPDATE_FRIEND_NICKNAME_REPLY_CMD);
         replies.put(DELETE_FRIEND_CMD, DELETE_FRIEND_REPLY_CMD);
-        replies.put(GROUP_CHAT_CMD, GROUP_CHAT_REPLY_CMD);
+        replies.put(CREATE_GROUP_CHAT_CMD, CREATE_GROUP_CHAT_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -142,7 +141,7 @@ public class Constant {
     private static final String BACK_DOOR8 = "踢人出群";
     private static final String BACK_DOOR9 = "修改群名称";
     private static final String BACK_DOOR10 = "修改群公告";
-    private static final String BACK_DOOR11 = "群发消息";
+    public static final String BACK_DOOR11 = "群发消息";
     private static final String BACK_DOOR12 = "艾特某人";
     private static final String BACK_DOOR13 = "删除朋友圈";
     private static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
@@ -159,7 +158,7 @@ public class Constant {
 
 
     //{"cmd": "群里拉人","groupName":"测试群"}
-    //{"cmd": "群发消息","content":"1", "msgType":"1", "groupName": "111"}  TODO新增type
+    //{"cmd": "群发消息","message":"1", "type":"1", "clientGroupId": "9189004002@chatroom"}  TODO新增type
 
     //{"cmd": "删除朋友","members":["执着","13267069058"]}
     //{"cmd": "群发助手","content":"1", "members":["浪翻云","胡翻翻"]}
@@ -204,7 +203,9 @@ public class Constant {
         backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
         backdoors.put(DELETE_FRIEND_CMD, Action.TYPE_DELETE_FRIEND);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
-        backdoors.put(GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
+        backdoors.put(CREATE_GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
+        backdoors.put(GROUP_CHAT_CMD, Action.TYPE_GROUP_CHAT);
 
 
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
@@ -212,7 +213,6 @@ public class Constant {
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
-        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);

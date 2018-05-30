@@ -52,6 +52,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -75,7 +76,6 @@ import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
-import static cn.kiway.robot.util.Constant.HEART_BEAT_TESTER;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
@@ -304,12 +304,7 @@ public class Utils {
                             System.out.println("consume msg: " + msg);
                             //处理逻辑
                             if (AutoReplyService.instance != null) {
-                                //如果发送者是心跳，添加到队头
-                                if (msg.contains(HEART_BEAT_TESTER)) {
-                                    AutoReplyService.instance.sendReplyImmediately(msg, true);
-                                } else {
-                                    AutoReplyService.instance.sendReplyImmediately(msg, false);
-                                }
+                                AutoReplyService.instance.sendReplyImmediately(msg, false);
                             }
                             //手动消息确认
                             channel.basicAck(envelope.getDeliveryTag(), false);
@@ -744,6 +739,46 @@ public class Utils {
         }
     }
 
+    public static ArrayList<Friend> doGetFriends(Context c, File dbFile, String password) {
+        if (dbFile == null) {
+            return null;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return null;
+        }
+
+        SQLiteDatabase.loadLibs(c);
+        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
+            public void preKey(SQLiteDatabase database) {
+            }
+
+            public void postKey(SQLiteDatabase database) {
+                database.rawExecSQL("PRAGMA cipher_migrate;"); //兼容2.0的数据库
+            }
+        };
+
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+            Cursor c1 = db.rawQuery("select username,alias,nickname,conRemark from rcontact where username not like 'gh_%' and verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536 and type<>1", null);
+            ArrayList<Friend> friends = new ArrayList<>();
+            while (c1.moveToNext()) {
+                String username = c1.getString(c1.getColumnIndex("username"));  //wxID
+                String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
+                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
+                String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
+                friends.add(new Friend(nickname, conRemark, username, alias));
+            }
+            Log.d("test", "friends = " + friends);
+            c1.close();
+            db.close();
+            return friends;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password, String groupName) {
         Log.d("test", "doGetGroups");
         if (dbFile == null) {
@@ -789,6 +824,46 @@ public class Utils {
         return null;
     }
 
+    public static ArrayList<String> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
+        Log.d("test", "doGetGroups");
+        if (dbFile == null) {
+            return null;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return null;
+        }
+        SQLiteDatabase.loadLibs(c);
+        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
+            public void preKey(SQLiteDatabase database) {
+            }
+
+            public void postKey(SQLiteDatabase database) {
+                database.rawExecSQL("PRAGMA cipher_migrate;");
+            }
+        };
+
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+            String sql = "select  displayname  from chatroom where chatroomname = '" + clientGroupId + "'";
+
+            Log.d("test", "sql = " + sql);
+            Cursor c1 = db.rawQuery(sql, null);
+            ArrayList<String> peoples = new ArrayList<>();
+            while (c1.moveToNext()) {
+                String username = c1.getString(c1.getColumnIndex("displayname"));
+                String[] temp = username.split("、");
+                Collections.addAll(peoples, temp);
+                Log.d("test", "username = " + username);
+            }
+            c1.close();
+            db.close();
+            return peoples;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //null:private
     //string:group
     public static String isFromGroup(Context c, String name) {
@@ -825,7 +900,7 @@ public class Utils {
                         o.put("clientGroupId", g.clientGroupId);
                         o.put("name", g.groupName);
                         o.put("robotId", robotId);
-                        o.put("userId" , wxNo);
+                        o.put("userId", wxNo);
                         param.put(o);
                     }
                     Log.d("test", "groups/name/change param = " + param.toString());
