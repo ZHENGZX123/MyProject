@@ -546,7 +546,7 @@ public class ZbusHost {
         pushMessageVo.setSenderId(userId);//老师的userId
         pushMessageVo.setPushType("zbus");
 
-        Log.d("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
+        Log.e("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
        // ZbusUtils.sendMsg(topic, pushMessageVo);
         new Thread(){
             @Override

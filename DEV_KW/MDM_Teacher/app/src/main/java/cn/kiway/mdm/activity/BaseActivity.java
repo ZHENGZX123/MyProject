@@ -102,6 +102,10 @@ public class BaseActivity extends ScreenSharingActivity implements View.OnClickL
         if (teacherIcon != null && !TextUtils.isEmpty(url)) {
             ImageLoader.getInstance().displayImage(url, teacherIcon, KWApplication.getLoaderOptions());
         }
+        String name=getSharedPreferences("kiway", 0).getString("teacherName", "");
+        if (teacherName!=null&& !TextUtils.isEmpty(name)&& !name.equals("null")){
+            teacherName.setText(name);
+        }
 
         videoBtn = (ImageButton) findViewById(R.id.video);
         toolsRL = (RelativeLayout) findViewById(R.id.toolsRL);
