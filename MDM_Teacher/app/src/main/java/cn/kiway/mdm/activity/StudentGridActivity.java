@@ -415,6 +415,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+
     private void onSuccess() {
         if (type == TYPE_DIANMING) {
             sendShangkeCommand();
