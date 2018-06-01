@@ -93,8 +93,8 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_GET_QA);
         mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
         mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
-        //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
-        //mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 60 * 1000);
     }
@@ -330,6 +330,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+        missingFish();
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AutoReplyService.instance.test2();
+//            }
+//        }, 10000);
+
 //        AddFriend a = new MyDBHelper(getApplicationContext()).getAddFriendByRemark("11 10 执着");
 //        Log.d("test", "a  = " + a);
 //        ArrayList<AddFriend> afs = new MyDBHelper(getApplicationContext()).getAddFriends();
@@ -355,7 +364,7 @@ public class MainActivity extends BaseActivity {
 //            Log.d("test", "af = " + af);
 //        }
 
-        getAllFriends();
+//        getAllFriends();
 
 //        new Thread() {
 //            @Override
@@ -556,7 +565,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db");
+                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
                     ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -577,8 +586,9 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db");
+                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
                     ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
+
                     if (groups != null && groups.size() > 0) {
                         new MyDBHelper(getApplicationContext()).deleteWXGroups();
                         for (Group group : groups) {
