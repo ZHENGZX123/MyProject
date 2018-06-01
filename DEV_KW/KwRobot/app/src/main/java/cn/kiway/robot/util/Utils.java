@@ -698,7 +698,7 @@ public class Utils {
         return null;
     }
 
-    public static File getWxDBFile(String dbName , String saveDbName) {
+    public static File getWxDBFile(String dbName, String saveDbName) {
         long latestModified = 0;
         ArrayList<File> dbs = findDBFile(dbName);
         File latestFile = null;
@@ -711,7 +711,7 @@ public class Utils {
         if (latestFile == null) {
             return null;
         }
-        String copyFilePath = "/data/data/cn.kiway.robot/" + saveDbName ;
+        String copyFilePath = "/data/data/cn.kiway.robot/" + saveDbName;
         copyFile(latestFile.getAbsolutePath(), copyFilePath);
 
         return new File(copyFilePath);
@@ -812,7 +812,9 @@ public class Utils {
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("username"));  //clientGroupId
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //groupName
-                groups.add(new Group(username, nickname));
+                if (username.endsWith("chatroom")) {
+                    groups.add(new Group(username, nickname));
+                }
             }
             Log.d("test", "groups = " + groups);
             c1.close();

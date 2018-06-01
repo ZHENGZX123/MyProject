@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
     }
 
     private void initView() {
@@ -330,8 +330,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        missingFish();
-
+//        missingFish();
+        getAllGroups();
 //        mHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
