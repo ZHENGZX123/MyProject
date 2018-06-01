@@ -86,15 +86,12 @@ public class Constant {
 
     public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下序号或关键字咨询：";
 
-    public static final String GROUP_INVIT_CMD = "groupInvitCmd";
+
     public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";//清理僵尸粉，暂时不做了
-    public static final String INVITE_GROUP_CMD = "invitGroupCmd";//加人
-    public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";//踢人
-    public static final String UPDATE_GROUP_NOTICE_CMD = "updateGroupNoticeCmd";
-    public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
     public static final String SEND_GROUP_MSG_CMD = "sendGroupMsgCmd";
     public static final String AT_PERSONS_CMD = "atPersonsCmd";
     public static final String CHECK_NEW_VERSION_CMD = "checkNewVersionCmd";
+
 
     public static final String SEND_FRIEND_CIRCLE_CMD = "sendFriendCircleCmd";
     public static final String SEND_FRIEND_CIRCLE_REPLY_CMD = "sendFriendCircleReplyCmd";
@@ -116,7 +113,15 @@ public class Constant {
     public static final String DELETE_FRIEND_REPLY_CMD = "deleteFriendReplyCmd";
     public static final String CREATE_GROUP_CHAT_CMD = "groupChatCmd";//发起群聊
     public static final String CREATE_GROUP_CHAT_REPLY_CMD = "groupChatReplyCmd";
-    public static final String GROUP_CHAT_CMD = "chatInGroupCmd";//群发消息
+    public static final String CHAT_IN_GROUP_CMD = "chatInGroupCmd";//群发消息
+    public static final String INVITE_GROUP_CMD = "invitGroupCmd";//加人
+    public static final String INVITE_GROUP_REPLY_CMD = "invitGroupReplyCmd";//加人
+    public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";//踢人
+    public static final String TICK_PERSON_GROUP_REPLY_CMD = "tickPersonGroupReplyCmd";//踢人
+    public static final String UPDATE_GROUP_NOTICE_CMD = "updateGroupNoticeCmd";
+    public static final String UPDATE_GROUP_NOTICE_REPLY_CMD = "updateGroupNoticeCmd";
+    public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
+    public static final String UPDATE_GROUP_NAME_REPLY_CMD = "updateGroupNameCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -131,6 +136,10 @@ public class Constant {
         replies.put(UPDATE_FRIEND_NICKNAME_CMD, UPDATE_FRIEND_NICKNAME_REPLY_CMD);
         replies.put(DELETE_FRIEND_CMD, DELETE_FRIEND_REPLY_CMD);
         replies.put(CREATE_GROUP_CHAT_CMD, CREATE_GROUP_CHAT_REPLY_CMD);
+        replies.put(INVITE_GROUP_CMD, INVITE_GROUP_REPLY_CMD);
+        replies.put(TICK_PERSON_GROUP_CMD, TICK_PERSON_GROUP_REPLY_CMD);
+        replies.put(UPDATE_GROUP_NOTICE_CMD, UPDATE_GROUP_NOTICE_REPLY_CMD);
+        replies.put(UPDATE_GROUP_NAME_CMD, UPDATE_GROUP_NAME_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -144,7 +153,7 @@ public class Constant {
     public static final String BACK_DOOR11 = "群发消息";
     private static final String BACK_DOOR12 = "艾特某人";
     private static final String BACK_DOOR13 = "删除朋友圈";
-    private static final String BACK_DOOR14 = "添加朋友";//电话号码或微信号
+    private static final String BACK_DOOR14 = "添加朋友";
     private static final String BACK_DOOR15 = "漏网之鱼";
     private static final String BACK_DOOR16 = "修改昵称";
     private static final String BACK_DOOR17 = "修改头像";
@@ -157,7 +166,6 @@ public class Constant {
     private static final String BACK_DOOR24 = "修改好友昵称";
 
 
-    //{"cmd": "群里拉人","groupName":"测试群"}
     //{"cmd": "群发消息","message":"1", "type":"1", "clientGroupId": "9189004002@chatroom"}  TODO新增type
 
     //{"cmd": "删除朋友","members":["执着","13267069058"]}
@@ -205,19 +213,21 @@ public class Constant {
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(CREATE_GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
-        backdoors.put(GROUP_CHAT_CMD, Action.TYPE_GROUP_CHAT);
-
-
+        backdoors.put(CHAT_IN_GROUP_CMD, Action.TYPE_GROUP_CHAT);
         backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
+        backdoors.put(INVITE_GROUP_CMD, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
+        backdoors.put(TICK_PERSON_GROUP_CMD, Action.TYPE_DELETE_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
+        backdoors.put(UPDATE_GROUP_NAME_CMD, Action.TYPE_FIX_GROUP_NAME);
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
+        backdoors.put(UPDATE_GROUP_NOTICE_CMD, Action.TYPE_FIX_GROUP_NOTICE);
+
+        backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
+        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
-        backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
-
     }
 
 
