@@ -122,6 +122,8 @@ public class Constant {
     public static final String UPDATE_GROUP_NOTICE_REPLY_CMD = "updateGroupNoticeCmd";
     public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
     public static final String UPDATE_GROUP_NAME_REPLY_CMD = "updateGroupNameCmd";
+    public static final String DELETE_GROUP_CMD = "deleteGroupCmd";
+    public static final String DELETE_GROUP_REPLY_CMD = "deleteGroupReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -140,6 +142,8 @@ public class Constant {
         replies.put(TICK_PERSON_GROUP_CMD, TICK_PERSON_GROUP_REPLY_CMD);
         replies.put(UPDATE_GROUP_NOTICE_CMD, UPDATE_GROUP_NOTICE_REPLY_CMD);
         replies.put(UPDATE_GROUP_NAME_CMD, UPDATE_GROUP_NAME_REPLY_CMD);
+        replies.put(DELETE_GROUP_CMD, DELETE_GROUP_REPLY_CMD);
+
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -222,8 +226,9 @@ public class Constant {
         backdoors.put(UPDATE_GROUP_NAME_CMD, Action.TYPE_FIX_GROUP_NAME);
         backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
         backdoors.put(UPDATE_GROUP_NOTICE_CMD, Action.TYPE_FIX_GROUP_NOTICE);
-
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
+        backdoors.put(DELETE_GROUP_CMD, Action.TYPE_DELETE_GROUP_CHAT);
+
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);

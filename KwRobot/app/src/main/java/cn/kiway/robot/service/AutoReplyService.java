@@ -113,6 +113,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
+import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
@@ -387,6 +388,7 @@ public class AutoReplyService extends AccessibilityService {
             case TICK_PERSON_GROUP_CMD:
             case UPDATE_GROUP_NAME_CMD:
             case UPDATE_GROUP_NOTICE_CMD:
+            case DELETE_GROUP_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -600,7 +602,8 @@ public class AutoReplyService extends AccessibilityService {
                             || command.cmd.equals(INVITE_GROUP_CMD)
                             || command.cmd.equals(TICK_PERSON_GROUP_CMD)
                             || command.cmd.equals(UPDATE_GROUP_NOTICE_CMD)
-                            || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
+                            || command.cmd.equals(UPDATE_GROUP_NAME_CMD)
+                            || command.cmd.equals(DELETE_GROUP_CMD)) {
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o = new JSONObject(content);
                         o.put("cmd", replies.get(command.cmd));
@@ -1067,6 +1070,7 @@ public class AutoReplyService extends AccessibilityService {
             end = o.optInt("end");
             String url = o.optString("url");
             String clientGroupId = o.optString("clientGroupId");
+
             JSONArray members = o.optJSONArray("members");
 
             String finalContent = content;
