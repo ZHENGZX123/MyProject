@@ -893,7 +893,6 @@ public class Utils {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    //String url = "http://192.168.8.161:8081/groups/name/change";
                     String url = clientUrl + "/groups/name/change";
                     Log.d("test", "groups/name/change url = " + url);
                     JSONArray param = new JSONArray();

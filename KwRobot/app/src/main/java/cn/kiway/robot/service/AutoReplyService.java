@@ -567,7 +567,6 @@ public class AutoReplyService extends AccessibilityService {
                 Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
-                    //TODO JSONObject可以优化
                     JSONObject o = new JSONObject();
                     o.put("cmd", replies.get(command.cmd));
                     o.put("type", replies.get(command.cmd));
@@ -611,18 +610,20 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("token", command.token);
                         o.put("statusCode", statusCode);
 
-                        if (command.cmd.equals(CREATE_GROUP_CHAT_CMD)) {
+                        if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
                             String groupName = o.optString("name");
                             String password = initDbPassword(getApplicationContext());
-                            File dbFile = getWxDBFile("EnMicroMsg.db", "getOneGroup.db");
-                            ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, groupName);
-                            String clientGroupId = System.currentTimeMillis() + "";
+                            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+                            ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
+                            String clientGroupId = null;
                             if (groups != null && groups.size() > 0) {
-                                String temp = groups.get(0).clientGroupId;
-                                if (!TextUtils.isEmpty(temp)) {
-                                    clientGroupId = temp;
+                                new MyDBHelper(getApplicationContext()).deleteWXGroups();
+                                for (Group group : groups) {
+                                    new MyDBHelper(getApplicationContext()).addWXGroup(group);
+                                    if (groupName.equals(group.groupName)) {
+                                        clientGroupId = group.clientGroupId;
+                                    }
                                 }
-                                new MyDBHelper(getApplicationContext()).addWXGroup(groups.get(0));
                             }
                             o.put("clientGroupId", clientGroupId);
                         }
@@ -1070,11 +1071,13 @@ public class AutoReplyService extends AccessibilityService {
             end = o.optInt("end");
             String url = o.optString("url");
             String clientGroupId = o.optString("clientGroupId");
+            if (TextUtils.isEmpty(clientGroupId)) {
+                clientGroupId = o.optJSONArray("clientGroupIds").optString(0);
+            }
 
             JSONArray members = o.optJSONArray("members");
-
             String finalContent = content;
-
+            String finalClientGroupId = clientGroupId;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1110,8 +1113,9 @@ public class AutoReplyService extends AccessibilityService {
                             || actionType == TYPE_FIX_GROUP_NOTICE
                             || actionType == TYPE_AT_GROUP_PEOPLE) {
                         //通讯录-群聊-关于群的操作
-                        Group g = new MyDBHelper(getApplicationContext()).getGroupById(clientGroupId);
+                        Group g = new MyDBHelper(getApplicationContext()).getGroupById(finalClientGroupId);
                         if (g == null) {
+                            release(false);
                             toast("该群不存在或已经被删除");
                             return;
                         }
@@ -2504,10 +2508,9 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        boolean find = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
-                                                        if (!find) {
-                                                            release(true);
-                                                        }
+                                                        boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                                        boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
+                                                        release(find1 || find2);
                                                     }
                                                 }, 2000);
                                             }

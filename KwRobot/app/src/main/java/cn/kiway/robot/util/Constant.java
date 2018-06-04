@@ -119,9 +119,9 @@ public class Constant {
     public static final String TICK_PERSON_GROUP_CMD = "tickPersonGroupCmd";//踢人
     public static final String TICK_PERSON_GROUP_REPLY_CMD = "tickPersonGroupReplyCmd";//踢人
     public static final String UPDATE_GROUP_NOTICE_CMD = "updateGroupNoticeCmd";
-    public static final String UPDATE_GROUP_NOTICE_REPLY_CMD = "updateGroupNoticeCmd";
+    public static final String UPDATE_GROUP_NOTICE_REPLY_CMD = "updateGroupNoticeReplyCmd";
     public static final String UPDATE_GROUP_NAME_CMD = "updateGroupNameCmd";
-    public static final String UPDATE_GROUP_NAME_REPLY_CMD = "updateGroupNameCmd";
+    public static final String UPDATE_GROUP_NAME_REPLY_CMD = "updateGroupNameReplyCmd";
     public static final String DELETE_GROUP_CMD = "deleteGroupCmd";
     public static final String DELETE_GROUP_REPLY_CMD = "deleteGroupReplyCmd";
 

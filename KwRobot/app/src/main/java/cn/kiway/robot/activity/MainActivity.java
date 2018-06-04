@@ -331,7 +331,7 @@ public class MainActivity extends BaseActivity {
 
     public void test2(View v) {
 //        missingFish();
-        getAllGroups();
+//        getAllGroups(true);
 //        mHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -588,13 +588,11 @@ public class MainActivity extends BaseActivity {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
                     ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
-
                     if (groups != null && groups.size() > 0) {
                         new MyDBHelper(getApplicationContext()).deleteWXGroups();
                         for (Group group : groups) {
                             new MyDBHelper(getApplicationContext()).addWXGroup(group);
                         }
-
                         Utils.uploadGroup(MainActivity.this, groups);
                     }
                 } catch (Exception e) {
