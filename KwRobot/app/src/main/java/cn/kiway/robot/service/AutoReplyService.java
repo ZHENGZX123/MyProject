@@ -23,9 +23,13 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rabbitmq.client.Channel;
 
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -3209,10 +3213,16 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        //找到文本框输入文字发送
+                                                        boolean xiaochengxu = true;
+                                                        //1.找到文本框输入文字发送
                                                         String welcome = getSharedPreferences("welcome", 0).getString
                                                                 ("welcome", DEFAULT_WELCOME);
-                                                        sendTextOnly(welcome, true);
+                                                        sendTextOnly(welcome, !xiaochengxu);
+                                                        //2.发送小程序码
+                                                        if (xiaochengxu) {
+                                                            sendMiniProgramCode();
+                                                        }
+
                                                         String current = System.currentTimeMillis() + "";
                                                         ArrayList<Friend> friends = new ArrayList<>();
                                                         friends.add(new Friend(nickname, remark + " " + nickname, current, current));
@@ -3236,6 +3246,109 @@ public class AutoReplyService extends AccessibilityService {
             }
         });
         return true;
+    }
+
+    public void sendMiniProgramCode() {
+        String name = getSharedPreferences("kiway", 0).getString("name", "");
+        String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
+        String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            //String sender = actions.get(currentActionID).sender;
+            String sender = "浪翻云";
+            String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
+            Log.d("test", "url = " + url);
+            JSONObject param = new JSONObject();
+            param.put("me", name);
+            param.put("installationId", installationId);
+            param.put("areaCode", areaCode);
+            param.put("sender", sender);
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "onSuccess = " + ret);
+                    try {
+                        String url = new JSONObject(ret).getJSONObject("data").getString("url");
+                        Log.d("test", "url = " + url);
+                        //http://ifanr-cdn.b0.upaiyun.com/wp-content/uploads/2017/04/juhuama.jpg
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                //1.下载图片
+                                Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, KWApplication.getLoaderOptions());
+                                if (bmp == null) {
+                                    release(false);
+                                    return;
+                                }
+                                //2.保存图片
+                                String localPath = saveImage(getApplication(), bmp, false);
+                                if (localPath == null) {
+                                    release(false);
+                                    return;
+                                }
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                                        if (mFindTargetNode == null) {
+                                            release(false);
+                                            return;
+                                        }
+                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
+                                                if (!find) {
+                                                    release(false);
+                                                    return;
+                                                }
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        findTargetNode(NODE_RELATIVELAYOUT, 1);
+                                                        if (mFindTargetNode == null) {
+                                                            release(false);
+                                                            return;
+                                                        }
+                                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
+                                                                mHandler.postDelayed(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        release(true);
+                                                                    }
+                                                                }, 3000);
+                                                            }
+                                                        }, 3000);
+                                                    }
+                                                }, 3000);
+                                            }
+                                        }, 2000);
+                                    }
+                                });
+                            }
+                        }.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        release(false);
+                    }
+                }
+
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "onFailure = " + s);
+                    release(false);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            release(false);
+        }
     }
 
     private void sendTextOnly(String reply, boolean release) {
@@ -3552,8 +3665,8 @@ public class AutoReplyService extends AccessibilityService {
         try {
             String name = getSharedPreferences("kiway", 0).getString("name", "");
             String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
-            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
             String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+            String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
             String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
             String topic = robotId + "#" + wxNo;
             Action currentAction = actions.get(currentActionID);
