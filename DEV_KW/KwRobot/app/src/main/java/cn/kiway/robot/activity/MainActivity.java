@@ -72,6 +72,8 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_MISSING_FISH = 109;    //主动加附近的人
     private static final int MSG_GET_ALL_FRIENDS = 110;//上报所有好友
     private static final int MSG_GET_ALL_GROUPS = 111;//上报所有群组
+    private static final int MSG_CHECK_APPKEY = 112;//检测key是否有效
+
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -97,6 +99,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
     }
 
     private void initView() {
@@ -330,6 +333,14 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.sendMiniProgramCode();
+            }
+        }, 10000);
+
 //        missingFish();
 //        getAllGroups(true);
 //        mHandler.postDelayed(new Runnable() {
@@ -525,10 +536,30 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 missingFish();
                 mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_CHECK_APPKEY) {
+                mHandler.removeMessages(MSG_CHECK_APPKEY);
+                checkAPPKey();
+                mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 8 * 60 * 60 * 1000);
             }
 
         }
     };
+
+    private void checkAPPKey() {
+        Log.d("test", "checkAPPKey");
+        if (true) {
+            Log.d("test", "APPKEY有效");
+        } else {
+            AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
+            ab.setTitle("提示").setMessage("您的APPKEY已失效，请续费或咨询工作人员").setPositiveButton("好的", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //跳到appkey页面
+                }
+            }).setCancelable(false);
+            ab.create().show();
+        }
+    }
 
     private void missingFish() {
         try {
