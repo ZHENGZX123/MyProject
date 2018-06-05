@@ -626,7 +626,8 @@ public class AutoReplyService extends AccessibilityService {
                             o.put("clientGroupId", clientGroupId);
                         }
                     } else if (command.cmd.equals(SEND_BATCH_CMD)) {
-
+                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        o.put("batchId", new JSONObject(content).optString("batchId"));
                     }
 
                     String msg = o.toString();
@@ -1071,8 +1072,10 @@ public class AutoReplyService extends AccessibilityService {
             start = o.optInt("start");
             end = o.optInt("end");
             String url = o.optString("url");
-            String clientGroupId = o.optString("clientGroupId");
-            if (TextUtils.isEmpty(clientGroupId)) {
+            String clientGroupId = null;
+            if (o.has("clientGroupId")) {
+                clientGroupId = o.optString("clientGroupId");
+            } else if (o.has("clientGroupIds")) {
                 clientGroupId = o.optJSONArray("clientGroupIds").optString(0);
             }
 
@@ -1152,9 +1155,11 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     Log.d("test", "content = " + content);
-                    JSONObject contentO = new JSONObject(content).optJSONObject("content");
-                    JSONArray receivers = contentO.optJSONArray("receivers");
+                    JSONArray receivers = new JSONObject(content).optJSONArray("receivers");
                     int receiverCount = receivers.length();
+
+                    resetMaxReleaseTime(receiverCount * DEFAULT_RELEASE_TIME);
+
                     for (int i = 0; i < receiverCount; i++) {
                         String name = receivers.getJSONObject(i).getString("name");
                         int froms = receivers.getJSONObject(i).getInt("froms");
@@ -1163,7 +1168,7 @@ public class AutoReplyService extends AccessibilityService {
                         } else if (froms == 2) {
                             searchTargetInWxGroupPage(TYPE_SEND_BATCH, name, false);
                         }
-                        sleep(30000);
+                        sleep(25000);
                     }
                     release(true);
                 } catch (Exception e) {
@@ -2562,7 +2567,12 @@ public class AutoReplyService extends AccessibilityService {
                                             public void run() {
                                                 boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
                                                 boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
-                                                release(find1 || find2);
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        release(find1 || find2);
+                                                    }
+                                                }, 2000);
                                             }
                                         }, 2000);
                                     }
@@ -2580,6 +2590,23 @@ public class AutoReplyService extends AccessibilityService {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                } else if (actionType == TYPE_SEND_BATCH) {
+                    //TODO 文字的跳进来发，其他的走分享
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        Log.d("test", "content = " + content);
+                        JSONArray messages = new JSONObject(content).optJSONArray("messages");
+                        content = messages.getJSONObject(0).getString("content");
+                        sendTextOnly(content, false);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                backToWechatHomePage();
+                            }
+                        }, 3000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
@@ -2589,6 +2616,22 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }, 3000);
+    }
+
+    private void backToWechatHomePage() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (!checkIsWxHomePage()) {
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     private void deleteFriend(String target) {
