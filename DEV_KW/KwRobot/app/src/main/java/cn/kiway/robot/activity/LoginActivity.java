@@ -14,13 +14,10 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
-import org.xutils.common.util.DensityUtil;
 
 import cn.kiway.robot.R;
 
-import static cn.kiway.robot.R.id.username;
 import static cn.kiway.robot.util.Constant.clientUrl;
-import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 
 /**
  * Created by Administrator on 2018/3/23.
@@ -39,7 +36,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameET = (EditText) findViewById(username);
+        usernameET = (EditText) findViewById(R.id.username);
         passwordET = (EditText) findViewById(R.id.password);
         nameET = (EditText) findViewById(R.id.name);
         wxNoET = (EditText) findViewById(R.id.wxNo);
