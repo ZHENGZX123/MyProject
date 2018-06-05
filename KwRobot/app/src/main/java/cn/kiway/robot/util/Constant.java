@@ -23,6 +23,7 @@ public class Constant {
 
     public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
     public static final String HOUTAI = "开维后台";
+    public static final String PASSWORD = "kiwayedukiway123";
 
     static {
 

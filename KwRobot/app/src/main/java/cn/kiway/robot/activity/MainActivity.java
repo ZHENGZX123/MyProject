@@ -551,12 +551,15 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "APPKEY有效");
         } else {
             AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
-            ab.setTitle("提示").setMessage("您的APPKEY已失效，请续费或咨询工作人员").setPositiveButton("好的", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //跳到appkey页面
-                }
-            }).setCancelable(false);
+            ab.setTitle("提示").setMessage("您的APPKEY已失效，请续费或咨询工作人员")
+                    .setPositiveButton("好的", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //跳到appkey页面
+                            startActivity(new Intent(MainActivity.this, APPkeyActivity.class));
+                            finish();
+                        }
+                    }).setCancelable(false);
             ab.create().show();
         }
     }
