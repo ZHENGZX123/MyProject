@@ -43,9 +43,9 @@ public class Action {
     public static final int TYPE_DELETE_GROUP_CHAT = 127;//解散群聊
     public static final int TYPE_DELETE_FRIEND = 128;//主动搜索并添加好友
     public static final int TYPE_SEND_MOMENT = 129;
-    public static final int TYPE_GROUP_SEND_HELPER = 130;
+    public static final int TYPE_GROUP_SEND_HELPER = 130;//群发助手
     public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
-
+    public static final int TYPE_SEND_BATCH = 132;
 
     public PendingIntent intent;
     public String sender;

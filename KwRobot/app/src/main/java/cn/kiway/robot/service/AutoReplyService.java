@@ -92,6 +92,7 @@ import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_MISSING_FISH;
 import static cn.kiway.robot.entity.Action.TYPE_NEARBY_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
+import static cn.kiway.robot.entity.Action.TYPE_SEND_BATCH;
 import static cn.kiway.robot.entity.Action.TYPE_SET_COLLECTOR;
 import static cn.kiway.robot.entity.Action.TYPE_TEXT;
 import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
@@ -102,6 +103,7 @@ import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.CLICK_NONE;
 import static cn.kiway.robot.util.Constant.CLICK_PARENT;
 import static cn.kiway.robot.util.Constant.CLICK_SELF;
@@ -115,7 +117,6 @@ import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
-import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.MODE_YINGXIAO;
@@ -130,6 +131,7 @@ import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
+import static cn.kiway.robot.util.Constant.SEND_BATCH_CMD;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_AVATAR_CMD;
@@ -169,15 +171,10 @@ public class AutoReplyService extends AccessibilityService {
     //当前微信页面
     private String currentWechatPage;
 
-    //心跳
-    private long lastHearBeatID;
-    private long zbusFailureCount;
-
     //清理僵尸粉
     private Set<String> checkedFriends = new HashSet<>();//临时变量，已经勾选的好友
     private int start;
     private int end;
-    private String currentZombie;
 
     //附近的人
     private ArrayList<AccessibilityNodeInfo> peoples = new ArrayList<>();
@@ -389,6 +386,7 @@ public class AutoReplyService extends AccessibilityService {
             case UPDATE_GROUP_NAME_CMD:
             case UPDATE_GROUP_NOTICE_CMD:
             case DELETE_GROUP_CMD:
+            case SEND_BATCH_CMD:
                 doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
                 break;
         }
@@ -627,6 +625,8 @@ public class AutoReplyService extends AccessibilityService {
                             }
                             o.put("clientGroupId", clientGroupId);
                         }
+                    } else if (command.cmd.equals(SEND_BATCH_CMD)) {
+
                     }
 
                     String msg = o.toString();
@@ -934,6 +934,7 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_FIX_ICON
                                 || actionType == TYPE_NEARBY_PEOPLE
                                 || actionType == TYPE_GROUP_SEND_HELPER
+                                || actionType == TYPE_SEND_BATCH
                                 ) {
                             if (checkIsWxHomePage()) {
                                 doActionCommandByType(actionType);
@@ -948,10 +949,10 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         } else {
                             //聊天有关，需要容错
+                            String targetSender = actions.get(currentActionID).sender;
                             if (checkIsWxHomePage()) {
-                                searchTargetInWxHomePage(1);
+                                searchTargetInWxHomePage(1, targetSender, true);
                             } else {
-                                String targetSender = actions.get(currentActionID).sender;
                                 boolean isCorrectPage = findTargetNode(NODE_TEXTVIEW, targetSender, CLICK_NONE, false);
                                 Log.d("test", "isCorrectPage = " + isCorrectPage);
                                 if (isCorrectPage) {
@@ -961,7 +962,7 @@ public class AutoReplyService extends AccessibilityService {
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            searchTargetInWxHomePage(1);
+                                            searchTargetInWxHomePage(1, targetSender, true);
                                         }
                                     }, 2000);
                                 }
@@ -1099,7 +1100,8 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_MISSING_FISH) {
                         //通讯录-新的朋友
                         addMissingFish();
-                    } else if (actionType == TYPE_FIX_NICKNAME || actionType == TYPE_FIX_ICON) {
+                    } else if (actionType == TYPE_FIX_NICKNAME
+                            || actionType == TYPE_FIX_ICON) {
                         //我-个人信息
                         fixMyNicknameOrIcon(actionType, url);
                     } else if (actionType == TYPE_NEARBY_PEOPLE) {
@@ -1119,14 +1121,20 @@ public class AutoReplyService extends AccessibilityService {
                             toast("该群不存在或已经被删除");
                             return;
                         }
-                        searchTargetInWxGroupPage(actionType, g.groupName);
+                        searchTargetInWxGroupPage(actionType, g.groupName, true);
                     } else if (actionType == TYPE_DELETE_FRIEND) {
                         startDeleteFriend(members);
                     } else if (actionType == TYPE_GROUP_SEND_HELPER) {
                         //我-设置
                         groupSendHelper();
+                    } else if (actionType == TYPE_SEND_BATCH) {
+                        sendBatchMessage();
+                    } else if (actionType == TYPE_FIX_FRIEND_NICKNAME) {
+                        String target = o.optString("oldName");
+                        searchTargetInWxHomePage(actionType, target, true);
                     } else {
-                        searchTargetInWxHomePage(actionType);
+                        String target = actions.get(currentActionID).sender;
+                        searchTargetInWxHomePage(actionType, target, true);
                     }
                 }
             }, 2000);
@@ -1134,6 +1142,36 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void sendBatchMessage() {
+        Log.d("test", "sendBatchMessage");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    Log.d("test", "content = " + content);
+                    JSONObject contentO = new JSONObject(content).optJSONObject("content");
+                    JSONArray receivers = contentO.optJSONArray("receivers");
+                    int receiverCount = receivers.length();
+                    for (int i = 0; i < receiverCount; i++) {
+                        String name = receivers.getJSONObject(i).getString("name");
+                        int froms = receivers.getJSONObject(i).getInt("froms");
+                        if (froms == 1) {
+                            searchTargetInWxHomePage(TYPE_SEND_BATCH, name, false);
+                        } else if (froms == 2) {
+                            searchTargetInWxGroupPage(TYPE_SEND_BATCH, name, false);
+                        }
+                        sleep(30000);
+                    }
+                    release(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    release(false);
+                }
+            }
+        }.start();
     }
 
     private void groupSendHelper() {
@@ -1215,11 +1253,11 @@ public class AutoReplyService extends AccessibilityService {
                     resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
 
                     for (int i = 0; i < count; i++) {
-                        currentZombie = members.optString(i);
+                        String currentZombie = members.optString(i);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN);//TYPE_DELETE_FRIEND
+                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN, currentZombie, false);//TYPE_DELETE_FRIEND
                             }
                         });
                         sleep(30000);
@@ -2123,12 +2161,12 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     int count = zombies.length;
                     for (int i = 0; i < count; i++) {
-                        currentZombie = zombies[i];
+                        String currentZombie = zombies[i];
                         Log.d("test", "currentZombie = " + currentZombie);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN);
+                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN, currentZombie, false);
                             }
                         });
                         sleep(20000);
@@ -2255,7 +2293,8 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            searchTargetInWxHomePage(1);
+                            String targetSender = actions.get(currentActionID).sender;
+                            searchTargetInWxHomePage(1, targetSender, true);
                         }
                     }, 2000);
                 }
@@ -2308,55 +2347,81 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void searchTargetInWxHomePage(int type) {
-        findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);//放大镜
-        if (mFindTargetNode == null) {
-            release(false);
-            return;
-        }
-        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        mHandler.postDelayed(new Runnable() {
+    private void searchTargetInWxHomePage(int actionType, String target, boolean canRelease) {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                try {
-                    String target = "";
-                    if (type == TYPE_FIX_FRIEND_NICKNAME) {
-                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                        JSONObject o = new JSONObject(content);
-                        target = o.optString("oldName");
-                    } else if (type == TYPE_CLEAR_ZOMBIE_FAN) {
-                        target = currentZombie;
-                    } else {
-                        //不需要base64
-                        target = actions.get(currentActionID).sender;
-                    }
-                    enterChatView(target, type);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                findTargetNode(NODE_TEXTVIEW, Integer.MAX_VALUE);//放大镜
+                if (mFindTargetNode == null) {
+                    release(false);
+                    return;
                 }
-            }
-        }, 3000);
-    }
-
-    private void searchTargetInWxGroupPage(int actionType, String groupName) {
-        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
+                mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findTargetNode(NODE_TEXTVIEW, "群聊", 1, true);
-                        if (!find) {
-                            release(false);
-                            return;
-                        }
-                        enterChatView(groupName, actionType);
+                        findTargetNode(NODE_EDITTEXT, target);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);
+                                if (mFindTargetNode == null) {
+                                    if (canRelease) {
+                                        release(false);
+                                    }
+                                    return;
+                                }
+                                enterChatView(actionType, target);
+                            }
+                        }, 3000);
                     }
                 }, 3000);
             }
-        }, 3000);
+        });
+    }
+
+    private void searchTargetInWxGroupPage(int actionType, String groupName, boolean canRelease) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean find = findTargetNode(NODE_TEXTVIEW, "群聊", 1, true);
+                                if (!find) {
+                                    release(false);
+                                    return;
+                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findTargetNode(NODE_EDITTEXT, groupName);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                findTargetNode(NODE_TEXTVIEW, groupName, CLICK_PARENT, false);
+                                                if (mFindTargetNode == null) {
+                                                    if (canRelease) {
+                                                        release(false);
+                                                    }
+                                                    return;
+                                                }
+                                                enterChatView(actionType, groupName);
+                                            }
+                                        }, 3000);
+                                    }
+                                }, 3000);
+                            }
+                        }, 3000);
+                    }
+                }, 3000);
+            }
+        });
     }
 
     private boolean checkIsWxHomePage() {
@@ -2447,98 +2512,83 @@ public class AutoReplyService extends AccessibilityService {
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
     // 注意可能有循环的操作，比如删除好友，不能release
-    private void enterChatView(String target, int actionType) {
-        findTargetNode(NODE_EDITTEXT, target);
+    private void enterChatView(int actionType, String target) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //TODO 这里可以优化一下，判断是否搜索到结果。因为搜华仔会打开webview耗内存
-                findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);//昵称不完全搜索，所以是false
-                if (mFindTargetNode == null) {
-                    if (actionType != TYPE_CLEAR_ZOMBIE_FAN) {
+                if (actionType == 1) {
+                    //开始聊天
+                    doChatByActionType();
+                } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                    deleteFriend(target);
+                } else if (actionType == TYPE_ADD_GROUP_PEOPLE
+                        || actionType == TYPE_DELETE_GROUP_PEOPLE
+                        || actionType == TYPE_FIX_GROUP_NAME
+                        || actionType == TYPE_FIX_GROUP_NOTICE
+                        || actionType == TYPE_DELETE_GROUP_CHAT) {
+                    //群信息
+                    findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                    if (mFindTargetNode == null) {
                         release(false);
+                        return;
                     }
-                    return;
-                }
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (actionType == 1) {
-                            //开始聊天
-                            doChatByActionType();
-                        } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                            deleteFriend(target);
-                        } else if (actionType == TYPE_ADD_GROUP_PEOPLE
-                                || actionType == TYPE_DELETE_GROUP_PEOPLE
-                                || actionType == TYPE_FIX_GROUP_NAME
-                                || actionType == TYPE_FIX_GROUP_NOTICE
-                                || actionType == TYPE_DELETE_GROUP_CHAT) {
-                            //群信息
-                            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                            if (mFindTargetNode == null) {
-                                release(false);
-                                return;
-                            }
-                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
-                                        addOrDeleteGroupPeople(actionType);
-                                    } else if (actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
-                                        String target = actionType == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
-                                        boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
+                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
+                                addOrDeleteGroupPeople(actionType);
+                            } else if (actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
+                                String target = actionType == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
+                                boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
+                                if (!find) {
+                                    release(false);
+                                    return;
+                                }
+                                fixGroupNameOrNotice();
+                            } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
+                                execRootCmdSilent("input swipe 360 900 360 300");
+                                execRootCmdSilent("input swipe 360 900 360 300");
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        boolean find = findTargetNode(NODE_TEXTVIEW, "删除并退出", CLICK_PARENT, true);
                                         if (!find) {
                                             release(false);
                                             return;
                                         }
-                                        fixGroupNameOrNotice();
-                                    } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
-                                        execRootCmdSilent("input swipe 360 900 360 300");
-                                        execRootCmdSilent("input swipe 360 900 360 300");
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                boolean find = findTargetNode(NODE_TEXTVIEW, "删除并退出", CLICK_PARENT, true);
-                                                if (!find) {
-                                                    release(false);
-                                                    return;
-                                                }
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
-                                                        boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
-                                                        release(find1 || find2);
-                                                    }
-                                                }, 2000);
+                                                boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                                boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
+                                                release(find1 || find2);
                                             }
                                         }, 2000);
                                     }
-                                }
-                            }, 2000);
-                        } else if (actionType == TYPE_GROUP_CHAT) {
-                            //文字的跳进来发，其他的走分享
-                            try {
-                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                                JSONObject o = new JSONObject(content);
-                                String text = o.optString("message");
-                                sendTextOnly(text, true);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                }, 2000);
                             }
-                        } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
-                            //循环开始艾特人
-                            startAtPeople();
-                        } else if (actionType == TYPE_FIX_FRIEND_NICKNAME) {
-                            //好友信息
-                            fixFriendNickname(target);
                         }
+                    }, 2000);
+                } else if (actionType == TYPE_GROUP_CHAT) {
+                    //TODO 文字的跳进来发，其他的走分享
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        JSONObject o = new JSONObject(content);
+                        String text = o.optString("message");
+                        sendTextOnly(text, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }, 3000);
+                } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
+                    //循环开始艾特人
+                    startAtPeople();
+                } else if (actionType == TYPE_FIX_FRIEND_NICKNAME) {
+                    //好友信息
+                    fixFriendNickname(target);
+                }
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void deleteFriend(String target) {
