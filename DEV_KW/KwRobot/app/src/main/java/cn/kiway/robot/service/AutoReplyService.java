@@ -1136,37 +1136,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void sendBatchMessage() {
-        Log.d("test", "sendBatchMessage");
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                    Log.d("test", "content = " + content);
-                    JSONArray receivers = new JSONObject(content).optJSONArray("receivers");
-
-                    int receiverCount = receivers.length();
-                    resetMaxReleaseTime(receiverCount * DEFAULT_RELEASE_TIME);
-                    for (int i = 0; i < receiverCount; i++) {
-                        String name = receivers.getJSONObject(i).getString("name");
-                        int froms = receivers.getJSONObject(i).getInt("froms");
-                        if (froms == 1) {
-                            searchTargetInWxHomePage(TYPE_SEND_BATCH, name, false);
-                        } else if (froms == 2) {
-                            searchTargetInWxGroupPage(TYPE_SEND_BATCH, name, false);
-                        }
-                        sleep(25000);
-                    }
-                    release(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    release(false);
-                }
-            }
-        }.start();
-    }
-
     private void sendBatchMessage2() {
         Log.d("test", "sendBatchMessage2");
         //用分享去做
@@ -3585,8 +3554,8 @@ public class AutoReplyService extends AccessibilityService {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
-                for (int i = 0; i < imageArray.length; i++) {
-                    String image = imageArray[i].replace("\"", "");
+                for (String anImageArray : imageArray) {
+                    String image = anImageArray.replace("\"", "");
                     Log.d("test", "image = " + image);
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(image, KWApplication.getLoaderOptions());
                     if (bmp != null) {
