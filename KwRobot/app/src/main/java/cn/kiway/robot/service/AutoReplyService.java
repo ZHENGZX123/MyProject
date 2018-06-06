@@ -448,7 +448,7 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            sendImageOnly2(action.returnMessages.get(0).content);
+                            sendImageOnly(action.returnMessages.get(0).content, false);
                         }
                     }.start();
                 }
@@ -457,13 +457,13 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                     currentActionID = id;
                     actioningFlag = true;
-                    sendVideoOnly2();
+                    sendVideoOnly();
                 } else if (fileCount > 0) {
                     //文件
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
                     currentActionID = id;
                     actioningFlag = true;
-                    sendFileOnly2(action.returnMessages.get(0).content, action.returnMessages.get(0).fileName);
+                    sendFileOnly(action.returnMessages.get(0).content, action.returnMessages.get(0).fileName, false);
                 } else if (linkCount > 0) {
                     //链接
                     mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
@@ -1153,13 +1153,20 @@ public class AutoReplyService extends AccessibilityService {
                 Platform wx = ShareSDK.getPlatform(Wechat.NAME);
                 wx.share(sp);
             } else if (type == 2) {//文件
-
+                sendFileOnly("url", "fileName", true);
             } else if (type == 3) {//链接
                 JSONObject contentO = messages.getJSONObject(0).getJSONObject("content");
                 new Thread() {
                     @Override
                     public void run() {
                         sendLinkOnly(contentO.toString(), true);
+                    }
+                }.start();
+            } else if (type == 4) { //图片
+                new Thread() {
+                    @Override
+                    public void run() {
+                        sendImageOnly("url", false);
                     }
                 }.start();
             }
@@ -3418,7 +3425,7 @@ public class AutoReplyService extends AccessibilityService {
         return null;
     }
 
-    private void sendImageOnly2(String url) {
+    private void sendImageOnly(String url, boolean multiple) {
         //1.下载图片
         Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, KWApplication.getLoaderOptions());
         if (bmp == null) {
@@ -3432,17 +3439,21 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
 
-        Log.d("test", "sendImageOnly2");
+        Log.d("test", "sendImageOnly");
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setImagePath(localPath);
         sp.setShareType(Platform.SHARE_IMAGE);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
 
-        doShareToWechatFriend();
+        if (multiple) {
+            doShareToWechatFriend2();
+        } else {
+            doShareToWechatFriend();
+        }
     }
 
-    private void sendVideoOnly2() {
+    private void sendVideoOnly() {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setText("视频");
         sp.setTitle("视频");
@@ -3455,7 +3466,7 @@ public class AutoReplyService extends AccessibilityService {
         doShareToWechatFriend();
     }
 
-    private void sendFileOnly2(String url, String fileName) {
+    private void sendFileOnly(String url, String fileName, boolean multiple) {
         //1.下载
         String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
 
@@ -3468,7 +3479,7 @@ public class AutoReplyService extends AccessibilityService {
             public void onSuccess(File result) {
                 Log.d("test", "onSuccess");
 
-                Log.d("test", "sendFileOnly2");
+                Log.d("test", "sendFileOnly");
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setTitle("文件");
                 sp.setFilePath(savedFilePath);
@@ -3477,7 +3488,11 @@ public class AutoReplyService extends AccessibilityService {
                 Platform wx = ShareSDK.getPlatform(Wechat.NAME);
                 wx.share(sp);
 
-                doShareToWechatFriend();
+                if (multiple) {
+                    doShareToWechatFriend2();
+                } else {
+                    doShareToWechatFriend();
+                }
             }
 
             @Override
