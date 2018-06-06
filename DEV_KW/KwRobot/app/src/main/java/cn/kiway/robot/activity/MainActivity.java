@@ -333,13 +333,20 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+        getAllGroups();
 
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.sendMiniProgramCode();
-            }
-        }, 10000);
+//        Platform.ShareParams sp = new Platform.ShareParams();
+//        sp.setText("sdfsadfasfdfdfadfs");
+//        sp.setShareType(Platform.SHARE_TEXT);
+//        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+//        wx.share(sp);
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AutoReplyService.instance.sendMiniProgramCode();
+//            }
+//        }, 10000);
 
 //        missingFish();
 //        getAllGroups(true);
