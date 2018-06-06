@@ -90,7 +90,7 @@ public class Constant {
 
     public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";//清理僵尸粉，暂时不做了
     public static final String SEND_GROUP_MSG_CMD = "sendGroupMsgCmd";
-    public static final String AT_PERSONS_CMD = "atPersonsCmd";
+
     public static final String CHECK_NEW_VERSION_CMD = "checkNewVersionCmd";
 
 
@@ -127,6 +127,8 @@ public class Constant {
     public static final String DELETE_GROUP_REPLY_CMD = "deleteGroupReplyCmd";
     public static final String SEND_BATCH_CMD = "groupSendBatchMessageCmd";
     public static final String SEND_BATCH_REPLY_CMD = "groupSendBatchMessageReplyCmd";
+    public static final String AT_PERSONS_CMD = "atPersonsCmd";
+    public static final String AT_PERSONS_REPLY_CMD = "atPersonsReplyCmd";
 
 
     public static Map<String, String> replies = new HashMap<>();
@@ -148,6 +150,7 @@ public class Constant {
         replies.put(UPDATE_GROUP_NAME_CMD, UPDATE_GROUP_NAME_REPLY_CMD);
         replies.put(DELETE_GROUP_CMD, DELETE_GROUP_REPLY_CMD);
         replies.put(SEND_BATCH_CMD, SEND_BATCH_REPLY_CMD);
+        replies.put(AT_PERSONS_CMD, AT_PERSONS_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -175,7 +178,6 @@ public class Constant {
 
 
     //{"cmd": "群发消息","message":"1", "type":"1", "clientGroupId": "9189004002@chatroom"}  TODO新增type
-
     //{"cmd": "删除朋友","members":["执着","13267069058"]}
     //{"cmd": "群发助手","content":"1", "members":["浪翻云","胡翻翻"]}
     //{"cmd": "解散群聊","groupName": "最新111" }
@@ -233,9 +235,10 @@ public class Constant {
         backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(DELETE_GROUP_CMD, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(SEND_BATCH_CMD, Action.TYPE_SEND_BATCH);
+        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
+        backdoors.put(AT_PERSONS_CMD, Action.TYPE_AT_GROUP_PEOPLE);
 
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
-        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
     }

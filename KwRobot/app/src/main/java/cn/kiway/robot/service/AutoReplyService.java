@@ -103,8 +103,8 @@ import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADDING;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.entity.AddFriend.STATUS_NOT_EXISTED;
-import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
+import static cn.kiway.robot.util.Constant.AT_PERSONS_CMD;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
@@ -117,10 +117,8 @@ import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
-import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
-import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.MODE_YINGXIAO;
@@ -134,11 +132,9 @@ import static cn.kiway.robot.util.Constant.NODE_LINEARLAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
-import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.SEND_BATCH_CMD;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
-import static cn.kiway.robot.util.Constant.UPDATE_AVATAR_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_FRIEND_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
@@ -192,6 +188,11 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service oncreate");
         instance = this;
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
     private Handler mHandler = new Handler() {
@@ -297,7 +298,7 @@ public class AutoReplyService extends AccessibilityService {
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
                         command.token = o.optString("token");
-                        if (o.has("content")) {
+                        if (o.has("content") && !command.cmd.equals(AT_PERSONS_CMD)) {
                             command.content = o.optString("content");
                             if (TextUtils.isEmpty(command.content)) {
                                 command.content = o.optJSONObject("content").toString();
@@ -368,31 +369,13 @@ public class AutoReplyService extends AccessibilityService {
         firstA.command = command;
 
         String cmd = command.cmd;
-        switch (cmd) {
-            case SEND_FRIEND_CIRCLE_CMD:
-                mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
-                currentActionID = firstKey;
-                actioningFlag = true;
-                shareToWechatMoments(command.content);
-                break;
-            case DELETE_FRIEND_CIRCLE_CMD:
-            case UPDATE_NICKNAME_CMD:
-            case UPDATE_AVATAR_CMD:
-            case PERSION_NEARBY_CMD:
-            case FORGET_FISH_CMD:
-            case UPDATE_FRIEND_NICKNAME_CMD:
-            case DELETE_FRIEND_CMD:
-            case ADD_FRIEND_CMD:
-            case CREATE_GROUP_CHAT_CMD:
-            case CHAT_IN_GROUP_CMD:
-            case INVITE_GROUP_CMD:
-            case TICK_PERSON_GROUP_CMD:
-            case UPDATE_GROUP_NAME_CMD:
-            case UPDATE_GROUP_NOTICE_CMD:
-            case DELETE_GROUP_CMD:
-            case SEND_BATCH_CMD:
-                doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
-                break;
+        if (cmd.equals(SEND_FRIEND_CIRCLE_CMD)) {
+            mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
+            currentActionID = firstKey;
+            actioningFlag = true;
+            shareToWechatMoments(command.content);
+        } else {
+            doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
         }
     }
 
@@ -604,7 +587,9 @@ public class AutoReplyService extends AccessibilityService {
                             || command.cmd.equals(TICK_PERSON_GROUP_CMD)
                             || command.cmd.equals(UPDATE_GROUP_NOTICE_CMD)
                             || command.cmd.equals(UPDATE_GROUP_NAME_CMD)
-                            || command.cmd.equals(DELETE_GROUP_CMD)) {
+                            || command.cmd.equals(DELETE_GROUP_CMD)
+                            || command.cmd.equals(AT_PERSONS_CMD)
+                            ) {
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o = new JSONObject(content);
                         o.put("cmd", replies.get(command.cmd));
@@ -2796,10 +2781,10 @@ public class AutoReplyService extends AccessibilityService {
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     Log.d("test", "content = " + content);
                     JSONObject o = new JSONObject(content);
-                    JSONArray members = o.getJSONArray("members");
+                    JSONArray members = o.getJSONArray("name");
                     int count = members.length();
 
-                    resetMaxReleaseTime(count * 16000 + 5000);
+                    resetMaxReleaseTime(count * 30000 + 5000);
 
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
@@ -3259,13 +3244,13 @@ public class AutoReplyService extends AccessibilityService {
             String sender = "浪翻云";
             String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
             Log.d("test", "url = " + url);
-            JSONObject param = new JSONObject();
+            com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
             param.put("me", name);
             param.put("installationId", installationId);
             param.put("areaCode", areaCode);
             param.put("sender", sender);
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+            client.post(this, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "onSuccess = " + ret);
