@@ -3270,7 +3270,7 @@ public class AutoReplyService extends AccessibilityService {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             //String sender = actions.get(currentActionID).sender;
-            String sender = "浪翻云";
+            String sender = "5 浪翻云";
             String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
             Log.d("test", "url = " + url);
             com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();

@@ -333,8 +333,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+
+        Log.d("test", "" + Utils.isWifiProxy(this));
+
 //        getAllFriends();
-        getAllGroups();
+//        getAllGroups();
 //        Platform.ShareParams sp = new Platform.ShareParams();
 //        sp.setText("sdfsadfasfdfdfadfs");
 //        sp.setShareType(Platform.SHARE_TEXT);
