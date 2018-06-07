@@ -1147,13 +1147,21 @@ public class AutoReplyService extends AccessibilityService {
             int type = messages.getJSONObject(0).getInt("type");
             String text = messages.getJSONObject(0).getString("content");
             if (type == 1) {//文本
+
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setText(text);
                 sp.setShareType(Platform.SHARE_TEXT);
                 Platform wx = ShareSDK.getPlatform(Wechat.NAME);
                 wx.share(sp);
-            } else if (type == 2) {//文件
-                sendFileOnly("url", "fileName", true);
+
+                doShareToWechatFriend2();
+            } else if (type == 2) {//图片url=text
+                new Thread() {
+                    @Override
+                    public void run() {
+                        sendImageOnly(text, true);
+                    }
+                }.start();
             } else if (type == 3) {//链接
                 JSONObject contentO = messages.getJSONObject(0).getJSONObject("content");
                 new Thread() {
@@ -1162,13 +1170,8 @@ public class AutoReplyService extends AccessibilityService {
                         sendLinkOnly(contentO.toString(), true);
                     }
                 }.start();
-            } else if (type == 4) { //图片
-                new Thread() {
-                    @Override
-                    public void run() {
-                        sendImageOnly("url", false);
-                    }
-                }.start();
+            } else if (type == 4) { //文件
+                sendFileOnly("url", "fileName", true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -3272,6 +3275,8 @@ public class AutoReplyService extends AccessibilityService {
             param.put("installationId", installationId);
             param.put("areaCode", areaCode);
             param.put("sender", sender);
+
+
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             client.post(this, url, param, new TextHttpResponseHandler() {
                 @Override

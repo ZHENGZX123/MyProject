@@ -27,13 +27,13 @@ public class Constant {
 
     static {
 
-//        host = "robot.kiway.cn";
-//        port = 5676;
-//        clientUrl = "http://robot.kiway.cn";
+        host = "robot.kiway.cn";
+        port = 5676;
+        clientUrl = "http://robot.kiway.cn";
 
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
 
     }
 
@@ -247,6 +247,6 @@ public class Constant {
     //机器人工作模式
     public static final int MODE_KEFU = 0;
     public static final int MODE_YINGXIAO = 1;
-    public static int workMode = MODE_YINGXIAO;
+    public static int workMode = MODE_KEFU;
 
 }
