@@ -598,13 +598,14 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("statusCode", statusCode);
 
                         if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
+                            //全删全改==>单独插入或修改
                             String groupName = o.optString("name");
                             String password = initDbPassword(getApplicationContext());
                             File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
                             ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
                             String clientGroupId = null;
+                            new MyDBHelper(getApplicationContext()).deleteWXGroups();
                             if (groups != null && groups.size() > 0) {
-                                new MyDBHelper(getApplicationContext()).deleteWXGroups();
                                 for (Group group : groups) {
                                     new MyDBHelper(getApplicationContext()).addWXGroup(group);
                                     if (groupName.equals(group.groupName)) {
@@ -721,14 +722,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private synchronized void release(boolean success) {
-        /*if (!mHandler.hasMessages(MSG_ACTION_TIMEOUT)) {
-            Log.d("test", "no MSG_ACTION_TIMEOUT");
-            return;
-        }
-        if (currentActionID == -1) {
-            Log.d("test", "currentActionID is -1");
-            return;
-        }*/
         Log.d("test", "release is called");
         mHandler.removeMessages(MSG_ACTION_TIMEOUT);
 
@@ -1101,15 +1094,19 @@ public class AutoReplyService extends AccessibilityService {
                         addNearbyPeople(finalContent);
                     } else if (actionType == TYPE_GROUP_CHAT
                             || actionType == TYPE_ADD_GROUP_PEOPLE
-                            || actionType == TYPE_DELETE_GROUP_PEOPLE
                             || actionType == TYPE_DELETE_GROUP_CHAT
                             || actionType == TYPE_FIX_GROUP_NAME
                             || actionType == TYPE_FIX_GROUP_NOTICE
-                            || actionType == TYPE_AT_GROUP_PEOPLE) {
+                            || actionType == TYPE_AT_GROUP_PEOPLE
+                            || actionType == TYPE_DELETE_GROUP_PEOPLE) {
                         //通讯录-群聊-关于群的操作
                         Group g = new MyDBHelper(getApplicationContext()).getGroupById(finalClientGroupId);
                         if (g == null) {
-                            release(false);
+                            if (actionType == TYPE_DELETE_GROUP_CHAT) {
+                                release(true);
+                            } else {
+                                release(false);
+                            }
                             toast("该群不存在或已经被删除");
                             return;
                         }
@@ -3268,6 +3265,7 @@ public class AutoReplyService extends AccessibilityService {
         String name = getSharedPreferences("kiway", 0).getString("name", "");
         String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
         String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
@@ -3280,7 +3278,7 @@ public class AutoReplyService extends AccessibilityService {
             param.put("installationId", installationId);
             param.put("areaCode", areaCode);
             param.put("sender", sender);
-
+            param.put("senderId", wxNo);
 
             StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             client.post(this, url, param, new TextHttpResponseHandler() {

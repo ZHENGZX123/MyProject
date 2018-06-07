@@ -333,8 +333,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllFriends();
-
+//        getAllFriends();
+        getAllGroups();
 //        Platform.ShareParams sp = new Platform.ShareParams();
 //        sp.setText("sdfsadfasfdfdfadfs");
 //        sp.setShareType(Platform.SHARE_TEXT);
@@ -629,8 +629,8 @@ public class MainActivity extends BaseActivity {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
                     ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
+                    new MyDBHelper(getApplicationContext()).deleteWXGroups();
                     if (groups != null && groups.size() > 0) {
-                        new MyDBHelper(getApplicationContext()).deleteWXGroups();
                         for (Group group : groups) {
                             new MyDBHelper(getApplicationContext()).addWXGroup(group);
                         }
