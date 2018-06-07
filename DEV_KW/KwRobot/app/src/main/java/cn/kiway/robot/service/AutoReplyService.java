@@ -721,14 +721,14 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private synchronized void release(boolean success) {
-        if (!mHandler.hasMessages(MSG_ACTION_TIMEOUT)) {
+        /*if (!mHandler.hasMessages(MSG_ACTION_TIMEOUT)) {
             Log.d("test", "no MSG_ACTION_TIMEOUT");
             return;
         }
         if (currentActionID == -1) {
             Log.d("test", "currentActionID is -1");
             return;
-        }
+        }*/
         Log.d("test", "release is called");
         mHandler.removeMessages(MSG_ACTION_TIMEOUT);
 
@@ -883,7 +883,7 @@ public class AutoReplyService extends AccessibilityService {
                 checkWechatExceptionStatus();
 
                 if (currentActionID == -2) {
-                    Log.d("maptrix", "特殊时间，return0");
+                    Log.d("maptrix", "特殊事件，return0");
                     return;
                 }
                 if (currentActionID == -1) {
@@ -1555,13 +1555,18 @@ public class AutoReplyService extends AccessibilityService {
                         try {
                             sleep(3000);
                             adding_missing_fish = true;
-                            resetMaxReleaseTime(30 * 60 * 1000);
-
+                            resetMaxReleaseTime(30000 * 50 + 5000);
+                            int tryCount = 0;
                             while (adding_missing_fish) {
                                 if (!actioningFlag) {
                                     break;
                                 }
+                                if (tryCount == 50) {
+                                    sleep(3000);
+                                    break;
+                                }
                                 int ret = hasAcceptButtonOrAddedTextView();
+                                tryCount++;
                                 if (ret == 1) {
                                     sleep(30000);
                                 } else if (ret == 2) {
