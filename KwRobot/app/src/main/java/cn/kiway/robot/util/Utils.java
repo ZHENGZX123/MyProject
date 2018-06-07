@@ -712,6 +712,9 @@ public class Utils {
             return null;
         }
         String copyFilePath = "/data/data/cn.kiway.robot/" + saveDbName;
+        if (new File(copyFilePath).exists()) {
+            new File(copyFilePath).delete();
+        }
         copyFile(latestFile.getAbsolutePath(), copyFilePath);
 
         return new File(copyFilePath);
@@ -757,16 +760,20 @@ public class Utils {
             }
         };
 
+        String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
         try {
             SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
-            Cursor c1 = db.rawQuery("select username,alias,nickname,conRemark from rcontact where type = 7", null);
+            Cursor c1 = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
             ArrayList<Friend> friends = new ArrayList<>();
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("username"));  //wxID
                 String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
-                friends.add(new Friend(nickname, conRemark, username, alias));
+
+                if (!wxNo.equals(alias)) {
+                    friends.add(new Friend(nickname, conRemark, username, alias));
+                }
             }
             Log.d("test", "friends = " + friends);
             c1.close();
