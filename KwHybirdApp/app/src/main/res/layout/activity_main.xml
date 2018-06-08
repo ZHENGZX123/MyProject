@@ -33,7 +33,6 @@
             android:layout_below="@id/rl_nonet"></com.tencent.smtt.sdk.WebView>
 
         <Button
-            android:id="@+id/kill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="clickSetToken"
