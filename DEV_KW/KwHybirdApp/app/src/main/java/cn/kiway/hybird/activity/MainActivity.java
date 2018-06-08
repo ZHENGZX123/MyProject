@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.lzy.imagepicker.ImagePicker;
@@ -40,9 +39,8 @@ import static cn.kiway.hybird.util.KwJsInterface.snapshotFile;
 
 public class MainActivity extends BaseActivity {
 
-    private WebView wv;
-    private Button kill;
     public static MainActivity instance;
+    private WebView wv;
     private long time;
 
     @Override
@@ -60,7 +58,6 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         wv = (WebView) findViewById(R.id.wv);
-        kill = (Button) findViewById(R.id.kill);
     }
 
     private void initData() {
@@ -97,7 +94,6 @@ public class MainActivity extends BaseActivity {
         //} else {
         //settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
         //}
-
         wv.setWebViewClient(new WebViewClient() {
 
             @Override

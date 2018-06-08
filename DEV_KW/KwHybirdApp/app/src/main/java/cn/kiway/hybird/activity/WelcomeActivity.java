@@ -195,7 +195,7 @@ public class WelcomeActivity extends Activity {
                 new File(Configue.ROOT).mkdirs();
             }
             //拷贝
-            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, Configue.ZIP_Name);
+            FileUtils.copyRawToSdcard(this, R.raw.xtzy_teacher, Configue.ROOT, Configue.ZIP_Name);
             //解压
             try {
                 new ZipFile(Configue.ROOT + Configue.ZIP_Name).extractAll(Configue.ROOT);

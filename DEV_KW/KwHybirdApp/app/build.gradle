@@ -10,8 +10,8 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
-    compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "cn.kiway.hybird.teacher"
         minSdkVersion 18
@@ -42,23 +42,34 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //http网络请求
-    compile project(':KwHttp')
+    //compile project(':KwHttp')
+    compile 'cn.kiway:KwHttp:1.0.1'
     //图片缓存
-    compile project(':KwImageCache')
+    //compile project(':KwImageCache')
+    compile 'cn.kiway:KwImageCache:1.0.0'
     //图片选择器
-    compile project(':KwImagePicker')
+    //compile project(':KwImagePicker')
+    compile 'cn.kiway:KwImagePicker:1.0.0'
     //工具类
-    compile project(':KwCountly')
-    compile project(':KwDatabase')
-    compile project(':KwZxing')
-    compile project(':KwSharedPref')
-    compile project(':KwUtils')
-    compile project(':KwRecord')
-    compile project(':KwLog')
+    //compile project(':KwCountly')
+    compile 'cn.kiway:KwCountly:1.0.0'
+    //compile project(':KwDatabase')
+    compile 'cn.kiway:KwDatabase:1.0.0'
+    //compile project(':KwZxing')
+    compile 'cn.kiway:KwZxing:1.0.0'
+    //compile project(':KwSharedPref')
+    compile 'cn.kiway:KwSharedPref:1.0.0'
+    //compile project(':KwUtils')
+    compile 'cn.kiway:KwUtils:1.0.1'
+    //compile project(':KwRecord')
+    compile 'cn.kiway:KwRecord:1.0.0'
+    //compile project(':KwLog')
+    compile 'cn.kiway:KwLog:1.0.0'
     //推送
     compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile files('libs/HwPush_SDK_V2705.jar')
     compile files('libs/jpush-android-3.0.8.jar')
     //x5
-    compile project(':KwWebView')
+    //compile project(':KwWebView')
+    compile 'cn.kiway:KwWebView:1.0.0'
 }
