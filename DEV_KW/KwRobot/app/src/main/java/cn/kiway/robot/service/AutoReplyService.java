@@ -310,6 +310,7 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                     if (o.has("clientGroupId")) {
+                        //在群里发消息。。。
                         String clientGroupId = o.optString("clientGroupId");
                         Group g = new MyDBHelper(getApplicationContext()).getGroupById(clientGroupId);
                         if (g == null) {
