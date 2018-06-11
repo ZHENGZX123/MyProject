@@ -7,6 +7,7 @@ import com.android.kiway.entity.Teacher;
 import com.android.kiway.utils.Constant;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
+import com.rabbitmq.client.Channel;
 
 import org.json.JSONObject;
 
@@ -14,10 +15,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 
-import static com.android.kiway.KWApp.sendUtil;
+import static com.android.kiway.KWApp.consumeUtil;
 import static com.android.kiway.utils.Constant.APPID;
 
 /**
@@ -34,7 +34,7 @@ public class ZbusHost {
 
             String title = "标题";
             String desc = "描述";
-            String msg = obj.toString();
+            final String msg = obj.toString();
 
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             //topic : 上报的 deviceId#userId
@@ -58,14 +58,14 @@ public class ZbusHost {
             new Thread() {
                 @Override
                 public void run() {
-                    if (sendUtil == null) {
-                        sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
-                    }
+                   Channel channel = consumeUtil.createChannel(topic, topic);
                     try {
-                        sendUtil.sendMsg(pushMessageVo);
+                        consumeUtil.sendMsgs(msg, channel);
+                        channel.abort();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                 }
             }.start();
 
@@ -86,7 +86,7 @@ public class ZbusHost {
 
             String title = "标题";
             String desc = "描述";
-            String msg = obj.toString();
+            final String msg = obj.toString();
 
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             //topic : 上报的 deviceId#userId
@@ -117,17 +117,15 @@ public class ZbusHost {
             new Thread() {
                 @Override
                 public void run() {
-                    if (sendUtil == null) {
-                        sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
-                    }
+                     Channel  channel = consumeUtil.createChannel(topic, topic);
                     try {
-                        sendUtil.sendMsg(pushMessageVo);
+                        consumeUtil.sendMsgs(msg, channel);
+                        channel.abort();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }.start();
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();

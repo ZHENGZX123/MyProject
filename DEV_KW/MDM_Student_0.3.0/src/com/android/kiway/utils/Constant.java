@@ -5,7 +5,7 @@ package com.android.kiway.utils;
  */
 
 public class Constant {
-
+    public static final int _16 = 16;
     public static final String ZHIHUIKETANGPG = "cn.kiway.session";
     public static final String MARKETPLACE = "cn.kiway.marketplace";
     public static final String PARENTMESSAGE = "cn.kiway.parentmessage";

@@ -35,7 +35,12 @@ import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.zbus.ZbusHost;
 import com.android.launcher3.R;
+//import com.baidu.location.BDLocation;
+//import com.baidu.location.BDLocationListener;
+//import com.baidu.location.LocationClient;
+//import com.baidu.location.LocationClientOption;
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
@@ -53,6 +58,7 @@ import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdmsdk.cn.kiway.mdmsdk.util.RootCmd;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
+import static com.android.kiway.KWApp.channels;
 import static com.android.kiway.KWApp.consumeUtil;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
@@ -93,7 +99,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("test", "Main onCreate");
-        
+
         instance = this;
 
         //2.初始化界面
@@ -181,7 +187,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void initZbus() {
-        Log.d("test", "initZbus");
+        Log.e("test", "initZbus");
+
         new Thread() {
             @Override
             public void run() {
@@ -191,10 +198,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                         return;
                     }
                     String topic = "kiway_push_" + token;
-                    Log.d("test", "consume topic = " + topic);
-
-                    consumeUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
-                    consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
+                    Log.e("test", "consume topic = " + topic);
+                    if (consumeUtil==null)
+                    consumeUtil = new RabbitMQUtils(Constant.zbusHost, Constant.zbusPost);
+                     Channel channel = consumeUtil.createChannel(topic, topic);
+                    channels.add(channel);
+                    consumeUtil.consumeMsg(new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             //消费消费
