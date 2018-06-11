@@ -138,7 +138,7 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         if (currentList.size() > 0) {
             MDMHelper.getAdapter().removeInstallPackageWhiteList(currentList);
         }
-        //8.命令重置`
+        //8.命令重置
         Utils.resetFunctions(this, 1);
         KWApp.instance.excuteFlagCommand();
     }
