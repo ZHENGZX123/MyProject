@@ -15,10 +15,10 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "cn.kiway.session"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 12
-        versionName "0.1.2"
+        versionName "0.1.6"
         jackOptions {
             enabled true
         }
