@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.android.kiway.activity.BaseActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
-import com.android.kiway.utils.CrashHandler;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
@@ -252,7 +251,7 @@ public class KWApp extends Application {
         super.onCreate();
         instance = this;
         //crash
-        CrashHandler.getInstance().init(this);
+        //CrashHandler.getInstance().init(this);
         //huawei
         huaweiPush(this);
         //xutils
