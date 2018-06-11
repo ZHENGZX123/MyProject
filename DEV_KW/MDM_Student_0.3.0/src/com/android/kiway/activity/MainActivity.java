@@ -34,11 +34,6 @@ import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.zbus.ZbusHost;
-import com.android.launcher3.R;
-//import com.baidu.location.BDLocation;
-//import com.baidu.location.BDLocationListener;
-//import com.baidu.location.LocationClient;
-//import com.baidu.location.LocationClientOption;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -65,6 +60,11 @@ import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJL
 import static com.android.kiway.utils.Constant.APPID;
 import static com.android.kiway.utils.Constant.APPKEY;
 import static com.android.kiway.utils.Constant.clientUrl;
+
+//import com.baidu.location.BDLocation;
+//import com.baidu.location.BDLocationListener;
+//import com.baidu.location.LocationClient;
+//import com.baidu.location.LocationClientOption;
 
 public class MainActivity extends BaseActivity implements CheckPassword.CheckPasswordCall, SensorEventListener {
 
@@ -201,7 +201,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Log.e("test", "consume topic = " + topic);
                     if (consumeUtil==null)
                     consumeUtil = new RabbitMQUtils(Constant.zbusHost, Constant.zbusPost);
-                     Channel channel = consumeUtil.createChannel(topic, topic);
+                    Channel channel = consumeUtil.createChannel(topic, topic);
                     channels.add(channel);
                     consumeUtil.consumeMsg(new DefaultConsumer(channel) {
                         @Override
@@ -216,9 +216,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            getChannel().basicAck(envelope.getDeliveryTag(), false);
+                           super.getChannel().basicAck(envelope.getDeliveryTag(), false);
                         }
-                    });
+                    },channel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
