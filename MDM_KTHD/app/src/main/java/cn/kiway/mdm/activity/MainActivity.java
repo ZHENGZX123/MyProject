@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -307,6 +308,10 @@ public class MainActivity extends ScreenSharingActivity {
     }
 
     public void startTuiping() {
+        if (Build.VERSION.SDK_INT < 21) {
+            toast("该学生手机版本太低");
+            return;
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
