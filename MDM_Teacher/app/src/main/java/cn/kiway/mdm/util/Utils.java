@@ -572,11 +572,11 @@ public class Utils {
         wenjian.setId(8);
         list.add(wenjian);
 
-        PopModel shezhi = new PopModel();
-        shezhi.setDrawableId(R.drawable.p_setting);
-        shezhi.setItemDesc("设置");
-        shezhi.setId(9);
-        list.add(shezhi);
+//        PopModel shezhi = new PopModel();
+//        shezhi.setDrawableId(R.drawable.p_setting);
+//        shezhi.setItemDesc("设置");
+//        shezhi.setId(9);
+//        list.add(shezhi);
 
         return list;
     }

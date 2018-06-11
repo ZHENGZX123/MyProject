@@ -31,6 +31,7 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.soundcloud.android.crop.Crop;
@@ -73,6 +74,7 @@ import static cn.kiway.mdm.web.JsAndroidInterface.accessToken;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile;
 import static cn.kiway.mdm.web.JsAndroidInterface.requsetFile2;
 import static cn.kiway.mdm.web.WebJsCallBack.accpterFilePath;
+import static cn.kiway.mdm.zbus.ZbusHost.channels;
 import static cn.kiway.mdm.zbus.ZbusHost.consumeUtil;
 
 
@@ -177,20 +179,13 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
 
-//                    Broker broker = new Broker(cn.kiway.mdm.util.Constant.zbusHost + ":" + cn.kiway.mdm.util
-// .Constant.zbusPost);
-//                    Producer p = new Producer(broker);
-//                    ZbusUtils.init(broker, p);
-//
-//                    Log.d("test", "topic = " + topic);
-//                    consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, topic, topic, cn.kiway.mdm
-// .util.Constant.zbusPost);
-//                    ZbusUtils.consumeMsgs(topic, new ZbusMessageHandler(), cn.kiway.mdm.util.Constant.zbusHost + ":"
-//                            + cn.kiway.mdm.util.Constant.zbusPost);
                     String topic = "kiway_push_" + userId;
-                    consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, topic, topic, cn.kiway.mdm
+                    if (consumeUtil==null)
+                    consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, cn.kiway.mdm
                             .util.Constant.zbusPost);
-                    consumeUtil.consumeMsg(new DefaultConsumer(consumeUtil.getChannel()) {
+                    Channel channel = consumeUtil.createChannel(topic, topic);
+                    channels.add(channel);
+                    consumeUtil.consumeMsg(new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties
                                 properties, byte[] body) throws IOException {
@@ -201,9 +196,9 @@ public class MainActivity extends BaseActivity {
                             if (zbusMessageHandler == null)
                                 zbusMessageHandler = new ZbusMessageHandler();
                             zbusMessageHandler.handle(msg);
-                            getChannel().basicAck(envelope.getDeliveryTag(), false);
+                            super.getChannel().basicAck(envelope.getDeliveryTag(), false);
                         }
-                    });
+                    },channel);
 
                 } catch (Exception e) {
                     e.printStackTrace();

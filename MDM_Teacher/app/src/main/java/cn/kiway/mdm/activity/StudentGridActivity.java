@@ -1326,7 +1326,7 @@ public class StudentGridActivity extends BaseActivity implements View.OnClickLis
 
                 int count = 0;
                 for (Student s : students) {
-                    if (s.known == 1) {
+                    if (s.known == 1||s.known==0) { //zzx add ||s.know==0
                         count++;
                     }
                 }

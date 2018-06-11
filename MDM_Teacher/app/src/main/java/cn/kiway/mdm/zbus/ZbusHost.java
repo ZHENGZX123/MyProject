@@ -5,11 +5,14 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.rabbitmq.client.Channel;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cn.kiway.mdm.activity.ResultActivity;
@@ -30,14 +33,18 @@ import static cn.kiway.mdm.KWApplication.students;
 
 public class ZbusHost {
     public static RabbitMQUtils consumeUtil;
-    public static RabbitMQUtils sendUtil;
-
+    public static List<Channel> channels = new ArrayList<>();
+    public static Channel channel;
     public static void closeMQ() {
         if (consumeUtil != null) {
             consumeUtil.close();
         }
-        if (sendUtil != null) {
-            sendUtil.close();
+        for (Channel channel : channels) {
+            try {
+                channel.abort();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     public static void tongji(final Activity c, final KnowledgePoint kp, final OnListener onListener) {
@@ -546,17 +553,17 @@ public class ZbusHost {
         pushMessageVo.setSenderId(userId);//老师的userId
         pushMessageVo.setPushType("zbus");
 
+
         Log.e("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
        // ZbusUtils.sendMsg(topic, pushMessageVo);
         new Thread(){
             @Override
             public void run() {
                 super.run();
-                if (sendUtil == null) {
-                    sendUtil = new RabbitMQUtils(Constant.zbusHost, topic, topic, Constant.zbusPost);
-                }
                 try {
-                    sendUtil.sendMsg(pushMessageVo);
+                    Channel channel = consumeUtil.createChannel(topic, topic);
+                    consumeUtil.sendMsgs(msg, channel);
+                    channel.abort();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
