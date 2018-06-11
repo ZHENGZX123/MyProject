@@ -34,6 +34,7 @@ import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.zbus.ZbusHost;
+import com.android.launcher3.R;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -49,6 +50,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import cn.kiway.mdmsdk.MDMHelper;
+import cn.kiway.mdmsdk.cn.kiway.mdmsdk.util.RootCmd;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static com.android.kiway.KWApp.consumeUtil;
@@ -84,11 +86,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static final int MSG_NETWORK_ERR = 8;
     public static final int MSG_HEARTBEAT = 9;
     public static final int MSG_HUAWEI_PUSH = 10;
+    public static final int MSG_COLLAPSE = 11;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("test", "Main onCreate");
+        
         instance = this;
 
         //2.初始化界面
@@ -131,36 +136,39 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         initZbus();
         //24.悬浮窗
         checkAlertWindow();
-        //test();
+        //25.ZTC演示
+        collapse();
+        requestRoot();
+    }
+
+    private void requestRoot() {
+        if (!Build.MODEL.equals("ZTE Q5-T")) {
+            return;
+        }
+
+        new Thread() {
+            @Override
+            public void run() {
+                boolean have = RootCmd.haveRoot();
+                if (have) {
+                    toast("已经拥有Root权限");
+                } else {
+                    toast("尚未拥有Root权限");
+                }
+            }
+        }.start();
+    }
+
+    private void collapse() {
+        if (!Build.MODEL.equals("ZTE Q5-T")) {
+            return;
+        }
+        mHandler.sendEmptyMessage(MSG_COLLAPSE);
     }
 
     private void huaweiPush() {
         mHandler.sendEmptyMessage(MSG_HUAWEI_PUSH);
     }
-
-//    private void test() {
-//        Calendar beginCal = Calendar.getInstance();
-//        beginCal.add(Calendar.HOUR_OF_DAY, -1);
-//        Calendar endCal = Calendar.getInstance();
-//        UsageStatsManager manager = (UsageStatsManager) getApplicationContext().getSystemService(USAGE_STATS_SERVICE);
-//        List<UsageStats> stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, beginCal.getTimeInMillis(), endCal.getTimeInMillis());
-//        StringBuilder sb = new StringBuilder();
-//        for (UsageStats us : stats) {
-//            try {
-//                PackageManager pm = getApplicationContext().getPackageManager();
-//                ApplicationInfo applicationInfo = pm.getApplicationInfo(us.getPackageName(), PackageManager.GET_META_DATA);
-//                if ((applicationInfo.flags & applicationInfo.FLAG_SYSTEM) <= 0) {
-//                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-//                    String t = format.format(new Date(us.getLastTimeUsed()));
-//                    sb.append(pm.getApplicationLabel(applicationInfo) + "\t" + t + "\t" + Utils.secToTime((int) (us.getTotalTimeInForeground() / 1000)) + "\n");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        Log.d("test", "xxxxxxxxxxx  " + sb.toString());
-//
-//    }
 
     //判断权限
     private void checkAlertWindow() {
@@ -336,6 +344,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     Utils.huaweiPush(getApplicationContext());
                     mHandler.removeMessages(MSG_HUAWEI_PUSH);
                     mHandler.sendEmptyMessageDelayed(MSG_HUAWEI_PUSH, 60 * 60 * 1000);
+                }
+                case MSG_COLLAPSE: {
+                    boolean locked = getSharedPreferences("kiway", 0).getBoolean("locked", false);
+                    if (locked) {
+                        Utils.collapse(getApplicationContext());
+                    }
+                    mHandler.removeMessages(MSG_COLLAPSE);
+                    mHandler.sendEmptyMessageDelayed(MSG_COLLAPSE, 500);
                 }
                 break;
             }
@@ -549,7 +565,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 }
             }
         }
-
     }
 
 
