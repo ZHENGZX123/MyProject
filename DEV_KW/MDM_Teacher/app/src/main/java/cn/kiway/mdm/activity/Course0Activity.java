@@ -451,6 +451,7 @@ public class Course0Activity extends BaseActivity {
                                 }.getType());
                         showQuestionDialog(type);
                     } catch (Exception e) {
+                        toast("所有问题都已经问过了");
                         e.printStackTrace();
                     }
                 }
