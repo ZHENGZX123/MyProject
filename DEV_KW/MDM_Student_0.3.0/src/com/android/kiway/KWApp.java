@@ -21,6 +21,7 @@ import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.zbus.ZbusHost;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xutils.x;
 
@@ -119,17 +120,7 @@ public class KWApp extends Application {
                 }
                 temporary_app = false;
                 if (isAttendClass) {
-                    Intent in = getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
-                    if (in != null) {
-                        in.putExtra("shangke", "open");
-                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
-                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
-                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-                        in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
-                        in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
-                        in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
-                        Utils.startPackage(KWApp.instance, ZHIHUIKETANGPG, in);
-                    }
+                    sendEmptyMessage(MSG_ATTEND_CALSS);
                 } else {
                     //返回MDM桌面
                     Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.mdm");
@@ -215,18 +206,37 @@ public class KWApp extends Application {
                     keyguardLock.disableKeyguard(); // 解锁
                     MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
-                    Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
-                    in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    //1.打开APP
-                    in.putExtra("shangke", msg.obj.toString());
-                    in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
-                    in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
-                    in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-                    in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
-                    in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
-                    in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
-                    RemoteAidlService.attendClass(msg.obj.toString());
-                    startActivity(in);
+
+                    if (Build.MODEL.equals("ZTE Q5-T")) {
+                        try {
+                            Message m = new Message();
+                            m.what = MSG_LAUNCH_APP;
+                            JSONObject o = new JSONObject();
+                            JSONArray contentA = new JSONArray();
+                            JSONObject o1 = new JSONObject();
+                            o1.put("packages", ZHIHUIKETANGPG);
+                            contentA.put(o1);
+                            o.put("content", contentA);
+                            m.obj = o;
+                            mHandler.sendMessage(m);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage(ZHIHUIKETANGPG);
+                        in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //1.打开APP
+                        in.putExtra("shangke", msg.obj.toString());
+                        in.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+                        in.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+                        in.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+                        in.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+                        in.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+                        in.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
+                        RemoteAidlService.attendClass(msg.obj.toString());
+                        startActivity(in);
+                    }
+
                     //2.发送zbus命令
                     //返回shagnke给教师端，当作online
                     ZbusHost.doSendMsg(KWApp.instance, "shangke");
@@ -236,6 +246,9 @@ public class KWApp extends Application {
                 isAttendClass = false;
                 //MDMHelper.getAdapter().setTaskButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
+                if (Build.MODEL.equals("ZTE Q5-T")) {
+                    temporary_app = false;
+                }
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
             } else if (msg.what == MSG_PUSH_FILE_I) {

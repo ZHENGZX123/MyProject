@@ -64,6 +64,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -744,10 +745,10 @@ public class Utils {
     public static void launchApp(final Context c, final JSONObject data) {
         JSONArray content = data.optJSONArray("content");
         try {
-            packageName = content.getJSONObject(0).getString("packages");
-            url = content.getJSONObject(0).getString("url");
-            name = content.getJSONObject(0).getString("name");
-            version = content.getJSONObject(0).getString("version");
+            packageName = content.getJSONObject(0).optString("packages");
+            url = content.getJSONObject(0).optString("url");
+            name = content.getJSONObject(0).optString("name");
+            version = content.getJSONObject(0).optString("version");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1385,5 +1386,20 @@ public class Utils {
         return retStr;
     }
 
+    public static void collapse(Context context) {
+        try {
+            Object service = context.getSystemService("statusbar");
+            Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
+            if (Build.VERSION.SDK_INT <= 16) {
+                Method collapse = statusbarManager.getMethod("collapse");
+                collapse.invoke(service);
+            } else {
+                Method collapse2 = statusbarManager.getMethod("collapsePanels");
+                collapse2.invoke(service);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
