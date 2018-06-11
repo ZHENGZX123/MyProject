@@ -31,7 +31,7 @@ android {
     buildToolsVersion '26.0.0'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 14
         versionName "0.1.4"
@@ -113,7 +113,7 @@ dependencies {
     compile project(':zxing')
     compile project(':materiallockview')
     compile files('libs/android-async-http-1.4.5.jar')
-    compile files('libs/BaiduLBS_Android.jar')
+    //compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/gson-2.8.0.jar')
     compile files('libs/HwPush_SDK_V2705.jar')
     compile 'com.github.jetradarmobile:android-snowfall:1.1.6'

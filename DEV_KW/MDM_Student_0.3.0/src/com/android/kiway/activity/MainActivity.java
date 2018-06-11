@@ -1,12 +1,9 @@
 package com.android.kiway.activity;
 
 import android.app.AppOpsManager;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -37,10 +34,6 @@ import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.zbus.ZbusHost;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -54,10 +47,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
@@ -129,7 +118,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //17.检查通话功能
         checkTelephoney();
         //18.获取经纬度
-        getLocation();
+        //getLocation();
         //19.检查lock状态
         checkLock();
         //20.鉴权
@@ -149,29 +138,29 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         mHandler.sendEmptyMessage(MSG_HUAWEI_PUSH);
     }
 
-    private void test() {
-        Calendar beginCal = Calendar.getInstance();
-        beginCal.add(Calendar.HOUR_OF_DAY, -1);
-        Calendar endCal = Calendar.getInstance();
-        UsageStatsManager manager = (UsageStatsManager) getApplicationContext().getSystemService(USAGE_STATS_SERVICE);
-        List<UsageStats> stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, beginCal.getTimeInMillis(), endCal.getTimeInMillis());
-        StringBuilder sb = new StringBuilder();
-        for (UsageStats us : stats) {
-            try {
-                PackageManager pm = getApplicationContext().getPackageManager();
-                ApplicationInfo applicationInfo = pm.getApplicationInfo(us.getPackageName(), PackageManager.GET_META_DATA);
-                if ((applicationInfo.flags & applicationInfo.FLAG_SYSTEM) <= 0) {
-                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                    String t = format.format(new Date(us.getLastTimeUsed()));
-                    sb.append(pm.getApplicationLabel(applicationInfo) + "\t" + t + "\t" + Utils.secToTime((int) (us.getTotalTimeInForeground() / 1000)) + "\n");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        Log.d("test", "xxxxxxxxxxx  " + sb.toString());
-
-    }
+//    private void test() {
+//        Calendar beginCal = Calendar.getInstance();
+//        beginCal.add(Calendar.HOUR_OF_DAY, -1);
+//        Calendar endCal = Calendar.getInstance();
+//        UsageStatsManager manager = (UsageStatsManager) getApplicationContext().getSystemService(USAGE_STATS_SERVICE);
+//        List<UsageStats> stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, beginCal.getTimeInMillis(), endCal.getTimeInMillis());
+//        StringBuilder sb = new StringBuilder();
+//        for (UsageStats us : stats) {
+//            try {
+//                PackageManager pm = getApplicationContext().getPackageManager();
+//                ApplicationInfo applicationInfo = pm.getApplicationInfo(us.getPackageName(), PackageManager.GET_META_DATA);
+//                if ((applicationInfo.flags & applicationInfo.FLAG_SYSTEM) <= 0) {
+//                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+//                    String t = format.format(new Date(us.getLastTimeUsed()));
+//                    sb.append(pm.getApplicationLabel(applicationInfo) + "\t" + t + "\t" + Utils.secToTime((int) (us.getTotalTimeInForeground() / 1000)) + "\n");
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        Log.d("test", "xxxxxxxxxxx  " + sb.toString());
+//
+//    }
 
     //判断权限
     private void checkAlertWindow() {
@@ -522,9 +511,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
-        if (mLocationClient != null) {
-            mLocationClient.stop();
-        }
+//        if (mLocationClient != null) {
+//            mLocationClient.stop();
+//        }
         //ZbusUtils.close();
         KWApp.closeMQ();
     }
@@ -564,84 +553,84 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
 
-    public LocationClient mLocationClient = null;
+    //public LocationClient mLocationClient = null;
 
-    public void getLocation() {
-        //获取经纬度
-        mLocationClient = new LocationClient(this);
-        //声明LocationClient类
-        mLocationClient.registerLocationListener(
-                new BDLocationListener() {
-                    @Override
-                    public void onReceiveLocation(BDLocation location) {
-                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
-                        if (location.getLongitude() == 4.9E-324 || location.getLatitude() == 4.9E-324) {
-                            Log.d("test", "无效坐标");
-                            return;
-                        }
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                        String dateStr = df.format(new Date());
-                        double lastLongitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLongitude",
-                                0.0f);
-                        double lastLatitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLatitude",
-                                0.0f);
-                        if (Utils.getDistance(lastLatitude, lastLongitude, location.getLatitude(), location
-                                .getLongitude()) < 100) {
-                            Log.d("test", "坐标距离小于100，不用上报");
-                            return;
-                        }
-                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude(), dateStr);
-                    }
+//    public void getLocation() {
+//        //获取经纬度
+//        mLocationClient = new LocationClient(this);
+//        //声明LocationClient类
+//        mLocationClient.registerLocationListener(
+//                new BDLocationListener() {
+//                    @Override
+//                    public void onReceiveLocation(BDLocation location) {
+//                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
+//                        if (location.getLongitude() == 4.9E-324 || location.getLatitude() == 4.9E-324) {
+//                            Log.d("test", "无效坐标");
+//                            return;
+//                        }
+//                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//                        String dateStr = df.format(new Date());
+//                        double lastLongitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLongitude",
+//                                0.0f);
+//                        double lastLatitude = getSharedPreferences("kiway", 0).getFloat(dateStr + "_lastLatitude",
+//                                0.0f);
+//                        if (Utils.getDistance(lastLatitude, lastLongitude, location.getLatitude(), location
+//                                .getLongitude()) < 100) {
+//                            Log.d("test", "坐标距离小于100，不用上报");
+//                            return;
+//                        }
+//                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude(), dateStr);
+//                    }
+//
+//                    @Override
+//                    public void onConnectHotSpotMessage(String s, int i) {
+//
+//                    }
+//                }
+//        );
+//        initLocation();
+//        //start
+//        mLocationClient.start();
+//    }
 
-                    @Override
-                    public void onConnectHotSpotMessage(String s, int i) {
-
-                    }
-                }
-        );
-        initLocation();
-        //start
-        mLocationClient.start();
-    }
-
-    private void initLocation() {
-        LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
-        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-
-        option.setCoorType("bd09ll");
-        //可选，默认gcj02，设置返回的定位结果坐标系
-
-        int span = 1000 * 60 * 10;//1000 * 60 * 10
-        option.setScanSpan(span);
-        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
-
-        option.setIsNeedAddress(true);
-        //可选，设置是否需要地址信息，默认不需要
-
-        option.setOpenGps(true);
-        //可选，默认false,设置是否使用gps
-
-        option.setLocationNotify(false);
-        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
-
-        option.setIsNeedLocationDescribe(true);
-        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
-
-        option.setIsNeedLocationPoiList(true);
-        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
-
-        option.setIgnoreKillProcess(false);
-        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
-
-        option.SetIgnoreCacheException(false);
-        //可选，默认false，设置是否收集CRASH信息，默认收集
-
-        option.setEnableSimulateGps(false);
-        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
-
-        mLocationClient.setLocOption(option);
-    }
+//    private void initLocation() {
+//        LocationClientOption option = new LocationClientOption();
+//        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+//        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+//
+//        option.setCoorType("bd09ll");
+//        //可选，默认gcj02，设置返回的定位结果坐标系
+//
+//        int span = 1000 * 60 * 10;//1000 * 60 * 10
+//        option.setScanSpan(span);
+//        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+//
+//        option.setIsNeedAddress(true);
+//        //可选，设置是否需要地址信息，默认不需要
+//
+//        option.setOpenGps(true);
+//        //可选，默认false,设置是否使用gps
+//
+//        option.setLocationNotify(false);
+//        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+//
+//        option.setIsNeedLocationDescribe(true);
+//        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+//
+//        option.setIsNeedLocationPoiList(true);
+//        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+//
+//        option.setIgnoreKillProcess(false);
+//        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+//
+//        option.SetIgnoreCacheException(false);
+//        //可选，默认false，设置是否收集CRASH信息，默认收集
+//
+//        option.setEnableSimulateGps(false);
+//        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+//
+//        mLocationClient.setLocOption(option);
+//    }
 
 
     //下面获取app使用时间
