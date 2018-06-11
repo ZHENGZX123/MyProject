@@ -115,7 +115,6 @@ public class CommandUtil {
                 String startTime = data.optString("startTime");
                 String endTime = data.optString("endTime");
                 if (operation.equals("save")) {
-                    context.getSharedPreferences("kiway", 0).edit().putString("shutdown_startTime", startTime).commit();
                     context.getSharedPreferences("kiway", 0).edit().putString("shutdown_endTime", endTime).commit();
                     Utils.checkShutDown(MainActivity.instance);
                     return false;

@@ -7,11 +7,11 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <cn.kiway.mdm.view.viewPager.OverViewPager
+    <com.android.kiway.view.viewPager.OverViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></cn.kiway.mdm.view.viewPager.OverViewPager>
+        android:layout_weight="1"></com.android.kiway.view.viewPager.OverViewPager>
 
     <LinearLayout
         android:id="@+id/points"

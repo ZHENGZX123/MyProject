@@ -118,8 +118,11 @@ public class EulaActivity extends Activity {
         //判断是否登录
         boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
         if (login) {
-           // startActivity(new Intent(this, MainActivity.class));
-            startActivity(new Intent(this, Launcher.class));
+            if (Build.VERSION.SDK_INT<21){
+           startActivity(new Intent(this, MainActivity2.class));}else{
+                startActivity(new Intent(this, Launcher.class));
+            }
+
         } else {
             startActivity(new Intent(this, LoginActivity.class));
         }

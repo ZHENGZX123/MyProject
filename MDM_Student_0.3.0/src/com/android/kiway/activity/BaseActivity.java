@@ -100,7 +100,7 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         packages.add("cn.kiway.marketplace");
         MDMHelper.getAdapter().addDisallowedUninstallPackages(packages);
         //保持APP持续运行
-        //MDMHelper.getAdapter().addPersistentApp(packages);
+        MDMHelper.getAdapter().addPersistentApp(packages);
         //4.禁止下拉状态栏
         MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
         //5.禁止USB，调试期间可以关闭

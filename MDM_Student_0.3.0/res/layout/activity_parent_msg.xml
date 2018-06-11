@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+              android:background="#ffffff"
     android:orientation="vertical">
 
 
@@ -28,19 +29,19 @@
             android:src="@drawable/ic_navigate_before" />
     </RelativeLayout>
 
-    <cn.kiway.mdm.view.refresh.PullToRefreshLayout
+    <com.android.kiway.view.refresh.PullToRefreshLayout
         android:id="@+id/refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <include layout="@layout/refresh_head" />
 
-        <cn.kiway.mdm.view.refresh.PullableListView
+        <com.android.kiway.view.refresh.PullableListView
             android:id="@+id/lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="#00000000"></cn.kiway.mdm.view.refresh.PullableListView>
+            android:divider="#00000000"></com.android.kiway.view.refresh.PullableListView>
 
         <include layout="@layout/load_more" />
-    </cn.kiway.mdm.view.refresh.PullToRefreshLayout>
+    </com.android.kiway.view.refresh.PullToRefreshLayout>
 </LinearLayout>

@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.kiway.utils.AppReceiverIn.PACKAGENAME;
 import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.FileACache.ListFileName;
 
@@ -59,17 +60,21 @@ public class AppListActivity3 extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 InStallAllApp a = apps.get(position);
                 a.selected = !a.selected;
-                // Intent intent = new Intent();
-                // intent.putExtra(PACKAGENAME, a.packages);
-                //intent.putExtra("boolean", true);
+                String action = "";
+
                 if (a.selected) {
                     new MyDBHelper(AppListActivity3.this).addCustonApp(a.packages);
-                    //   intent.setAction(INSTALL_SUCCESS);
                 } else {
                     new MyDBHelper(AppListActivity3.this).deleteAppInCuston(a.packages);
-                    // intent.setAction(REMOVE_SUCCESS);
+
                 }
-                // sendOrderedBroadcast(intent, null);
+                if (MainActivity2.instance != null) {
+                    Intent intent = new Intent();
+                    intent.putExtra(PACKAGENAME, a.packages);
+                    intent.putExtra("boolean", true);
+                    intent.setAction(action);
+                    sendOrderedBroadcast(intent, null);
+               }
                 adapter.notifyDataSetChanged();
             }
         });
@@ -96,8 +101,9 @@ public class AppListActivity3 extends BaseActivity {
 
         Intent intent = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
-        PendingIntent restartIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager mgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        PendingIntent restartIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent
+                .FLAG_ONE_SHOT);
+        AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, restartIntent); // 0.5秒钟后重启应用
         System.exit(0);
     }

@@ -20,10 +20,15 @@ import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.zbus.ZbusHost;
+import com.rabbitmq.client.Channel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xutils.x;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
@@ -257,8 +262,8 @@ public class KWApp extends Application {
     };
 
     public static RabbitMQUtils consumeUtil;
-    public static RabbitMQUtils sendUtil;
-
+    public static List<Channel> channels = new ArrayList<>();
+    public static Channel channel;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -282,9 +287,14 @@ public class KWApp extends Application {
     public static void closeMQ() {
         if (consumeUtil != null) {
             consumeUtil.close();
+            consumeUtil=null;
         }
-        if (sendUtil != null) {
-            sendUtil.close();
+        for (Channel channel : channels) {
+            try {
+                channel.abort();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
