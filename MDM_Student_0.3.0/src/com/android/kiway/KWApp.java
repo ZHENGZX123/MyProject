@@ -263,7 +263,6 @@ public class KWApp extends Application {
 
     public static RabbitMQUtils consumeUtil;
     public static List<Channel> channels = new ArrayList<>();
-    public static Channel channel;
     @Override
     public void onCreate() {
         super.onCreate();

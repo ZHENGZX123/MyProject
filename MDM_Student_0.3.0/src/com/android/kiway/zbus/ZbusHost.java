@@ -111,7 +111,6 @@ public class ZbusHost {
             pushMessageVo.setUserId(userIds);//老师的userid
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
-
             Log.d("test", "sendMSG2 " + msg.toString());
             //ZbusUtils.sendMsg(topic, pushMessageVo);
             new Thread() {
