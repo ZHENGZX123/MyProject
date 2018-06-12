@@ -2326,7 +2326,7 @@ public class AutoReplyService extends AccessibilityService {
             sendTextOnly("设置成功！", true);
         } else if (actionType == TYPE_COLLECTOR_FORWARDING) {
             // 找到最后一张链接，点击转发给某人
-            String collector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
+            String collector = getSharedPreferences("collector", 0).getString("collector", "转发使者");
             if (TextUtils.isEmpty(collector)) {
                 toast("您还没有设置转发对象");
                 //回复给微信
@@ -3080,7 +3080,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                String collector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
+                                String collector = getSharedPreferences("collector", 0).getString("collector", "转发使者");
                                 findTargetNode(NODE_EDITTEXT, collector);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
