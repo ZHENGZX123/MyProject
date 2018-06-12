@@ -180,9 +180,9 @@ public class MainActivity extends BaseActivity {
                     }
 
                     String topic = "kiway_push_" + userId;
-                    if (consumeUtil==null)
-                    consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, cn.kiway.mdm
-                            .util.Constant.zbusPost);
+                    if (consumeUtil == null)
+                        consumeUtil = new RabbitMQUtils(cn.kiway.mdm.util.Constant.zbusHost, cn.kiway.mdm
+                                .util.Constant.zbusPost);
                     Channel channel = consumeUtil.createChannel(topic, topic);
                     channels.add(channel);
                     consumeUtil.consumeMsg(new DefaultConsumer(channel) {
@@ -198,7 +198,7 @@ public class MainActivity extends BaseActivity {
                             zbusMessageHandler.handle(msg);
                             super.getChannel().basicAck(envelope.getDeliveryTag(), false);
                         }
-                    },channel);
+                    }, channel);
 
                 } catch (Exception e) {
                     e.printStackTrace();

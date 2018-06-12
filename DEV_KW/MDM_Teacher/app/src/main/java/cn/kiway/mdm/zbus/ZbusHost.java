@@ -536,7 +536,6 @@ public class ZbusHost {
     private static void doSendMsg(Context c, String title, String userId, String msg, ArrayList<Student> students) throws
             Exception {
         //topic : 老师的deviceId#userId
-
         String topic = Utils.getIMEI(c) + "#" + userId;
         String url = Constant.zbusHost + ":" + Constant.zbusPost;
         PushMessageVo pushMessageVo = new PushMessageVo();
@@ -552,17 +551,14 @@ public class ZbusHost {
         pushMessageVo.setUserId(userIds);//学生token
         pushMessageVo.setSenderId(userId);//老师的userId
         pushMessageVo.setPushType("zbus");
-
-
         Log.e("test", "发送给学生topic = " + topic + " , msg = " + msg + ", url = " + url);
-       // ZbusUtils.sendMsg(topic, pushMessageVo);
         new Thread(){
             @Override
             public void run() {
                 super.run();
                 try {
                     Channel channel = consumeUtil.createChannel(topic, topic);
-                    consumeUtil.sendMsgs(msg, channel);
+                    consumeUtil.sendMsg(pushMessageVo, channel);
                     channel.abort();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -570,7 +566,6 @@ public class ZbusHost {
                 Countly.sharedInstance().recordEvent(title);
             }
         }.start();
-
     }
 
 
