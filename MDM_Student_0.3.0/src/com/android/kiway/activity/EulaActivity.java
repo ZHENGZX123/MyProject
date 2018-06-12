@@ -54,7 +54,6 @@ public class EulaActivity extends Activity {
             return;
         }
 
-
         String filename = "huawei_permission_statement.html";
         String content = Utils.getStringFromHtmlFile(this, filename);
         TextView permissionText = (TextView) findViewById(R.id.content_permissions);
@@ -118,11 +117,11 @@ public class EulaActivity extends Activity {
         //判断是否登录
         boolean login = getSharedPreferences("kiway", 0).getBoolean("login", false);
         if (login) {
-            if (Build.VERSION.SDK_INT<21){
-           startActivity(new Intent(this, MainActivity2.class));}else{
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(new Intent(this, MainActivity2.class));
+            } else {
                 startActivity(new Intent(this, Launcher.class));
             }
-
         } else {
             startActivity(new Intent(this, LoginActivity.class));
         }

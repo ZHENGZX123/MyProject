@@ -27,6 +27,7 @@ import com.android.kiway.KWApp;
 import com.android.kiway.dialog.CheckPassword;
 import com.android.kiway.dialog.ShowMessageDailog;
 import com.android.kiway.entity.TimeSet;
+import com.android.kiway.utils.AppListUtils;
 import com.android.kiway.utils.CommandUtil;
 import com.android.kiway.utils.Constant;
 import com.android.kiway.utils.DESUtil;
@@ -53,13 +54,14 @@ import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdmsdk.cn.kiway.mdmsdk.util.RootCmd;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
-import static com.android.kiway.KWApp.channels;
-import static com.android.kiway.KWApp.consumeUtil;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static com.android.kiway.utils.Constant.APPID;
 import static com.android.kiway.utils.Constant.APPKEY;
 import static com.android.kiway.utils.Constant.clientUrl;
+import static com.android.kiway.zbus.ZbusHost.channels;
+import static com.android.kiway.zbus.ZbusHost.closeMQ;
+import static com.android.kiway.zbus.ZbusHost.consumeUtil;
 
 //import com.baidu.location.BDLocation;
 //import com.baidu.location.BDLocationListener;
@@ -188,7 +190,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void initZbus() {
         Log.e("test", "initZbus");
-
         new Thread() {
             @Override
             public void run() {
@@ -199,13 +200,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     }
                     String topic = "kiway_push_" + token;
                     Log.e("test", "consume topic = " + topic);
-                    if (consumeUtil==null)
-                    consumeUtil = new RabbitMQUtils(Constant.zbusHost, Constant.zbusPost);
+                    if (consumeUtil == null)
+                        consumeUtil = new RabbitMQUtils(Constant.zbusHost, Constant.zbusPost);
                     Channel channel = consumeUtil.createChannel(topic, topic);
                     channels.add(channel);
                     consumeUtil.consumeMsg(new DefaultConsumer(channel) {
                         @Override
-                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties
+                                properties, byte[] body) throws IOException {
                             //消费消费
                             String msg = new String(body, "utf-8");
                             System.out.println("consume msg: " + msg);
@@ -216,9 +218,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                           super.getChannel().basicAck(envelope.getDeliveryTag(), false);
+                            super.getChannel().basicAck(envelope.getDeliveryTag(), false);
                         }
-                    },channel);
+                    }, channel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -418,7 +420,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void setUsageStats() {
-        if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3368-P9")) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !hasPermission
+        if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3368-P9")) && Build.VERSION.SDK_INT >= Build
+                .VERSION_CODES.LOLLIPOP && !hasPermission
                 ()) {
             ShowMessageDailog showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
@@ -475,7 +478,18 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void Browser(View view) {
-        startActivity(new Intent(this, WebViewActivity.class));
+        if (AppListUtils.isAppInstalled(getApplicationContext(), "cn.kiway.browser")) {
+            Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.browser");
+            intent.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
+            intent.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
+            intent.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+            intent.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
+            intent.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
+            intent.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
+            startActivity(intent);
+        } else {
+            startActivity(new Intent(this, WebViewActivity.class));
+        }
     }
 
     public void ChangePassWord(View view) {
@@ -539,8 +553,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //        if (mLocationClient != null) {
 //            mLocationClient.stop();
 //        }
-        //ZbusUtils.close();
-        KWApp.closeMQ();
+        closeMQ();
     }
 
 
@@ -587,7 +600,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //                new BDLocationListener() {
 //                    @Override
 //                    public void onReceiveLocation(BDLocation location) {
-//                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location.getLatitude());
+//                        Log.d("test", "onReceiveLocation ：" + location.getLongitude() + " , " + location
+// .getLatitude());
 //                        if (location.getLongitude() == 4.9E-324 || location.getLatitude() == 4.9E-324) {
 //                            Log.d("test", "无效坐标");
 //                            return;
@@ -603,7 +617,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 //                            Log.d("test", "坐标距离小于100，不用上报");
 //                            return;
 //                        }
-//                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude(), dateStr);
+//                        HttpUtil.uploadLocation(MainActivity.this, location.getLongitude(), location.getLatitude(),
+// dateStr);
 //                    }
 //
 //                    @Override

@@ -8,8 +8,9 @@ public class Constant {
     public static final int _16 = 16;
     public static final String ZHIHUIKETANGPG = "cn.kiway.session";
     public static final String MARKETPLACE = "cn.kiway.marketplace";
-    public static final String PARENTMESSAGE = "cn.kiway.parentmessage";
+    public static final String PARENTMESSAGE = "cn.kiway.message";
     public static final String KIWAYSETTING = "cn.kiway.setting";
+    public static final String BROWE="";
 
     public static final String APPID = "f2ec1fb69b27c7ab5260d2eb7cd95dea";
     public static final String APPKEY = "9a9b01f8ab910e12422bcc0e88d95dff2f95f582";

@@ -61,12 +61,10 @@ public class AppListActivity3 extends BaseActivity {
                 InStallAllApp a = apps.get(position);
                 a.selected = !a.selected;
                 String action = "";
-
                 if (a.selected) {
                     new MyDBHelper(AppListActivity3.this).addCustonApp(a.packages);
                 } else {
                     new MyDBHelper(AppListActivity3.this).deleteAppInCuston(a.packages);
-
                 }
                 if (MainActivity2.instance != null) {
                     Intent intent = new Intent();
