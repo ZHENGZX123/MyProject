@@ -36,10 +36,10 @@ public class FilterActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
-        //默认添加一个“我的KW”
+        //默认添加一个“转发使者”
         String filters = getSharedPreferences("filters", 0).getString("filters", "");
-        if (!filters.contains("我的KW")) {
-            getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + "我的KW").commit();
+        if (!filters.contains("转发使者")) {
+            getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + "转发使者").commit();
         }
 
         initView();

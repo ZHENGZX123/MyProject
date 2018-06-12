@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setCollector(View view) {
-        String oldCollector = getSharedPreferences("collector", 0).getString("collector", "我的KW");
+        String oldCollector = getSharedPreferences("collector", 0).getString("collector", "转发使者");
         EditText et = new EditText(this);
         et.setSingleLine();
         et.setText(oldCollector);
