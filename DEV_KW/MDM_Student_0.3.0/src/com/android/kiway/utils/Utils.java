@@ -769,6 +769,14 @@ public class Utils {
                         String runningAPP = Utils.getRunningAPP(c);
                         if (!runningAPP.equals(packageName)) {
                             Intent intent = c.getPackageManager().getLaunchIntentForPackage(packageName);
+                            //intent.putExtra("shangke", msg.obj.toString());
+                            intent.putExtra("studentName", c.getSharedPreferences("kiway", 0).getString("name", ""));
+                            intent.putExtra("className", c.getSharedPreferences("kiway", 0).getString("className", ""));
+                            intent.putExtra("studentNumber", c.getSharedPreferences("kiway", 0).getString("studentNumber", ""));
+                            intent.putExtra("classId", c.getSharedPreferences("kiway", 0).getString("classId", ""));
+                            intent.putExtra("schoolId",c.getSharedPreferences("kiway", 0).getString("schoolId", ""));
+                            intent.putExtra("huaweiToken", c.getSharedPreferences("huawei", 0).getString("token", ""));
+
                             c.startActivity(intent);
                         }
                         sleep(1000);

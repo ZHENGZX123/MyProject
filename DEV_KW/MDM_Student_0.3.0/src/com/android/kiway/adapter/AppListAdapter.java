@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.anarchy.classify.simple.SimpleAdapter;
 import com.anarchy.classify.simple.widget.MiViewHolder;
 import com.android.kiway.activity.MainActivity2;
-import com.android.kiway.activity.ParentMessageActivity;
 import com.android.kiway.activity.SystemSetupActivity;
 import com.android.kiway.entity.App;
 import com.android.kiway.entity.AppCharge;
@@ -150,10 +149,10 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
 //                context.startActivity(new Intent(context, MarkePlaceViewActivity.class));
 //                return;
 //            }
-            if (packageName.equals(PARENTMESSAGE)) {//应用市场
-                context.startActivity(new Intent(context, ParentMessageActivity.class));
-                return;
-            }
+//            if (packageName.equals(PARENTMESSAGE)) {//应用市场
+//                context.startActivity(new Intent(context, ParentMessageActivity.class));
+//                return;
+//            }
             if (packageName.equals(KIWAYSETTING)) {//设置
                 context.startActivity(new Intent(context, SystemSetupActivity.class));
                 return;

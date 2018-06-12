@@ -20,22 +20,17 @@ import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.zbus.ZbusHost;
-import com.rabbitmq.client.Channel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xutils.x;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.kiway.mdmsdk.MDMHelper;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static com.android.kiway.utils.AppListUtils.isAppInstalled;
 import static com.android.kiway.utils.Constant.ZHIHUIKETANGPG;
 import static com.android.kiway.utils.Utils.huaweiPush;
+import static com.android.kiway.zbus.ZbusHost.closeMQ;
 
 /**
  * Created by Administrator on 2017/6/9.
@@ -112,7 +107,7 @@ public class KWApp extends Application {
                 unMute();
             } else if (msg.what == MSG_LAUNCH_APP) {
                 if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
-                    Log.d("test", "bug#1598解锁状态下，不接收管控命令");
+                    Log.e("test", "bug#1598解锁状态下，不接收管控命令");
                     return;
                 }
                 //打开APP
@@ -261,8 +256,7 @@ public class KWApp extends Application {
         }
     };
 
-    public static RabbitMQUtils consumeUtil;
-    public static List<Channel> channels = new ArrayList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -273,7 +267,6 @@ public class KWApp extends Application {
         huaweiPush(this);
         //xutils
         x.Ext.init(this);
-
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -283,19 +276,7 @@ public class KWApp extends Application {
         });
     }
 
-    public static void closeMQ() {
-        if (consumeUtil != null) {
-            consumeUtil.close();
-            consumeUtil=null;
-        }
-        for (Channel channel : channels) {
-            try {
-                channel.abort();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+
 
 
     public void excuteFlagCommand() {

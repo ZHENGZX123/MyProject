@@ -11,13 +11,15 @@ import com.rabbitmq.client.Channel;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 
-import static com.android.kiway.KWApp.consumeUtil;
 import static com.android.kiway.utils.Constant.APPID;
 
 /**
@@ -25,7 +27,22 @@ import static com.android.kiway.utils.Constant.APPID;
  */
 
 public class ZbusHost {
+    public static RabbitMQUtils consumeUtil;
+    public static List<Channel> channels = new ArrayList<>();
 
+    public static void closeMQ() {
+        if (consumeUtil != null) {
+            consumeUtil.close();
+            consumeUtil=null;
+        }
+        for (Channel channel : channels) {
+            try {
+                channel.abort();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public static boolean doSendMsg(Context c, String cmd) {
         try {
             JSONObject obj = new JSONObject();
@@ -60,7 +77,7 @@ public class ZbusHost {
                 public void run() {
                    Channel channel = consumeUtil.createChannel(topic, topic);
                     try {
-                        consumeUtil.sendMsgs(msg, channel);
+                        consumeUtil.sendMsg(pushMessageVo, channel);
                         channel.abort();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -112,13 +129,12 @@ public class ZbusHost {
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
             Log.d("test", "sendMSG2 " + msg.toString());
-            //ZbusUtils.sendMsg(topic, pushMessageVo);
             new Thread() {
                 @Override
                 public void run() {
                      Channel  channel = consumeUtil.createChannel(topic, topic);
                     try {
-                        consumeUtil.sendMsgs(msg, channel);
+                        consumeUtil.sendMsg(pushMessageVo, channel);
                         channel.abort();
                     } catch (Exception e) {
                         e.printStackTrace();
