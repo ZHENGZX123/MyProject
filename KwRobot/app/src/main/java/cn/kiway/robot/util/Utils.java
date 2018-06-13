@@ -81,7 +81,6 @@ import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
-import static com.mob.tools.utils.DeviceHelper.getApplication;
 import static com.mob.tools.utils.ResHelper.copyFile;
 
 /**
@@ -524,12 +523,13 @@ public class Utils {
             }
         }.start();
 
-        if (status == STATUS_ADD_SUCCESS) {
-            String current = System.currentTimeMillis() + "";
-            ArrayList<Friend> friends = new ArrayList<>();
-            friends.add(new Friend(Utils.getNicknameFromRemark(remark), remark, current, current));
-            Utils.uploadFriend(getApplication(), friends);
-        }
+        //0613不再调用
+//        if (status == STATUS_ADD_SUCCESS) {
+//            String current = System.currentTimeMillis() + "";
+//            ArrayList<Friend> friends = new ArrayList<>();
+//            friends.add(new Friend(Utils.getNicknameFromRemark(remark), remark, current, current));
+//            Utils.uploadFriend(getApplication(), friends);
+//        }
     }
 
     public static String getPhoneNumber(Context c) {

@@ -54,7 +54,6 @@ import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Command;
-import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
@@ -3233,20 +3232,17 @@ public class AutoReplyService extends AccessibilityService {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        boolean flag = false;
                                                         //1.找到文本框输入文字发送
                                                         String welcome = getSharedPreferences("welcome", 0).getString
                                                                 ("welcome", DEFAULT_WELCOME);
-                                                        sendTextOnly(welcome, !flag);
+                                                        sendTextOnly(welcome, true);
                                                         //2.发送小程序码
-                                                        if (flag) {
-                                                            sendMiniProgramCode();
-                                                        }
-
-                                                        String current = System.currentTimeMillis() + "";
-                                                        ArrayList<Friend> friends = new ArrayList<>();
-                                                        friends.add(new Friend(nickname, remark + " " + nickname, current, current));
-                                                        Utils.uploadFriend(getApplication(), friends);
+                                                        //sendMiniProgramCode();
+                                                        //3.上报好友，0613不再调用
+                                                        //String current = System.currentTimeMillis() + "";
+                                                        //ArrayList<Friend> friends = new ArrayList<>();
+                                                        //friends.add(new Friend(nickname, remark + " " + nickname, current, current));
+                                                        //Utils.uploadFriend(getApplication(), friends);
                                                     }
                                                 }, 3000);
                                             }
