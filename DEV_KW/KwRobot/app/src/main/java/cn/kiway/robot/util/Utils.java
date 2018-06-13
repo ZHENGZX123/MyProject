@@ -62,15 +62,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
+import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
+import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.KWApplication.channels;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
@@ -199,7 +200,7 @@ public class Utils {
     }
 
     public static String getParentRemark(Context c, int plus) {
-        String parentId = FileUtils.readSDCardFile(KWApplication.ROOT + "parent.txt", c);
+        String parentId = FileUtils.readSDCardFile(ROOT + "parent.txt", c);
         if (TextUtils.isEmpty(parentId)) {
             parentId = "1";//String.format("%04d", 1);
         } else {
@@ -664,7 +665,6 @@ public class Utils {
         TelephonyManager phone = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         String imei = phone.getDeviceId();
         Log.d("test", "imei = " + imei);
-
         if (TextUtils.isEmpty(imei) || TextUtils.isEmpty(uin)) {
             LogUtil.e("初始化数据库密码失败：imei或uid为空");
             return null;
@@ -712,7 +712,7 @@ public class Utils {
         if (latestFile == null) {
             return null;
         }
-        String copyFilePath = "/data/data/cn.kiway.robot/" + saveDbName;
+        String copyFilePath = ROOT + saveDbName;
         if (new File(copyFilePath).exists()) {
             new File(copyFilePath).delete();
         }
@@ -750,20 +750,9 @@ public class Utils {
         if (TextUtils.isEmpty(password)) {
             return null;
         }
-
-        SQLiteDatabase.loadLibs(c);
-        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
-            public void preKey(SQLiteDatabase database) {
-            }
-
-            public void postKey(SQLiteDatabase database) {
-                database.rawExecSQL("PRAGMA cipher_migrate;"); //兼容2.0的数据库
-            }
-        };
-
-        String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
         try {
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
             Cursor c1 = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
             ArrayList<Friend> friends = new ArrayList<>();
             while (c1.moveToNext()) {
@@ -786,7 +775,6 @@ public class Utils {
         return null;
     }
 
-
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password, String groupName) {
         Log.d("test", "doGetGroups");
         if (dbFile == null) {
@@ -795,18 +783,8 @@ public class Utils {
         if (TextUtils.isEmpty(password)) {
             return null;
         }
-        SQLiteDatabase.loadLibs(c);
-        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
-            public void preKey(SQLiteDatabase database) {
-            }
-
-            public void postKey(SQLiteDatabase database) {
-                database.rawExecSQL("PRAGMA cipher_migrate;");
-            }
-        };
-
         try {
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
             Cursor c1 = null;
             String sql = "";
             if (TextUtils.isEmpty(groupName)) {
@@ -834,6 +812,45 @@ public class Utils {
         return null;
     }
 
+    public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
+        Log.d("test", "doGetMessages");
+        if (dbFile == null) {
+            return null;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return null;
+        }
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            long current = System.currentTimeMillis();
+            long before1hour = current - 60 * 60 * 1000;
+            String sql = "select message.msgId , message.type , message.createTime  ,rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
+            Log.d("test", "sql = " + sql);
+            Cursor c1 = db.rawQuery(sql, null);
+            ArrayList<Message> messages = new ArrayList<>();
+            while (c1.moveToNext()) {
+                int type = c1.getInt(c1.getColumnIndex("type"));
+                long createTime = c1.getLong(c1.getColumnIndex("createTime"));
+                String nickname = c1.getString(c1.getColumnIndex("nickname"));
+                String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
+                String content = c1.getString(c1.getColumnIndex("content"));
+                Message m = new Message();
+                m.type = type;
+                m.createTime = createTime;
+                m.talker = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
+                m.content = content;
+                messages.add(m);
+            }
+            Log.d("test", "messages = " + messages);
+            c1.close();
+            db.close();
+            return messages;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static ArrayList<String> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
         Log.d("test", "doGetGroups");
         if (dbFile == null) {
@@ -842,18 +859,8 @@ public class Utils {
         if (TextUtils.isEmpty(password)) {
             return null;
         }
-        SQLiteDatabase.loadLibs(c);
-        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
-            public void preKey(SQLiteDatabase database) {
-            }
-
-            public void postKey(SQLiteDatabase database) {
-                database.rawExecSQL("PRAGMA cipher_migrate;");
-            }
-        };
-
         try {
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String sql = "select  displayname  from chatroom where chatroomname = '" + clientGroupId + "'";
 
             Log.d("test", "sql = " + sql);
@@ -873,6 +880,20 @@ public class Utils {
         }
         return null;
     }
+
+    private static SQLiteDatabase openWechatDB(Context c, File dbFile, String password) {
+        SQLiteDatabase.loadLibs(c);
+        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
+            public void preKey(SQLiteDatabase database) {
+            }
+
+            public void postKey(SQLiteDatabase database) {
+                database.rawExecSQL("PRAGMA cipher_migrate;");
+            }
+        };
+        return SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+    }
+
 
     //null:private
     //string:group
@@ -938,18 +959,8 @@ public class Utils {
         if (dbFile == null) {
             return null;
         }
-        SQLiteDatabase.loadLibs(c);
-        SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
-            public void preKey(SQLiteDatabase database) {
-            }
-
-            public void postKey(SQLiteDatabase database) {
-                database.rawExecSQL("PRAGMA cipher_migrate;");
-            }
-        };
-
         try {
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile, null, null, hook);
+            SQLiteDatabase db = openWechatDB(c, dbFile, null);
             String sql = "select  *  from SnsInfo ";
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);

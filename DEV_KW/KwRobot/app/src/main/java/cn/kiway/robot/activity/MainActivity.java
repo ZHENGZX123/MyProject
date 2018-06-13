@@ -35,6 +35,7 @@ import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
+import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
@@ -52,6 +53,7 @@ import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
+import static cn.kiway.robot.util.Utils.doGetMessages;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -72,8 +74,8 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_MISSING_FISH = 109;    //主动加附近的人
     private static final int MSG_GET_ALL_FRIENDS = 110;//上报所有好友
     private static final int MSG_GET_ALL_GROUPS = 111;//上报所有群组
-    private static final int MSG_CHECK_APPKEY = 112;//检测key是否有效
-
+    private static final int MSG_GET_ALL_MESSAGES = 112;//上报所有群组
+    private static final int MSG_CHECK_APPKEY = 113;//检测key是否有效
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -100,6 +102,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 1000);
     }
 
     private void initView() {
@@ -324,7 +327,6 @@ public class MainActivity extends BaseActivity {
         }, 10000);
 
 //        Utils.updateUserStatus("18626318013", 2);
-
 //        ArrayList<AddFriend> requests = new ArrayList();
 //        AddFriend af = new AddFriend();
 //        af.phone = "18565808596";
@@ -334,10 +336,11 @@ public class MainActivity extends BaseActivity {
 
     public void test2(View v) {
 
-        Log.d("test", "" + Utils.isWifiProxy(this));
+        getAllMessages();
 
-//        getAllFriends();
 //        getAllGroups();
+//        Log.d("test", "" + Utils.isWifiProxy(this));
+//        getAllFriends();
 //        Platform.ShareParams sp = new Platform.ShareParams();
 //        sp.setText("sdfsadfasfdfdfadfs");
 //        sp.setShareType(Platform.SHARE_TEXT);
@@ -401,12 +404,30 @@ public class MainActivity extends BaseActivity {
 //                }
 //            }
 //        }.start();
+    }
 
+    private void getAllMessages() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String password = initDbPassword(getApplicationContext());
+                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages.db");
+                    ArrayList<Message> message = doGetMessages(getApplicationContext(), dbFile, password);
+                    //过滤掉已经发送的消息
+                    for (Message m : message){
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     public void sharePic(View view) {
         Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setImagePath("/mnt/sdcard/1520306782983.jpg");//1523179210665
+        sp.setImagePath("/mnt/sdcard/1520306782983.jpg");
         //sp.setText("sdfsadfasfdfdfadfs");
         sp.setShareType(Platform.SHARE_IMAGE);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
@@ -550,6 +571,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
                 mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_ALL_MESSAGES) {
+                mHandler.removeMessages(MSG_GET_ALL_MESSAGES);
+                getAllMessages();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
             }
 
         }
