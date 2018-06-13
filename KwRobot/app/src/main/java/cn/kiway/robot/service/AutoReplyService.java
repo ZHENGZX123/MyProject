@@ -139,6 +139,7 @@ import static cn.kiway.robot.util.Constant.UPDATE_FRIEND_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_NICKNAME_CMD;
+import static cn.kiway.robot.util.Constant.UPGRADE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
@@ -357,6 +358,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doActionCommand(String msg, Command command) {
+        if (command.cmd.equals(UPGRADE_CMD)) {
+            MainActivity.instance.checkNewVersion(null);
+            return;
+        }
         if (actions.size() < 1) {
             toast("需要至少有1个家长消息");
             sendMsgToServer2(500, command);
@@ -1019,9 +1024,7 @@ public class AutoReplyService extends AccessibilityService {
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
         } else if (action.actionType == TYPE_CHECK_NEW_VERSION) {
-            if (MainActivity.instance != null) {
-                MainActivity.instance.checkNewVersion(null);
-            }
+            MainActivity.instance.checkNewVersion(null);
         }
     }
 
