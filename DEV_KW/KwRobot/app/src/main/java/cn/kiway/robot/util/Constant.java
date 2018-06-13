@@ -27,13 +27,13 @@ public class Constant {
 
     static {
 
-//        host = "robot.kiway.cn";
-//        port = 5676;
-//        clientUrl = "http://robot.kiway.cn";
+        host = "robot.kiway.cn";
+        port = 5676;
+        clientUrl = "http://robot.kiway.cn";
 
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
 
     }
 
@@ -236,7 +236,6 @@ public class Constant {
         backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
 
-        
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
     }
@@ -251,5 +250,5 @@ public class Constant {
     public static final int SKILL_USE_NOTIFICATION = 0;
     public static final int SKILL_USE_DATABASE = 1;
     public static final int SKILL_USE_MIXED = 2;
-    public static int useSkill = SKILL_USE_MIXED;
+    public static int useSkill = SKILL_USE_NOTIFICATION;
 }
