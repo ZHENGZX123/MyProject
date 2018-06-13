@@ -29,7 +29,7 @@ public class RabbitMQUtils {
         this.queueName = queueName;
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(url);
-        if(port == null) {
+        if (port == null) {
             factory.setPort(5672);
         } else {
             factory.setPort(port.intValue());
@@ -46,7 +46,7 @@ public class RabbitMQUtils {
             this.channel = this.connection.createChannel();
             this.channel.basicQos(1);
             this.channel.exchangeDeclare("wx-reply-exchanger", "direct", true);
-            this.channel.queueDeclare(queueName, false, false, false, (Map)null);
+            this.channel.queueDeclare(queueName, false, false, false, (Map) null);
             this.channel.queueBind(queueName, "wx-reply-exchanger", routingKey);
         } catch (Exception var7) {
             var7.printStackTrace();
@@ -57,7 +57,7 @@ public class RabbitMQUtils {
     public RabbitMQUtils(String url, Integer port) {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(url);
-        if(port == null) {
+        if (port == null) {
             factory.setPort(5672);
         } else {
             factory.setPort(port.intValue());
@@ -86,7 +86,7 @@ public class RabbitMQUtils {
             channel = this.connection.createChannel();
             channel.basicQos(1);
             channel.exchangeDeclare("wx-reply-exchanger", "direct", true);
-            channel.queueDeclare(queueName, false, false, false, (Map)null);
+            channel.queueDeclare(queueName, false, false, false, (Map) null);
             channel.queueBind(queueName, "wx-reply-exchanger", routingKey);
         } catch (IOException var5) {
             var5.printStackTrace();
@@ -98,12 +98,12 @@ public class RabbitMQUtils {
 
     public void sendMsg(PushMessageVo vo, Channel channel) throws Exception {
         String msg = JSONObject.toJSONString(vo);
-        channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties)null, msg.getBytes());
+        channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties) null, msg.getBytes());
     }
 
 
     public void sendMsgs(String message, Channel channel) throws Exception {
-        channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties)null, message.getBytes());
+        channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties) null, message.getBytes());
         System.out.println("send message success....");
     }
 
@@ -117,7 +117,7 @@ public class RabbitMQUtils {
 
     public void close() {
         try {
-            if(this.connection != null) {
+            if (this.connection != null) {
                 this.connection.close();
             }
         } catch (Exception var2) {

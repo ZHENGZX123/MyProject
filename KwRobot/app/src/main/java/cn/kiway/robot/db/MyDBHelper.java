@@ -208,7 +208,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -218,6 +217,7 @@ import java.util.ArrayList;
 
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Group;
+import cn.kiway.robot.entity.Message;
 
 //易敏有接口了，数据库还用吗。
 public class MyDBHelper extends SQLiteOpenHelper {
@@ -229,21 +229,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_WX_PEOPLE
             + "   (id integer primary key autoincrement,  nickname text,  remark text , wxid text , wxno text)";
 
-    private static final String TABLE_WX_ROOM = "WX_ROOM";
-    private static final String CREATE_TABLE_WX_ROOM = " create table  IF NOT EXISTS "
-            + TABLE_WX_ROOM
-            + "   (id integer primary key autoincrement,  displayname text,  nickname text , roomowner text,wxid " +
-            "text,wxno text)";
-
     private static final String TABLE_ADDFRIEND = "AddFriend";
     private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
             + TABLE_ADDFRIEND
             + "   (id integer primary key autoincrement,  requesttime text , phone  text ,  remark text , status  text   ) ";
 
     private static final String TABLE_MESSAGE = "message";
-    private static final String CREATE_TABLE_MESSAGE = " create table  IF NOT EXISTS "
+    private static final String CREATE_TABLE_MESSAGE = " create table IF NOT EXISTS "
             + TABLE_MESSAGE
-            + "   (id integer primary key autoincrement,  content text , talker  text ,  createTime long , talkerType  integer ,isSend integer  ) ";
+            + "   (id integer primary key autoincrement,  talker text , remark text , content text , createTime text  ) ";
 
 
     private static final String TABLE_WX_GROUP = "WX_GROUP";
@@ -255,16 +249,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 10);
+        super(c, DB_NAME, null, 14);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_PEOPLE);
         db.execSQL(CREATE_TABLE_WX_PEOPLE);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_ROOM);
-        db.execSQL(CREATE_TABLE_WX_ROOM);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
@@ -280,7 +271,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
         db.execSQL(CREATE_TABLE_WX_PEOPLE);
-        db.execSQL(CREATE_TABLE_WX_ROOM);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_MESSAGE);
         db.execSQL(CREATE_TABLE_WX_GROUP);
@@ -327,51 +317,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return array;
     }
 
-    public void addWxRoom(JSONArray array) {
-        if (db == null)
-            db = getWritableDatabase();
-        db.delete(TABLE_WX_ROOM, null, null);
-        for (int i = 0; i < array.length(); i++) {
-            ContentValues values = new ContentValues();
-            JSONObject item = array.optJSONObject(i);
-            values.put("displayname", item.optString("displayname"));
-            values.put("nickname", item.optString("nickname"));
-            values.put("roomowner", item.optString("roomowner"));
-            values.put("wxid", item.optString("wxid"));
-            values.put("wxno", item.optString("wxno"));
-            String[] args = {item.optString("wxid")};
-            int ret = db.update(TABLE_WX_ROOM, values, "wxid=?", args);
-            if (ret == 0)
-                db.insert(TABLE_WX_ROOM, null, values);
-        }
-        db.close();
-    }
-
-    public JSONArray getWxRoom() {
-        if (db == null)
-            db = getWritableDatabase();
-        JSONArray array = new JSONArray();
-        Cursor cur = db.query(TABLE_WX_ROOM, null, null, null, null, null, null);
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            try {
-                JSONObject item = new JSONObject();
-                item.put("displayname", cur.getString(1));
-                item.put("nickname", cur.getString(2));
-                item.put("roomowner", cur.getString(3));
-                item.put("wxid", cur.getString(4));
-                item.put("wxno", cur.getString(5));
-                array.put(item);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        cur.close();
-        db.close();
-        return array;
-    }
-
     //-------------------------------AddFriend-----------------------------
-
     public ArrayList<AddFriend> getAllAddFriends() {
         if (db == null)
             db = getWritableDatabase();
@@ -484,34 +430,38 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addMessage(String content, String talker, long createTime, int talkerType, int isSend) {
+    //------------------------message------------------------------------
+    public void addMessage(String remark, String content, String createTime) {
         if (db == null)
             db = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("remark", remark);
         values.put("content", content);
-        values.put("talker", talker);
         values.put("createTime", createTime);
-        values.put("talkerType", talkerType);
-        values.put("isSend", isSend);
         db.insert(TABLE_MESSAGE, null, values);
         db.close();
     }
 
-    public void getMessages() {
+    public ArrayList<Message> getMessagesIn1Hour() {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_MESSAGE, null, null, null, null, null, null);
+        long current = System.currentTimeMillis();
+        long before1hour = current - 60 * 60 * 1000;
+        Cursor cur = db.query(TABLE_MESSAGE, null, "createTime>?", new String[]{before1hour + ""}, null, null, null);
+        ArrayList<Message> messages = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int id = cur.getInt(cur.getColumnIndex("id"));
+            String remark = cur.getString(cur.getColumnIndex("remark"));
             String content = cur.getString(cur.getColumnIndex("content"));
-            String talker = cur.getString(cur.getColumnIndex("talker"));
-            long createTime = cur.getLong(cur.getColumnIndex("createTime"));
-            int talkerType = cur.getInt(cur.getColumnIndex("talkerType"));
-            int isSend = cur.getInt(cur.getColumnIndex("isSend"));
-            Log.e("----", content + "" + talker + "" + createTime + "" + talkerType + "" + isSend);
+            String createTime = cur.getString(cur.getColumnIndex("createTime"));
+            Message m = new Message();
+            m.remark = remark;
+            m.content = content;
+            m.createTime = Long.parseLong(createTime);
+            messages.add(m);
         }
         cur.close();
         db.close();
+        return messages;
     }
 
     public void addWXGroup(Group group) {

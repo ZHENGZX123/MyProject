@@ -5,9 +5,11 @@ package cn.kiway.robot.entity;
  */
 
 public class Message {
-    public int type;
+
+    public int type;//1文字
     public long createTime;
-    public String talker;//nickname, remark
+    public String talker;
+    public String remark; //nickname, remark
     public String content;
 
     @Override
