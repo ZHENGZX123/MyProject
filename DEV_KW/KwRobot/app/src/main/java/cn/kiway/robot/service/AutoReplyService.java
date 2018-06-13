@@ -531,6 +531,8 @@ public class AutoReplyService extends AccessibilityService {
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsg(pushMessageVo, chanel);
 
+                    new MyDBHelper(getApplication()).addMessage(action.sender, action.content, System.currentTimeMillis() + "");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

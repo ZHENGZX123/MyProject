@@ -32,6 +32,7 @@ import java.util.Iterator;
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
 import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
@@ -102,7 +103,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
     }
 
     private void initView() {
@@ -407,16 +408,37 @@ public class MainActivity extends BaseActivity {
     }
 
     private void getAllMessages() {
+        if (AutoReplyService.instance == null) {
+            Log.d("test", "服务未开");
+            return;
+        }
         new Thread() {
             @Override
             public void run() {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages.db");
-                    ArrayList<Message> message = doGetMessages(getApplicationContext(), dbFile, password);
+                    ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password);
+                    ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn1Hour();
                     //过滤掉已经发送的消息
-                    for (Message m : message){
-
+                    for (Message m1 : wxMessages) {
+                        boolean send = false;
+                        for (Message m2 : sendMessages) {
+                            if (m1.remark.equals(m2.remark) && m1.content.equals(m2.content)) {
+                                send = true;
+                            }
+                        }
+                        Log.d("test", m1.remark + ":" + m1.content + "===>");
+                        if (send) {
+                            Log.d("test", "不需要补发该消息");
+                        } else {
+                            Log.d("test", "需要补发该消息");
+                            long id = System.currentTimeMillis();
+                            Action action = new Action();
+                            action.sender = m1.remark;
+                            action.content = m1.content;
+                            AutoReplyService.instance.sendMsgToServer(id, action);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

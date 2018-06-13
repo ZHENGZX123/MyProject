@@ -49,6 +49,7 @@ public class WeChatActivity extends BaseActivity {
     SharedPreferences sharedPreferences;
     EditText latitude, longitude;
     public static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +153,7 @@ public class WeChatActivity extends BaseActivity {
         ((Button) findViewById(R.id.wx)).setEnabled(false);
         new RunningTask().execute();
     }
+
     /**
      * 执行linux指令
      *
@@ -237,42 +239,6 @@ public class WeChatActivity extends BaseActivity {
             }
             wxPeopleList = new MyDBHelper(this).getWxPeople();
             Log.e("getWxPeople", wxPeopleList.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getWxRoom() {
-        try {
-            JSONObject jsonTask = new JSONObject();
-            jsonTask.put("type", 6);
-            jsonTask.put("taskid", System.currentTimeMillis());
-            jsonTask.put("content", new JSONObject());
-            jsonTask.getJSONObject("content").put("pageindex", 0);
-            jsonTask.getJSONObject("content").put("pagecount", 0);
-            jsonTask.getJSONObject("content").put("ismembers", 0);
-            String content = wToolSDK.sendTask(jsonTask.toString());
-            JSONObject jsonObject = new JSONObject(content);
-            Log.e("zzx", jsonObject.toString());
-            if (jsonObject.getInt("result") == 0) {
-                wxRoomList = jsonObject.getJSONArray("content");
-                for (int i = 0; i < wxRoomList.length(); i++) {
-                    JSONObject item = wxRoomList.getJSONObject(i);
-                    String displayname = wToolSDK.decodeValue(item.getString("displayname"));//解码
-                    String nickname = wToolSDK.decodeValue(item.getString("nickname"));
-                    String roomowner = wToolSDK.decodeValue(item.getString("roomowner"));
-                    String wxid = wToolSDK.decodeValue(item.getString("wxid"));
-                    String wxno = wToolSDK.decodeValue(item.getString("wxno"));
-                    item.put("displayname", displayname);//群名
-                    item.put("nickname", nickname);//备注
-                    item.put("roomowner", roomowner);//谁创建
-                    item.put("wxid", wxid);//微信id
-                    item.put("wxno", wxno);//微信号
-                    wxRoomList.put(i, item);
-                }
-                new MyDBHelper(this).addWxRoom(wxRoomList);
-            }
-            wxRoomList = new MyDBHelper(this).getWxRoom();
         } catch (Exception e) {
             e.printStackTrace();
         }

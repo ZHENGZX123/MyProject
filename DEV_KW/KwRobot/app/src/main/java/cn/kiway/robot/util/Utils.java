@@ -824,20 +824,26 @@ public class Utils {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             long current = System.currentTimeMillis();
             long before1hour = current - 60 * 60 * 1000;
-            String sql = "select message.msgId , message.type , message.createTime  ,rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
+            String sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);
             ArrayList<Message> messages = new ArrayList<>();
             while (c1.moveToNext()) {
                 int type = c1.getInt(c1.getColumnIndex("type"));
                 long createTime = c1.getLong(c1.getColumnIndex("createTime"));
+                String talker = c1.getString(c1.getColumnIndex("talker"));
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
                 String content = c1.getString(c1.getColumnIndex("content"));
+                //0613暂时只做个人发的消息
+                if (talker.endsWith("@chatroom")) {
+                    continue;
+                }
                 Message m = new Message();
                 m.type = type;
                 m.createTime = createTime;
-                m.talker = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
+                m.talker = talker;
+                m.remark = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
                 m.content = content;
                 messages.add(m);
             }
