@@ -484,6 +484,7 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
+    //家长发来的消息，发给服务器
     public synchronized void sendMsgToServer(long id, Action action) {
         new Thread() {
             @Override
@@ -541,6 +542,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    //后台操作命令，执行完后的回复
     public synchronized void sendMsgToServer2(int statusCode, Command command) {
         if (command.cmd.equals(CHAT_IN_GROUP_CMD)) {
             return;
@@ -642,6 +644,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    //群里发来的消息
     public synchronized void sendMsgToServer3(String clientGroupId, String sender, String message) {
         new Thread() {
             @Override

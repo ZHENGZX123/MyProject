@@ -249,4 +249,9 @@ public class Constant {
     public static final int MODE_YINGXIAO = 1;
     public static int workMode = MODE_KEFU;
 
+    //机器人工作原理
+    public static final int SKILL_USE_NOTIFICATION = 0;
+    public static final int SKILL_USE_DATABASE = 1;
+    public static final int SKILL_USE_MIXED = 2;
+    public static int useSkill = SKILL_USE_MIXED;
 }
