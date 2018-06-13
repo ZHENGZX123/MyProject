@@ -840,6 +840,7 @@ public class AutoReplyService extends AccessibilityService {
                     //自动加好友
                     if (content.endsWith("请求添加你为朋友")) {
                         action.actionType = TYPE_REQUEST_FRIEND;
+                        break;
                     }
                     //设置转发对象
                     else if (content.startsWith("设置转发对象：")) {
@@ -1552,22 +1553,26 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
-
+                //判断是否在通讯录的顶部
                 new Thread() {
                     @Override
                     public void run() {
                         try {
+                            while (!checkIsTongxunluTop()) {
+                                execRootCmdSilent("input swipe 360 300 360 900");
+                                sleep(3000);
+                            }
+                            //新的朋友
+                            clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
                             sleep(3000);
                             adding_missing_fish = true;
-                            resetMaxReleaseTime(30000 * 50 + 5000);
+                            resetMaxReleaseTime(30000 * 10 + 5000);
                             int tryCount = 0;
                             while (adding_missing_fish) {
                                 if (!actioningFlag) {
                                     break;
                                 }
-                                if (tryCount == 50) {
-                                    sleep(3000);
+                                if (tryCount == 10) {
                                     break;
                                 }
                                 int ret = hasAcceptButtonOrAddedTextView();
@@ -1577,17 +1582,18 @@ public class AutoReplyService extends AccessibilityService {
                                 } else if (ret == 2) {
                                     sleep(10000);
                                 } else if (ret == 3) {
-                                    sleep(3000);
                                     break;
                                 }
                             }
                             adding_missing_fish = false;
                             release(true);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }.start();
+
             }
         }, 3000);
     }
@@ -2092,13 +2098,6 @@ public class AutoReplyService extends AccessibilityService {
                                                                 mHandler.postDelayed(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        /*findTargetNode(NODE_TEXTVIEW, "消息免打扰", CLICK_NONE, true);
-                                                                        if (mFindTargetNode == null) {
-                                                                            release(false);
-                                                                            return;
-                                                                        }
-                                                                        clickSomeWhere(mFindTargetNode.getParent().getChild(1));*/
-
                                                                         findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
                                                                         if (mFindTargetNode == null) {
                                                                             release(false);
@@ -2418,54 +2417,54 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
-                        mHandler.postDelayed(new Runnable() {
+                        new Thread() {
                             @Override
                             public void run() {
-                                boolean find = findTargetNode(NODE_TEXTVIEW, "群聊", 1, true);
-                                if (!find) {
-                                    release(false);
-                                    return;
-                                }
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        findTargetNode(NODE_EDITTEXT, groupName);
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                findTargetNode(NODE_TEXTVIEW, groupName, CLICK_PARENT, false);
-                                                if (mFindTargetNode == null) {
-                                                    if (canRelease) {
-                                                        release(false);
-                                                    }
-                                                    return;
-                                                }
-                                                enterChatView(actionType, groupName);
-                                            }
-                                        }, 3000);
+                                try {
+                                    while (!checkIsTongxunluTop()) {
+                                        execRootCmdSilent("input swipe 360 300 360 900");
+                                        sleep(3000);
                                     }
-                                }, 3000);
+                                    //群聊
+                                    clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            boolean find = findTargetNode(NODE_TEXTVIEW, "群聊", 1, true);
+                                            if (!find) {
+                                                release(false);
+                                                return;
+                                            }
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    findTargetNode(NODE_EDITTEXT, groupName);
+                                                    mHandler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            findTargetNode(NODE_TEXTVIEW, groupName, CLICK_PARENT, false);
+                                                            if (mFindTargetNode == null) {
+                                                                if (canRelease) {
+                                                                    release(false);
+                                                                }
+                                                                return;
+                                                            }
+                                                            enterChatView(actionType, groupName);
+                                                        }
+                                                    }, 3000);
+                                                }
+                                            }, 3000);
+                                        }
+                                    }, 3000);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }, 3000);
+                        }.start();
                     }
                 }, 3000);
             }
         });
-    }
-
-    private boolean checkIsWxHomePage() {
-        weixin = false;
-        tongxunlu = false;
-        faxian = false;
-        wo = false;
-        tongxunluTextView = null;
-        woTextView = null;
-        faxianView = null;
-        checkIsWxHomePage(getRootInActiveWindow());
-        boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
-        Log.d("test", "isWxHomePage = " + isWxHomePage);
-        return isWxHomePage;
     }
 
     private void doSequeSendText() {
@@ -2489,16 +2488,44 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    private boolean qunliao;
+    private boolean biaoqian;
+    private boolean gongzhonghao;
+
+    private boolean checkIsTongxunluTop() {
+        qunliao = false;
+        biaoqian = false;
+        gongzhonghao = false;
+        doCheckPage(getRootInActiveWindow());
+        boolean isTongxunluTop = qunliao && biaoqian && gongzhonghao;
+        Log.d("test", "isTongxunluTop = " + isTongxunluTop);
+        return isTongxunluTop;
+    }
+
     private boolean weixin;
     private boolean tongxunlu;
     private boolean faxian;
     private boolean wo;
 
+    private boolean checkIsWxHomePage() {
+        weixin = false;
+        tongxunlu = false;
+        faxian = false;
+        wo = false;
+        tongxunluTextView = null;
+        woTextView = null;
+        faxianView = null;
+        doCheckPage(getRootInActiveWindow());
+        boolean isWxHomePage = weixin && tongxunlu && faxian && wo;
+        Log.d("test", "isWxHomePage = " + isWxHomePage);
+        return isWxHomePage;
+    }
+
     private AccessibilityNodeInfo tongxunluTextView;
     private AccessibilityNodeInfo woTextView;
     private AccessibilityNodeInfo faxianView;
 
-    private void checkIsWxHomePage(AccessibilityNodeInfo rootNode) {
+    private void doCheckPage(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) {
             return;
         }
@@ -2533,10 +2560,16 @@ public class AutoReplyService extends AccessibilityService {
                         } else {
                             toast("机器人的微信号和实际微信号不一致！！！");
                         }
+                    } else if (text.equals("群聊")) {
+                        qunliao = true;
+                    } else if (text.equals("标签")) {
+                        biaoqian = true;
+                    } else if (text.equals("公众号")) {
+                        gongzhonghao = true;
                     }
                 }
             }
-            checkIsWxHomePage(nodeInfo);
+            doCheckPage(nodeInfo);
         }
     }
 

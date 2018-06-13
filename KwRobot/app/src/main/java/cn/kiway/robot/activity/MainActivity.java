@@ -99,11 +99,11 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 100 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
+        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
     }
 
     private void initView() {
@@ -326,19 +326,12 @@ public class MainActivity extends BaseActivity {
                 AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
             }
         }, 10000);
-
-//        Utils.updateUserStatus("18626318013", 2);
-//        ArrayList<AddFriend> requests = new ArrayList();
-//        AddFriend af = new AddFriend();
-//        af.phone = "18565808596";
-//        requests.add(af);
-//        doRequestFriends(requests);
     }
 
     public void test2(View v) {
+        missingFish();
 
-        getAllMessages();
-
+//        getAllMessages();
 //        getAllGroups();
 //        Log.d("test", "" + Utils.isWifiProxy(this));
 //        getAllFriends();
@@ -347,15 +340,12 @@ public class MainActivity extends BaseActivity {
 //        sp.setShareType(Platform.SHARE_TEXT);
 //        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
 //        wx.share(sp);
-
 //        mHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
 //                AutoReplyService.instance.sendMiniProgramCode();
 //            }
 //        }, 10000);
-
-//        missingFish();
 //        getAllGroups(true);
 //        mHandler.postDelayed(new Runnable() {
 //            @Override
@@ -363,7 +353,6 @@ public class MainActivity extends BaseActivity {
 //                AutoReplyService.instance.test2();
 //            }
 //        }, 10000);
-
 //        AddFriend a = new MyDBHelper(getApplicationContext()).getAddFriendByRemark("11 10 执着");
 //        Log.d("test", "a  = " + a);
 //        ArrayList<AddFriend> afs = new MyDBHelper(getApplicationContext()).getAddFriends();
@@ -374,23 +363,13 @@ public class MainActivity extends BaseActivity {
 //        getAllFriends();
 //        addNearBy();
 //        missingFish();
-
 //        new MyDBHelper(getApplicationContext()).deleteAddFriends();
-//        getCellPhones();
-
-        //getAllFriends();
-//        getAllGroups();
 //        getGroupIdByName("啊啊啊");
-
-        // getAllGroups();
-
 //        ArrayList<AddFriend> afs = new MyDBHelper(this).getAllAddFriends();
 //        for (AddFriend af : afs) {
 //            Log.d("test", "af = " + af);
 //        }
-
 //        getAllFriends();
-
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -588,7 +567,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 missingFish();
-                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 24 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 30 * 60 * 1000);
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
