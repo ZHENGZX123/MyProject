@@ -19,10 +19,10 @@ import cn.kiway.mdm.activity.ResultActivity;
 import cn.kiway.mdm.entity.KnowledgePoint;
 import cn.kiway.mdm.entity.Question;
 import cn.kiway.mdm.entity.Student;
+import cn.kiway.mdm.mq.utils.RabbitMQUtils;
+import cn.kiway.mdm.mq.vo.PushMessageVo;
 import cn.kiway.mdm.util.Constant;
 import cn.kiway.mdm.util.Utils;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
-import cn.kiway.wx.reply.vo.PushMessageVo;
 import ly.count.android.api.Countly;
 
 import static cn.kiway.mdm.KWApplication.students;
@@ -191,7 +191,32 @@ public class ZbusHost {
             }
         }
     }
-
+    public static void qiangdaResult(Activity c, int result, String qiangdaStudentName,String qiangdaImei, final OnListener onListener) {
+        try {
+            String title = "抢答结果";
+            String userId = Utils.getIMEI(c);
+            String msg = new JSONObject().put("data", new JSONObject().put("command", "qiangdaResult").put("teacherUserId", userId).put("result", result).put("qiangdaStudentName", qiangdaStudentName).put("qiangdaImei",qiangdaImei).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
+            doSendMsg(c, title, userId, msg, students);
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onSuccess();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (onListener != null) {
+                c.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onListener.onFailure();
+                    }
+                });
+            }
+        }
+    }
     public static void qiangda(Activity c, ArrayList<Student> students, final OnListener onListener) {
         try {
             String title = "抢答";

@@ -50,6 +50,7 @@ import java.util.List;
 
 import cn.kiway.camera.AppConstant;
 import cn.kiway.mdm.KWApplication;
+import cn.kiway.mdm.mq.utils.RabbitMQUtils;
 import cn.kiway.mdm.service.RecordService;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.Logger;
@@ -60,7 +61,6 @@ import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
 import cn.kiway.mdm.zbus.ZbusHost;
 import cn.kiway.mdm.zbus.ZbusMessageHandler;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
