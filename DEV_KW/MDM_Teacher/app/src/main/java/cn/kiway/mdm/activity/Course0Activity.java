@@ -726,7 +726,7 @@ public class Course0Activity extends BaseActivity {
                 }
                 qiangdaStudentIMEI = studentIMEI;
                 //给他发送抢答成功
-                ZbusHost.qiangdaResult(Course0Activity.this, s, 1, qiangdaStudentIMEI, new OnListener() {
+                ZbusHost.qiangdaResult(Course0Activity.this,  1, getStudentByIMEI(qiangdaStudentIMEI).name,qiangdaStudentIMEI, new OnListener() {
                     @Override
                     public void onSuccess() {
                         toast("发送抢答命令成功");
@@ -749,6 +749,7 @@ public class Course0Activity extends BaseActivity {
                         toast("发送抢答命令失败");
                     }
                 });
+
             }
         });
     }

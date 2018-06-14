@@ -100,8 +100,8 @@ dependencies {
     compile 'ly.count:sdk-android:14.12'
     compile files('libs/amqp-client-4.1.0.jar')
     compile files('libs/fastjson-1.2.24.jar')
-    compile files('libs/logback-classic-1.1.11.jar')
-    compile files('libs/logback-core-1.1.11.jar')
-    compile files('libs/wx-reply-rabbitMQ-1.0-SNAPSHOT.jar')
-    compile files('libs/slf4j-api-1.7.25.jar')
+//    compile files('libs/logback-classic-1.1.11.jar')
+//    compile files('libs/logback-core-1.1.11.jar')
+//    compile files('libs/wx-reply-rabbitMQ-1.0-SNAPSHOT.jar')
+//    compile files('libs/slf4j-api-1.7.25.jar')
 }
