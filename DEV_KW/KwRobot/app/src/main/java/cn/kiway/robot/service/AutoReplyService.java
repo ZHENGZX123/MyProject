@@ -704,9 +704,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendReply20sLater(long id, Action action) {
-        if (workMode == MODE_YINGXIAO) {
-            return;
-        }
+//        if (workMode == MODE_YINGXIAO) {
+//            return;
+//        }
         String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
         String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
         if (TextUtils.isEmpty(busyStr) || TextUtils.isEmpty(offlineStr)) {
