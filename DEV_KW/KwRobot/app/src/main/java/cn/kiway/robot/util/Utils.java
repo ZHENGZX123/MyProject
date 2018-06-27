@@ -752,7 +752,7 @@ public class Utils {
         }
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+            String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
             Cursor c1 = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
             ArrayList<Friend> friends = new ArrayList<>();
             while (c1.moveToNext()) {
@@ -760,7 +760,6 @@ public class Utils {
                 String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
-
                 if (!wxNo.equals(alias)) {
                     friends.add(new Friend(nickname, conRemark, username, alias));
                 }

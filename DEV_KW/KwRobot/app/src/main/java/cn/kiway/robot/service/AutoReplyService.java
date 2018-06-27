@@ -3624,11 +3624,11 @@ public class AutoReplyService extends AccessibilityService {
     private void shareToWechatMoments(String content) {
         try {
             JSONObject contentO = new JSONObject(content);
-            String title = contentO.getString("title");
-            String describe = contentO.getString("description");
-            String imageUrl = contentO.getString("imgUrl");
-            String url = contentO.getString("url");
-            int type = contentO.getInt("type");
+            String title = contentO.optString("title");
+            String describe = contentO.optString("description");
+            String imageUrl = contentO.optString("imgUrl");
+            String url = contentO.optString("url");
+            int type = contentO.optInt("type");
             if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文

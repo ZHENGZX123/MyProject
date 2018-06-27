@@ -46,6 +46,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
+import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
@@ -71,17 +72,17 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_GET_QA = 105;
     private static final int MSG_GET_CELLPHONES = 106;//主动根据号码加好友
     private static final int MSG_GET_VALIDATION = 107;
-    private static final int MSG_ADD_NEARBY = 108;    //主动加附近的人
-    private static final int MSG_MISSING_FISH = 109;    //主动加附近的人
-    private static final int MSG_GET_ALL_FRIENDS = 110;//上报所有好友
-    private static final int MSG_GET_ALL_GROUPS = 111;//上报所有群组
-    private static final int MSG_GET_ALL_MESSAGES = 112;//上报所有群组
-    private static final int MSG_CHECK_APPKEY = 113;//检测key是否有效
+    private static final int MSG_GET_TRANSFER = 108;
+    private static final int MSG_ADD_NEARBY = 109;    //主动加附近的人
+    private static final int MSG_MISSING_FISH = 110;    //漏网之鱼
+    private static final int MSG_GET_ALL_FRIENDS = 111;//上报所有好友
+    private static final int MSG_GET_ALL_GROUPS = 112;//上报所有群组
+    private static final int MSG_GET_ALL_MESSAGES = 113;//上报所有群组
+    private static final int MSG_CHECK_APPKEY = 114;//检测key是否有效
 
     private TextView nameTV;
     private CheckBox getPic;
     private TextView versionTV;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessage(MSG_WELCOME);
         mHandler.sendEmptyMessage(MSG_GET_QA);
         mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
+        mHandler.sendEmptyMessage(MSG_GET_TRANSFER);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 10 * 60 * 1000);
@@ -287,6 +289,38 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
+    public void getTransfer() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    if (TextUtils.isEmpty(areaCode)) {
+                        toast("areaCode为空");
+                        return;
+                    }
+                    Log.d("test", "areaCode = " + areaCode);
+
+                    String url = clientUrl + "/static/download/version/exchange.json";
+                    Log.d("test", "url1 = " + url);
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                    Log.d("test", "getTransfer  = " + ret);
+                    JSONObject obj = new JSONObject(ret);
+                    String validation = obj.optString(areaCode);
+                    if (TextUtils.isEmpty(validation)) {
+                        validation = DEFAULT_TRANSFER;
+                    }
+                    getSharedPreferences("transfer", 0).edit().putString("transfer", validation).commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     public void getValidation() {
         new Thread() {
             @Override
@@ -329,12 +363,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        missingFish();
+//        missingFish();
 
 //        getAllMessages();
 //        getAllGroups();
 //        Log.d("test", "" + Utils.isWifiProxy(this));
-//        getAllFriends();
+        getAllFriends();
 //        Platform.ShareParams sp = new Platform.ShareParams();
 //        sp.setText("sdfsadfasfdfdfadfs");
 //        sp.setShareType(Platform.SHARE_TEXT);
@@ -547,6 +581,10 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_VALIDATION) {
                 mHandler.removeMessages(MSG_GET_VALIDATION);
                 getValidation();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_TRANSFER, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_TRANSFER) {
+                mHandler.removeMessages(MSG_GET_TRANSFER);
+                getTransfer();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_VALIDATION, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
@@ -637,17 +675,39 @@ public class MainActivity extends BaseActivity {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
                     ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+                    //1.上传
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Utils.uploadFriend(getApplication(), friends);
                         }
                     });
+                    //2.检查有没有转发使者
+                    checkTransfer(friends);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+    }
+
+    private void checkTransfer(ArrayList<Friend> friends) {
+        String transfer = getSharedPreferences("transfer", 0).getString("transfer", DEFAULT_TRANSFER);
+
+        boolean hasTransfer = false;
+        for (Friend f : friends) {
+            String wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
+            if (wxNo.equals(transfer)) {
+                hasTransfer = true;
+            }
+        }
+        Log.d("test", "hasTransfer = " + hasTransfer);
+        if (hasTransfer) {
+            return;
+        }
+        ArrayList<String> requests = new ArrayList<>();
+        requests.add(transfer);
+        doRequestFriends(requests);
     }
 
     private void getAllGroups() {
