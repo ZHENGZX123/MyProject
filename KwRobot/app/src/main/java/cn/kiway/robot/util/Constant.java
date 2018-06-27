@@ -26,15 +26,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
+        host = "robot.kiway.cn";
+        port = 5676;
+        clientUrl = "http://robot.kiway.cn";
 
-//        host = "robot.kiway.cn";
-//        port = 5676;
-//        clientUrl = "http://robot.kiway.cn";
-
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
-
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -75,6 +73,8 @@ public class Constant {
 
     public static final String DEFAULT_VALIDATION = "您好，可以加个好友吗？";
 
+    public static final String DEFAULT_TRANSFER = "harry_wu2886";
+
     public static final String DEFAULT_WELCOME = "感谢您添加招生客服机器人，您可以按以下序号或关键字发送咨询招生相关问题，谢谢！\n" +
             "1、计生证明或者计划生育证明\n" +
             "2、租房或者住房\n" +
@@ -86,8 +86,6 @@ public class Constant {
 
     public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
     public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下序号或关键字咨询：";
-
-    public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";
 
     public static final String SEND_FRIEND_CIRCLE_CMD = "sendFriendCircleCmd";
     public static final String SEND_FRIEND_CIRCLE_REPLY_CMD = "sendFriendCircleReplyCmd";
@@ -126,7 +124,7 @@ public class Constant {
     public static final String AT_PERSONS_REPLY_CMD = "atPersonsReplyCmd";
     public static final String UPGRADE_CMD = "upgradeCmd";
     public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
-
+    public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";//没有做
 
     public static Map<String, String> replies = new HashMap<>();
 
