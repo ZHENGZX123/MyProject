@@ -104,6 +104,7 @@ import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.entity.AddFriend.STATUS_NOT_EXISTED;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.AT_PERSONS_CMD;
+import static cn.kiway.robot.util.Constant.AUTO_REPLY_CONTENT_CMD;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
@@ -310,7 +311,7 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                     if (o.has("clientGroupId")) {
-                        //在群里发消息。。。
+                        //在群里发消息，这个没有cmd，偷懒了。。。
                         String clientGroupId = o.optString("clientGroupId");
                         Group g = new MyDBHelper(getApplicationContext()).getGroupById(clientGroupId);
                         if (g == null) {
@@ -359,6 +360,11 @@ public class AutoReplyService extends AccessibilityService {
     private void doActionCommand(String msg, Command command) {
         if (command.cmd.equals(UPGRADE_CMD)) {
             MainActivity.instance.checkNewVersion(null);
+            return;
+        }
+        if (command.cmd.equals(AUTO_REPLY_CONTENT_CMD)) {
+            //getSharedPreferences("busy", 0).edit().putString("busy", ).commit();
+            //getSharedPreferences("offline", 0).edit().putString("offline", ).commit();
             return;
         }
         if (actions.size() < 1) {
@@ -695,6 +701,12 @@ public class AutoReplyService extends AccessibilityService {
         if (workMode == MODE_YINGXIAO) {
             return;
         }
+        String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
+        String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
+        if (TextUtils.isEmpty(busyStr) || TextUtils.isEmpty(offlineStr)) {
+            return;
+        }
+
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
 
@@ -707,14 +719,14 @@ public class AutoReplyService extends AccessibilityService {
             int busyCount = (i == null) ? 0 : i;
             Log.d("test", "action.sender = " + action.sender + " ，busyCount = " + busyCount);
             if (busyCount < 3) {
-                hint = DEFAULT_BUSY;
+                hint = busyStr;
                 busyCountMap.put(action.sender, busyCount + 1);
             } else {
                 hint = welcome.replace(welcomeTitle, "客服正忙，您可以发送以下序号或关键字咨询：");
                 busyCountMap.put(action.sender, 0);
             }
         } else {
-            hint = DEFAULT_OFFLINE + welcome.replace(welcomeTitle, "");
+            hint = offlineStr;
         }
         Log.d("test", "hint = " + hint);
         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -1041,9 +1053,15 @@ public class AutoReplyService extends AccessibilityService {
         boolean find2 = findTargetNode(NODE_BUTTON, "立即安装|下载安装", CLICK_NONE, true);
         if (find1 && find2) {
             findTargetNode(NODE_BUTTON, "取消", CLICK_SELF, false);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    findTargetNode(NODE_TEXTVIEW, "是", CLICK_SELF, true);
+                }
+            }, 2000);
         }
 
-        //2、TODO微信封号弹出框、退到登录页面
+        //2、微信封号弹出框、退到登录页面
         boolean find3 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
         boolean find4 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);
         boolean find5 = findTargetNode(NODE_BUTTON, "更多", CLICK_NONE, true);
@@ -3527,7 +3545,7 @@ public class AutoReplyService extends AccessibilityService {
 
                 Log.d("test", "sendFileOnly");
                 Platform.ShareParams sp = new Platform.ShareParams();
-                sp.setTitle("文件");
+                sp.setTitle(fileName);
                 sp.setFilePath(savedFilePath);
                 sp.setImagePath(KWApplication.defaultFile);
                 sp.setShareType(Platform.SHARE_FILE);

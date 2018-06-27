@@ -27,13 +27,13 @@ public class Constant {
 
     static {
 
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
 
     }
 
@@ -83,8 +83,8 @@ public class Constant {
             "5、网上报名\n" +
             "6、验核材料\n" +
             "7、录取\n";
-    public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
 
+    public static final String DEFAULT_BUSY = "因为咨询人员较多，客服正忙，请耐心等待。";
     public static final String DEFAULT_OFFLINE = "客服已下线，请于工作时间8：30-22：00再咨询，或者您可以发送以下序号或关键字咨询：";
 
     public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";
@@ -125,6 +125,7 @@ public class Constant {
     public static final String AT_PERSONS_CMD = "atPersonsCmd";
     public static final String AT_PERSONS_REPLY_CMD = "atPersonsReplyCmd";
     public static final String UPGRADE_CMD = "upgradeCmd";
+    public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
 
 
     public static Map<String, String> replies = new HashMap<>();
@@ -241,7 +242,7 @@ public class Constant {
     }
 
 
-    //机器人工作模式
+    //机器人工作模式：客服模式、营销模式
     public static final int MODE_KEFU = 0;
     public static final int MODE_YINGXIAO = 1;
     public static int workMode = MODE_KEFU;
