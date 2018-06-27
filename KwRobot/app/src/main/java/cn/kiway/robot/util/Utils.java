@@ -302,7 +302,7 @@ public class Utils {
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             //消费消费
                             String msg = new String(body, "utf-8");
-                            System.out.println("consume msg: " + msg);
+                            Log.d("test", "handleDelivery msg = " + msg);
                             //处理逻辑
                             if (AutoReplyService.instance != null) {
                                 AutoReplyService.instance.sendReplyImmediately(msg, false);
