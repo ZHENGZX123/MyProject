@@ -363,8 +363,14 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
         if (command.cmd.equals(AUTO_REPLY_CONTENT_CMD)) {
-            //getSharedPreferences("busy", 0).edit().putString("busy", ).commit();
-            //getSharedPreferences("offline", 0).edit().putString("offline", ).commit();
+            try {
+                String busyContent = new JSONObject(msg).optString("busyContent");
+                String offlineContent = new JSONObject(msg).optString("offlineContent");
+                getSharedPreferences("busy", 0).edit().putString("busy", busyContent).commit();
+                getSharedPreferences("offline", 0).edit().putString("offline", offlineContent).commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return;
         }
         if (actions.size() < 1) {
