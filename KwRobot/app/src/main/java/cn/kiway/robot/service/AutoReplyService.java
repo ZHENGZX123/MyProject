@@ -181,7 +181,6 @@ public class AutoReplyService extends AccessibilityService {
     private ArrayList<AccessibilityNodeInfo> peoples = new ArrayList<>();
 
     private final Object object = new Object();
-    private int checkCount;
 
     @Override
     public void onCreate() {
@@ -858,7 +857,6 @@ public class AutoReplyService extends AccessibilityService {
                     //自动加好友
                     if (content.endsWith("请求添加你为朋友")) {
                         action.actionType = TYPE_REQUEST_FRIEND;
-                        break;
                     }
                     //设置转发对象
                     else if (content.startsWith("设置转发对象：")) {
@@ -1049,10 +1047,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void checkWechatExceptionStatus() {
-        checkCount++;
-        if (checkCount % 20 != 0) {
-            return;
-        }
         Log.d("test", "checkWechatExceptionStatus");
         //1、微信更新弹出框
         boolean find1 = findTargetNode(NODE_BUTTON, "取消", CLICK_NONE, false);
@@ -1063,10 +1057,10 @@ public class AutoReplyService extends AccessibilityService {
                 @Override
                 public void run() {
                     findTargetNode(NODE_TEXTVIEW, "是", CLICK_SELF, true);
+                    findTargetNode(NODE_BUTTON, "是", CLICK_SELF, true);
                 }
             }, 2000);
         }
-
         //2、微信封号弹出框、退到登录页面
         boolean find3 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
         boolean find4 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);
