@@ -124,7 +124,7 @@ public class Constant {
     public static final String AT_PERSONS_REPLY_CMD = "atPersonsReplyCmd";
     public static final String UPGRADE_CMD = "upgradeCmd";
     public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
-    public static final String CLENA_FRIEND_CMD = "cleanFriendCmd";//没有做
+    public static final String AUTO_REPLY_CONTENT_REPLY_CMD = "autoReplyContentReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -146,6 +146,7 @@ public class Constant {
         replies.put(DELETE_GROUP_CMD, DELETE_GROUP_REPLY_CMD);
         replies.put(SEND_BATCH_CMD, SEND_BATCH_REPLY_CMD);
         replies.put(AT_PERSONS_CMD, AT_PERSONS_REPLY_CMD);
+        replies.put(AUTO_REPLY_CONTENT_CMD, AUTO_REPLY_CONTENT_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -238,12 +239,6 @@ public class Constant {
         backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
         backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
     }
-
-
-    //机器人工作模式：客服模式、营销模式
-    public static final int MODE_KEFU = 0;
-    public static final int MODE_YINGXIAO = 1;
-    public static int workMode = MODE_YINGXIAO;
 
     //机器人工作原理
     public static final int SKILL_USE_NOTIFICATION = 0;

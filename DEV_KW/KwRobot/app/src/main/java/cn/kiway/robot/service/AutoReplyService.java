@@ -121,7 +121,6 @@ import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
-import static cn.kiway.robot.util.Constant.MODE_YINGXIAO;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
@@ -144,7 +143,6 @@ import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
-import static cn.kiway.robot.util.Constant.workMode;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.getParentRemark;
@@ -362,6 +360,7 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
         if (command.cmd.equals(AUTO_REPLY_CONTENT_CMD)) {
+            Log.d("test", "AUTO_REPLY_CONTENT_CMD");
             try {
                 String busyContent = new JSONObject(msg).optString("busyContent");
                 String offlineContent = new JSONObject(msg).optString("offlineContent");
@@ -370,6 +369,7 @@ public class AutoReplyService extends AccessibilityService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            sendMsgToServer2(200, command);
             return;
         }
         if (actions.size() < 1) {
@@ -703,9 +703,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendReply20sLater(long id, Action action) {
-//        if (workMode == MODE_YINGXIAO) {
-//            return;
-//        }
         String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
         String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
         if (TextUtils.isEmpty(busyStr) || TextUtils.isEmpty(offlineStr)) {
@@ -879,8 +876,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     actions.put(id, action);
 
-                    if (action.actionType == TYPE_TEXT && workMode == MODE_YINGXIAO) {
-                        Log.d("test", "MODE_YINGXIAO");
+                    if (action.actionType == TYPE_TEXT) {
                         preActions.add(action);
                     } else {
                         dispatchAction(id, action);
