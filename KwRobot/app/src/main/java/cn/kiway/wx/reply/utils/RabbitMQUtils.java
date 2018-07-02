@@ -99,6 +99,7 @@ public class RabbitMQUtils {
     public void sendMsg(PushMessageVo vo, Channel channel) throws Exception {
         String msg = JSONObject.toJSONString(vo);
         channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties) null, msg.getBytes());
+        System.out.println("send message success....");
     }
 
 
