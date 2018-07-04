@@ -1068,6 +1068,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+
     private void doActionCommandByType(int actionType) {
         try {
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -3518,7 +3519,7 @@ public class AutoReplyService extends AccessibilityService {
         sp.setText("视频");
         sp.setTitle("视频");
         sp.setUrl(actions.get(currentActionID).returnMessages.get(0).content);
-        sp.setImagePath(KWApplication.defaultVideo);
+        sp.setImagePath(KWApplication.defaultVideoIcon);
         sp.setShareType(Platform.SHARE_VIDEO);
         Platform wx = ShareSDK.getPlatform(Wechat.NAME);
         wx.share(sp);
@@ -3543,7 +3544,19 @@ public class AutoReplyService extends AccessibilityService {
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setTitle(fileName);
                 sp.setFilePath(savedFilePath);
-                sp.setImagePath(KWApplication.defaultFile);
+                String imagePath = KWApplication.defaultFileIcon;
+                if (fileName.toLowerCase().endsWith("ppt") || fileName.toLowerCase().endsWith("pptx")) {
+                    imagePath = KWApplication.defaultPPTIcon;
+                } else if (fileName.toLowerCase().endsWith("pdf")) {
+                    imagePath = KWApplication.defaultPDFIcon;
+                } else if (fileName.toLowerCase().endsWith("doc") || fileName.toLowerCase().endsWith("docx")) {
+                    imagePath = KWApplication.defaultWordIcon;
+                } else if (fileName.toLowerCase().endsWith("xls") || fileName.toLowerCase().endsWith("xlsx")) {
+                    imagePath = KWApplication.defaultXlsIcon;
+                } else if (fileName.toLowerCase().endsWith("zip") || fileName.toLowerCase().endsWith("rar")) {
+                    imagePath = KWApplication.defaultZIPIcon;
+                }
+                sp.setImagePath(imagePath);
                 sp.setShareType(Platform.SHARE_FILE);
                 Platform wx = ShareSDK.getPlatform(Wechat.NAME);
                 wx.share(sp);

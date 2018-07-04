@@ -38,8 +38,13 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 public class KWApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
-    public static String defaultFile = ROOT + "/downloads/file.png";
-    public static String defaultVideo = ROOT + "/downloads/video.png";
+    public static String defaultVideoIcon = ROOT + "/downloads/video.png";
+    public static String defaultFileIcon = ROOT + "/downloads/file.png";
+    public static String defaultPPTIcon = ROOT + "/downloads/ppt.png";
+    public static String defaultPDFIcon = ROOT + "/downloads/pdf.png";
+    public static String defaultWordIcon = ROOT + "/downloads/word.png";
+    public static String defaultXlsIcon = ROOT + "/downloads/xls.png";
+    public static String defaultZIPIcon = ROOT + "/downloads/zip.png";
 
     public static RabbitMQUtils rabbitMQUtils;
     public static List<Channel> channels = new ArrayList<>();
@@ -53,8 +58,16 @@ public class KWApplication extends Application {
         MobSDK.init(this);
         CrashHandler.getInstance().init(this);
         //UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "5b04d09ff29d98114400000d");
+
+
         saveDefaultFile("file.png", R.mipmap.file);
         saveDefaultFile("video.png", R.mipmap.video);
+        saveDefaultFile("ppt.png", R.mipmap.ppt);
+        saveDefaultFile("pdf.png", R.mipmap.pdf);
+        saveDefaultFile("word.png", R.mipmap.word);
+        saveDefaultFile("xls.png", R.mipmap.xls);
+        saveDefaultFile("zip.png", R.mipmap.zip);
+
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

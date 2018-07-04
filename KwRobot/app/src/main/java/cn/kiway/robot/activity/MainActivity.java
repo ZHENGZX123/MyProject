@@ -503,14 +503,14 @@ public class MainActivity extends BaseActivity {
         //朋友圈
 //        Platform.ShareParams sp = new Platform.ShareParams();
 //        sp.setText("fdsafdsafsdaf");
-//        sp.setImageArray(new String[]{KWApplication.defaultVideo, KWApplication.defaultFile});
+//        sp.setImageArray(new String[]{KWApplication.defaultVideoIcon, KWApplication.defaultFileIcon});
 //        sp.setShareType(Platform.SHARE_IMAGE);
 //        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
 //        wx.share(sp);
 
         ArrayList<File> files = new ArrayList<>();
-        files.add(new File(KWApplication.defaultFile));
-        files.add(new File(KWApplication.defaultVideo));
+        files.add(new File(KWApplication.defaultFileIcon));
+        files.add(new File(KWApplication.defaultVideoIcon));
 
         Intent intent = new Intent();
         ComponentName comp = new ComponentName("com.tencent.mm",
