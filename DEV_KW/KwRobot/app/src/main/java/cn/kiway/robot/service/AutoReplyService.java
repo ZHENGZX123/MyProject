@@ -333,7 +333,9 @@ public class AutoReplyService extends AccessibilityService {
                         Log.d("test", "action null , doFindAUsableAction");
                         doFindAUsableAction(o);
                     } else {
-                        if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.contains("客服正忙") || recv.msg.contains("客服已下线"))) {
+                        String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
+                        String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
+                        if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.equals(busyStr) || recv.msg.equals(offlineStr))) {
                             Log.d("test", "action.replied");
                             return;
                         }
