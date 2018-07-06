@@ -744,12 +744,6 @@ public class Utils {
     }
 
     public static ArrayList<Friend> doGetFriends(Context c, File dbFile, String password) {
-        if (dbFile == null) {
-            return null;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return null;
-        }
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
@@ -776,12 +770,6 @@ public class Utils {
 
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password, String groupName) {
         Log.d("test", "doGetGroups");
-        if (dbFile == null) {
-            return null;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return null;
-        }
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             Cursor c1 = null;
@@ -813,12 +801,6 @@ public class Utils {
 
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
         Log.d("test", "doGetMessages");
-        if (dbFile == null) {
-            return null;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return null;
-        }
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             long current = System.currentTimeMillis();
@@ -858,12 +840,6 @@ public class Utils {
 
     public static ArrayList<String> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
         Log.d("test", "doGetGroups");
-        if (dbFile == null) {
-            return null;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return null;
-        }
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String sql = "select  displayname  from chatroom where chatroomname = '" + clientGroupId + "'";
@@ -961,9 +937,6 @@ public class Utils {
 
     public static ArrayList<String> doGetMoments(Context c, File dbFile) {
         Log.d("test", "doGetMoments");
-        if (dbFile == null) {
-            return null;
-        }
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, null);
             String sql = "select  *  from SnsInfo ";

@@ -83,6 +83,7 @@ public class MainActivity extends BaseActivity {
     private TextView nameTV;
     private CheckBox getPic;
     private TextView versionTV;
+    private int friendCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -639,6 +640,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void missingFish() {
+        if (friendCount > 4900) {
+            toast("好友已经到上限了");
+            return;
+        }
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", FORGET_FISH_CMD);
@@ -675,6 +680,7 @@ public class MainActivity extends BaseActivity {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
                     ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+                    friendCount  = friends.size();
                     //1.上传
                     runOnUiThread(new Runnable() {
                         @Override

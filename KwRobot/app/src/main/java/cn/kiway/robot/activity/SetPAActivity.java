@@ -13,7 +13,7 @@ import cn.kiway.robot.R;
  * Created by Administrator on 2018/4/9.
  */
 
-public class SetPublicAccountActivity extends BaseActivity {
+public class SetPAActivity extends BaseActivity {
 
     private EditText forwardfromET;
     private EditText sendContentET;
@@ -22,7 +22,7 @@ public class SetPublicAccountActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_publicaccount);
+        setContentView(R.layout.activity_set_pa);
         forwardfromET = (EditText) findViewById(R.id.forwardfromET);
         String forwardfrom = getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");
         forwardfromET.setText(forwardfrom);
