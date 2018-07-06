@@ -369,7 +369,7 @@ public class MainActivity extends BaseActivity {
 //        getAllMessages();
 //        getAllGroups();
 //        Log.d("test", "" + Utils.isWifiProxy(this));
-        getAllFriends();
+//        getAllFriends();
 //        Platform.ShareParams sp = new Platform.ShareParams();
 //        sp.setText("sdfsadfasfdfdfadfs");
 //        sp.setShareType(Platform.SHARE_TEXT);
