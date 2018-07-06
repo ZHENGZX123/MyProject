@@ -335,7 +335,7 @@ public class AutoReplyService extends AccessibilityService {
                     } else {
                         String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
                         String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
-                        if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.equals(busyStr) || recv.msg.equals(offlineStr))) {
+                        if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.contains(busyStr) || recv.msg.contains(offlineStr))) {
                             Log.d("test", "action.replied");
                             return;
                         }
@@ -2661,6 +2661,7 @@ public class AutoReplyService extends AccessibilityService {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         JSONObject o = new JSONObject(content);
                         String text = o.optString("message");
+                        Log.d("test", "text = " + text);
                         sendTextOnly(text, true);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -3423,10 +3424,13 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendTextOnly(String reply, boolean release) {
+        reply = reply.replace("<br />", "\n");
+        String finalReply = reply;
+        Log.d("test", "sendTextOnly finalReply = " + finalReply);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetNode(NODE_EDITTEXT, reply);
+                boolean find = findTargetNode(NODE_EDITTEXT, finalReply);
                 if (!find) {
                     return;
                 }

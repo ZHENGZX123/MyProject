@@ -92,6 +92,9 @@ dependencies {
     //rabbitMQ
     compile files('libs/fastjson-1.2.47.jar')
     compile files('libs/amqp-client-4.1.0.jar')
+    compile files('libs/logback-classic-1.1.11.jar')
+    compile files('libs/logback-core-1.1.11.jar')
+    compile files('libs/slf4j-api-1.7.25.jar')
     //xposed相关
     //compile files('libs/wtoolsdk.jar')
     //provided 'de.robv.android.xposed:api:82'
@@ -99,4 +102,5 @@ dependencies {
     //破解wechat数据库
     compile files('libs/dom4j-1.6.1.jar')
     compile 'net.zetetic:android-database-sqlcipher:3.5.4@aar'
+
 }

@@ -19,8 +19,6 @@ public class Constant {
     public static Integer port = 0;
     public static String clientUrl = "";
 
-    public static final String testImage = "http://upload.jnwb.net/2014/0311/1394514005639.jpg";
-
     public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
     public static final String HOUTAI = "开维后台";
     public static final String PASSWORD = "kiwayedukiway123";

@@ -66,7 +66,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
         <activity
-            android:name=".activity.SetPublicAccountActivity"
+            android:name=".activity.SetPAActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
@@ -114,16 +114,6 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="xposedmodule"
-            android:value="true" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="@string/app_name" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="54" />
 
         <receiver android:name=".receiver.MyBroadcastReceiver">
             <intent-filter>
