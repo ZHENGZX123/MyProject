@@ -1136,7 +1136,11 @@ public class AutoReplyService extends AccessibilityService {
                             toast("该群不存在或已经被删除");
                             return;
                         }
-                        searchTargetInWxGroupPage(actionType, g.groupName, true);
+                        if (actionType == TYPE_GROUP_CHAT) {
+                            groupchat2(g.groupName);
+                        } else {
+                            searchTargetInWxGroupPage(actionType, g.groupName, true);
+                        }
                     } else if (actionType == TYPE_DELETE_FRIEND) {
                         startDeleteFriend(members);
                     } else if (actionType == TYPE_GROUP_SEND_HELPER) {
@@ -1159,18 +1163,58 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    private void groupchat2(String groupName) {
+        Log.d("test", "groupchat2");
+        //用分享去做
+        try {
+            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            Log.d("test", "content = " + content);
+            actions.get(currentActionID).sender = groupName;
+            JSONObject o = new JSONObject(content);
+            String message = o.getString("message");
+            int type = o.getInt("type");
+            if (type == 1) {//文本
+                Platform.ShareParams sp = new Platform.ShareParams();
+                sp.setText(message);
+                sp.setShareType(Platform.SHARE_TEXT);
+                Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+                wx.share(sp);
+                doShareToWechatFriend();
+            } else if (type == 3) {//图片url=text
+                new Thread() {
+                    @Override
+                    public void run() {
+                        sendImageOnly(message, false);
+                    }
+                }.start();
+            } else if (type == 52) {//链接
+                JSONObject contentO = new JSONObject(message);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        sendLinkOnly(contentO.toString(), false);
+                    }
+                }.start();
+            } else if (type == 50) { //文件
+                JSONObject contentO = new JSONObject(message);
+                sendFileOnly(contentO.getString("content"), contentO.getString("fileName"), false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            release(false);
+        }
+    }
+
     private void sendBatchMessage2() {
         Log.d("test", "sendBatchMessage2");
         //用分享去做
         try {
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
             Log.d("test", "content = " + content);
-            JSONArray receivers = new JSONObject(content).optJSONArray("receivers");
             JSONArray messages = new JSONObject(content).optJSONArray("messages");
             int type = messages.getJSONObject(0).getInt("type");
             String text = messages.getJSONObject(0).getString("content");
             if (type == 1) {//文本
-
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setText(text);
                 sp.setShareType(Platform.SHARE_TEXT);
@@ -1193,8 +1237,8 @@ public class AutoReplyService extends AccessibilityService {
                         sendLinkOnly(contentO.toString(), true);
                     }
                 }.start();
-            } else if (type == 4) { //文件
-                sendFileOnly("url", "fileName", true);
+            } else if (type == 4) {
+                //FIXME 郑群还没做到。
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -2655,34 +2699,6 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }
                     }, 2000);
-                } else if (actionType == TYPE_GROUP_CHAT) {
-                    //TODO 文字的跳进来发，其他的走分享
-                    try {
-                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                        JSONObject o = new JSONObject(content);
-                        String text = o.optString("message");
-                        Log.d("test", "text = " + text);
-                        sendTextOnly(text, true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (actionType == TYPE_SEND_BATCH) {
-                    //TODO 文字的跳进来发，其他的走分享
-                    try {
-                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                        Log.d("test", "content = " + content);
-                        JSONArray messages = new JSONObject(content).optJSONArray("messages");
-                        content = messages.getJSONObject(0).getString("content");
-                        sendTextOnly(content, false);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                backToWechatHomePage();
-                            }
-                        }, 3000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
