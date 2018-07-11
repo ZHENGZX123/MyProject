@@ -801,6 +801,7 @@ public class Utils {
 
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
         Log.d("test", "doGetMessages");
+        ArrayList<Message> messages = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             long current = System.currentTimeMillis();
@@ -808,7 +809,6 @@ public class Utils {
             String sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);
-            ArrayList<Message> messages = new ArrayList<>();
             while (c1.moveToNext()) {
                 int type = c1.getInt(c1.getColumnIndex("type"));
                 long createTime = c1.getLong(c1.getColumnIndex("createTime"));
@@ -831,11 +831,11 @@ public class Utils {
             Log.d("test", "messages = " + messages);
             c1.close();
             db.close();
-            return messages;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return messages;
     }
 
     public static ArrayList<String> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
