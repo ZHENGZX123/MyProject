@@ -1,10 +1,8 @@
 package cn.kiway.robot.activity;
 
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -25,9 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
@@ -38,7 +34,6 @@ import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.service.AutoReplyService;
-import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.sharesdk.framework.Platform;
@@ -48,11 +43,9 @@ import cn.sharesdk.wechat.friends.Wechat;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
-import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.clientUrl;
-import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.doGetMessages;
@@ -68,11 +61,9 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_OK = 101;
     public static final int MSG_NETWORK_ERR = 102;
     private static final int MSG_UPGRADE = 103;
-    private static final int MSG_WELCOME = 104;
-    private static final int MSG_GET_QA = 105;
-    private static final int MSG_GET_CELLPHONES = 106;//主动根据号码加好友
-    private static final int MSG_GET_VALIDATION = 107;
-    private static final int MSG_GET_TRANSFER = 108;
+    private static final int MSG_GET_BASEDATA = 104;
+
+    private static final int MSG_GET_CELLPHONES = 106;
     private static final int MSG_ADD_NEARBY = 109;    //主动加附近的人
     private static final int MSG_MISSING_FISH = 110;    //漏网之鱼
     private static final int MSG_GET_ALL_FRIENDS = 111;//上报所有好友
@@ -96,10 +87,7 @@ public class MainActivity extends BaseActivity {
         Utils.installationPush(getApplication());
 
         mHandler.sendEmptyMessage(MSG_UPGRADE);
-        mHandler.sendEmptyMessage(MSG_WELCOME);
-        mHandler.sendEmptyMessage(MSG_GET_QA);
-        mHandler.sendEmptyMessage(MSG_GET_VALIDATION);
-        mHandler.sendEmptyMessage(MSG_GET_TRANSFER);
+        mHandler.sendEmptyMessage(MSG_GET_BASEDATA);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 10 * 60 * 1000);
@@ -217,141 +205,8 @@ public class MainActivity extends BaseActivity {
         finish();
     }
 
-    private void getQA() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String url = clientUrl + "/static/download/version/lmhf.json";
-                    Log.d("test", "url = " + url);
-                    HttpGet httpRequest = new HttpGet(url);
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
-                    Log.d("test", "getQA  = " + ret);
-                    JSONObject obj = new JSONObject(ret);
-                    Iterator<String> sIterator = obj.keys();
-                    while (sIterator.hasNext()) {
-                        String key = sIterator.next();
-                        String value = obj.getString(key);
-                        Constant.qas.put(key, value);
-                    }
-                    Log.d("test", "qas size = " + qas.size());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
+    public void getBaseData() {
 
-    public void getWelcome() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                    if (TextUtils.isEmpty(areaCode)) {
-                        toast("areaCode为空");
-                        return;
-                    }
-                    Log.d("test", "areaCode = " + areaCode);
-
-                    String url = clientUrl + "/static/download/version/subscribe.json";
-                    Log.d("test", "url1 = " + url);
-                    HttpGet httpRequest = new HttpGet(url);
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
-                    Log.d("test", "getWelcomeTitle  = " + ret);
-                    JSONObject obj = new JSONObject(ret);
-                    String welcomeTitle = obj.optString(areaCode);
-                    if (TextUtils.isEmpty(welcomeTitle)) {
-                        welcomeTitle = DEFAULT_WELCOME_TITLE;
-                    }
-                    getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", welcomeTitle).commit();
-
-                    url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") +
-                            "&origin=mp&areaCode=" + areaCode;
-                    Log.d("test", "url2 = " + url);
-                    httpRequest = new HttpGet(url);
-                    client = new DefaultHttpClient();
-                    response = client.execute(httpRequest);
-                    ret = EntityUtils.toString(response.getEntity());
-                    Log.d("test", "getWelcome  = " + ret);
-                    String welcome = new JSONObject(ret).getJSONObject("data").getString("message");
-                    Log.d("test", "welcome = " + welcome);
-                    if (!TextUtils.isEmpty(welcome)) {
-                        getSharedPreferences("welcome", 0).edit().putString("welcome", welcome).commit();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
-    public void getTransfer() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                    if (TextUtils.isEmpty(areaCode)) {
-                        toast("areaCode为空");
-                        return;
-                    }
-                    Log.d("test", "areaCode = " + areaCode);
-
-                    String url = clientUrl + "/static/download/version/exchange.json";
-                    Log.d("test", "url1 = " + url);
-                    HttpGet httpRequest = new HttpGet(url);
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
-                    Log.d("test", "getTransfer  = " + ret);
-                    JSONObject obj = new JSONObject(ret);
-                    String validation = obj.optString(areaCode);
-                    if (TextUtils.isEmpty(validation)) {
-                        validation = DEFAULT_TRANSFER;
-                    }
-                    getSharedPreferences("transfer", 0).edit().putString("transfer", validation).commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
-    public void getValidation() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                    if (TextUtils.isEmpty(areaCode)) {
-                        toast("areaCode为空");
-                        return;
-                    }
-                    Log.d("test", "areaCode = " + areaCode);
-
-                    String url = clientUrl + "/static/download/version/label.json";
-                    Log.d("test", "url1 = " + url);
-                    HttpGet httpRequest = new HttpGet(url);
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(httpRequest);
-                    String ret = EntityUtils.toString(response.getEntity(), "utf-8");
-                    Log.d("test", "getValidation  = " + ret);
-                    JSONObject obj = new JSONObject(ret);
-                    String validation = obj.optString(areaCode);
-                    if (TextUtils.isEmpty(validation)) {
-                        validation = DEFAULT_VALIDATION;
-                    }
-                    getSharedPreferences("validation", 0).edit().putString("validation", validation).commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
     public void test(View v) {
@@ -364,47 +219,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-//        missingFish();
-
-//        getAllMessages();
-//        getAllGroups();
-//        Log.d("test", "" + Utils.isWifiProxy(this));
-//        getAllFriends();
-//        Platform.ShareParams sp = new Platform.ShareParams();
-//        sp.setText("sdfsadfasfdfdfadfs");
-//        sp.setShareType(Platform.SHARE_TEXT);
-//        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-//        wx.share(sp);
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.sendMiniProgramCode();
-//            }
-//        }, 10000);
-//        getAllGroups(true);
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.test2();
-//            }
-//        }, 10000);
-//        AddFriend a = new MyDBHelper(getApplicationContext()).getAddFriendByRemark("11 10 执着");
-//        Log.d("test", "a  = " + a);
-//        ArrayList<AddFriend> afs = new MyDBHelper(getApplicationContext()).getAddFriends();
-//        for (AddFriend af : afs) {
-//            Log.d("test", "af = " + af);
-//        }
-//        Utils.uploadFriend(this, "5之", "4 5之", "test2", "test2");
-//        getAllFriends();
-//        addNearBy();
-//        missingFish();
-//        new MyDBHelper(getApplicationContext()).deleteAddFriends();
-//        getGroupIdByName("啊啊啊");
-//        ArrayList<AddFriend> afs = new MyDBHelper(this).getAllAddFriends();
-//        for (AddFriend af : afs) {
-//            Log.d("test", "af = " + af);
-//        }
-//        getAllFriends();
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -461,80 +275,6 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public void sharePic(View view) {
-        Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setImagePath("/mnt/sdcard/1520306782983.jpg");
-        //sp.setText("sdfsadfasfdfdfadfs");
-        sp.setShareType(Platform.SHARE_IMAGE);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-        wx.share(sp);
-    }
-
-    public void shareFile(View view) {
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-        Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setTitle("我给你分享了文件2");
-        sp.setFilePath(KWApplication.ROOT + "downloads/1394514005639.jpg");
-        sp.setImagePath(KWApplication.ROOT + "downloads/1394514005639.jpg");
-        sp.setShareType(Platform.SHARE_FILE);
-        wx.share(sp);
-    }
-
-    public void shareVideo(View view) {
-        Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setText("我给你分享了视频");
-        sp.setTitle("我给你分享了视频");
-        sp.setUrl("http://www.baidu.com/test.mp4");//网络地址
-        sp.setImagePath(KWApplication.ROOT + "downloads/1394514005639.jpg");//缩略图  本地
-        sp.setShareType(Platform.SHARE_VIDEO);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-        wx.share(sp);
-    }
-
-    public void shareWeb(View view) {
-        /*Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setText("测试分享的文本");
-        sp.setTitle("ccccccccc");
-        sp.setUrl("http://www.kiway.cn");
-        //sp.setImagePath("/mnt/sdcard/1520306782983.jpg");
-        sp.setShareType(Platform.SHARE_WEBPAGE);
-        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-        wx.share(sp);*/
-
-        //朋友圈
-//        Platform.ShareParams sp = new Platform.ShareParams();
-//        sp.setText("fdsafdsafsdaf");
-//        sp.setImageArray(new String[]{KWApplication.defaultVideoIcon, KWApplication.defaultFileIcon});
-//        sp.setShareType(Platform.SHARE_IMAGE);
-//        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
-//        wx.share(sp);
-
-        ArrayList<File> files = new ArrayList<>();
-        files.add(new File(KWApplication.defaultFileIcon));
-        files.add(new File(KWApplication.defaultVideoIcon));
-
-        Intent intent = new Intent();
-        ComponentName comp = new ComponentName("com.tencent.mm",
-                "com.tencent.mm.ui.tools.ShareToTimeLineUI");
-        intent.setComponent(comp);
-        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        intent.setType("image/*");
-        intent.putExtra("Kdescription", "dis");
-        ArrayList<Uri> imageUris = new ArrayList<Uri>();
-        for (File f : files) {
-            imageUris.add(Uri.fromFile(f));
-        }
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-        startActivity(intent);
-
-        //不能绕过审核
-//        Platform.ShareParams sp = new Platform.ShareParams();
-//        sp.setText("fdsafdsafsdaf");
-//        sp.setShareType(Platform.SHARE_TEXT);
-//        Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
-//        wx.share(sp);
-    }
-
     public void shareProgram(View view) {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setTitle("title");
@@ -571,22 +311,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_UPGRADE);
                 checkNewVersion(null);
                 mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 8 * 60 * 60 * 1000);
-            } else if (msg.what == MSG_WELCOME) {
-                mHandler.removeMessages(MSG_WELCOME);
-                getWelcome();
-                mHandler.sendEmptyMessageDelayed(MSG_WELCOME, 8 * 60 * 60 * 1000);
-            } else if (msg.what == MSG_GET_QA) {
-                mHandler.removeMessages(MSG_GET_QA);
-                getQA();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_QA, 8 * 60 * 60 * 1000);
-            } else if (msg.what == MSG_GET_VALIDATION) {
-                mHandler.removeMessages(MSG_GET_VALIDATION);
-                getValidation();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_TRANSFER, 8 * 60 * 60 * 1000);
-            } else if (msg.what == MSG_GET_TRANSFER) {
-                mHandler.removeMessages(MSG_GET_TRANSFER);
-                getTransfer();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_VALIDATION, 8 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_BASEDATA) {
+                mHandler.removeMessages(MSG_GET_BASEDATA);
+                getBaseData();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
                 getAllFriends();
@@ -616,7 +344,6 @@ public class MainActivity extends BaseActivity {
                 getAllMessages();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
             }
-
         }
     };
 
@@ -680,7 +407,7 @@ public class MainActivity extends BaseActivity {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
                     ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
-                    friendCount  = friends.size();
+                    friendCount = friends.size();
                     //1.上传
                     runOnUiThread(new Runnable() {
                         @Override
@@ -821,8 +548,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void Xposed(View view) {
-        //1.获取所有的好友
-        //2.上报给易敏
         //startActivity(new Intent(this, WeChatActivity.class));
     }
 
