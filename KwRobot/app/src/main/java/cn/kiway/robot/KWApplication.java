@@ -19,16 +19,14 @@ import com.rabbitmq.client.Channel;
 
 import org.xutils.x;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
+
+import static cn.kiway.robot.util.Utils.saveDefaultFile;
 
 
 /**
@@ -46,6 +44,9 @@ public class KWApplication extends Application {
     public static String defaultXlsIcon = ROOT + "/downloads/xls.png";
     public static String defaultZIPIcon = ROOT + "/downloads/zip.png";
 
+    public static String defaultWechat = ROOT + "/downloads/wechat.apk";
+
+
     public static RabbitMQUtils rabbitMQUtils;
     public static List<Channel> channels = new ArrayList<>();
 
@@ -59,14 +60,14 @@ public class KWApplication extends Application {
         CrashHandler.getInstance().init(this);
         //UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "5b04d09ff29d98114400000d");
 
-        saveDefaultFile("file.png", R.mipmap.file);
-        saveDefaultFile("video.png", R.mipmap.video);
-        saveDefaultFile("ppt.png", R.mipmap.ppt);
-        saveDefaultFile("pdf.png", R.mipmap.pdf);
-        saveDefaultFile("word.png", R.mipmap.word);
-        saveDefaultFile("xls.png", R.mipmap.xls);
-        saveDefaultFile("zip.png", R.mipmap.zip);
-
+        saveDefaultFile(this, "file.png", R.mipmap.file);
+        saveDefaultFile(this, "video.png", R.mipmap.video);
+        saveDefaultFile(this, "ppt.png", R.mipmap.ppt);
+        saveDefaultFile(this, "pdf.png", R.mipmap.pdf);
+        saveDefaultFile(this, "word.png", R.mipmap.word);
+        saveDefaultFile(this, "xls.png", R.mipmap.xls);
+        saveDefaultFile(this, "zip.png", R.mipmap.zip);
+        saveDefaultFile(this, "wechat.apk", "http://robot.kiway.cn/static/download/version/wechat.apk");
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -97,40 +98,6 @@ public class KWApplication extends Application {
             }
         }.start();
     }
-
-    public void saveDefaultFile(final String fileName, final int id) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    if (!new File(ROOT + "downloads/").exists()) {
-                        new File(ROOT + "downloads/").mkdirs();
-                    }
-                    File file = new File(ROOT + "downloads/" + fileName);
-                    if (file.exists()) {
-                        return;
-                    }
-                    InputStream inStream = getResources().openRawResource(id);
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    byte[] buffer = new byte[10];
-                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                    int len = 0;
-                    while ((len = inStream.read(buffer)) != -1) {
-                        outStream.write(buffer, 0, len);
-                    }
-                    byte[] bs = outStream.toByteArray();
-                    fileOutputStream.write(bs);
-                    outStream.close();
-                    inStream.close();
-                    fileOutputStream.flush();
-                    fileOutputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
 
     private void initImageCache() {
         DisplayMetrics displayMetrics = getApplicationContext().getResources()

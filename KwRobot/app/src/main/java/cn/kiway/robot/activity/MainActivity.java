@@ -58,6 +58,7 @@ import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.doGetMessages;
+import static cn.kiway.robot.util.Utils.doGetMoments;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -277,22 +278,24 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getBaseData();
+//        getBaseData();
 //        getAllFriends();
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    String password = initDbPassword(getApplicationContext());
-//                    File dbFile = getWxDBFile("SnsMicroMsg.db");
-////                    doGetGroups(getApplicationContext(), dbFile, password, null);
-//                    //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
-//                    doGetMoments(getApplicationContext(), dbFile);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String password = initDbPassword(getApplicationContext());
+                    File dbFile = getWxDBFile("SnsMicroMsg.db" , null);
+                    doGetMoments(MainActivity.this , dbFile);
+//                    doGetGroups(getApplicationContext(), dbFile, password, null);
+                    //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
+                    doGetMoments(getApplicationContext(), dbFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
     }
 
     private void getAllMessages() {
