@@ -235,7 +235,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     };
 
-    private void previewAction(Action action) {
+    private void previewAction(final Action action) {
         currentActionID = -2;
         try {
             action.intent.send();
@@ -284,7 +284,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
 
-    public void handleZbusMsg(ZbusRecv recv) {
+    public void handleZbusMsg(final ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
         new Thread() {
             @Override
@@ -419,7 +419,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doHandleZbusMsg(long id, Action action, JSONArray returnMessage, boolean realReply) {
+    private void doHandleZbusMsg(final long id, final Action action, final JSONArray returnMessage, boolean realReply) {
         if (realReply) {
             action.replied = true;
         }
@@ -502,7 +502,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //家长发来的消息，发给服务器
-    public synchronized void sendMsgToServer(long id, Action action) {
+    public synchronized void sendMsgToServer(final long id, final Action action) {
         new Thread() {
             @Override
             public void run() {
@@ -562,7 +562,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //后台操作命令，执行完后的回复
-    public synchronized void sendMsgToServer2(int statusCode, Command command) {
+    public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
         if (command.cmd.equals(CHAT_IN_GROUP_CMD)) {
             return;
         }
@@ -664,7 +664,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //群里发来的消息
-    public synchronized void sendMsgToServer3(String clientGroupId, String sender, String message) {
+    public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message) {
         new Thread() {
             @Override
             public void run() {
@@ -914,7 +914,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 actioningFlag = true;
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
-                int actionType = actions.get(currentActionID).actionType;
+                final int actionType = actions.get(currentActionID).actionType;
 
                 mHandler.postDelayed(new Runnable() {
                     @Override
@@ -957,7 +957,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         } else {
                             //聊天有关，需要容错
-                            String targetSender = actions.get(currentActionID).sender;
+                            final String targetSender = actions.get(currentActionID).sender;
                             if (checkIsWxHomePage()) {
                                 searchTargetInWxHomePage(1, targetSender, true);
                             } else {
@@ -1071,15 +1071,15 @@ public class AutoReplyService extends AccessibilityService {
     }
 
 
-    private void doActionCommandByType(int actionType) {
+    private void doActionCommandByType(final int actionType) {
         try {
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
             Log.d("test", "content = " + content);
-            JSONObject o = new JSONObject(content);
+            final JSONObject o = new JSONObject(content);
             content = o.optString("content");
             start = o.optInt("start");
             end = o.optInt("end");
-            String url = o.optString("url");
+            final String url = o.optString("url");
             String clientGroupId = null;
             if (o.has("clientGroupId")) {
                 clientGroupId = o.optString("clientGroupId");
@@ -1087,9 +1087,9 @@ public class AutoReplyService extends AccessibilityService {
                 clientGroupId = o.optJSONArray("clientGroupIds").optString(0);
             }
 
-            JSONArray members = o.optJSONArray("members");
-            String finalContent = content;
-            String finalClientGroupId = clientGroupId;
+            final JSONArray members = o.optJSONArray("members");
+            final String finalContent = content;
+            final String finalClientGroupId = clientGroupId;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1171,7 +1171,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "content = " + content);
             actions.get(currentActionID).sender = groupName;
             JSONObject o = new JSONObject(content);
-            String message = o.getString("message");
+            final String message = o.getString("message");
             int type = o.getInt("type");
             if (type == 1) {//文本
                 Platform.ShareParams sp = new Platform.ShareParams();
@@ -1188,7 +1188,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }.start();
             } else if (type == 52) {//链接
-                JSONObject contentO = new JSONObject(message);
+                final JSONObject contentO = new JSONObject(message);
                 new Thread() {
                     @Override
                     public void run() {
@@ -1213,7 +1213,7 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "content = " + content);
             JSONArray messages = new JSONObject(content).optJSONArray("messages");
             int type = messages.getJSONObject(0).getInt("type");
-            String text = messages.getJSONObject(0).getString("content");
+            final String text = messages.getJSONObject(0).getString("content");
             if (type == 1) {//文本
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setText(text);
@@ -1230,7 +1230,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }.start();
             } else if (type == 3) {//链接
-                JSONObject contentO = messages.getJSONObject(0).getJSONObject("content");
+                final JSONObject contentO = messages.getJSONObject(0).getJSONObject("content");
                 new Thread() {
                     @Override
                     public void run() {
@@ -1316,7 +1316,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private void startDeleteFriend(JSONArray members) {
+    private void startDeleteFriend(final JSONArray members) {
         new Thread() {
             @Override
             public void run() {
@@ -1325,7 +1325,7 @@ public class AutoReplyService extends AccessibilityService {
                     resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
 
                     for (int i = 0; i < count; i++) {
-                        String currentZombie = members.optString(i);
+                        final String currentZombie = members.optString(i);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1342,7 +1342,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void addNearbyPeople(String content) {
+    private void addNearbyPeople(final String content) {
         faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1388,7 +1388,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
     }
 
-    private void SupplementInfo(String content) {
+    private void SupplementInfo(final String content) {
         findTargetNode(NODE_RADIOBUTTON, "男", CLICK_SELF, true);
         findTargetNode(NODE_TEXTVIEW, "地区*", CLICK_PARENT, true);
         mHandler.postDelayed(new Runnable() {
@@ -1409,14 +1409,14 @@ public class AutoReplyService extends AccessibilityService {
         }, 5000);
     }
 
-    private void doAddNearByPeople(String content) {
+    private void doAddNearByPeople(final String content) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 peoples.clear();
                 findNearbyPeopleInListView(getRootInActiveWindow());
                 Log.d("test", "friends count = " + peoples.size());
-                int count = peoples.size();
+                final int count = peoples.size();
 
                 resetMaxReleaseTime(21000 * count);
 
@@ -1424,8 +1424,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         for (int i = 0; i < count; i++) {
-
-                            int finalI = i;
+                            final int finalI = i;
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1492,7 +1491,7 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    private void fixMyNicknameOrIcon(int actionType, String url) {
+    private void fixMyNicknameOrIcon(final int actionType, final String url) {
         Log.d("test", "fixMyNicknameOrIcon , url = " + url);
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
@@ -1549,7 +1548,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                                                 Log.d("test", "content = " + content);
                                                 JSONObject o = new JSONObject(content);
-                                                String newName = o.optString("newName");
+                                                final String newName = o.optString("newName");
 
                                                 clearAndPasteEditText(1, newName);
 
@@ -1726,7 +1725,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     JSONObject o = new JSONObject(content);
-                    String text = o.optString("content");
+                    final String text = o.optString("content");
 
                     for (int i = 0; i < tryCount; i++) {
                         Log.d("test", "current try = " + i);
@@ -1832,7 +1831,7 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (actionType == TYPE_ADD_FRIEND) {
                     target = "添加朋友";
                 }
-                boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
+                final boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -1892,7 +1891,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void addFriend(String member, String message) {
+    private void addFriend(final String member, final String message) {
         Log.d("test", "addFriend member = " + member);
 
         AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(member);
@@ -1934,7 +1933,7 @@ public class AutoReplyService extends AccessibilityService {
                                     } else {
                                         //还不是好友
                                         //0.寻找昵称
-                                        String remarkIndex = Utils.getParentRemark(getApplication(), 1);
+                                        final String remarkIndex = Utils.getParentRemark(getApplication(), 1);
                                         findTargetNode(NODE_TEXTVIEW, 3);
                                         String remark = remarkIndex + " " + mFindTargetNode.getText().toString();
                                         updateUserStatus(member, remark, STATUS_ADDING);
@@ -1988,7 +1987,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void notifyObj(long sleepTime) {
+    private void notifyObj(final long sleepTime) {
         new Thread() {
             @Override
             public void run() {
@@ -2062,7 +2061,7 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         int length = getTextLengthInEditText(1, member);
                         long sleepTime = 3000 + length * 2000;
-                        String finalMember = member;
+                        final String finalMember = member;
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -2204,7 +2203,7 @@ public class AutoReplyService extends AccessibilityService {
                                 e.printStackTrace();
                             }
                         } else if (type == TYPE_SEND_BATCH) {
-                            boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
+                            final boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -2224,7 +2223,7 @@ public class AutoReplyService extends AccessibilityService {
             return false;
         }
         String text = mFindTargetNode.getText().toString().replace("你无法邀请未添加你为好友的用户进去群聊，请先向", "").replace("发送朋友验证申请。对方通过验证后，才能加入群聊。", "");
-        String[] zombies = text.split("、");
+        final String[] zombies = text.split("、");
         Log.d("test", "僵尸粉的数量：" + zombies.length);
         //返回，通过搜索好友名字，去逐个删除。
         if (zombies.length == 0) {
@@ -2244,14 +2243,14 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void doSequeClearZombies(String[] zombies) {
+    private void doSequeClearZombies(final String[] zombies) {
         new Thread() {
             @Override
             public void run() {
                 try {
                     int count = zombies.length;
                     for (int i = 0; i < count; i++) {
-                        String currentZombie = zombies[i];
+                        final String currentZombie = zombies[i];
                         Log.d("test", "currentZombie = " + currentZombie);
                         mHandler.post(new Runnable() {
                             @Override
@@ -2269,7 +2268,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void doCheckFriend1(AccessibilityNodeInfo rootNode) {
+    private void doCheckFriend1(final AccessibilityNodeInfo rootNode) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -2437,7 +2436,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void searchTargetInWxHomePage(int actionType, String target, boolean canRelease) {
+    private void searchTargetInWxHomePage(final int actionType, final String target, final boolean canRelease) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -2470,7 +2469,7 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private void searchTargetInWxGroupPage(int actionType, String groupName, boolean canRelease) {
+    private void searchTargetInWxGroupPage(final int actionType, final String groupName, final boolean canRelease) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -2529,7 +2528,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doSequeSendText() {
-        ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
+        final ArrayList<ReturnMessage> returnMessages = actions.get(currentActionID).returnMessages;
         new Thread() {
             @Override
             public void run() {
@@ -2636,7 +2635,7 @@ public class AutoReplyService extends AccessibilityService {
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
     // 注意可能有循环的操作，比如删除好友，不能release
-    private void enterChatView(int actionType, String target) {
+    private void enterChatView(final int actionType, final String target) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -2684,8 +2683,8 @@ public class AutoReplyService extends AccessibilityService {
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
-                                                boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
+                                                final boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                                final boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -2726,7 +2725,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void deleteFriend(String target) {
+    private void deleteFriend(final String target) {
         findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
             return;
@@ -2788,7 +2787,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (has) {
                         sleepTime = 2000;
                     }
-                    String finalText = text;
+                    final String finalText = text;
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -2804,7 +2803,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private void fixFriendNickname(String friend) {
+    private void fixFriendNickname(final String friend) {
         findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
             release(false);
@@ -2814,7 +2813,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetNode(NODE_TEXTVIEW, friend, CLICK_PARENT, false);
+                final boolean find = findTargetNode(NODE_TEXTVIEW, friend, CLICK_PARENT, false);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -2822,7 +2821,7 @@ public class AutoReplyService extends AccessibilityService {
                             release(false);
                             return;
                         }
-                        boolean find = findTargetNode(NODE_TEXTVIEW, "设置备注和标签", CLICK_SELF, true);
+                        final boolean find = findTargetNode(NODE_TEXTVIEW, "设置备注和标签", CLICK_SELF, true);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2830,7 +2829,7 @@ public class AutoReplyService extends AccessibilityService {
                                     release(false);
                                     return;
                                 }
-                                boolean find = findTargetNode(NODE_TEXTVIEW, friend, CLICK_SELF, false);
+                                final boolean find = findTargetNode(NODE_TEXTVIEW, friend, CLICK_SELF, false);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -2883,14 +2882,14 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     Log.d("test", "content = " + content);
-                    JSONObject o = new JSONObject(content);
+                    final JSONObject o = new JSONObject(content);
                     JSONArray members = o.getJSONArray("name");
                     int count = members.length();
 
                     resetMaxReleaseTime(count * 30000);
 
                     for (int i = 0; i < count; i++) {
-                        String member = members.getString(i);
+                        final String member = members.getString(i);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -3073,7 +3072,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                boolean find = findTargetNode(NODE_TEXTVIEW, "保存|发布|完成", CLICK_SELF, true);
+                final boolean find = findTargetNode(NODE_TEXTVIEW, "保存|发布|完成", CLICK_SELF, true);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -3154,7 +3153,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                String collector = getSharedPreferences("collector", 0).getString("collector", "转发使者");
+                                final String collector = getSharedPreferences("collector", 0).getString("collector", "转发使者");
                                 findTargetNode(NODE_EDITTEXT, collector);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
@@ -3358,7 +3357,7 @@ public class AutoReplyService extends AccessibilityService {
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "onSuccess = " + ret);
                     try {
-                        String url = new JSONObject(ret).getJSONObject("data").getString("url");
+                        final String url = new JSONObject(ret).getJSONObject("data").getString("url");
                         Log.d("test", "url = " + url);
                         //http://ifanr-cdn.b0.upaiyun.com/wp-content/uploads/2017/04/juhuama.jpg
                         new Thread() {
@@ -3441,7 +3440,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void sendTextOnly(String reply, boolean release) {
         reply = reply.replace("<br />", "\n");
-        String finalReply = reply;
+        final String finalReply = reply;
         Log.d("test", "sendTextOnly finalReply = " + finalReply);
         mHandler.post(new Runnable() {
             @Override
@@ -3549,9 +3548,9 @@ public class AutoReplyService extends AccessibilityService {
         doShareToWechatFriend();
     }
 
-    private void sendFileOnly(String url, String fileName, boolean multiple) {
+    private void sendFileOnly(String url, final String fileName, final boolean multiple) {
         //1.下载
-        String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
+        final String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
 
         RequestParams params = new RequestParams(url);
         params.setSaveFilePath(savedFilePath);
@@ -3718,7 +3717,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doShareToWechatMoments(String remark) {
+    private void doShareToWechatMoments(final String remark) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -3732,7 +3731,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
+                        final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -3749,7 +3748,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String sender = actions.get(currentActionID).sender;
+                final String sender = actions.get(currentActionID).sender;
                 //找文本框
                 findTargetNode(NODE_EDITTEXT, sender);
                 mHandler.postDelayed(new Runnable() {
@@ -3763,7 +3762,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
+                                final boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -3917,7 +3916,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         mHandler.postDelayed(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                boolean find = findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
+                                                                final boolean find = findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
                                                                 mHandler.postDelayed(new Runnable() {
                                                                     @Override
                                                                     public void run() {

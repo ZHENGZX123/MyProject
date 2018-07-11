@@ -19,6 +19,7 @@ import static cn.kiway.robot.util.Constant.PASSWORD;
 public class APPkeyActivity extends BaseActivity {
 
     private EditText appkeyET;
+    
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

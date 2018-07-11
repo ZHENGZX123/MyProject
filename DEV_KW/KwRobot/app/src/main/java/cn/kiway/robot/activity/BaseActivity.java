@@ -124,7 +124,7 @@ public class BaseActivity extends Activity {
                 finish();
             } else if (msg.what == 5) {
                 KWApplication.closeMQ();
-                String savedFilePath = (String) msg.obj;
+                final String savedFilePath = (String) msg.obj;
                 new Thread() {
                     @Override
                     public void run() {

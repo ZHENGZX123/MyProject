@@ -277,8 +277,8 @@ public class Utils {
 
     //初始化zbus
     public static void initZbus(Context c) {
-        String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-        String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+        final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+        final String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
         if (TextUtils.isEmpty(robotId)) {
             return;
         }
@@ -295,7 +295,7 @@ public class Utils {
                     if (rabbitMQUtils == null) {
                         rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
                     }
-                    Channel channel = rabbitMQUtils.createChannel(topic, topic);
+                    final Channel channel = rabbitMQUtils.createChannel(topic, topic);
                     channels.add(channel);
                     rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
                         @Override
@@ -491,7 +491,7 @@ public class Utils {
         return str;
     }
 
-    public static void updateUserStatus(String phone, String remark, int status) {
+    public static void updateUserStatus(final String phone, final String remark, final int status) {
         new Thread() {
             @Override
             public void run() {
@@ -557,7 +557,7 @@ public class Utils {
     private static int lastStatus = -1;
 
     //status： 1机器人正常 2机器人异常 3微信正常 4微信异常
-    public static void updateOpenIdOrStatus(MainActivity act, Object o) {
+    public static void updateOpenIdOrStatus(final MainActivity act, final Object o) {
         if (act == null) {
             return;
         }
@@ -893,7 +893,7 @@ public class Utils {
         return null;
     }
 
-    public static void uploadGroup(MainActivity act, ArrayList<Group> groups) {
+    public static void uploadGroup(final MainActivity act, final ArrayList<Group> groups) {
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {
