@@ -52,6 +52,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
+import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.doGetFriends;
@@ -82,7 +83,6 @@ public class MainActivity extends BaseActivity {
     private TextView nameTV;
     private CheckBox getPic;
     private TextView versionTV;
-    private int friendCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +94,8 @@ public class MainActivity extends BaseActivity {
         checkRoot(null);
         Utils.installationPush(getApplication());
 
-        mHandler.sendEmptyMessage(MSG_UPGRADE);
-        mHandler.sendEmptyMessage(MSG_GET_BASEDATA);
+        mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 10 * 60 * 1000);
@@ -278,6 +278,7 @@ public class MainActivity extends BaseActivity {
 
     public void test2(View v) {
         getBaseData();
+//        getAllFriends();
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -426,7 +427,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void missingFish() {
-        if (friendCount > 4900) {
+        int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 0);
+        if (friendCount > MAX_FRIENDS) {
             toast("好友已经到上限了");
             return;
         }
@@ -466,7 +468,8 @@ public class MainActivity extends BaseActivity {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
                     final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
-                    friendCount = friends.size();
+                    int friendCount = friends.size();
+                    getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
                     //1.上传
                     runOnUiThread(new Runnable() {
                         @Override
