@@ -112,6 +112,7 @@ import static cn.kiway.robot.util.Constant.CLICK_NONE;
 import static cn.kiway.robot.util.Constant.CLICK_PARENT;
 import static cn.kiway.robot.util.Constant.CLICK_SELF;
 import static cn.kiway.robot.util.Constant.CREATE_GROUP_CHAT_CMD;
+import static cn.kiway.robot.util.Constant.DEFAULT_BACKUP;
 import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
@@ -920,7 +921,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         if (actionType == TYPE_REQUEST_FRIEND) {
-                            boolean find = hasAcceptButton();
+                            boolean find = hasAcceptButton(false);
                             if (!find) {
                                 release(false);
                             }
@@ -1660,7 +1661,7 @@ public class AutoReplyService extends AccessibilityService {
 
     //1:30秒 2：10秒 3：3秒
     private int hasAcceptButtonOrAddedTextView() {
-        boolean find1 = hasAcceptButton();
+        boolean find1 = hasAcceptButton(true);
         if (find1) {
             return 1;
         }
@@ -2355,8 +2356,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
             int percent = (int) ((float) autoCount / totalActionCount * 100);
-
-
             sb.append("家长问题总个数：" + totalActionCount + "，\n");
             sb.append("其中自动回复个数：" + autoCount + "，占比" + percent + "%");
         }
@@ -3254,188 +3253,120 @@ public class AutoReplyService extends AccessibilityService {
     private String remark;
     private String lastNickname = "";
 
-    private boolean hasAcceptButton() {
+    //zhengkang 0711 fix here
+    private boolean hasAcceptButton(final boolean checkRepeat) {
         findTargetNode(NODE_BUTTON, "接受", CLICK_NONE, true);
         if (mFindTargetNode == null) {
             return false;
         }
-
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                AccessibilityNodeInfo nicknameNode = mFindTargetNode.getParent().getChild(0);
-                nickname = nicknameNode.getText().toString();
-                Log.d("test", "nickname = " + nickname);
-                if (lastNickname.equals(nickname)) {
-                    //重复nickname，执行删除操作
-                    deleteUselessNickname(nicknameNode);
-                    return;
+                if (checkRepeat){
+                    AccessibilityNodeInfo nicknameNode = mFindTargetNode.getParent().getChild(0);
+                    nickname = nicknameNode.getText().toString();
+                    Log.d("test", "nickname = " + nickname);
+                    if (lastNickname.equals(nickname)) {
+                        //重复nickname，执行删除操作
+                        deleteUselessNickname(nicknameNode);
+                        return;
+                    }
+                    lastNickname = nickname;
                 }
-                lastNickname = nickname;
-                mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        remark = getParentRemark(getApplication(), 1);
-                        findTargetNode(NODE_EDITTEXT, remark);
-
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF, true);
-                                if (find) {
+                int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 0);
+                Log.d("test", "friendCount = " + friendCount);
+                if (friendCount > 10) {
+                    mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            findTargetNode(NODE_BUTTON, "回复", CLICK_SELF, true);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String response = DEFAULT_BACKUP;
+                                    String backup = getSharedPreferences("backup", 0).getString("backup", DEFAULT_BACKUP);
+                                    if (backup.equals("") || backup.equals("null")) {
+                                        response = DEFAULT_BACKUP;
+                                    } else {
+                                        response = DEFAULT_BACKUP + "请加备用微信号" + backup;
+                                    }
+                                    findTargetNode(NODE_EDITTEXT, response);
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (adding_missing_fish) {
-                                                //漏网之鱼不再发消息
-                                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                            } else {
-                                                //找到发消息，发一段话
-                                                boolean find = findTargetNode(NODE_BUTTON, "发消息", CLICK_SELF, true);
-                                                if (!find) {
-                                                    release(false);
-                                                    return;
+                                            findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    release(true);
                                                 }
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        //1.找到文本框输入文字发送
-                                                        String welcome = getSharedPreferences("welcome", 0).getString
-                                                                ("welcome", DEFAULT_WELCOME);
-                                                        sendTextOnly(welcome, true);
-                                                        //2.发送小程序码
-                                                        //sendMiniProgramCode();
-                                                        //3.上报好友，0613不再调用
-                                                        //String current = System.currentTimeMillis() + "";
-                                                        //ArrayList<Friend> friends = new ArrayList<>();
-                                                        //friends.add(new Friend(nickname, remark + " " + nickname, current, current));
-                                                        //Utils.uploadFriend(getApplication(), friends);
-                                                    }
-                                                }, 3000);
-                                            }
+                                            }, 2000);
                                         }
-                                    }, 5000);
-                                } else {
-                                    if (adding_missing_fish) {
-                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                    } else {
-                                        release(true);
-                                    }
+                                    }, 2000);
                                 }
-                            }
-                        }, 2000);
-                    }
-                }, 3000);
-            }
-        });
-        return true;
-    }
-
-    public void sendMiniProgramCode() {
-        String name = getSharedPreferences("kiway", 0).getString("name", "");
-        String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
-        String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            //String sender = actions.get(currentActionID).sender;
-            String sender = "5 浪翻云";
-            String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
-            Log.d("test", "url = " + url);
-            com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
-            param.put("me", name);
-            param.put("installationId", installationId);
-            param.put("areaCode", areaCode);
-            param.put("sender", sender);
-            param.put("senderId", wxNo);
-
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(this, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "onSuccess = " + ret);
-                    try {
-                        final String url = new JSONObject(ret).getJSONObject("data").getString("url");
-                        Log.d("test", "url = " + url);
-                        //http://ifanr-cdn.b0.upaiyun.com/wp-content/uploads/2017/04/juhuama.jpg
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                //1.下载图片
-                                Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, KWApplication.getLoaderOptions());
-                                if (bmp == null) {
-                                    release(false);
-                                    return;
-                                }
-                                //2.保存图片
-                                String localPath = saveImage(getApplication(), bmp, false);
-                                if (localPath == null) {
-                                    release(false);
-                                    return;
-                                }
-                                mHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                                        if (mFindTargetNode == null) {
-                                            release(false);
-                                            return;
-                                        }
-                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            }, 2000);
+                        }
+                    }, 2000);
+                } else {
+                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            remark = getParentRemark(getApplication(), 1);
+                            findTargetNode(NODE_EDITTEXT, remark);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF, true);
+                                    if (find) {
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
-                                                if (!find) {
-                                                    release(false);
-                                                    return;
-                                                }
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        findTargetNode(NODE_RELATIVELAYOUT, 1);
-                                                        if (mFindTargetNode == null) {
-                                                            release(false);
-                                                            return;
-                                                        }
-                                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                                        mHandler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
-                                                                mHandler.postDelayed(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        release(true);
-                                                                    }
-                                                                }, 3000);
-                                                            }
-                                                        }, 3000);
+                                                if (adding_missing_fish) {
+                                                    //漏网之鱼不再发消息
+                                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                } else {
+                                                    //找到发消息，发一段话
+                                                    boolean find = findTargetNode(NODE_BUTTON, "发消息", CLICK_SELF, true);
+                                                    if (!find) {
+                                                        release(false);
+                                                        return;
                                                     }
-                                                }, 3000);
+                                                    mHandler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            //1.找到文本框输入文字发送
+                                                            String welcome = getSharedPreferences("welcome", 0).getString
+                                                                    ("welcome", DEFAULT_WELCOME);
+                                                            sendTextOnly(welcome, true);
+                                                            //2.发送小程序码
+                                                            //sendMiniProgramCode();
+                                                            //3.上报好友，0613不再调用
+                                                            //String current = System.currentTimeMillis() + "";
+                                                            //ArrayList<Friend> friends = new ArrayList<>();
+                                                            //friends.add(new Friend(nickname, remark + " " + nickname, current, current));
+                                                            //Utils.uploadFriend(getApplication(), friends);
+                                                        }
+                                                    }, 3000);
+                                                }
                                             }
-                                        }, 2000);
+                                        }, 5000);
+                                    } else {
+                                        if (adding_missing_fish) {
+                                            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                        } else {
+                                            release(true);
+                                        }
                                     }
-                                });
-                            }
-                        }.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        release(false);
-                    }
+                                }
+                            }, 2000);
+                        }
+                    }, 3000);
                 }
-
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "onFailure = " + s);
-                    release(false);
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            release(false);
-        }
+            }
+        });
+        return true;
     }
 
     private void sendTextOnly(String reply, boolean release) {
@@ -3937,6 +3868,112 @@ public class AutoReplyService extends AccessibilityService {
                 }, 3000);
             }
         }, 3000);
+    }
+
+    public void sendMiniProgramCode() {
+        String name = getSharedPreferences("kiway", 0).getString("name", "");
+        String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
+        String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            //String sender = actions.get(currentActionID).sender;
+            String sender = "5 浪翻云";
+            String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
+            Log.d("test", "url = " + url);
+            com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
+            param.put("me", name);
+            param.put("installationId", installationId);
+            param.put("areaCode", areaCode);
+            param.put("sender", sender);
+            param.put("senderId", wxNo);
+
+            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+            client.post(this, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "onSuccess = " + ret);
+                    try {
+                        final String url = new JSONObject(ret).getJSONObject("data").getString("url");
+                        Log.d("test", "url = " + url);
+                        //http://ifanr-cdn.b0.upaiyun.com/wp-content/uploads/2017/04/juhuama.jpg
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                //1.下载图片
+                                Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, KWApplication.getLoaderOptions());
+                                if (bmp == null) {
+                                    release(false);
+                                    return;
+                                }
+                                //2.保存图片
+                                String localPath = saveImage(getApplication(), bmp, false);
+                                if (localPath == null) {
+                                    release(false);
+                                    return;
+                                }
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                                        if (mFindTargetNode == null) {
+                                            release(false);
+                                            return;
+                                        }
+                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
+                                                if (!find) {
+                                                    release(false);
+                                                    return;
+                                                }
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        findTargetNode(NODE_RELATIVELAYOUT, 1);
+                                                        if (mFindTargetNode == null) {
+                                                            release(false);
+                                                            return;
+                                                        }
+                                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                        mHandler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
+                                                                mHandler.postDelayed(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        release(true);
+                                                                    }
+                                                                }, 3000);
+                                                            }
+                                                        }, 3000);
+                                                    }
+                                                }, 3000);
+                                            }
+                                        }, 2000);
+                                    }
+                                });
+                            }
+                        }.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        release(false);
+                    }
+                }
+
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "onFailure = " + s);
+                    release(false);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            release(false);
+        }
     }
 
 }

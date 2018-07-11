@@ -744,11 +744,11 @@ public class Utils {
     }
 
     public static ArrayList<Friend> doGetFriends(Context c, File dbFile, String password) {
+        ArrayList<Friend> friends = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
             Cursor c1 = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
-            ArrayList<Friend> friends = new ArrayList<>();
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("username"));  //wxID
                 String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
@@ -761,15 +761,16 @@ public class Utils {
             Log.d("test", "friends = " + friends);
             c1.close();
             db.close();
-            return friends;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return friends;
     }
 
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password, String groupName) {
         Log.d("test", "doGetGroups");
+        ArrayList<Group> groups = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             Cursor c1 = null;
@@ -781,7 +782,6 @@ public class Utils {
             }
             Log.d("test", "sql = " + sql);
             c1 = db.rawQuery(sql, null);
-            ArrayList<Group> groups = new ArrayList<>();
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("username"));  //clientGroupId
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //groupName
@@ -792,11 +792,10 @@ public class Utils {
             Log.d("test", "groups = " + groups);
             c1.close();
             db.close();
-            return groups;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return groups;
     }
 
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
@@ -831,7 +830,6 @@ public class Utils {
             Log.d("test", "messages = " + messages);
             c1.close();
             db.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -840,13 +838,13 @@ public class Utils {
 
     public static ArrayList<String> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
         Log.d("test", "doGetGroups");
+        ArrayList<String> peoples = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String sql = "select  displayname  from chatroom where chatroomname = '" + clientGroupId + "'";
 
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);
-            ArrayList<String> peoples = new ArrayList<>();
             while (c1.moveToNext()) {
                 String username = c1.getString(c1.getColumnIndex("displayname"));
                 String[] temp = username.split("、");
@@ -855,11 +853,10 @@ public class Utils {
             }
             c1.close();
             db.close();
-            return peoples;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return peoples;
     }
 
     private static SQLiteDatabase openWechatDB(Context c, File dbFile, String password) {
@@ -937,23 +934,23 @@ public class Utils {
 
     public static ArrayList<String> doGetMoments(Context c, File dbFile) {
         Log.d("test", "doGetMoments");
+        ArrayList<String> moments = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, null);
             String sql = "select  *  from SnsInfo ";
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);
-            ArrayList<String> peoples = new ArrayList<>();
             while (c1.moveToNext()) {
                 byte[] content = c1.getBlob(c1.getColumnIndex("content"));
                 Log.d("test", "content = " + new String(content));
             }
             c1.close();
             db.close();
-            return peoples;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return moments;
     }
 
     public static boolean isWifiProxy(Context c) {
