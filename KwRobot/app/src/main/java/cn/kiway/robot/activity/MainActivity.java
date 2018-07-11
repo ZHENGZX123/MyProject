@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
+import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.clientUrl;
@@ -187,16 +189,39 @@ public class MainActivity extends BaseActivity {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
             String url = "http://robot.kiway.cn/baseData/getDataByType?type=" + wxNo;
+            Log.d("test", "url = " + url);
             client.get(this, url, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", " onSuccess = " + ret);
                     try {
                         JSONArray data = new JSONObject(ret).getJSONArray("data");
-//                        seconds = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Second>>() {
-//                        }.getType());
                         List<Second> seconds = JSON.parseArray(data.toString(), Second.class);
                         Log.d("test", "seconds = " + seconds);
+
+                        for (Second s : seconds) {
+                            switch (s.name) {
+                                case "被动加好友，欢迎语句":
+                                    getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", s.description).commit();
+                                    break;
+                                case "微信好友满之后备用微信号":
+                                    getSharedPreferences("backup", 0).edit().putString("backup", s.description).commit();
+                                    break;
+                                case "客服正忙提示语":
+                                    getSharedPreferences("busy", 0).edit().putString("busy", s.description).commit();
+                                    break;
+                                case "客服已下线提示语":
+                                    getSharedPreferences("offline", 0).edit().putString("offline", s.description).commit();
+                                    break;
+                                case "主动加好友，请求语句":
+                                    getSharedPreferences("validation", 0).edit().putString("validation", s.description).commit();
+                                    break;
+                                case "转发使者的微信":
+                                    getSharedPreferences("transfer", 0).edit().putString("transfer", s.description).commit();
+                                    break;
+                            }
+                        }
+                        getWelcome();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -210,6 +235,36 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+    private void getWelcome() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
+                    if (TextUtils.isEmpty(areaCode)) {
+                        toast("areaCode为空");
+                        return;
+                    }
+                    String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle", DEFAULT_WELCOME_TITLE);
+                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") +
+                            "&origin=mp&areaCode=" + areaCode;
+                    HttpGet httpRequest = new HttpGet(url);
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(httpRequest);
+                    String ret = EntityUtils.toString(response.getEntity());
+                    String welcome = new JSONObject(ret).getJSONObject("data").getString("message");
+                    Log.d("test", "welcome = " + welcome);
+                    if (!TextUtils.isEmpty(welcome)) {
+                        getSharedPreferences("welcome", 0).edit().putString("welcome", welcome).commit();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }.start();
     }
 
     public void test(View v) {
