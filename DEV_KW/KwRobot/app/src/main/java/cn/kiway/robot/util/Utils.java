@@ -24,6 +24,7 @@ import com.rabbitmq.client.Envelope;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteDatabaseHook;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -40,10 +41,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
+import org.xutils.x;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -942,7 +947,13 @@ public class Utils {
             Cursor c1 = db.rawQuery(sql, null);
             while (c1.moveToNext()) {
                 byte[] content = c1.getBlob(c1.getColumnIndex("content"));
-                Log.d("test", "content = " + new String(content));
+                Log.d("test", "content = " + new String(content, "utf-8"));
+                byte[] encodedBytes = Base64.encodeBase64(content);
+                String encodecontent = new String(encodedBytes);
+                Log.d("test", "encodecontent = " + encodecontent);
+
+                String decodedString = new String(Base64.decodeBase64(encodedBytes));
+                Log.d("test", "decodedString = " + decodedString);
             }
             c1.close();
             db.close();
@@ -966,5 +977,81 @@ public class Utils {
             proxyPort = android.net.Proxy.getPort(c);
         }
         return (!TextUtils.isEmpty(proxyAddress)) && (proxyPort != -1);
+    }
+
+    public static void saveDefaultFile(final Context c, final String fileName, final int id) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    if (!new File(ROOT + "downloads/").exists()) {
+                        new File(ROOT + "downloads/").mkdirs();
+                    }
+                    File file = new File(ROOT + "downloads/" + fileName);
+                    if (file.exists()) {
+                        return;
+                    }
+                    InputStream inStream = c.getResources().openRawResource(id);
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    byte[] buffer = new byte[10];
+                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                    int len = 0;
+                    while ((len = inStream.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, len);
+                    }
+                    byte[] bs = outStream.toByteArray();
+                    fileOutputStream.write(bs);
+                    outStream.close();
+                    inStream.close();
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public static void saveDefaultFile(final Context c, final String fileName, final String url) {
+        new Thread() {
+            @Override
+            public void run() {
+                if (!new File(ROOT + "downloads/").exists()) {
+                    new File(ROOT + "downloads/").mkdirs();
+                }
+                final String savedFilePath = ROOT + "downloads/" + fileName;
+                File file = new File(savedFilePath);
+                if (file.exists()) {
+                    return;
+                }
+                org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
+                params.setSaveFilePath(savedFilePath);
+                params.setAutoRename(false);
+                params.setAutoResume(true);
+                x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+                    @Override
+                    public void onSuccess(File result) {
+                        Log.d("test", "onSuccess");
+                    }
+
+                    @Override
+                    public void onError(Throwable ex, boolean isOnCallback) {
+                        Log.d("test", "onError");
+                        new File(savedFilePath).delete();
+                    }
+
+                    @Override
+                    public void onCancelled(CancelledException cex) {
+                        Log.d("test", "onCancelled");
+                        new File(savedFilePath).delete();
+                    }
+
+                    @Override
+                    public void onFinished() {
+                        Log.d("test", "onFinished");
+                    }
+                });
+            }
+        }.start();
     }
 }

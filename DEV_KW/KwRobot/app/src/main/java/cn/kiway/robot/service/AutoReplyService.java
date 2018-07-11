@@ -619,7 +619,6 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("type", replies.get(command.cmd));
                         o.put("token", command.token);
                         o.put("statusCode", statusCode);
-
                         if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
                             //全删全改==>单独插入或修改
                             String groupName = o.optString("name");
@@ -642,13 +641,10 @@ public class AutoReplyService extends AccessibilityService {
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                         o.put("batchId", new JSONObject(content).optString("batchId"));
                     }
-
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
-
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsgs(msg, chanel);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -3262,7 +3258,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (checkRepeat){
+                if (checkRepeat) {
                     AccessibilityNodeInfo nicknameNode = mFindTargetNode.getParent().getChild(0);
                     nickname = nicknameNode.getText().toString();
                     Log.d("test", "nickname = " + nickname);
