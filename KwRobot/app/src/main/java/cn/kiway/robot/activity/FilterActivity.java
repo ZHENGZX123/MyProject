@@ -72,7 +72,7 @@ public class FilterActivity extends BaseActivity {
 
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FilterActivity.this);
                 builder.setTitle("提示");
                 builder.setMessage("是否删除该昵称");

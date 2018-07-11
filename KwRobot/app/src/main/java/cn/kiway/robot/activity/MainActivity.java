@@ -11,10 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -24,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
@@ -33,6 +38,7 @@ import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
+import cn.kiway.robot.entity.Second;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -130,36 +136,6 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    public void setCollector(View view) {
-        String oldCollector = getSharedPreferences("collector", 0).getString("collector", "转发使者");
-        EditText et = new EditText(this);
-        et.setSingleLine();
-        et.setText(oldCollector);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("当前消息收集微信（群）：" + oldCollector)
-                .setView(et)
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = et.getText().toString().trim();
-                        if (TextUtils.isEmpty(content)) {
-                            toast("不能为空");
-                            return;
-                        }
-                        getSharedPreferences("collector", 0).edit().putString("collector", content).commit();
-                        //这个消息收集器是自动要过滤的，先减后加
-                        String filters = getSharedPreferences("filters", 0).getString("filters", "");
-                        filters = filters.replace("===" + oldCollector, "");
-                        getSharedPreferences("filters", 0).edit().putString("filters", filters).commit();
-
-                        filters = getSharedPreferences("filters", 0).getString("filters", "");
-                        getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + content)
-                                .commit();
-                    }
-                }).setPositiveButton("取消", null).create();
-        dialog.show();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -206,7 +182,34 @@ public class MainActivity extends BaseActivity {
     }
 
     public void getBaseData() {
+        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = "http://robot.kiway.cn/baseData/getDataByType?type=" + wxNo;
+            client.get(this, url, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    try {
+                        JSONArray data = new JSONObject(ret).getJSONArray("data");
+//                        seconds = new GsonBuilder().create().fromJson(data.toString(), new TypeToken<List<Second>>() {
+//                        }.getType());
+                        List<Second> seconds = JSON.parseArray(data.toString(), Second.class);
+                        Log.d("test", "seconds = " + seconds);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 
     public void test(View v) {
@@ -219,6 +222,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+        getBaseData();
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -406,7 +410,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
-                    ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+                    final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
                     friendCount = friends.size();
                     //1.上传
                     runOnUiThread(new Runnable() {

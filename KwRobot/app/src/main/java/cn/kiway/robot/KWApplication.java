@@ -98,7 +98,7 @@ public class KWApplication extends Application {
         }.start();
     }
 
-    public void saveDefaultFile(String fileName, int id) {
+    public void saveDefaultFile(final String fileName, final int id) {
         new Thread() {
             @Override
             public void run() {
