@@ -40,6 +40,8 @@ import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.Second;
+import cn.kiway.robot.moment.SnsInfo;
+import cn.kiway.robot.moment.Task;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
@@ -58,7 +60,6 @@ import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.doGetMessages;
-import static cn.kiway.robot.util.Utils.doGetMoments;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -277,25 +278,37 @@ public class MainActivity extends BaseActivity {
         }, 10000);
     }
 
+
     public void test2(View v) {
-//        getBaseData();
-//        getAllFriends();
+        //getAllFriends();
+        getAllMoments();
+        //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
+    }
+
+    private void getAllMoments() {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("SnsMicroMsg.db" , null);
-                    doGetMoments(MainActivity.this , dbFile);
-//                    doGetGroups(getApplicationContext(), dbFile, password, null);
-                    //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
-                    doGetMoments(getApplicationContext(), dbFile);
+                    File dbFile = getWxDBFile("SnsMicroMsg.db", null);
+                    try {
+                        Task task = new Task(getApplicationContext());
+                        boolean init = task.initSnsReader();
+                        if (init) {
+                            task.snsReader.run(getApplicationContext(), dbFile.getAbsolutePath());
+                            ArrayList<SnsInfo> infos = task.snsReader.getSnsList();
+                            for (SnsInfo info : infos) {
+                                info.print();
+                            }
+                        }
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
-
     }
 
     private void getAllMessages() {
