@@ -24,7 +24,6 @@ import com.rabbitmq.client.Envelope;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteDatabaseHook;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -40,6 +39,7 @@ import org.dom4j.io.SAXReader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.common.Callback;
 import org.xutils.common.util.LogUtil;
 import org.xutils.x;
 
@@ -759,7 +759,11 @@ public class Utils {
                 String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
-                if (!wxNo.equals(alias)) {
+                if (wxNo.equals(alias)) {
+                    Log.d("test", "wxNo = "+wxNo);
+                    Log.d("test", "wxId = "+username);
+                    c.getSharedPreferences("kiway", 0).edit().putString("wxId", username).commit();
+                } else {
                     friends.add(new Friend(nickname, conRemark, username, alias));
                 }
             }
@@ -942,18 +946,14 @@ public class Utils {
         ArrayList<String> moments = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, null);
-            String sql = "select  *  from SnsInfo ";
+            String sql = "select  *  from SnsInfo";
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);
             while (c1.moveToNext()) {
+                String userName = c.getString(c1.getColumnIndex("userName"));
                 byte[] content = c1.getBlob(c1.getColumnIndex("content"));
-                Log.d("test", "content = " + new String(content, "utf-8"));
-                byte[] encodedBytes = Base64.encodeBase64(content);
-                String encodecontent = new String(encodedBytes);
-                Log.d("test", "encodecontent = " + encodecontent);
-
-                String decodedString = new String(Base64.decodeBase64(encodedBytes));
-                Log.d("test", "decodedString = " + decodedString);
+                Log.d("test", "username = " + userName);
+                Log.d("test", "content = " + new String(content));
             }
             c1.close();
             db.close();
@@ -1022,13 +1022,14 @@ public class Utils {
                 final String savedFilePath = ROOT + "downloads/" + fileName;
                 File file = new File(savedFilePath);
                 if (file.exists()) {
+                    Log.d("test", "exist size = " + file.length());
                     return;
                 }
                 org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
                 params.setSaveFilePath(savedFilePath);
                 params.setAutoRename(false);
                 params.setAutoResume(true);
-                x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+                x.http().get(params, new Callback.CommonCallback<File>() {
                     @Override
                     public void onSuccess(File result) {
                         Log.d("test", "onSuccess");
@@ -1037,13 +1038,11 @@ public class Utils {
                     @Override
                     public void onError(Throwable ex, boolean isOnCallback) {
                         Log.d("test", "onError");
-                        new File(savedFilePath).delete();
                     }
 
                     @Override
                     public void onCancelled(CancelledException cex) {
                         Log.d("test", "onCancelled");
-                        new File(savedFilePath).delete();
                     }
 
                     @Override

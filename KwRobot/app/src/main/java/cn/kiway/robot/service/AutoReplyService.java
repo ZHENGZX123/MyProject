@@ -122,6 +122,7 @@ import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
+import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
 import static cn.kiway.robot.util.Constant.NODE_EDITTEXT;
@@ -3271,7 +3272,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 0);
                 Log.d("test", "friendCount = " + friendCount);
-                if (friendCount > 10) {
+                if (friendCount > MAX_FRIENDS) {
                     mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     mHandler.postDelayed(new Runnable() {
                         @Override
