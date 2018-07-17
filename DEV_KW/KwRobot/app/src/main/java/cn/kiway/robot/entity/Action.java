@@ -33,7 +33,7 @@ public class Action {
     public static final int TYPE_FIX_GROUP_NOTICE = 117;//修改群公告
     public static final int TYPE_GROUP_CHAT = 118;//修改群公告
     public static final int TYPE_AT_GROUP_PEOPLE = 119;//艾特某人
-    public static final int TYPE_DELETE_MOMENT = 120;//踢人出群
+    public static final int TYPE_DELETE_MOMENT = 120;//删除朋友圈
     public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友
     public static final int TYPE_MISSING_FISH = 122;//漏网之鱼
     public static final int TYPE_FIX_NICKNAME = 123;//修改昵称
@@ -46,6 +46,8 @@ public class Action {
     public static final int TYPE_GROUP_SEND_HELPER = 130;//群发助手
     public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
     public static final int TYPE_SEND_BATCH = 132;
+    public static final int TYPE_CHECK_MOMENT = 133;
+
 
     public PendingIntent intent;
     public String sender;

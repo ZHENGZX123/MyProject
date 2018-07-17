@@ -20,13 +20,19 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +45,12 @@ import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
+import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.Second;
 import cn.kiway.robot.moment.SnsInfo;
 import cn.kiway.robot.moment.Task;
 import cn.kiway.robot.service.AutoReplyService;
+import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.sharesdk.framework.Platform;
@@ -50,6 +58,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
+import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
@@ -78,9 +87,10 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_ADD_NEARBY = 109;    //主动加附近的人
     private static final int MSG_MISSING_FISH = 110;    //漏网之鱼
     private static final int MSG_GET_ALL_FRIENDS = 111;//上报所有好友
-    private static final int MSG_GET_ALL_GROUPS = 112;//上报所有群组
-    private static final int MSG_GET_ALL_MESSAGES = 113;//上报所有群组
-    private static final int MSG_CHECK_APPKEY = 114;//检测key是否有效
+    private static final int MSG_GET_ALL_MOMENTS = 112;//上报所有朋友圈
+    private static final int MSG_GET_ALL_GROUPS = 113;//上报所有群组
+    private static final int MSG_GET_ALL_MESSAGES = 114;//上报所有群组
+    private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
 
     private TextView nameTV;
     private CheckBox getPic;
@@ -102,6 +112,7 @@ public class MainActivity extends BaseActivity {
         //mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 80 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
@@ -281,34 +292,108 @@ public class MainActivity extends BaseActivity {
 
     public void test2(View v) {
         //getAllFriends();
-        getAllMoments();
         //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
+        //Log.d("test", "moments = " + new MyDBHelper(this).getAllMoments());
+        //new MyDBHelper(this).addMoment(new Moment("1111", "我是一条测试数据"));
+        //new MyDBHelper(this).addComment(new SnsInfo.Comment("1111", "评论人名字", "评论内容", "toUser", 1530867548, 0));
+
+        getAllMomentComments();
+
+        //Log.d("test", "getAllMoments " + new MyDBHelper(this).getAllMoments());
+        //Log.d("test", "getCommentsByMomentID " + new MyDBHelper(this).getCommentsByMomentID("81f2aa68708147f3b9e794fdba0ae96d"));
+        //SnsInfo.Comment c = new SnsInfo.Comment("81f2aa68708147f3b9e794fdba0ae96d", "评论作者", "评论内容", "toUser", 1530867548, 0);
+        //new MyDBHelper(this).addComment(c);
     }
 
-    private void getAllMoments() {
+    private void getAllMomentComments() {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    File dbFile = getWxDBFile("SnsMicroMsg.db", null);
-                    try {
-                        Task task = new Task(getApplicationContext());
-                        boolean init = task.initSnsReader();
-                        if (init) {
-                            task.snsReader.run(getApplicationContext(), dbFile.getAbsolutePath());
-                            ArrayList<SnsInfo> infos = task.snsReader.getSnsList();
-                            for (SnsInfo info : infos) {
-                                info.print();
-                            }
-                        }
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
+                    //1.先去朋友圈浏览一下
+                    checkMomemt();
+                    sleep(100 * 1000);
+                    //2.破解数据库
+                    getCommentFromDB();
+                    sleep(10 * 1000);
+                    //3.上报commemt
+                    uploadComment();
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+    }
+
+    private void uploadComment() throws IOException, JSONException {
+        ArrayList<SnsInfo.Comment> comments = new MyDBHelper(getApplicationContext()).getCommentsByMomentID("81f2aa68708147f3b9e794fdba0ae96d");
+        for (SnsInfo.Comment c : comments) {
+            if (c.uploaded == 0) {
+                String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                String url = Constant.clientUrl + "/robot/" + robotId + "/friendCircleComment/report";
+                Log.d("test", "url = " + url);
+                HttpPost httpRequest = new HttpPost(url);
+                DefaultHttpClient client = new DefaultHttpClient();
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("createDate", "" + c.time));
+                params.add(new BasicNameValuePair("robotId", robotId));
+                params.add(new BasicNameValuePair("circleId", c.momentID));
+                params.add(new BasicNameValuePair("author", c.authorName));
+                params.add(new BasicNameValuePair("content", c.content));
+                params.add(new BasicNameValuePair("toUser", c.toUser));
+                Log.d("test", "params = " + params.toString());
+                UrlEncodedFormEntity urlEntity = new UrlEncodedFormEntity(params, "UTF-8");
+                httpRequest.setEntity(urlEntity);
+                HttpResponse response = client.execute(httpRequest);
+                String ret = EntityUtils.toString(response.getEntity(), "utf-8");
+                Log.d("test", "ret = " + ret);
+                int statusCode = new JSONObject(ret).optInt("statusCode");
+                if (statusCode == 200) {
+                    new MyDBHelper(getApplicationContext()).setCommentUploaded(c.momentID, c.authorName, c.content, c.time, 1);
+                }
+            }
+        }
+    }
+
+    private void getCommentFromDB() throws Throwable {
+        File dbFile = getWxDBFile("SnsMicroMsg.db", null);
+        Task task = new Task(getApplicationContext());
+        boolean init = task.initSnsReader();
+        if (init) {
+            task.snsReader.run(getApplicationContext(), dbFile.getAbsolutePath());
+            ArrayList<SnsInfo> infos = task.snsReader.getSnsList();
+            for (SnsInfo info : infos) {
+                info.print();
+                int count = info.comments.size();
+                Log.d("test", "该SnsInfo有" + count + "条评论");
+                if (count > 0) {
+                    //判断数据库有没有对应的moment
+                    Moment m = new MyDBHelper(getApplicationContext()).getMomentByDescription(info.content);
+                    if (m == null) {
+                        Log.d("test", "该SnsInfo没有对应的moment，是老数据，不再处理");
+                        continue;
+                    }
+                    for (SnsInfo.Comment c : info.comments) {
+                        c.momentID = m.momentID;
+                        boolean existed = new MyDBHelper(getApplicationContext()).checkCommentExisted(m.momentID, c.authorName, c.content, c.time);
+                        Log.d("test", "checkCommentExisted existed = " + existed);
+                        if (!existed) {
+                            new MyDBHelper(getApplicationContext()).addComment(c);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkMomemt() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("cmd", CHECK_MOMENT_CMD);
+        o.put("id", "84f119408d6441358d24b668323f0a23");
+        o.put("token", "1526895528997");
+        String temp = o.toString();
+        Log.d("test", "temp = " + temp);
+        AutoReplyService.instance.sendReplyImmediately(temp, true);
     }
 
     private void getAllMessages() {
@@ -395,6 +480,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
                 getAllFriends();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_ALL_MOMENTS) {
+                mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
+                getAllMomentComments();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_GROUPS) {
                 mHandler.removeMessages(MSG_GET_ALL_GROUPS);
                 getAllGroups();
