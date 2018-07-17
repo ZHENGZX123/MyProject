@@ -125,6 +125,8 @@ public class Constant {
     public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
     public static final String AUTO_REPLY_CONTENT_REPLY_CMD = "autoReplyContentReplyCmd";
     public static final String CHECK_MOMENT_CMD = "checkMomentCmd";//目前后台没有
+    public static final String INTERACT_MOMENT_CMD = "friendCircleCommentCmd";
+    public static final String INTERACT_MOMENT_REPLY_CMD = "friendCircleCommentReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -147,100 +149,39 @@ public class Constant {
         replies.put(SEND_BATCH_CMD, SEND_BATCH_REPLY_CMD);
         replies.put(AT_PERSONS_CMD, AT_PERSONS_REPLY_CMD);
         replies.put(AUTO_REPLY_CONTENT_CMD, AUTO_REPLY_CONTENT_REPLY_CMD);
+        replies.put(INTERACT_MOMENT_CMD, INTERACT_MOMENT_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
     public static final String BACK_DOOR2 = "开维前程似锦";
-    private static final String BACK_DOOR4 = "清理僵尸粉";
-    private static final String BACK_DOOR6 = "发起群聊";
-    private static final String BACK_DOOR7 = "拉人入群";
-    private static final String BACK_DOOR8 = "踢人出群";
-    private static final String BACK_DOOR9 = "修改群名称";
-    private static final String BACK_DOOR10 = "修改群公告";
-    public static final String BACK_DOOR11 = "群发消息";
-    private static final String BACK_DOOR12 = "艾特某人";
-    private static final String BACK_DOOR13 = "删除朋友圈";
-    private static final String BACK_DOOR14 = "添加朋友";
-    private static final String BACK_DOOR15 = "漏网之鱼";
-    private static final String BACK_DOOR16 = "修改昵称";
-    private static final String BACK_DOOR17 = "修改头像";
-    private static final String BACK_DOOR18 = "检查新版本";
-    private static final String BACK_DOOR19 = "附近的人";
-    private static final String BACK_DOOR20 = "解散群聊";
-    private static final String BACK_DOOR21 = "删除朋友";
-    private static final String BACK_DOOR22 = "发朋友圈";
-    private static final String BACK_DOOR23 = "群发助手";
-    private static final String BACK_DOOR24 = "修改好友昵称";
-    private static final String BACK_DOOR25 = "浏览朋友圈";
-
-
-    //{"cmd": "群发消息","message":"1", "type":"1", "clientGroupId": "9189004002@chatroom"}  TODO新增type
-    //{"cmd": "删除朋友","members":["执着","13267069058"]}
-    //{"cmd": "群发助手","content":"1", "members":["浪翻云","胡翻翻"]}
-    //{"cmd": "解散群聊","groupName": "最新111" }
-    //{"cmd": "清理僵尸粉","start": "1","end":"20"}
-    //{"cmd": "漏网之鱼"}
-    //{"cmd": "添加朋友","members":["18626318013","13267069058"], "message":"你好，可以加个好友吗？"}
-    //{"cmd": "查询好友数量"}
-    //{"cmd": "发起群聊","members": ["5行","5之","执着"],"groupName": "111"}
-    //{"cmd": "拉人入群","members": ["5行","5之"],"groupName": "111"}
-    //{"cmd": "踢人出群","members": ["5行","5之"],"groupName": "111"}
-    //{"cmd": "修改群公告","content": "群公告啊啊啊","groupName": "111"}
-    //{"cmd": "修改群名称","content":"1","groupName": "111"}
-    //{"cmd": "艾特某人","members": ["执着","朋友圈使者擦"],"groupName": "111jjj" , "content":"xxx"}
-    //{"cmd": "删除朋友圈","content":"快捷键"}
-    //{"cmd": "检查新版本"}
-    //{"cmd": "修改昵称","newName":"客服888", "oldName":"客服888" , "me":true}
-    //{"cmd": "修改头像","url":"http://pic.92to.com/201611/18/20150823115832203.jpg"}
-    //{"cmd": "附近的人" , "content":"你好，很高兴认识你。" }
 
     public static Map<String, Integer> backdoors = new LinkedHashMap<>();
 
     static {
         backdoors.put(BACK_DOOR1, Action.TYPE_BACK_DOOR);
         backdoors.put(BACK_DOOR2, Action.TYPE_BACK_DOOR);
-        backdoors.put(BACK_DOOR13, Action.TYPE_DELETE_MOMENT);
+
         backdoors.put(DELETE_FRIEND_CIRCLE_CMD, Action.TYPE_DELETE_MOMENT);
-        backdoors.put(BACK_DOOR22, Action.TYPE_SEND_MOMENT);
         backdoors.put(SEND_FRIEND_CIRCLE_CMD, Action.TYPE_SEND_MOMENT);
-        backdoors.put(BACK_DOOR14, Action.TYPE_ADD_FRIEND);
         backdoors.put(ADD_FRIEND_CMD, Action.TYPE_ADD_FRIEND);
-        backdoors.put(BACK_DOOR16, Action.TYPE_FIX_NICKNAME);
         backdoors.put(UPDATE_NICKNAME_CMD, Action.TYPE_FIX_NICKNAME);
-        backdoors.put(BACK_DOOR17, Action.TYPE_FIX_ICON);
         backdoors.put(UPDATE_AVATAR_CMD, Action.TYPE_FIX_ICON);
-        backdoors.put(BACK_DOOR19, Action.TYPE_NEARBY_PEOPLE);
         backdoors.put(PERSION_NEARBY_CMD, Action.TYPE_NEARBY_PEOPLE);
-        backdoors.put(BACK_DOOR15, Action.TYPE_MISSING_FISH);
         backdoors.put(FORGET_FISH_CMD, Action.TYPE_MISSING_FISH);
-        backdoors.put(BACK_DOOR24, Action.TYPE_FIX_FRIEND_NICKNAME);
         backdoors.put(UPDATE_FRIEND_NICKNAME_CMD, Action.TYPE_FIX_FRIEND_NICKNAME);
-        backdoors.put(BACK_DOOR25, Action.TYPE_CHECK_MOMENT);
-        backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
-        backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
         backdoors.put(DELETE_FRIEND_CMD, Action.TYPE_DELETE_FRIEND);
-        backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);
         backdoors.put(CREATE_GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR11, Action.TYPE_GROUP_CHAT);
         backdoors.put(CHAT_IN_GROUP_CMD, Action.TYPE_GROUP_CHAT);
-        backdoors.put(BACK_DOOR7, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(INVITE_GROUP_CMD, Action.TYPE_ADD_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR8, Action.TYPE_DELETE_GROUP_PEOPLE);
         backdoors.put(TICK_PERSON_GROUP_CMD, Action.TYPE_DELETE_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR9, Action.TYPE_FIX_GROUP_NAME);
         backdoors.put(UPDATE_GROUP_NAME_CMD, Action.TYPE_FIX_GROUP_NAME);
-        backdoors.put(BACK_DOOR10, Action.TYPE_FIX_GROUP_NOTICE);
         backdoors.put(UPDATE_GROUP_NOTICE_CMD, Action.TYPE_FIX_GROUP_NOTICE);
-        backdoors.put(BACK_DOOR20, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(DELETE_GROUP_CMD, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(SEND_BATCH_CMD, Action.TYPE_SEND_BATCH);
-        backdoors.put(BACK_DOOR12, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(AT_PERSONS_CMD, Action.TYPE_AT_GROUP_PEOPLE);
-        backdoors.put(BACK_DOOR18, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
-
-        backdoors.put(BACK_DOOR4, Action.TYPE_CLEAR_ZOMBIE_FAN);
-        backdoors.put(BACK_DOOR23, Action.TYPE_GROUP_SEND_HELPER);
+        backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
+        backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
     }
 
     //机器人工作原理

@@ -197,57 +197,62 @@ public class MainActivity extends BaseActivity {
     }
 
     public void getBaseData() {
-        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            String url = "http://robot.kiway.cn/baseData/getDataByType?type=" + wxNo;
-            Log.d("test", "url = " + url);
-            client.get(this, url, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
-                    try {
-                        JSONArray data = new JSONObject(ret).getJSONArray("data");
-                        List<Second> seconds = JSON.parseArray(data.toString(), Second.class);
-                        Log.d("test", "seconds = " + seconds);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    String url = "http://robot.kiway.cn/baseData/getDataByType?type=" + wxNo;
+                    Log.d("test", "url = " + url);
+                    client.get(MainActivity.this, url, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", " onSuccess = " + ret);
+                            try {
+                                JSONArray data = new JSONObject(ret).getJSONArray("data");
+                                List<Second> seconds = JSON.parseArray(data.toString(), Second.class);
+                                Log.d("test", "seconds = " + seconds);
 
-                        for (Second s : seconds) {
-                            switch (s.name) {
-                                case "被动加好友，欢迎语句":
-                                    getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", s.description).commit();
-                                    break;
-                                case "微信好友满之后备用微信号":
-                                    getSharedPreferences("backup", 0).edit().putString("backup", s.description).commit();
-                                    break;
-                                case "客服正忙提示语":
-                                    getSharedPreferences("busy", 0).edit().putString("busy", s.description).commit();
-                                    break;
-                                case "客服已下线提示语":
-                                    getSharedPreferences("offline", 0).edit().putString("offline", s.description).commit();
-                                    break;
-                                case "主动加好友，请求语句":
-                                    getSharedPreferences("validation", 0).edit().putString("validation", s.description).commit();
-                                    break;
-                                case "转发使者的微信":
-                                    getSharedPreferences("transfer", 0).edit().putString("transfer", s.description).commit();
-                                    break;
+                                for (Second s : seconds) {
+                                    switch (s.name) {
+                                        case "被动加好友，欢迎语句":
+                                            getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", s.description).commit();
+                                            break;
+                                        case "微信好友满之后备用微信号":
+                                            getSharedPreferences("backup", 0).edit().putString("backup", s.description).commit();
+                                            break;
+                                        case "客服正忙提示语":
+                                            getSharedPreferences("busy", 0).edit().putString("busy", s.description).commit();
+                                            break;
+                                        case "客服已下线提示语":
+                                            getSharedPreferences("offline", 0).edit().putString("offline", s.description).commit();
+                                            break;
+                                        case "主动加好友，请求语句":
+                                            getSharedPreferences("validation", 0).edit().putString("validation", s.description).commit();
+                                            break;
+                                        case "转发使者的微信":
+                                            getSharedPreferences("transfer", 0).edit().putString("transfer", s.description).commit();
+                                            break;
+                                    }
+                                }
+                                getWelcome();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
-                        getWelcome();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", " onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
+            }
+        });
     }
 
     private void getWelcome() {
