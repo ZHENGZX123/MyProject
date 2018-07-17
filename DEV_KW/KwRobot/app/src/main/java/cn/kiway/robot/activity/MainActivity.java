@@ -295,19 +295,22 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public void test2(View v) {
+    public void test2(View v) throws IOException, JSONException {
         //getAllFriends();
         //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
         //Log.d("test", "moments = " + new MyDBHelper(this).getAllMoments());
         //new MyDBHelper(this).addMoment(new Moment("1111", "我是一条测试数据"));
         //new MyDBHelper(this).addComment(new SnsInfo.Comment("1111", "评论人名字", "评论内容", "toUser", 1530867548, 0));
 
-        getAllMomentComments();
+        //getAllMomentComments();
 
         //Log.d("test", "getAllMoments " + new MyDBHelper(this).getAllMoments());
         //Log.d("test", "getCommentsByMomentID " + new MyDBHelper(this).getCommentsByMomentID("81f2aa68708147f3b9e794fdba0ae96d"));
-        //SnsInfo.Comment c = new SnsInfo.Comment("81f2aa68708147f3b9e794fdba0ae96d", "评论作者", "评论内容", "toUser", 1530867548, 0);
+
+        //SnsInfo.Comment c = new SnsInfo.Comment("81f2aa68708147f3b9e794fdba0ae96d", "评论作者", "评论内容", "null", 1530867548, 0);
         //new MyDBHelper(this).addComment(c);
+
+        //getAllMomentComments();
     }
 
     private void getAllMomentComments() {
@@ -331,9 +334,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void uploadComment() throws IOException, JSONException {
-        ArrayList<SnsInfo.Comment> comments = new MyDBHelper(getApplicationContext()).getCommentsByMomentID("81f2aa68708147f3b9e794fdba0ae96d");
+        ArrayList<SnsInfo.Comment> comments = new MyDBHelper(getApplicationContext()).getCommentsByMomentID(null);
         for (SnsInfo.Comment c : comments) {
-            if (c.uploaded == 0) {
+            //只上传toUser是null的
+            if (c.uploaded == 0 && c.toUser == null) {
+                Log.d("test", "do upload c = " + c);
                 String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                 String url = Constant.clientUrl + "/robot/" + robotId + "/friendCircleComment/report";
                 Log.d("test", "url = " + url);
@@ -345,7 +350,7 @@ public class MainActivity extends BaseActivity {
                 params.add(new BasicNameValuePair("circleId", c.momentID));
                 params.add(new BasicNameValuePair("author", c.authorName));
                 params.add(new BasicNameValuePair("content", c.content));
-                params.add(new BasicNameValuePair("toUser", c.toUser));
+                params.add(new BasicNameValuePair("toUser", "null"));//c.toUser
                 Log.d("test", "params = " + params.toString());
                 UrlEncodedFormEntity urlEntity = new UrlEncodedFormEntity(params, "UTF-8");
                 httpRequest.setEntity(urlEntity);
@@ -488,7 +493,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
                 getAllMomentComments();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_GROUPS) {
                 mHandler.removeMessages(MSG_GET_ALL_GROUPS);
                 getAllGroups();

@@ -621,13 +621,19 @@ public class AutoReplyService extends AccessibilityService {
                             || command.cmd.equals(INTERACT_MOMENT_CMD)
                             ) {
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
-                        Log.d("test", "content??? = " + content);
                         o = new JSONObject(content);
                         o.put("cmd", replies.get(command.cmd));
                         o.put("type", replies.get(command.cmd));
                         o.put("token", command.token);
                         o.put("statusCode", statusCode);
-                        o.put("createDate", System.currentTimeMillis() / 1000);
+                        if (command.cmd.equals(INTERACT_MOMENT_CMD)) {
+                            o.put("createDate", System.currentTimeMillis() / 1000);
+                            o.put("robotId", robotId);
+                            o.put("content", new JSONObject(content).optString("replyContent"));
+                            String name = getSharedPreferences("kiway", 0).getString("name", "");
+                            o.put("author", name);
+                            o.put("toUser", new JSONObject(content).optString("author"));
+                        }
                         if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
                             //全删全改==>单独插入或修改
                             String groupName = o.optString("name");
@@ -1878,8 +1884,6 @@ public class AutoReplyService extends AccessibilityService {
             JSONObject o = new JSONObject(content);
             String author = o.optString("author");
             content = o.optString("content") + " ";
-            author = "浪翻云";
-            content = "郑康评论测试 ";
             final String replyContent = o.optString("replyContent");
             //FIXME 这里有问题，找到的node都是第一个
             findTargetNode(NODE_TEXTVIEW, content, CLICK_NONE, true);
@@ -1912,8 +1916,8 @@ public class AutoReplyService extends AccessibilityService {
                 if (actionType == TYPE_DELETE_MOMENT) {
                     doDeleteMoment();
                 } else if (actionType == TYPE_INTERACT_MOMENT) {
-                    Log.d("test", "TYPE_INTERACT_MOMENT");
-                    startCheckCommentList(5);
+                    release(true);
+                    //startCheckCommentList(5);
                 }
             }
         }, 2000);
