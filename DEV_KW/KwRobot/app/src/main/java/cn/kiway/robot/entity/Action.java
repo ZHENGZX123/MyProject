@@ -47,7 +47,7 @@ public class Action {
     public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
     public static final int TYPE_SEND_BATCH = 132;
     public static final int TYPE_CHECK_MOMENT = 133;
-
+    public static final int TYPE_INTERACT_MOMENT = 134;
 
     public PendingIntent intent;
     public String sender;

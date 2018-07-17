@@ -92,6 +92,7 @@ import static cn.kiway.robot.entity.Action.TYPE_FIX_NICKNAME;
 import static cn.kiway.robot.entity.Action.TYPE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_GROUP_SEND_HELPER;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
+import static cn.kiway.robot.entity.Action.TYPE_INTERACT_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_MISSING_FISH;
 import static cn.kiway.robot.entity.Action.TYPE_NEARBY_PEOPLE;
@@ -123,6 +124,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
+import static cn.kiway.robot.util.Constant.INTERACT_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
@@ -300,7 +302,7 @@ public class AutoReplyService extends AccessibilityService {
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
                         command.token = o.optString("token");
-                        if (o.has("content") && !command.cmd.equals(AT_PERSONS_CMD)) {
+                        if (o.has("content") && !command.cmd.equals(AT_PERSONS_CMD) && !command.cmd.equals(INTERACT_MOMENT_CMD)) {
                             command.content = o.optString("content");
                             if (TextUtils.isEmpty(command.content)) {
                                 command.content = o.optJSONObject("content").toString();
@@ -308,6 +310,7 @@ public class AutoReplyService extends AccessibilityService {
                         } else {
                             command.content = Base64.encodeToString(recv.msg.getBytes(), NO_WRAP);
                         }
+
                         doActionCommand(recv.msg, command);
                         return;
                     }
@@ -584,7 +587,6 @@ public class AutoReplyService extends AccessibilityService {
                     o.put("type", replies.get(command.cmd));
                     o.put("token", command.token);
                     o.put("statusCode", statusCode);
-
                     if (!TextUtils.isEmpty(command.id)) {
                         o.put("id", command.id);
                     }
@@ -616,13 +618,16 @@ public class AutoReplyService extends AccessibilityService {
                             || command.cmd.equals(UPDATE_GROUP_NAME_CMD)
                             || command.cmd.equals(DELETE_GROUP_CMD)
                             || command.cmd.equals(AT_PERSONS_CMD)
+                            || command.cmd.equals(INTERACT_MOMENT_CMD)
                             ) {
                         String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                        Log.d("test", "content??? = " + content);
                         o = new JSONObject(content);
                         o.put("cmd", replies.get(command.cmd));
                         o.put("type", replies.get(command.cmd));
                         o.put("token", command.token);
                         o.put("statusCode", statusCode);
+                        o.put("createDate", System.currentTimeMillis() / 1000);
                         if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
                             //全删全改==>单独插入或修改
                             String groupName = o.optString("name");
@@ -945,6 +950,7 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_GROUP_SEND_HELPER
                                 || actionType == TYPE_SEND_BATCH
                                 || actionType == TYPE_CHECK_MOMENT
+                                || actionType == TYPE_INTERACT_MOMENT
                                 ) {
                             if (checkIsWxHomePage()) {
                                 doActionCommandByType(actionType);
@@ -1038,7 +1044,9 @@ public class AutoReplyService extends AccessibilityService {
                         || action.actionType == TYPE_FIX_ICON
                         || action.actionType == TYPE_NEARBY_PEOPLE
                         || action.actionType == TYPE_GROUP_SEND_HELPER
-                        || action.actionType == TYPE_CHECK_MOMENT) {
+                        || action.actionType == TYPE_CHECK_MOMENT
+                        || action.actionType == TYPE_INTERACT_MOMENT
+                ) {
             action.content = Base64.encodeToString(action.content.getBytes(), NO_WRAP);
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
@@ -1110,7 +1118,7 @@ public class AutoReplyService extends AccessibilityService {
                         selectToolbar();
                     } else if (actionType == TYPE_DELETE_MOMENT) {
                         //我-相册
-                        deleteMoment();
+                        deleteMoment(finalContent);
                     } else if (actionType == TYPE_MISSING_FISH) {
                         //通讯录-新的朋友
                         addMissingFish();
@@ -1157,6 +1165,10 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_CHECK_MOMENT) {
                         //发现-朋友圈
                         checkMoment();
+                    } else if (actionType == TYPE_INTERACT_MOMENT) {
+                        //我-相册
+                        String description = o.optString("description");
+                        interactMoment(description);
                     } else {
                         String target = actions.get(currentActionID).sender;
                         searchTargetInWxHomePage(actionType, target, true);
@@ -1167,6 +1179,26 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void interactMoment(final String description) {
+        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
+                if (!find) {
+                    release(false);
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startCheckMomentList(5, description);
+                    }
+                }, 2000);
+            }
+        }, 1000);
     }
 
     private void checkMoment() {
@@ -1737,7 +1769,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
     }
 
-    private void deleteMoment() {
+    private void deleteMoment(final String content) {
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1750,7 +1782,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startCheckMomentList();
+                        startCheckMomentList(10, content);
                     }
                 }, 2000);
             }
@@ -1759,19 +1791,13 @@ public class AutoReplyService extends AccessibilityService {
 
     private boolean getMoment = false;
 
-    private void startCheckMomentList() {
+    private void startCheckMomentList(final int tryCount, final String targetText) {
         new Thread() {
             @Override
             public void run() {
                 try {
                     getMoment = false;
-                    int tryCount = 10;//尝试下拉次数
                     resetMaxReleaseTime(tryCount * 15000);
-
-                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                    JSONObject o = new JSONObject(content);
-                    final String text = o.optString("content");
-
                     for (int i = 0; i < tryCount; i++) {
                         Log.d("test", "current try = " + i);
                         if (getMoment) {
@@ -1782,7 +1808,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                getMoment = getMomentInListView(text);
+                                getMoment = getMomentInListView(targetText);
                                 Log.d("test", "getMoment = " + getMoment);
                             }
                         });
@@ -1804,6 +1830,76 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    private boolean getComment = false;
+
+    private void startCheckCommentList(final int tryCount) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    getComment = false;
+                    resetMaxReleaseTime(tryCount * 15000);
+                    for (int i = 0; i < tryCount; i++) {
+                        Log.d("test", "current try = " + i);
+                        if (getComment) {
+                            break;
+                        }
+                        sleep(5000);
+                        //find
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                getComment = getCommentInList();
+                                Log.d("test", "getComment = " + getComment);
+                            }
+                        });
+                        sleep(5000);
+                        if (getComment) {
+                            break;
+                        }
+                        //scroll
+                        execRootCmdSilent("input swipe 360 900 360 300");
+                    }
+                    if (!getComment) {
+                        release(false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    release(false);
+                }
+            }
+        }.start();
+    }
+
+    private boolean getCommentInList() {
+        //{"cmd":"friendCircleCommentCmd","author": "浪翻云","content" : "郑康评论测试","replyContent" : "这个是我回复给你的" ,  "robotId" :"111","senderId" : "111","token":"111"}
+        try {
+            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            JSONObject o = new JSONObject(content);
+            String author = o.optString("author");
+            content = o.optString("content") + " ";
+            author = "浪翻云";
+            content = "郑康评论测试 ";
+            final String replyContent = o.optString("replyContent");
+            //FIXME 这里有问题，找到的node都是第一个
+            findTargetNode(NODE_TEXTVIEW, content, CLICK_NONE, true);
+            if (mFindTargetNode == null) {
+                return false;
+            }
+            mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendTextOnly(replyContent, true);
+                }
+            }, 2000);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private boolean getMomentInListView(String text) {
         boolean find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT, false);
         if (!find) {
@@ -1812,43 +1908,36 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                findTargetNode(NODE_TEXTVIEW, "删除", CLICK_NONE, true);
-                if (mFindTargetNode == null) {
-                    //图片
-                    findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                    if (mFindTargetNode == null) {
+                int actionType = actions.get(currentActionID).actionType;
+                if (actionType == TYPE_DELETE_MOMENT) {
+                    doDeleteMoment();
+                } else if (actionType == TYPE_INTERACT_MOMENT) {
+                    Log.d("test", "TYPE_INTERACT_MOMENT");
+                    startCheckCommentList(5);
+                }
+            }
+        }, 2000);
+        return true;
+    }
+
+    private void doDeleteMoment() {
+        findTargetNode(NODE_TEXTVIEW, "删除", CLICK_NONE, true);
+        if (mFindTargetNode == null) {
+            //图片
+            findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+            if (mFindTargetNode == null) {
+                release(false);
+                return;
+            }
+            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    boolean find = findTargetNode(NODE_TEXTVIEW, "删除", CLICK_PARENT, true);
+                    if (!find) {
                         release(false);
                         return;
                     }
-                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "删除", CLICK_PARENT, true);
-                            if (!find) {
-                                release(false);
-                                return;
-                            }
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            //TODO删除DB对应的记录。
-                                            //new MyDBHelper(getApplicationContext()).deleteMoment();
-                                            //new MyDBHelper(getApplicationContext()).deleteMoment();
-                                            release(true);
-                                        }
-                                    }, 3000);
-                                }
-                            }, 2000);
-                        }
-                    }, 2000);
-                } else {
-                    //网文
-                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -1856,15 +1945,32 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //TODO删除DB对应的记录。
+                                    //new MyDBHelper(getApplicationContext()).deleteMoment();
+                                    //new MyDBHelper(getApplicationContext()).deleteMoment();
                                     release(true);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }, 2000);
                 }
-            }
-        }, 2000);
-        return true;
+            }, 2000);
+        } else {
+            //网文
+            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            release(true);
+                        }
+                    }, 2000);
+                }
+            }, 2000);
+        }
     }
 
     //首页右上角工具栏
@@ -3839,7 +3945,6 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
-            //Log.d("test", "nodeInfo.xy = " + getNodePosition(nodeInfo));
             if (test(nodeInfo)) {
                 return true;
             }

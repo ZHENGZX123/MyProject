@@ -426,7 +426,6 @@ public class Utils {
         try {
             JSONObject o = new JSONObject(content);
         } catch (JSONException e) {
-            //e.printStackTrace();
             isJsonString = false;
         }
         if (!isJsonString) {
@@ -438,13 +437,10 @@ public class Utils {
             Map.Entry<String, Integer> entry = it.next();
             String key = entry.getKey();
             int value = entry.getValue();
-
-
             if (content.contains(key)) {
                 return value;
             }
         }
-
         return 0;
     }
 
@@ -760,8 +756,8 @@ public class Utils {
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
                 if (wxNo.equals(alias)) {
-                    Log.d("test", "wxNo = "+wxNo);
-                    Log.d("test", "wxId = "+username);
+                    Log.d("test", "wxNo = " + wxNo);
+                    Log.d("test", "wxId = " + username);
                     c.getSharedPreferences("kiway", 0).edit().putString("wxId", username).commit();
                 } else {
                     friends.add(new Friend(nickname, conRemark, username, alias));
