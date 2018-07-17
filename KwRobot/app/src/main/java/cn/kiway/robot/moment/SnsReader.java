@@ -43,7 +43,6 @@ public class SnsReader {
     protected void queryDatabase(Context c, String dbPath) throws Throwable {
         if (!new File(dbPath).exists()) {
             Log.e("wechatmomentstat", "DB file not found");
-            throw new Exception("DB file not found");
         }
         snsList.clear();
 

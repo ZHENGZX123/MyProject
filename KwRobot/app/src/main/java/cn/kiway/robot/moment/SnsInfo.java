@@ -19,7 +19,6 @@ public class SnsInfo {
     public long timestamp = 0;
     public boolean ready = false;
     public boolean isCurrentUser = false;
-    public boolean selected = true;
 
     public void print() {
         Log.d("wechatmomentstat", "================================");
@@ -62,6 +61,7 @@ public class SnsInfo {
     }
 
     static public class Comment {
+        public String momentID;
         public String authorName;
         public String content;
         public String toUser;
@@ -69,5 +69,32 @@ public class SnsInfo {
         public String toUserId;
         public boolean isCurrentUser = false;
         public long time;
+        public int uploaded;
+
+        public Comment() {
+
+        }
+
+        //authorName+content+time做唯一
+        public Comment(String momentID, String authorName, String content, String toUser, long time, int uploaded) {
+            this.momentID = momentID;
+            this.authorName = authorName;
+            this.content = content;
+            this.toUser = toUser;
+            this.time = time;
+            this.uploaded = uploaded;
+        }
+
+        @Override
+        public String toString() {
+            return "Comment{" +
+                    "momentID='" + momentID + '\'' +
+                    ", authorName='" + authorName + '\'' +
+                    ", content='" + content + '\'' +
+                    ", toUser='" + toUser + '\'' +
+                    ", time=" + time +
+                    ", uploaded=" + uploaded +
+                    '}';
+        }
     }
 }

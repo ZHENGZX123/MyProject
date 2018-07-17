@@ -24,13 +24,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -124,6 +124,7 @@ public class Constant {
     public static final String UPGRADE_CMD = "upgradeCmd";
     public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
     public static final String AUTO_REPLY_CONTENT_REPLY_CMD = "autoReplyContentReplyCmd";
+    public static final String CHECK_MOMENT_CMD = "checkMomentCmd";//目前后台没有
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -170,6 +171,7 @@ public class Constant {
     private static final String BACK_DOOR22 = "发朋友圈";
     private static final String BACK_DOOR23 = "群发助手";
     private static final String BACK_DOOR24 = "修改好友昵称";
+    private static final String BACK_DOOR25 = "浏览朋友圈";
 
 
     //{"cmd": "群发消息","message":"1", "type":"1", "clientGroupId": "9189004002@chatroom"}  TODO新增type
@@ -213,6 +215,8 @@ public class Constant {
         backdoors.put(FORGET_FISH_CMD, Action.TYPE_MISSING_FISH);
         backdoors.put(BACK_DOOR24, Action.TYPE_FIX_FRIEND_NICKNAME);
         backdoors.put(UPDATE_FRIEND_NICKNAME_CMD, Action.TYPE_FIX_FRIEND_NICKNAME);
+        backdoors.put(BACK_DOOR25, Action.TYPE_CHECK_MOMENT);
+        backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
         backdoors.put(BACK_DOOR21, Action.TYPE_DELETE_FRIEND);
         backdoors.put(DELETE_FRIEND_CMD, Action.TYPE_DELETE_FRIEND);
         backdoors.put(BACK_DOOR6, Action.TYPE_CREATE_GROUP_CHAT);

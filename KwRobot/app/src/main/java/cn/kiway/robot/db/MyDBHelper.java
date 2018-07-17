@@ -208,26 +208,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
+import cn.kiway.robot.entity.Moment;
+import cn.kiway.robot.moment.SnsInfo;
 
-//易敏有接口了，数据库还用吗。
 public class MyDBHelper extends SQLiteOpenHelper {
 
-    public static final String DB_NAME = "kiwaywx.db";
-
-    private static final String TABLE_WX_PEOPLE = "WX_PEOPLE";
-    private static final String CREATE_TABLE_WX_PEOPLE = " create table  IF NOT EXISTS "
-            + TABLE_WX_PEOPLE
-            + "   (id integer primary key autoincrement,  nickname text,  remark text , wxid text , wxno text)";
+    private static final String DB_NAME = "kiwaywx.db";
 
     private static final String TABLE_ADDFRIEND = "AddFriend";
     private static final String CREATE_TABLE_ADDFRIEND = " create table  IF NOT EXISTS "
@@ -245,17 +238,26 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_WX_GROUP
             + "   (id integer primary key autoincrement,  clientGroupId text , groupName  text ) ";
 
+    //朋友圈
+    private static final String TABLE_WX_MOMENT = "WX_MOMENT";
+    private static final String CREATE_TABLE_WX_MOMENT = " create table  IF NOT EXISTS "
+            + TABLE_WX_MOMENT
+            + "   (id integer primary key autoincrement,  momentID text , description text)";
+
+    //评论表:使用author content toUser createDate做对比。
+    private static final String TABLE_WX_COMMENT = "WX_COMMENT";
+    private static final String CREATE_TABLE_WX_COMMNET = " create table  IF NOT EXISTS "
+            + TABLE_WX_COMMENT
+            + "   (id integer primary key autoincrement,  momentID text , author text , content text , toUser text , createDate text , uploaded text)";
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 14);
+        super(c, DB_NAME, null, 19);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_PEOPLE);
-        db.execSQL(CREATE_TABLE_WX_PEOPLE);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
@@ -265,56 +267,23 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_GROUP);
         db.execSQL(CREATE_TABLE_WX_GROUP);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_MOMENT);
+        db.execSQL(CREATE_TABLE_WX_MOMENT);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_COMMENT);
+        db.execSQL(CREATE_TABLE_WX_COMMNET);
+
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
-        db.execSQL(CREATE_TABLE_WX_PEOPLE);
         db.execSQL(CREATE_TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_MESSAGE);
         db.execSQL(CREATE_TABLE_WX_GROUP);
-    }
-
-    public void addWxPeople(JSONArray array) {
-        if (db == null)
-            db = getWritableDatabase();
-        db.delete(TABLE_WX_PEOPLE, null, null);
-        for (int i = 0; i < array.length(); i++) {
-            ContentValues values = new ContentValues();
-            JSONObject item = array.optJSONObject(i);
-            values.put("nickname", item.optString("nickname"));
-            values.put("remark", item.optString("remark"));
-            values.put("wxid", item.optString("wxid"));
-            values.put("wxno", item.optString("wxno"));
-            String[] args = {item.optString("wxid")};
-            int ret = db.update(TABLE_WX_PEOPLE, values, "wxid=?", args);
-            if (ret == 0)
-                db.insert(TABLE_WX_PEOPLE, null, values);
-        }
-        db.close();
-    }
-
-    public JSONArray getWxPeople() {
-        if (db == null)
-            db = getWritableDatabase();
-        JSONArray array = new JSONArray();
-        Cursor cur = db.query(TABLE_WX_PEOPLE, null, null, null, null, null, null);
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            try {
-                JSONObject item = new JSONObject();
-                item.put("nickname", cur.getString(1));
-                item.put("remark", cur.getString(2));
-                item.put("wxid", cur.getString(3));
-                item.put("wxno", cur.getString(4));
-                array.put(item);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        cur.close();
-        db.close();
-        return array;
+        db.execSQL(CREATE_TABLE_WX_MOMENT);
+        db.execSQL(CREATE_TABLE_WX_COMMNET);
     }
 
     //-------------------------------AddFriend-----------------------------
@@ -464,6 +433,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return messages;
     }
 
+    //-------------------------group----------------------
+
     public void addWXGroup(Group group) {
         if (db == null)
             db = getWritableDatabase();
@@ -514,6 +485,126 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (db == null)
             db = getWritableDatabase();
         db.delete(TABLE_WX_GROUP, null, null);
+        db.close();
+    }
+
+    //---------------------------moment------------------
+
+    public void addMoment(Moment m) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("momentID", m.momentID);
+        values.put("description", m.description);
+        db.insert(TABLE_WX_MOMENT, null, values);
+        db.close();
+    }
+
+    public Moment getMomentByDescription(String description) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_WX_MOMENT, null, "description=?", new String[]{description}, null, null, null);
+        Moment m = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String momentID = cur.getString(cur.getColumnIndex("momentID"));
+            description = cur.getString(cur.getColumnIndex("description"));
+            m = new Moment(momentID, description);
+        }
+        cur.close();
+        db.close();
+        return m;
+    }
+
+    public ArrayList<Moment> getAllMoments() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_WX_MOMENT, null, null, null, null, null, null);
+        ArrayList<Moment> moments = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String momentID = cur.getString(cur.getColumnIndex("momentID"));
+            String description = cur.getString(cur.getColumnIndex("description"));
+            Moment m = new Moment(momentID, description);
+            moments.add(m);
+        }
+        cur.close();
+        db.close();
+        return moments;
+    }
+
+    public void deleteMoment(String momentID) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.execSQL("delete from WX_MOMENT where momentID = '" + momentID + "'");
+        db.close();
+    }
+
+    //------------------------------comment-----------------------
+    public boolean checkCommentExisted(String momentID, String author, String content, long time) {
+        if (db == null)
+            db = getWritableDatabase();
+        String sql = "select * from WX_COMMENT where momentID = '" + momentID + "' and  author = '" + author + "' and content = '" + content + "' and createDate = " + time;
+        Log.d("test", "sql = " + sql);
+        Cursor cur = db.rawQuery(sql, null);
+        boolean existed = false;
+        if (cur.moveToNext()) {
+            existed = true;
+        }
+        cur.close();
+        db.close();
+        return existed;
+    }
+
+    public void addComment(SnsInfo.Comment m) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("momentID", m.momentID);
+        values.put("author", m.authorName);
+        values.put("content", m.content);
+        values.put("toUser", m.toUser);
+        values.put("createDate", m.time);
+        values.put("uploaded", 0);
+
+        db.insert(TABLE_WX_COMMENT, null, values);
+        db.close();
+    }
+
+    public ArrayList<SnsInfo.Comment> getCommentsByMomentID(String momentID) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_WX_COMMENT, null, "momentID=?", new String[]{momentID}, null, null, null);
+        ArrayList<SnsInfo.Comment> comments = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            momentID = cur.getString(cur.getColumnIndex("momentID"));
+            String author = cur.getString(cur.getColumnIndex("author"));
+            String content = cur.getString(cur.getColumnIndex("content"));
+            String toUser = cur.getString(cur.getColumnIndex("toUser"));
+            long createDate = cur.getLong(cur.getColumnIndex("createDate"));
+            int uploaded = cur.getInt(cur.getColumnIndex("uploaded"));
+            SnsInfo.Comment c = new SnsInfo.Comment(momentID, author, content, toUser, createDate, uploaded);
+            comments.add(c);
+        }
+        cur.close();
+        db.close();
+        return comments;
+    }
+
+    public void setCommentUploaded(String momentID, String author, String content, long time, int uploaded) {
+        if (db == null)
+            db = getWritableDatabase();
+        String sql = "update WX_COMMENT set uploaded = " + uploaded + " where momentID = '" + momentID + "' and  author = '" + author + "' and content = '" + content + "' and createDate = " + time;
+        Log.d("test", "sql = " + sql);
+        db.execSQL(sql);
+        db.close();
+    }
+
+    public void deleteComment(String momentID) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.execSQL("delete from WX_COMMENT where momentID = '" + momentID + "'");
         db.close();
     }
 }

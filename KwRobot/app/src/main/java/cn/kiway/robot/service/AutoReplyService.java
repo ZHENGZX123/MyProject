@@ -29,7 +29,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rabbitmq.client.Channel;
 
 import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,6 +54,7 @@ import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Command;
 import cn.kiway.robot.entity.Group;
+import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
@@ -74,6 +74,7 @@ import static cn.kiway.robot.entity.Action.TYPE_AT_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
+import static cn.kiway.robot.entity.Action.TYPE_CHECK_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_CHECK_NEW_VERSION;
 import static cn.kiway.robot.entity.Action.TYPE_CLEAR_ZOMBIE_FAN;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
@@ -108,6 +109,7 @@ import static cn.kiway.robot.util.Constant.AUTO_REPLY_CONTENT_CMD;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
+import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.CLICK_NONE;
 import static cn.kiway.robot.util.Constant.CLICK_PARENT;
 import static cn.kiway.robot.util.Constant.CLICK_SELF;
@@ -361,6 +363,7 @@ public class AutoReplyService extends AccessibilityService {
     private void doActionCommand(String msg, Command command) {
         if (command.cmd.equals(UPGRADE_CMD)) {
             MainActivity.instance.checkNewVersion(null);
+            MainActivity.instance.getBaseData();//偷偷放在这里
             return;
         }
         if (command.cmd.equals(AUTO_REPLY_CONTENT_CMD)) {
@@ -393,7 +396,7 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
             currentActionID = firstKey;
             actioningFlag = true;
-            shareToWechatMoments(command.content);
+            shareToWechatMoments(command.id, command.content);
         } else {
             doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
         }
@@ -565,7 +568,7 @@ public class AutoReplyService extends AccessibilityService {
 
     //后台操作命令，执行完后的回复
     public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
-        if (command.cmd.equals(CHAT_IN_GROUP_CMD)) {
+        if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD)) {
             return;
         }
 
@@ -941,6 +944,7 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_NEARBY_PEOPLE
                                 || actionType == TYPE_GROUP_SEND_HELPER
                                 || actionType == TYPE_SEND_BATCH
+                                || actionType == TYPE_CHECK_MOMENT
                                 ) {
                             if (checkIsWxHomePage()) {
                                 doActionCommandByType(actionType);
@@ -1033,7 +1037,8 @@ public class AutoReplyService extends AccessibilityService {
                         || action.actionType == TYPE_FIX_FRIEND_NICKNAME
                         || action.actionType == TYPE_FIX_ICON
                         || action.actionType == TYPE_NEARBY_PEOPLE
-                        || action.actionType == TYPE_GROUP_SEND_HELPER) {
+                        || action.actionType == TYPE_GROUP_SEND_HELPER
+                        || action.actionType == TYPE_CHECK_MOMENT) {
             action.content = Base64.encodeToString(action.content.getBytes(), NO_WRAP);
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
@@ -1149,6 +1154,9 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_FIX_FRIEND_NICKNAME) {
                         String target = o.optString("oldName");
                         searchTargetInWxHomePage(actionType, target, true);
+                    } else if (actionType == TYPE_CHECK_MOMENT) {
+                        //发现-朋友圈
+                        checkMoment();
                     } else {
                         String target = actions.get(currentActionID).sender;
                         searchTargetInWxHomePage(actionType, target, true);
@@ -1159,6 +1167,45 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void checkMoment() {
+        faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findTargetNode(NODE_TEXTVIEW, "朋友圈", CLICK_PARENT, true);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "双击");
+                        findTargetNode(NODE_TEXTVIEW, "朋友圈", CLICK_PARENT, true);
+                        findTargetNode(NODE_TEXTVIEW, "朋友圈", CLICK_PARENT, true);
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    sleep(4000);
+                                    //先双击一下
+                                    int count = 10;
+                                    for (int i = 0; i < count; i++) {
+                                        execRootCmdSilent("input swipe 360 900 360 300");
+                                        try {
+                                            sleep(3000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    release(false);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
+                    }
+                }, 3000);
+            }
+        }, 2000);
     }
 
     private void groupchat2(String groupName) {
@@ -1718,7 +1765,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 try {
                     getMoment = false;
-                    int tryCount = 20;//尝试下拉次数
+                    int tryCount = 10;//尝试下拉次数
                     resetMaxReleaseTime(tryCount * 15000);
 
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -1789,6 +1836,9 @@ public class AutoReplyService extends AccessibilityService {
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
+                                            //TODO删除DB对应的记录。
+                                            //new MyDBHelper(getApplicationContext()).deleteMoment();
+                                            //new MyDBHelper(getApplicationContext()).deleteMoment();
                                             release(true);
                                         }
                                     }, 3000);
@@ -3579,14 +3629,15 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void shareToWechatMoments(String content) {
+    private void shareToWechatMoments(String id, String content) {
         try {
             JSONObject contentO = new JSONObject(content);
             String title = contentO.optString("title");
-            String describe = contentO.optString("description");
+            String description = contentO.optString("description");
             String imageUrl = contentO.optString("imgUrl");
             String url = contentO.optString("url");
             int type = contentO.optInt("type");
+
             if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
@@ -3611,12 +3662,12 @@ public class AutoReplyService extends AccessibilityService {
                 intent.setComponent(comp);
                 intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                 intent.setType("image/*");
-                intent.putExtra("Kdescription", describe);
+                intent.putExtra("Kdescription", description);
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
-                doShareToWechatMoments("");
+                doShareToWechatMoments(id, description);
             } else {
                 //网文
                 String localPath = null;
@@ -3629,7 +3680,7 @@ public class AutoReplyService extends AccessibilityService {
 
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setTitle(title);
-                sp.setText(describe);
+                sp.setText(description);
                 sp.setUrl(url);
                 if (!TextUtils.isEmpty(localPath)) {
                     sp.setImagePath(localPath);
@@ -3638,14 +3689,14 @@ public class AutoReplyService extends AccessibilityService {
                 Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
                 wx.share(sp);
 
-                doShareToWechatMoments(describe);
+                doShareToWechatMoments(id, description);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void doShareToWechatMoments(final String remark) {
+    private void doShareToWechatMoments(final String id, final String remark) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -3660,6 +3711,9 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
+                        if (find) {
+                            new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
+                        }
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -3885,8 +3939,6 @@ public class AutoReplyService extends AccessibilityService {
             param.put("areaCode", areaCode);
             param.put("sender", sender);
             param.put("senderId", wxNo);
-
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
             client.post(this, url, param, new TextHttpResponseHandler() {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
