@@ -574,7 +574,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public ArrayList<SnsInfo.Comment> getCommentsByMomentID(String momentID) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_WX_COMMENT, null, "momentID=?", new String[]{momentID}, null, null, null);
+        Cursor cur = null;
+        if (momentID == null) {
+            cur = db.query(TABLE_WX_COMMENT, null, null, null, null, null, null);
+        } else {
+            cur = db.query(TABLE_WX_COMMENT, null, "momentID=?", new String[]{momentID}, null, null, null);
+        }
         ArrayList<SnsInfo.Comment> comments = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             int id = cur.getInt(cur.getColumnIndex("id"));
