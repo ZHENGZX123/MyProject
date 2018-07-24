@@ -58,7 +58,6 @@ public class MainActivity2 extends MainActivity implements CheckPassword.CheckPa
     public static MainActivity2 instance;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +84,7 @@ public class MainActivity2 extends MainActivity implements CheckPassword.CheckPa
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout);
         linearLayout.setBackground(wallpaperDrawable);
     }
+
     private void registerBroadcast() {
         //注册广播
         IntentFilter filter = new IntentFilter();
@@ -211,8 +211,12 @@ public class MainActivity2 extends MainActivity implements CheckPassword.CheckPa
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode==KeyEvent.KEYCODE_BACK){
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                return true;
+            } else {
+                return super.onKeyDown(keyCode, event);
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -225,7 +229,7 @@ public class MainActivity2 extends MainActivity implements CheckPassword.CheckPa
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             String packageName = intent.getStringExtra(PACKAGENAME);
-            Log.e(AppReceiverIn.TAG,  packageName);
+            Log.e(AppReceiverIn.TAG, packageName);
             boolean b = intent.getBooleanExtra("boolean", false);
             if (action.equals(INSTALL_SUCCESS)) {
                 if (!b) {
