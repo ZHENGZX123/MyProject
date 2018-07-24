@@ -95,6 +95,7 @@ public class LoginActivity extends BaseActivity {
         }
         final String imei = Utils.getIMEI(this);
         String token = getSharedPreferences("huawei", 0).getString("token", "");
+        //token = "huaweitoken";
         Log.e("test", "token = " + token);
         if (TextUtils.isEmpty(token)) {
             toast("华为token不能为空");
