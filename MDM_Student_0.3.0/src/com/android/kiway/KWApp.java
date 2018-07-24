@@ -207,7 +207,7 @@ public class KWApp extends Application {
                     MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
 
-                    if (Build.MODEL.equals("ZTE Q5-T")) {
+                    if (Build.MODEL.equals("ZTE Q5-T")|| Build.MODEL.equals("HM NOTE 1TD")) {
                         try {
                             Message m = new Message();
                             m.what = MSG_LAUNCH_APP;
@@ -246,7 +246,7 @@ public class KWApp extends Application {
                 isAttendClass = false;
                 //MDMHelper.getAdapter().setTaskButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
-                if (Build.MODEL.equals("ZTE Q5-T")) {
+                if (Build.MODEL.equals("ZTE Q5-T")|| Build.MODEL.equals("HM NOTE 1TD")) {
                     temporary_app = false;
                 }
             } else if (msg.what == MSG_MESSAGE) {

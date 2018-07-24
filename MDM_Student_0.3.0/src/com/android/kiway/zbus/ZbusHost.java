@@ -129,6 +129,7 @@ public class ZbusHost {
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
             Log.d("test", "sendMSG2 " + msg.toString());
+
             new Thread() {
                 @Override
                 public void run() {
