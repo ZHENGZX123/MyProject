@@ -21,7 +21,7 @@ public class MDMHelper {
             } else if (Build.MODEL.equals("D13B") || Build.MODEL.equals("G13A") || Build.MODEL.equals("hra8163_tb_m")) {
                 Log.d("test", "HuaruianMDMAdapter");
                 mAdapter = new HuaruianMDMAdapter();
-            } else if (Build.MODEL.equals("ZTE Q5-T")) {
+            } else if (Build.MODEL.equals("ZTE Q5-T") || Build.MODEL.equals("HM NOTE 1TD")) {
                 mAdapter = new ZTEMDMAdapter();
             } else {
                 mAdapter = new HuaweiMDMAdapter();
