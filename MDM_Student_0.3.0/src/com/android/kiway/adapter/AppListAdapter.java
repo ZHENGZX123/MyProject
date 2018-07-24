@@ -197,6 +197,7 @@ public class AppListAdapter extends SimpleAdapter<App, AppListAdapter.ViewHolder
         intent.putExtra("classId", context.getSharedPreferences("kiway", 0).getString("classId", ""));
         intent.putExtra("schoolId", context.getSharedPreferences("kiway", 0).getString("schoolId", ""));
         intent.putExtra("huaweiToken", context.getSharedPreferences("huawei", 0).getString("token", ""));
+        intent.putExtra("x-auth-token",context.getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
 
         context.startActivity(intent);
         HttpUtil.childOperation(context, "useApp", "使用了" + name + "APP");

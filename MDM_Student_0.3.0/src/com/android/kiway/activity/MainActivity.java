@@ -479,14 +479,12 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     public void Browser(View view) {
         if (AppListUtils.isAppInstalled(getApplicationContext(), "cn.kiway.browser")) {
-            Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.browser");
-            intent.putExtra("studentName", getSharedPreferences("kiway", 0).getString("name", ""));
-            intent.putExtra("className", getSharedPreferences("kiway", 0).getString("className", ""));
-            intent.putExtra("studentNumber", getSharedPreferences("kiway", 0).getString("studentNumber", ""));
-            intent.putExtra("classId", getSharedPreferences("kiway", 0).getString("classId", ""));
-            intent.putExtra("schoolId", getSharedPreferences("kiway", 0).getString("schoolId", ""));
-            intent.putExtra("huaweiToken", getSharedPreferences("huawei", 0).getString("token", ""));
-            startActivity(intent);
+            Intent in = getBaseContext().getPackageManager().getLaunchIntentForPackage("cn.kiway.browser");
+            in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//重启APP
+            in.putExtra("enable_type", Utils.getEnable_Network(this));
+            in.putExtra("all_network", new MyDBHelper(this).getAllNetworks(Utils.getEnable_Network(this)));
+            in.putExtra("x-auth-token", getSharedPreferences("kiway", 0).getString("x-auth-token", ""));
+            startActivity(in);
         } else {
             startActivity(new Intent(this, WebViewActivity.class));
         }
