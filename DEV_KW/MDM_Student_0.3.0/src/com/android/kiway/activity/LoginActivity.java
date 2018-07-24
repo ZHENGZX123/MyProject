@@ -143,7 +143,13 @@ public class LoginActivity extends BaseActivity {
                             getSharedPreferences("kiway", 0).edit().putString("studentNumber", code).commit();
                             getSharedPreferences("kiway", 0).edit().putString("className", mClass.name).commit();
                             getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
-                            startActivity(new Intent(LoginActivity.this, Launcher.class));
+
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                                startActivity(new Intent(LoginActivity.this, MainActivity2.class));
+                            } else {
+                                startActivity(new Intent(LoginActivity.this, Launcher.class));
+                            }
+
                             finish();
                         } else {
                             toast("登录失败：" + errorMsg);

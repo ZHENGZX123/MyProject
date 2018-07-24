@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void requestRoot() {
-        if (!Build.MODEL.equals("ZTE Q5-T")) {
+        if (!Build.MODEL.equals("ZTE Q5-T") && !Build.MODEL.equals("HM NOTE 1TD")) {
             return;
         }
 
@@ -168,7 +168,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     private void collapse() {
-        if (!Build.MODEL.equals("ZTE Q5-T")) {
+        if (!Build.MODEL.equals("ZTE Q5-T") && !Build.MODEL.equals("HM NOTE 1TD")) {
             return;
         }
         mHandler.sendEmptyMessage(MSG_COLLAPSE);
