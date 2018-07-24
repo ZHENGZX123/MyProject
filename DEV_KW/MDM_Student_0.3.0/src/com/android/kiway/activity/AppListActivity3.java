@@ -33,7 +33,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.kiway.utils.AppReceiverIn.INSTALL_SUCCESS;
 import static com.android.kiway.utils.AppReceiverIn.PACKAGENAME;
+import static com.android.kiway.utils.AppReceiverIn.REMOVE_SUCCESS;
 import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.FileACache.ListFileName;
 
@@ -63,7 +65,9 @@ public class AppListActivity3 extends BaseActivity {
                 String action = "";
                 if (a.selected) {
                     new MyDBHelper(AppListActivity3.this).addCustonApp(a.packages);
+                    action= INSTALL_SUCCESS;
                 } else {
+                    action=REMOVE_SUCCESS;
                     new MyDBHelper(AppListActivity3.this).deleteAppInCuston(a.packages);
                 }
                 if (MainActivity2.instance != null) {
@@ -96,7 +100,6 @@ public class AppListActivity3 extends BaseActivity {
     public void reStart(View view) {
 //   ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 //        manager.restartPackage("cn.kiway.mdm");
-
         Intent intent = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
         PendingIntent restartIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent

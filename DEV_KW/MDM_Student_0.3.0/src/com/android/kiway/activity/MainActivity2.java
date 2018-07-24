@@ -225,7 +225,7 @@ public class MainActivity2 extends MainActivity implements CheckPassword.CheckPa
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             String packageName = intent.getStringExtra(PACKAGENAME);
-            Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + packageName);
+            Log.e(AppReceiverIn.TAG,  packageName);
             boolean b = intent.getBooleanExtra("boolean", false);
             if (action.equals(INSTALL_SUCCESS)) {
                 if (!b) {
@@ -239,8 +239,8 @@ public class MainActivity2 extends MainActivity implements CheckPassword.CheckPa
                 a.name = Utils.getProgramNameByPackageName(context, packageName);
                 a.packageName = packageName;
                 apps.add(a);
-                Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + packageName);
-                Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功" + allListData.toString());
+                Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功1" + packageName);
+                Log.e(AppReceiverIn.TAG, "--------MainActivity安装成功2" + allListData.toString());
                 if (!allListData.toString().contains(a.packageName)) {
                     allListData.add(apps);
                 }
