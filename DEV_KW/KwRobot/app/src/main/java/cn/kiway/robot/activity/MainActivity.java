@@ -113,9 +113,9 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
+        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);  TODO还有处理备注有图标的问题
     }
 
     private void initView() {
@@ -296,7 +296,9 @@ public class MainActivity extends BaseActivity {
 
 
     public void test2(View v) throws IOException, JSONException {
-        //getAllFriends();
+        getAllFriends();
+//        getAllMessages();
+
         //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
         //Log.d("test", "moments = " + new MyDBHelper(this).getAllMoments());
         //new MyDBHelper(this).addMoment(new Moment("1111", "我是一条测试数据"));
@@ -345,7 +347,7 @@ public class MainActivity extends BaseActivity {
                 HttpPost httpRequest = new HttpPost(url);
                 DefaultHttpClient client = new DefaultHttpClient();
                 List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("createDate", "" + c.time));
+                params.add(new BasicNameValuePair("createDate", c.time * 1000 + ""));
                 params.add(new BasicNameValuePair("robotId", robotId));
                 params.add(new BasicNameValuePair("circleId", c.momentID));
                 params.add(new BasicNameValuePair("author", c.authorName));
@@ -584,14 +586,39 @@ public class MainActivity extends BaseActivity {
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
                     final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
                     int friendCount = friends.size();
+                    Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
+
+                    //过滤测试
+//                    for (Friend f : friends) {
+//                        if (f.remark.startsWith("581")) {
+//                            Log.d("test", "f = " + f);
+//                            String remark = Utils.filterEmoji(f.remark);
+//                            Log.d("test", "remark = " + remark);
+//                        }
+//                    }
                     //1.上传
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Utils.uploadFriend(getApplication(), friends);
+                    int times = friendCount / 100 + 1;
+                    for (int i = 0; i < times; i++) {
+                        final ArrayList<Friend> temp = new ArrayList<Friend>();
+                        int tempSize = 0;
+                        if (i == times - 1) {
+                            tempSize = friendCount - 100 * i;
+                        } else {
+                            tempSize = 100;
                         }
-                    });
+                        for (int j = 0; j < tempSize; j++) {
+                            temp.add(friends.get(i * 100 + j));
+                        }
+                        Log.d("test", "temp = " + temp);
+                        Log.d("test", "temp size = " + temp.size());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.uploadFriend(getApplication(), temp);
+                            }
+                        });
+                    }
                     //2.检查有没有转发使者
                     checkTransfer(friends);
                 } catch (Exception e) {
@@ -698,7 +725,7 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    private void doRequestFriends(ArrayList<String> requests) {
+    public void doRequestFriends(ArrayList<String> requests) {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", ADD_FRIEND_CMD);
@@ -728,4 +755,9 @@ public class MainActivity extends BaseActivity {
         //startActivity(new Intent(this, WeChatActivity.class));
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
+    }
 }

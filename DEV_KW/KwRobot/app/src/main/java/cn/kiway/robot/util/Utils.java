@@ -382,11 +382,15 @@ public class Utils {
             String url = clientUrl + "/freind/all";
             Log.d("test", "freind url = " + url);
 
+
             JSONArray param = new JSONArray();
             for (Friend f : friends) {
+                String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
+                remark = Utils.filterEmoji(remark);
+
                 JSONObject o = new JSONObject();
                 o.put("nickname", f.nickname);//昵称
-                o.put("remark", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);//备注
+                o.put("remark", remark);//备注
                 o.put("wxId", f.wxId);//微信id
                 o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
                 o.put("robotId", robotId);
@@ -409,6 +413,16 @@ public class Utils {
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
         }
+    }
+
+    public static String filterEmoji(String str) {
+        String pattern =    "[\ud800\udc00-\udbff\udfff\ud800-\udfff]";
+        //String pattern = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
+        String reStr = "";
+        Pattern emoji = Pattern.compile(pattern);
+        Matcher emojiMatcher = emoji.matcher(str);
+        str = emojiMatcher.replaceAll(reStr);
+        return str;
     }
 
 

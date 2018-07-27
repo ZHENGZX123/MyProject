@@ -24,13 +24,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-//        host = "robot.kiway.cn";
-//        port = 5676;
-//        clientUrl = "http://robot.kiway.cn";
+        host = "robot.kiway.cn";
+        port = 5676;
+        clientUrl = "http://robot.kiway.cn";
 
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -127,6 +127,7 @@ public class Constant {
     public static final String CHECK_MOMENT_CMD = "checkMomentCmd";//目前后台没有
     public static final String INTERACT_MOMENT_CMD = "friendCircleCommentCmd";
     public static final String INTERACT_MOMENT_REPLY_CMD = "friendCircleCommentReplyCmd";
+    public static final String NOTIFY_RESULT_CMD = "msgToWxNoCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -182,6 +183,7 @@ public class Constant {
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
         backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
+        backdoors.put(NOTIFY_RESULT_CMD, Action.TYPE_NOTIFY_RESULT);
     }
 
     //机器人工作原理
