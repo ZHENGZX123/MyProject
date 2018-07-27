@@ -53,6 +53,7 @@ import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Command;
+import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.ReturnMessage;
@@ -96,6 +97,7 @@ import static cn.kiway.robot.entity.Action.TYPE_INTERACT_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
 import static cn.kiway.robot.entity.Action.TYPE_MISSING_FISH;
 import static cn.kiway.robot.entity.Action.TYPE_NEARBY_PEOPLE;
+import static cn.kiway.robot.entity.Action.TYPE_NOTIFY_RESULT;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_SEND_BATCH;
 import static cn.kiway.robot.entity.Action.TYPE_SET_COLLECTOR;
@@ -122,10 +124,8 @@ import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
-import static cn.kiway.robot.util.Constant.DELETE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INTERACT_MOMENT_CMD;
-import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.NODE_BUTTON;
 import static cn.kiway.robot.util.Constant.NODE_CHECKBOX;
@@ -137,19 +137,15 @@ import static cn.kiway.robot.util.Constant.NODE_LINEARLAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
-import static cn.kiway.robot.util.Constant.SEND_BATCH_CMD;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
-import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
-import static cn.kiway.robot.util.Constant.UPDATE_FRIEND_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NAME_CMD;
-import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
-import static cn.kiway.robot.util.Constant.UPDATE_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.UPGRADE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
+import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
@@ -301,7 +297,8 @@ public class AutoReplyService extends AccessibilityService {
                         Command command = new Command();
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
-                        command.token = o.optString("token");
+
+                        //cmd太混乱没有统一性，有些有content有些没有；有些content是命令本身，有些只是简单文本。特喵的
                         if (o.has("content") && !command.cmd.equals(AT_PERSONS_CMD) && !command.cmd.equals(INTERACT_MOMENT_CMD)) {
                             command.content = o.optString("content");
                             if (TextUtils.isEmpty(command.content)) {
@@ -310,6 +307,8 @@ public class AutoReplyService extends AccessibilityService {
                         } else {
                             command.content = Base64.encodeToString(recv.msg.getBytes(), NO_WRAP);
                         }
+                        //0718新增
+                        command.original = Base64.encodeToString(recv.msg.getBytes(), NO_WRAP);
 
                         doActionCommand(recv.msg, command);
                         return;
@@ -582,24 +581,19 @@ public class AutoReplyService extends AccessibilityService {
                 Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
-                    JSONObject o = new JSONObject();
+                    String content;
+                    if (command.cmd.equals(SEND_FRIEND_CIRCLE_CMD)) {
+                        content = new String(Base64.decode(command.original.getBytes(), NO_WRAP));
+                    } else {
+                        content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                    }
+                    JSONObject o = new JSONObject(content);
                     o.put("cmd", replies.get(command.cmd));
                     o.put("type", replies.get(command.cmd));
-                    o.put("token", command.token);
                     o.put("statusCode", statusCode);
-                    if (!TextUtils.isEmpty(command.id)) {
-                        o.put("id", command.id);
-                    }
+                    o.put("robotId", getSharedPreferences("kiway", 0).getString("robotId", ""));
 
-                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-                    if (command.cmd.equals(UPDATE_NICKNAME_CMD) || command.cmd.equals(UPDATE_FRIEND_NICKNAME_CMD)) {
-                        o.put("robotId", robotId);
-                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
-                        o.put("newName", new JSONObject(content).optString("newName"));
-                        o.put("oldName", new JSONObject(content).optString("oldName"));
-                    } else if (command.cmd.equals(DELETE_FRIEND_CMD)) {
-                        o.put("robotId", robotId);
-                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                    if (command.cmd.equals(DELETE_FRIEND_CMD)) {
                         JSONArray members = new JSONArray();
                         JSONArray recvMembers = new JSONObject(content).optJSONArray("members");
                         int count = recvMembers.length();
@@ -611,51 +605,31 @@ public class AutoReplyService extends AccessibilityService {
                             members.put(m);
                         }
                         o.put("members", members);
-                    } else if (command.cmd.equals(CREATE_GROUP_CHAT_CMD)
-                            || command.cmd.equals(INVITE_GROUP_CMD)
-                            || command.cmd.equals(TICK_PERSON_GROUP_CMD)
-                            || command.cmd.equals(UPDATE_GROUP_NOTICE_CMD)
-                            || command.cmd.equals(UPDATE_GROUP_NAME_CMD)
-                            || command.cmd.equals(DELETE_GROUP_CMD)
-                            || command.cmd.equals(AT_PERSONS_CMD)
-                            || command.cmd.equals(INTERACT_MOMENT_CMD)
-                            ) {
-                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
-                        o = new JSONObject(content);
-                        o.put("cmd", replies.get(command.cmd));
-                        o.put("type", replies.get(command.cmd));
-                        o.put("token", command.token);
-                        o.put("statusCode", statusCode);
-                        if (command.cmd.equals(INTERACT_MOMENT_CMD)) {
-                            o.put("createDate", System.currentTimeMillis() / 1000);
-                            o.put("robotId", robotId);
-                            o.put("content", new JSONObject(content).optString("replyContent"));
-                            String name = getSharedPreferences("kiway", 0).getString("name", "");
-                            o.put("author", name);
-                            o.put("toUser", new JSONObject(content).optString("author"));
-                        }
-                        if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
-                            //全删全改==>单独插入或修改
-                            String groupName = o.optString("name");
-                            String password = initDbPassword(getApplicationContext());
-                            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-                            ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
-                            String clientGroupId = null;
-                            new MyDBHelper(getApplicationContext()).deleteWXGroups();
-                            if (groups != null && groups.size() > 0) {
-                                for (Group group : groups) {
-                                    new MyDBHelper(getApplicationContext()).addWXGroup(group);
-                                    if (groupName.equals(group.groupName)) {
-                                        clientGroupId = group.clientGroupId;
-                                    }
+                    } else if (command.cmd.equals(INTERACT_MOMENT_CMD)) {
+                        o.put("createDate", System.currentTimeMillis() / 1000);
+                        o.put("content", new JSONObject(content).optString("replyContent"));
+                        String name = getSharedPreferences("kiway", 0).getString("name", "");
+                        o.put("author", name);
+                        o.put("toUser", new JSONObject(content).optString("author"));
+                    } else if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
+                        //全删全改==>单独插入或修改
+                        String groupName = o.optString("name");
+                        String password = initDbPassword(getApplicationContext());
+                        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+                        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
+                        String clientGroupId = null;
+                        new MyDBHelper(getApplicationContext()).deleteWXGroups();
+                        if (groups != null && groups.size() > 0) {
+                            for (Group group : groups) {
+                                new MyDBHelper(getApplicationContext()).addWXGroup(group);
+                                if (groupName.equals(group.groupName)) {
+                                    clientGroupId = group.clientGroupId;
                                 }
                             }
-                            o.put("clientGroupId", clientGroupId);
                         }
-                    } else if (command.cmd.equals(SEND_BATCH_CMD)) {
-                        String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
-                        o.put("batchId", new JSONObject(content).optString("batchId"));
+                        o.put("clientGroupId", clientGroupId);
                     }
+
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
                     chanel = rabbitMQUtils.createChannel(topic, topic);
@@ -957,6 +931,7 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_SEND_BATCH
                                 || actionType == TYPE_CHECK_MOMENT
                                 || actionType == TYPE_INTERACT_MOMENT
+                                || actionType == TYPE_NOTIFY_RESULT
                                 ) {
                             if (checkIsWxHomePage()) {
                                 doActionCommandByType(actionType);
@@ -1052,6 +1027,7 @@ public class AutoReplyService extends AccessibilityService {
                         || action.actionType == TYPE_GROUP_SEND_HELPER
                         || action.actionType == TYPE_CHECK_MOMENT
                         || action.actionType == TYPE_INTERACT_MOMENT
+                        || action.actionType == TYPE_NOTIFY_RESULT
                 ) {
             action.content = Base64.encodeToString(action.content.getBytes(), NO_WRAP);
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -1175,12 +1151,56 @@ public class AutoReplyService extends AccessibilityService {
                         //我-相册
                         String description = o.optString("description");
                         interactMoment(description);
+                    } else if (actionType == TYPE_NOTIFY_RESULT) {
+                        String target = o.optString("wxNo");
+                        checkNotifier(target);
                     } else {
                         String target = actions.get(currentActionID).sender;
                         searchTargetInWxHomePage(actionType, target, true);
                     }
                 }
             }, 2000);
+        } catch (Exception e) {
+            e.printStackTrace();
+            release(false);
+        }
+    }
+
+    private void checkNotifier(final String target) {
+        //检查是不是绑定人是不是好友。
+        new Thread() {
+            @Override
+            public void run() {
+                String password = initDbPassword(getApplicationContext());
+                File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
+                final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+                boolean hasNotifyer = false;
+                for (Friend f : friends) {
+                    String wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
+                    if (wxNo.equals(target)) {
+                        hasNotifyer = true;
+                    }
+                }
+                Log.d("test", "hasNotifyer = " + hasNotifyer);
+                if (hasNotifyer) {
+                    searchTargetInWxHomePage(TYPE_NOTIFY_RESULT, target, true);
+                } else {
+                    //先加好友，再去做
+                    Log.d("test", "还不是好友，发起好友申请");
+                    ArrayList<String> requests = new ArrayList<>();
+                    requests.add(target);
+                    MainActivity.instance.doRequestFriends(requests);
+                    release(false);
+                }
+            }
+        }.start();
+    }
+
+    private void doNotifyResult() {
+        try {
+            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            String message = new JSONObject(content).optString("message");
+            sendTextOnly(message, true);
         } catch (Exception e) {
             e.printStackTrace();
             release(false);
@@ -1692,6 +1712,10 @@ public class AutoReplyService extends AccessibilityService {
     private boolean adding_missing_fish = false;
 
     private void addMissingFish() {
+        if (tongxunluTextView==null){
+            release(false);
+            return;
+        }
         tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1916,8 +1940,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (actionType == TYPE_DELETE_MOMENT) {
                     doDeleteMoment();
                 } else if (actionType == TYPE_INTERACT_MOMENT) {
-                    release(true);
-                    //startCheckCommentList(5);
+                    startCheckCommentList(5);
                 }
             }
         }, 2000);
@@ -2860,6 +2883,8 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (actionType == TYPE_FIX_FRIEND_NICKNAME) {
                     //好友信息
                     fixFriendNickname(target);
+                } else if (actionType == TYPE_NOTIFY_RESULT) {
+                    doNotifyResult();
                 }
             }
         }, 3000);

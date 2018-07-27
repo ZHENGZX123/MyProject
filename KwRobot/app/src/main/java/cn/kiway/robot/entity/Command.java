@@ -9,6 +9,6 @@ public class Command {
     public String cmd;
     public String id;
     public String content;
-    public String token;
+    public String original;
 
 }
