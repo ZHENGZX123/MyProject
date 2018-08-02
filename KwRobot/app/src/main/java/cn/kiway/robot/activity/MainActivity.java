@@ -1,6 +1,8 @@
 package cn.kiway.robot.activity;
 
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import cn.kiway.robot.R;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
+import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
@@ -49,6 +52,7 @@ import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.Second;
 import cn.kiway.robot.moment.SnsInfo;
 import cn.kiway.robot.moment.Task;
+import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.RootCmd;
@@ -65,6 +69,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
+import static cn.kiway.robot.util.Constant.ROLE_KEFU;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
@@ -89,12 +94,14 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_GET_ALL_FRIENDS = 111;//上报所有好友
     private static final int MSG_GET_ALL_MOMENTS = 112;//上报所有朋友圈
     private static final int MSG_GET_ALL_GROUPS = 113;//上报所有群组
-    private static final int MSG_GET_ALL_MESSAGES = 114;//上报所有群组
+    private static final int MSG_GET_ALL_MESSAGES = 114;//上报所有聊天消息
     private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
+    private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
 
     private TextView nameTV;
     private CheckBox getPic;
     private TextView versionTV;
+    private CheckBox lockscreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,13 +122,18 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);  TODO还有处理备注有图标的问题
+        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);  TODO 还有处理备注有图标的问题
+        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
+
+        //FIXME
+        getSharedPreferences("kiway", 0).edit().putInt("role", ROLE_KEFU).commit();
     }
 
     private void initView() {
         nameTV = (TextView) findViewById(R.id.name);
         start = (Button) findViewById(R.id.start);
         getPic = (CheckBox) findViewById(R.id.getPic);
+        lockscreen = (CheckBox) findViewById(R.id.lockscreen);
 
         versionTV = (TextView) findViewById(R.id.version);
         versionTV.setText((clientUrl.contains("robot") ? "正式版：" : "测试版：") + getCurrentVersion(this));
@@ -133,6 +145,14 @@ public class MainActivity extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d("test", "onCheckedChanged isCheck = " + isChecked);
                 getSharedPreferences("getPic", 0).edit().putBoolean("getPic", isChecked).commit();
+            }
+        });
+
+        lockscreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("test", "onCheckedChanged isCheck = " + isChecked);
+                getSharedPreferences("lockscreen", 0).edit().putBoolean("lockscreen", isChecked).commit();
             }
         });
     }
@@ -296,9 +316,14 @@ public class MainActivity extends BaseActivity {
 
 
     public void test2(View v) throws IOException, JSONException {
-        getAllFriends();
-//        getAllMessages();
+        Utils.addFilter(this, new Filter("转发使者", Filter.TYPE_TRANSFER));
+        ArrayList<Filter> filters = new MyDBHelper(this).getAllFilters();
+        Log.d("test", "filters = " + filters);
 
+
+//        getAllFriends();
+//        getAllMessages();
+//        getAllMessages();
         //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
         //Log.d("test", "moments = " + new MyDBHelper(this).getAllMoments());
         //new MyDBHelper(this).addMoment(new Moment("1111", "我是一条测试数据"));
@@ -520,9 +545,21 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_GET_ALL_MESSAGES);
                 getAllMessages();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
+            } else if (msg.what == MSG_GET_ALL_WODIS) {
+                mHandler.removeMessages(MSG_GET_ALL_WODIS);
+                getAllWodis();
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 60 * 60 * 1000);
             }
         }
     };
+
+    private void getAllWodis() {
+        //new Filter("开维用4", TYPE_WODI)
+        //1.获取所有卧底的微信号？
+        //2.相互加入过滤名单
+        //3.相互加为好友？？
+        //4.
+    }
 
     private void checkAPPKey() {
         Log.d("test", "checkAPPKey");
@@ -588,7 +625,6 @@ public class MainActivity extends BaseActivity {
                     int friendCount = friends.size();
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
-
                     //过滤测试
 //                    for (Friend f : friends) {
 //                        if (f.remark.startsWith("581")) {
@@ -760,4 +796,17 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
     }
+
+    public void admin(View view) {
+        ComponentName componentName = new ComponentName(this, AdminReceiver.class);
+        //启动设备管理 - 在AndroidManifest.xml中设定相应过滤器
+        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        //权限列表
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+        //描述
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "激活后才能使用锁屏功能哦");
+        startActivity(intent);
+    }
+
+
 }

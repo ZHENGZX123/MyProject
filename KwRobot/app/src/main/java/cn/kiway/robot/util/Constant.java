@@ -24,13 +24,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -186,9 +186,10 @@ public class Constant {
         backdoors.put(NOTIFY_RESULT_CMD, Action.TYPE_NOTIFY_RESULT);
     }
 
-    //机器人工作原理
-    public static final int SKILL_USE_NOTIFICATION = 0;
-    public static final int SKILL_USE_DATABASE = 1;
-    public static final int SKILL_USE_MIXED = 2;
-    public static int useSkill = SKILL_USE_NOTIFICATION;
+    //机器人角色
+    public static final int ROLE_KEFU = 0;
+    public static final int ROLE_WODI = 1;
+    public static int sRole = ROLE_KEFU;
+
+
 }

@@ -1,8 +1,10 @@
 package cn.kiway.robot.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -58,6 +61,7 @@ import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.ZbusRecv;
+import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.Utils;
@@ -137,6 +141,8 @@ import static cn.kiway.robot.util.Constant.NODE_LINEARLAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
+import static cn.kiway.robot.util.Constant.ROLE_KEFU;
+import static cn.kiway.robot.util.Constant.ROLE_WODI;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NAME_CMD;
 import static cn.kiway.robot.util.Constant.UPGRADE_CMD;
@@ -157,6 +163,7 @@ public class AutoReplyService extends AccessibilityService {
     public static int MSG_ACTION_TIMEOUT = 1;
     public static int MSG_INSERT_QUEUE = 2;
     public static int MSG_TRAVERSAL_QUEUE = 3;
+    public static int MSG_SEND_HEARTBEAT = 4;
 
     public static AutoReplyService instance;
 
@@ -188,6 +195,7 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("maptrix", "service oncreate");
         instance = this;
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
+        mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 1000);
     }
 
     @Override
@@ -225,13 +233,26 @@ public class AutoReplyService extends AccessibilityService {
                     return;
                 }
                 if (preActions.size() > 0) {
+                    unlockScreen();
                     previewAction(preActions.remove(0));
                     return;
                 }
                 if (zbusRecvs.size() == 0) {
                     return;
                 }
+                unlockScreen();
                 handleZbusMsg(zbusRecvs.remove(0));
+                return;
+            }
+            if (msg.what == MSG_SEND_HEARTBEAT) {
+                long id = System.currentTimeMillis();
+                Action action = new Action();
+                action.sender = "心跳测试使者";
+                action.content = "heartbeat";
+                sendMsgToServer(id, action);
+
+                mHandler.removeMessages(MSG_SEND_HEARTBEAT);
+                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 5 * 60 * 1000);
                 return;
             }
         }
@@ -284,7 +305,6 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
         }
     }
-
 
     public void handleZbusMsg(final ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
@@ -691,6 +711,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendReply20sLater(long id, Action action) {
+        int role = getSharedPreferences("kiway", 0).getInt("role", ROLE_KEFU);
+        if (role == ROLE_WODI) {
+            return;
+        }
         String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
         String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
         if (TextUtils.isEmpty(busyStr) || TextUtils.isEmpty(offlineStr)) {
@@ -755,15 +779,55 @@ public class AutoReplyService extends AccessibilityService {
                 currentActionID = -1;
                 actioningFlag = false;
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
+
+                //release完成之后，判断当前队伍还有多少个要处理事件，如果事件为0则锁屏
+                if (preActions.size() == 0 || zbusRecvs.size() == 0 ) {
+                    //调用锁屏
+                    lockScreen();
+                } else {
+                    Log.d("test", "不需要lockScreen");
+                }
             }
         }, 2000);
     }
 
+    private void lockScreen() {
+        Log.d("test", "lockScreen");
+        boolean canLockScreen = getSharedPreferences("lockscreen", 0).getBoolean("lockscreen", true);
+        if (!canLockScreen) {
+            return;
+        }
+        DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
+                .DEVICE_POLICY_SERVICE);
+        ComponentName componentName = new ComponentName(this, AdminReceiver.class);
+        if (mDevicePolicyManager.isAdminActive(componentName)) {
+            mDevicePolicyManager.lockNow();
+        }
+    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("maptrix", "service destroy");
+    private void unlockScreen() {
+        Log.d("test", "unlockScreen");
+        boolean canLockScreen = getSharedPreferences("lockscreen", 0).getBoolean("lockscreen", true);
+        if (!canLockScreen) {
+            return;
+        }
+        //判断当前是锁屏状态
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean screenOn = pm.isScreenOn();
+        Log.d("test", "screenOn = " + screenOn);
+        if (!screenOn) {
+            // 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
+            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
+            wl.acquire(10000); // 点亮屏幕
+            wl.release(); // 释放
+        }
+        // 屏幕解锁
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
+        // 屏幕锁定
+        keyguardLock.reenableKeyguard();
+        keyguardLock.disableKeyguard(); // 解锁
+        Log.d("test", "unlockScreen Done");
     }
 
     //没有拉起-分配的intents
@@ -811,6 +875,7 @@ public class AutoReplyService extends AccessibilityService {
                         content = ticker.substring(ticker.indexOf(":") + 1).trim();
                         Log.d("test", "sender name = " + sender);
                         Log.d("test", "sender content = " + content);
+
                         if (Utils.isInfilters(getApplication(), sender)) {
                             Log.d("test", "该昵称被过滤");
                             continue;
@@ -1712,7 +1777,7 @@ public class AutoReplyService extends AccessibilityService {
     private boolean adding_missing_fish = false;
 
     private void addMissingFish() {
-        if (tongxunluTextView==null){
+        if (tongxunluTextView == null) {
             release(false);
             return;
         }
@@ -3435,7 +3500,6 @@ public class AutoReplyService extends AccessibilityService {
     private String remark;
     private String lastNickname = "";
 
-    //zhengkang 0711 fix here
     private boolean hasAcceptButton(final boolean checkRepeat) {
         findTargetNode(NODE_BUTTON, "接受", CLICK_NONE, true);
         if (mFindTargetNode == null) {
@@ -3471,7 +3535,7 @@ public class AutoReplyService extends AccessibilityService {
                                     if (backup.equals("") || backup.equals("null")) {
                                         response = DEFAULT_BACKUP;
                                     } else {
-                                        response = DEFAULT_BACKUP + "请加备用微信号" + backup;
+                                        response = DEFAULT_BACKUP + "，请加备用微信号：" + backup;
                                     }
                                     findTargetNode(NODE_EDITTEXT, response);
                                     mHandler.postDelayed(new Runnable() {
@@ -3509,6 +3573,10 @@ public class AutoReplyService extends AccessibilityService {
                                                     //漏网之鱼不再发消息
                                                     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                 } else {
+                                                    int role = getSharedPreferences("kiway", 0).getInt("role", ROLE_KEFU);
+                                                    if (role == ROLE_WODI) {
+                                                        return;
+                                                    }
                                                     //找到发消息，发一段话
                                                     boolean find = findTargetNode(NODE_BUTTON, "发消息", CLICK_SELF, true);
                                                     if (!find) {
@@ -4157,6 +4225,13 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("maptrix", "service destroy");
+        mHandler.removeCallbacksAndMessages(null);
     }
 
 }

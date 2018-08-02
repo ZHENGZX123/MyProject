@@ -70,6 +70,7 @@ import java.util.regex.Pattern;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
+import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
@@ -87,6 +88,7 @@ import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static com.mob.tools.utils.ResHelper.copyFile;
+import static net.sqlcipher.database.SQLiteDatabase.OPEN_READONLY;
 
 /**
  * Created by Administrator on 2018/3/21.
@@ -305,12 +307,14 @@ public class Utils {
                     rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                            //消费消费
                             String msg = new String(body, "utf-8");
                             Log.d("test", "handleDelivery msg = " + msg);
                             //处理逻辑
                             if (AutoReplyService.instance != null) {
-                                AutoReplyService.instance.sendReplyImmediately(msg, false);
+                                //如果是心跳回复，扔掉
+                                if (!isHeartBeatReply(msg)) {
+                                    AutoReplyService.instance.sendReplyImmediately(msg, false);
+                                }
                             }
                             //手动消息确认
                             channel.basicAck(envelope.getDeliveryTag(), false);
@@ -321,6 +325,15 @@ public class Utils {
                 }
             }
         }.start();
+    }
+
+
+    private static boolean isHeartBeatReply(String msg) {
+        if (msg.contains("\"content\":\"OK\",\"returnType\":1")) {
+            Log.d("test", "心跳回复");
+            return true;
+        }
+        return false;
     }
 
     public static boolean isEffectiveDate() {
@@ -416,7 +429,7 @@ public class Utils {
     }
 
     public static String filterEmoji(String str) {
-        String pattern =    "[\ud800\udc00-\udbff\udfff\ud800-\udfff]";
+        String pattern = "[\ud800\udc00-\udbff\udfff\ud800-\udfff]";
         //String pattern = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
         String reStr = "";
         Pattern emoji = Pattern.compile(pattern);
@@ -888,7 +901,8 @@ public class Utils {
                 database.rawExecSQL("PRAGMA cipher_migrate;");
             }
         };
-        return SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+//        return SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
+        return SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), password, null, OPEN_READONLY, hook);
     }
 
 
@@ -1062,5 +1076,19 @@ public class Utils {
                 });
             }
         }.start();
+    }
+
+    public static void addFilter(Context c, Filter filter) {
+        ArrayList<Filter> filters = new MyDBHelper(c).getAllFilters();
+        boolean existed = false;
+        for (Filter f : filters) {
+            if (f.name.equals(filter.name)) {
+                existed = true;
+            }
+        }
+        if (existed) {
+            return;
+        }
+        new MyDBHelper(c).addFilter(filter);
     }
 }

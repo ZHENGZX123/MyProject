@@ -213,6 +213,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import cn.kiway.robot.entity.AddFriend;
+import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.Moment;
@@ -250,10 +251,17 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_WX_COMMENT
             + "   (id integer primary key autoincrement,  momentID text , author text , content text , toUser text , createDate text , uploaded text)";
 
+
+    private static final String TABLE_FILTER = "filter";
+    private static final String CREATE_TABLE_FILTER = " create table IF NOT EXISTS "
+            + TABLE_FILTER
+            + "   (id integer primary key autoincrement,  type text ,   name text ) ";
+    //type：0转发使者 1卧底
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 19);
+        super(c, DB_NAME, null, 27);
     }
 
     @Override
@@ -274,6 +282,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_COMMENT);
         db.execSQL(CREATE_TABLE_WX_COMMNET);
 
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
+        db.execSQL(CREATE_TABLE_FILTER);
+
+
     }
 
     @Override
@@ -284,6 +296,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_WX_GROUP);
         db.execSQL(CREATE_TABLE_WX_MOMENT);
         db.execSQL(CREATE_TABLE_WX_COMMNET);
+        db.execSQL(CREATE_TABLE_FILTER);
+
+        addFilter(new Filter("转发使者", Filter.TYPE_TRANSFER));
     }
 
     //-------------------------------AddFriend-----------------------------
@@ -612,4 +627,44 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL("delete from WX_COMMENT where momentID = '" + momentID + "'");
         db.close();
     }
+
+
+    //-------------------------filter----------------------
+
+    public void addFilter(Filter filter) {
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("type", filter.type);
+        values.put("name", filter.name);
+        db.insert(TABLE_FILTER, null, values);
+        db.close();
+    }
+
+    public ArrayList<Filter> getAllFilters() {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_FILTER, null, null, null, null, null, null);
+
+        ArrayList<Filter> groups = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            String name = cur.getString(cur.getColumnIndex("name"));
+            int type = cur.getInt(cur.getColumnIndex("type"));
+            Filter filter = new Filter(id, name, type);
+            groups.add(filter);
+        }
+        cur.close();
+        db.close();
+
+        return groups;
+    }
+
+    public void deleteFilter(int id) {
+        if (db == null)
+            db = getWritableDatabase();
+        db.execSQL("delete from filter where id = " + id);
+        db.close();
+    }
+
 }

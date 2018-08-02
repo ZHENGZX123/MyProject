@@ -3,7 +3,6 @@ package cn.kiway.robot.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cn.kiway.robot.R;
+import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.entity.Filter;
+import cn.kiway.robot.util.Utils;
+
+import static cn.kiway.robot.entity.Filter.TYPE_OTHER;
 
 /**
  * Created by Administrator on 2018/3/27.
@@ -26,7 +30,7 @@ public class FilterActivity extends BaseActivity {
 
     private ListView lv;
     private MyAdapter adapter;
-    private ArrayList<String> filterNames = new ArrayList<>();
+    private ArrayList<Filter> filters = new ArrayList<>();
 
     private EditText et;
     private Button add;
@@ -35,12 +39,6 @@ public class FilterActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
-
-        //默认添加一个“转发使者”
-        String filters = getSharedPreferences("filters", 0).getString("filters", "");
-        if (!filters.contains("转发使者")) {
-            getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + "转发使者").commit();
-        }
 
         initView();
         setListener();
@@ -64,8 +62,8 @@ public class FilterActivity extends BaseActivity {
                     toast("不能为空");
                     return;
                 }
-                String filters = getSharedPreferences("filters", 0).getString("filters", "");
-                getSharedPreferences("filters", 0).edit().putString("filters", filters + "===" + name).commit();
+                et.setText("");
+                Utils.addFilter(FilterActivity.this, new Filter(name, TYPE_OTHER));
                 refresh();
             }
         });
@@ -80,10 +78,8 @@ public class FilterActivity extends BaseActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String name = filterNames.get(position);
-                        String filters = getSharedPreferences("filters", 0).getString("filters", "");
-                        filters = filters.replace("===" + name, "");
-                        getSharedPreferences("filters", 0).edit().putString("filters", filters).commit();
+                        int id = filters.get(position).id;
+                        new MyDBHelper(FilterActivity.this).deleteFilter(id);
                         refresh();
                     }
                 }).create().show();
@@ -94,18 +90,7 @@ public class FilterActivity extends BaseActivity {
 
 
     private void refresh() {
-        String f = getSharedPreferences("filters", 0).getString("filters", "");
-        String filters[] = f.split("===");
-        if (filters.length == 0) {
-            return;
-        }
-        filterNames.clear();
-        for (String temp : filters) {
-            if (TextUtils.isEmpty(temp)) {
-                continue;
-            }
-            filterNames.add(temp);
-        }
+        filters = new MyDBHelper(this).getAllFilters();
         adapter.notifyDataSetChanged();
     }
 
@@ -129,7 +114,7 @@ public class FilterActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-            String name = filterNames.get(position);
+            String name = filters.get(position).name;
             holder.name.setText(name);
             return rowView;
         }
@@ -140,12 +125,12 @@ public class FilterActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return filterNames.size();
+            return filters.size();
         }
 
         @Override
-        public String getItem(int arg0) {
-            return filterNames.get(arg0);
+        public Filter getItem(int arg0) {
+            return filters.get(arg0);
         }
 
         @Override

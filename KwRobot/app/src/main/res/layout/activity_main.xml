@@ -44,6 +44,20 @@
             android:text="点击开启服务" />
 
         <Button
+            android:id="@+id/admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="admin"
+            android:text="获取设备管理权限" />
+
+        <CheckBox
+            android:checked="true"
+            android:id="@+id/lockscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="是否需要锁屏" />
+
+        <Button
             android:id="@+id/filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
