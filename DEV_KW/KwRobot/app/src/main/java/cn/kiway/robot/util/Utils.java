@@ -158,16 +158,9 @@ public class Utils {
 
 
     public static boolean isInfilters(Context c, String sender) {
-        String f = c.getSharedPreferences("filters", 0).getString("filters", "");
-        String filters[] = f.split("===");
-        if (filters.length == 0) {
-            return false;
-        }
-        for (String temp : filters) {
-            if (TextUtils.isEmpty(temp)) {
-                continue;
-            }
-            if (temp.equals(sender)) {
+        ArrayList<Filter> filters = new MyDBHelper(c).getAllFilters(0);
+        for (Filter f : filters) {
+            if (f.name.equals(sender)) {
                 return true;
             }
         }
@@ -453,6 +446,7 @@ public class Utils {
         try {
             JSONObject o = new JSONObject(content);
         } catch (JSONException e) {
+            e.printStackTrace();
             isJsonString = false;
         }
         if (!isJsonString) {
@@ -800,18 +794,15 @@ public class Utils {
         return friends;
     }
 
-    public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password, String groupName) {
+    public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password) {
         Log.d("test", "doGetGroups");
         ArrayList<Group> groups = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             Cursor c1 = null;
             String sql = "";
-            if (TextUtils.isEmpty(groupName)) {
-                sql = "select username , nickname from rContact where type = 3";
-            } else {
-                sql = "select username , nickname from rContact where type = 3 and nickname = '" + groupName + "'";
-            }
+            //type=2未保存的群
+            sql = "select username , nickname from rContact where type = 3 or type = 2";
             Log.d("test", "sql = " + sql);
             c1 = db.rawQuery(sql, null);
             while (c1.moveToNext()) {
@@ -1079,14 +1070,7 @@ public class Utils {
     }
 
     public static void addFilter(Context c, Filter filter) {
-        ArrayList<Filter> filters = new MyDBHelper(c).getAllFilters();
-        boolean existed = false;
-        for (Filter f : filters) {
-            if (f.name.equals(filter.name)) {
-                existed = true;
-            }
-        }
-        if (existed) {
+        if (isInfilters(c, filter.name)) {
             return;
         }
         new MyDBHelper(c).addFilter(filter);

@@ -255,13 +255,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_FILTER = "filter";
     private static final String CREATE_TABLE_FILTER = " create table IF NOT EXISTS "
             + TABLE_FILTER
-            + "   (id integer primary key autoincrement,  type text ,   name text ) ";
+            + "   (id integer primary key autoincrement,  type text ,  wxNo text,  name text ) ";
     //type：0转发使者 1卧底
 
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 27);
+        super(c, DB_NAME, null, 28);
     }
 
     @Override
@@ -298,7 +298,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_WX_COMMNET);
         db.execSQL(CREATE_TABLE_FILTER);
 
-        addFilter(new Filter("转发使者", Filter.TYPE_TRANSFER));
     }
 
     //-------------------------------AddFriend-----------------------------
@@ -637,21 +636,28 @@ public class MyDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("type", filter.type);
         values.put("name", filter.name);
+        values.put("wxNo", filter.wxNo);
         db.insert(TABLE_FILTER, null, values);
         db.close();
     }
 
-    public ArrayList<Filter> getAllFilters() {
+    //0转发使者==>全部 1卧底 2其他
+    public ArrayList<Filter> getAllFilters(int type) {
         if (db == null)
             db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_FILTER, null, null, null, null, null, null);
-
+        Cursor cur = null;
+        if (type == 0) {
+            cur = db.query(TABLE_FILTER, null, null, null, null, null, null);
+        } else {
+            cur = db.query(TABLE_FILTER, null, "type=?", new String[]{type + ""}, null, null, null);
+        }
         ArrayList<Filter> groups = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             int id = cur.getInt(cur.getColumnIndex("id"));
             String name = cur.getString(cur.getColumnIndex("name"));
-            int type = cur.getInt(cur.getColumnIndex("type"));
-            Filter filter = new Filter(id, name, type);
+            String wxNo = cur.getString(cur.getColumnIndex("wxNo"));
+            type = cur.getInt(cur.getColumnIndex("type"));
+            Filter filter = new Filter(id, name, wxNo, type);
             groups.add(filter);
         }
         cur.close();

@@ -63,7 +63,7 @@ public class FilterActivity extends BaseActivity {
                     return;
                 }
                 et.setText("");
-                Utils.addFilter(FilterActivity.this, new Filter(name, TYPE_OTHER));
+                Utils.addFilter(FilterActivity.this, new Filter(name, "", TYPE_OTHER));
                 refresh();
             }
         });
@@ -90,7 +90,7 @@ public class FilterActivity extends BaseActivity {
 
 
     private void refresh() {
-        filters = new MyDBHelper(this).getAllFilters();
+        filters = new MyDBHelper(this).getAllFilters(0);
         adapter.notifyDataSetChanged();
     }
 

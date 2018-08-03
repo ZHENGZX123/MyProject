@@ -128,6 +128,8 @@ public class Constant {
     public static final String INTERACT_MOMENT_CMD = "friendCircleCommentCmd";
     public static final String INTERACT_MOMENT_REPLY_CMD = "friendCircleCommentReplyCmd";
     public static final String NOTIFY_RESULT_CMD = "msgToWxNoCmd";
+    public static final String SCRIPT_CMD = "scriptCmd";
+    public static final String SCRIPT_REPLY_CMD = "scriptReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -151,6 +153,7 @@ public class Constant {
         replies.put(AT_PERSONS_CMD, AT_PERSONS_REPLY_CMD);
         replies.put(AUTO_REPLY_CONTENT_CMD, AUTO_REPLY_CONTENT_REPLY_CMD);
         replies.put(INTERACT_MOMENT_CMD, INTERACT_MOMENT_REPLY_CMD);
+        replies.put(SCRIPT_CMD, SCRIPT_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -184,6 +187,8 @@ public class Constant {
         backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
         backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
         backdoors.put(NOTIFY_RESULT_CMD, Action.TYPE_NOTIFY_RESULT);
+        backdoors.put(SCRIPT_CMD, Action.TYPE_SCRIPT);
+
     }
 
     //机器人角色

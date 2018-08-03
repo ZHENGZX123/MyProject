@@ -50,12 +50,6 @@
             android:onClick="admin"
             android:text="获取设备管理权限" />
 
-        <CheckBox
-            android:checked="true"
-            android:id="@+id/lockscreen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="是否需要锁屏" />
 
         <Button
             android:id="@+id/filter"
@@ -90,6 +84,15 @@
             android:layout_height="wrap_content"
             android:onClick="reLogin"
             android:text="重新登录" />
+
+
+        <CheckBox
+            android:id="@+id/lockscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="是否需要锁屏"
+            android:visibility="gone" />
 
         <CheckBox
             android:id="@+id/getPic"
@@ -134,5 +137,14 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
         android:text="当前版本号" />
+
+    <TextView
+        android:id="@+id/role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:text="角色" />
 
 </RelativeLayout>
