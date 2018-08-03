@@ -335,9 +335,7 @@ public class MainActivity extends BaseActivity {
 
 
     public void test2(View v) throws IOException, JSONException {
-
-        getAllGroups();
-
+//        getAllGroups();
 //        getAllWodis();
 //        getAllFriends();
 //        getAllMessages();

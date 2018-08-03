@@ -76,6 +76,7 @@ import static android.util.Base64.NO_WRAP;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
+import static cn.kiway.robot.entity.Action.TYPE_ADD_PUBLIC_ACCOUNT;
 import static cn.kiway.robot.entity.Action.TYPE_AT_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
@@ -1011,6 +1012,8 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_INTERACT_MOMENT
                                 || actionType == TYPE_NOTIFY_RESULT
                                 || actionType == TYPE_SCRIPT
+                                || actionType == TYPE_ADD_PUBLIC_ACCOUNT
+
                                 ) {
                             if (checkIsWxHomePage()) {
                                 doActionCommandByType(actionType);
@@ -1108,6 +1111,8 @@ public class AutoReplyService extends AccessibilityService {
                         || action.actionType == TYPE_INTERACT_MOMENT
                         || action.actionType == TYPE_NOTIFY_RESULT
                         || action.actionType == TYPE_SCRIPT
+                        || action.actionType == TYPE_ADD_PUBLIC_ACCOUNT
+
                 ) {
             action.content = Base64.encodeToString(action.content.getBytes(), NO_WRAP);
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
@@ -1238,6 +1243,9 @@ public class AutoReplyService extends AccessibilityService {
                         //我-相册
                         String description = o.optString("description");
                         interactMoment(description);
+                    } else if (actionType == TYPE_ADD_PUBLIC_ACCOUNT) {
+                        //通讯录-公众号
+                        addPublicAccount();
                     } else if (actionType == TYPE_NOTIFY_RESULT) {
                         String target = o.optString("wxNo");
                         checkNotifier(target);
@@ -1251,6 +1259,79 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void addPublicAccount() {
+        if (tongxunluTextView == null) {
+            release(false);
+            return;
+        }
+        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        //公众号
+                        clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 300 / 762);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                                if (mFindTargetNode == null) {
+                                    release(false);
+                                    return;
+                                }
+                                mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                            String name = new JSONObject(content).optString("name");
+                                            findTargetNode(NODE_EDITTEXT, name);
+                                            execRootCmdSilent("input keyevent 160");
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 220 / 762);
+                                                    mHandler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            boolean find1 = findTargetNode(NODE_TEXTVIEW, "关注", CLICK_PARENT, true);
+                                                            if (!find1) {
+                                                                boolean find2 = findTargetNode(NODE_TEXTVIEW, "进入公众号", CLICK_NONE, true);
+                                                                if (find2){
+                                                                    release(true);
+                                                                    return;
+                                                                }
+                                                                release(false);
+                                                                return;
+                                                            }
+                                                            mHandler.postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    release(true);
+                                                                }
+                                                            }, 5000);
+                                                        }
+                                                    }, 3000);
+                                                }
+                                            }, 5000);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            release(false);
+                                        }
+                                    }
+                                }, 2000);
+                            }
+                        }, 3000);
+                    }
+                }.start();
+            }
+        }, 2000);
     }
 
     private void checkNotifier(final String target) {
