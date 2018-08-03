@@ -3,6 +3,7 @@ package cn.kiway.robot.activity;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ import static cn.kiway.robot.util.Constant.FORGET_FISH_CMD;
 import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.ROLE_KEFU;
+import static cn.kiway.robot.util.Constant.ROLE_WODI;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
@@ -80,8 +82,6 @@ import static cn.kiway.robot.util.Utils.initDbPassword;
 
 public class MainActivity extends BaseActivity {
 
-    public static MainActivity instance;
-    private Button start;
 
     public static final int MSG_NETWORK_OK = 101;
     public static final int MSG_NETWORK_ERR = 102;
@@ -98,10 +98,14 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
 
+    public static MainActivity instance;
+    private Button start;
     private TextView nameTV;
     private CheckBox getPic;
     private TextView versionTV;
+    private TextView roleTV;
     private CheckBox lockscreen;
+    private Button admin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +116,7 @@ public class MainActivity extends BaseActivity {
         initListener();
         checkRoot(null);
         Utils.installationPush(getApplication());
+        Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
 
         mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 60 * 1000);
@@ -124,19 +129,21 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);  TODO 还有处理备注有图标的问题
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
-
-        //FIXME
-        getSharedPreferences("kiway", 0).edit().putInt("role", ROLE_KEFU).commit();
     }
 
     private void initView() {
         nameTV = (TextView) findViewById(R.id.name);
         start = (Button) findViewById(R.id.start);
+        admin = (Button) findViewById(R.id.admin);
+
         getPic = (CheckBox) findViewById(R.id.getPic);
         lockscreen = (CheckBox) findViewById(R.id.lockscreen);
 
         versionTV = (TextView) findViewById(R.id.version);
         versionTV.setText((clientUrl.contains("robot") ? "正式版：" : "测试版：") + getCurrentVersion(this));
+
+        roleTV = (TextView) findViewById(R.id.role);
+
     }
 
     private void initListener() {
@@ -175,7 +182,19 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         updateServiceStatus();
+        updateAdminStatus();
         updateServiceCount();
+    }
+
+    private void updateAdminStatus() {
+        DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
+                .DEVICE_POLICY_SERVICE);
+        ComponentName componentName = new ComponentName(this, AdminReceiver.class);
+        if (mDevicePolicyManager.isAdminActive(componentName)) {
+            admin.setEnabled(false);
+        } else {
+            admin.setEnabled(true);
+        }
     }
 
     public void updateServiceCount() {
@@ -224,7 +243,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    String url = "http://robot.kiway.cn/baseData/getDataByType?type=" + wxNo;
+                    String url = clientUrl + "/baseData/getDataByType?type=" + wxNo;
                     Log.d("test", "url = " + url);
                     client.get(MainActivity.this, url, new TextHttpResponseHandler() {
                         @Override
@@ -316,11 +335,10 @@ public class MainActivity extends BaseActivity {
 
 
     public void test2(View v) throws IOException, JSONException {
-        Utils.addFilter(this, new Filter("转发使者", Filter.TYPE_TRANSFER));
-        ArrayList<Filter> filters = new MyDBHelper(this).getAllFilters();
-        Log.d("test", "filters = " + filters);
 
+        getAllGroups();
 
+//        getAllWodis();
 //        getAllFriends();
 //        getAllMessages();
 //        getAllMessages();
@@ -554,11 +572,64 @@ public class MainActivity extends BaseActivity {
     };
 
     private void getAllWodis() {
-        //new Filter("开维用4", TYPE_WODI)
-        //1.获取所有卧底的微信号？
+        //1.获取所有卧底的微信号
         //2.相互加入过滤名单
-        //3.相互加为好友？？
-        //4.
+        //3.相互加为好友
+        final String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = clientUrl + "/robot?isUndercover=1&size=1024";
+            Log.d("test", "url = " + url);
+            client.get(MainActivity.this, url, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", " onSuccess = " + ret);
+                    try {
+                        JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
+                        int count = list.length();
+                        boolean isWodi = false;
+                        for (int i = 0; i < count; i++) {
+                            JSONObject o = list.getJSONObject(i);
+                            String name = o.getString("name");
+                            String imei = o.getString("imei");
+                            if (imei.equals(wxNo)) {
+                                isWodi = true;
+                                continue;
+                            }
+                            //加入过滤名单
+                            Utils.addFilter(MainActivity.this, new Filter(name, imei, Filter.TYPE_WODI));
+                        }
+                        Log.d("test", "isWodi = " + isWodi);
+                        if (isWodi) {
+                            getSharedPreferences("kiway", 0).edit().putInt("role", ROLE_WODI).commit();
+                        } else {
+                            getSharedPreferences("kiway", 0).edit().putInt("role", ROLE_KEFU).commit();
+                        }
+                        refreshRoleTV();
+                        //getAllFriends();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", " onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void refreshRoleTV() {
+        int role = getSharedPreferences("kiway", 0).getInt("role", ROLE_KEFU);
+        if (role == ROLE_KEFU) {
+            roleTV.setText("当前角色：客服");
+        } else if (role == ROLE_WODI) {
+            roleTV.setText("当前角色：卧底");
+        }
     }
 
     private void checkAPPKey() {
@@ -625,14 +696,14 @@ public class MainActivity extends BaseActivity {
                     int friendCount = friends.size();
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
-                    //过滤测试
-//                    for (Friend f : friends) {
-//                        if (f.remark.startsWith("581")) {
-//                            Log.d("test", "f = " + f);
-//                            String remark = Utils.filterEmoji(f.remark);
-//                            Log.d("test", "remark = " + remark);
-//                        }
-//                    }
+                    //过滤表情符号测试代码
+                    /*for (Friend f : friends) {
+                        if (f.remark.startsWith("581")) {
+                            Log.d("test", "f = " + f);
+                            String remark = Utils.filterEmoji(f.remark);
+                            Log.d("test", "remark = " + remark);
+                        }
+                    }*/
                     //1.上传
                     int times = friendCount / 100 + 1;
                     for (int i = 0; i < times; i++) {
@@ -657,6 +728,7 @@ public class MainActivity extends BaseActivity {
                     }
                     //2.检查有没有转发使者
                     checkTransfer(friends);
+                    checkWodis(friends);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -664,7 +736,31 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
+    private void checkWodis(ArrayList<Friend> friends) {
+        Log.d("test", "checkWodis");
+        ArrayList<Filter> filters = new MyDBHelper(this).getAllFilters(1);
+        Log.d("test", "filters = " + filters);
+
+        for (Filter filter : filters) {
+            boolean hasWodi = false;
+            for (Friend f : friends) {
+                String wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
+                if (wxNo.equals(filter.wxNo)) {
+                    hasWodi = true;
+                }
+            }
+            Log.d("test", "hasWodi = " + hasWodi);
+            if (hasWodi) {
+                continue;
+            }
+            ArrayList<String> requests = new ArrayList<>();
+            requests.add(filter.wxNo);
+            doRequestFriends(requests);
+        }
+    }
+
     private void checkTransfer(ArrayList<Friend> friends) {
+        Log.d("test", "checkTransfer");
         String transfer = getSharedPreferences("transfer", 0).getString("transfer", DEFAULT_TRANSFER);
 
         boolean hasTransfer = false;
@@ -683,14 +779,14 @@ public class MainActivity extends BaseActivity {
         doRequestFriends(requests);
     }
 
-    private void getAllGroups() {
+    public void getAllGroups() {
         new Thread() {
             @Override
             public void run() {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-                    ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password, null);
+                    ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
                     new MyDBHelper(getApplicationContext()).deleteWXGroups();
                     if (groups != null && groups.size() > 0) {
                         for (Group group : groups) {
@@ -780,6 +876,7 @@ public class MainActivity extends BaseActivity {
             AutoReplyService.instance.sendReplyImmediately(temp, true);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("test", "服务没开");
         }
     }
 

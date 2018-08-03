@@ -12,16 +12,20 @@ public class Filter {
 
     public int id;
     public String name;
+    public String wxNo;
     public int type;
 
-    public Filter(String name, int type) {
+
+    public Filter(String name, String wxNo, int type) {
         this.name = name;
+        this.wxNo = wxNo;
         this.type = type;
     }
 
-    public Filter(int id, String name, int type) {
+    public Filter(int id, String name, String wxNo, int type) {
         this.id = id;
         this.name = name;
+        this.wxNo = wxNo;
         this.type = type;
     }
 
@@ -29,6 +33,7 @@ public class Filter {
     public String toString() {
         return "Filter{" +
                 "name='" + name + '\'' +
+                ", wxNo='" + wxNo + '\'' +
                 ", type=" + type +
                 '}';
     }

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.util.Utils.saveDefaultFile;
@@ -56,8 +57,7 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         MobSDK.init(this);
-        //CrashHandler.getInstance().init(this);
-        //UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "5b04d09ff29d98114400000d");
+        CrashHandler.getInstance().init(this);
 
         saveDefaultFile(this, "file.png", R.mipmap.file);
         saveDefaultFile(this, "video.png", R.mipmap.video);
