@@ -50,8 +50,10 @@ public class Action {
     public static final int TYPE_INTERACT_MOMENT = 134;
     public static final int TYPE_NOTIFY_RESULT = 135;
     public static final int TYPE_SCRIPT = 136;
-    //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
+    public static final int TYPE_ADD_PUBLIC_ACCOUNT = 137;
 
+    //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
+    //{"cmd":"addPublicAccountCmd" , "name":"广州91教育"}
     public PendingIntent intent;
     public String sender;
     public String content;

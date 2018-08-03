@@ -130,6 +130,8 @@ public class Constant {
     public static final String NOTIFY_RESULT_CMD = "msgToWxNoCmd";
     public static final String SCRIPT_CMD = "scriptCmd";
     public static final String SCRIPT_REPLY_CMD = "scriptReplyCmd";
+    public static final String ADD_PUBLIC_ACCOUNT_CMD = "addPublicAccountCmd";
+    public static final String ADD_PUBLIC_ACCOUNT_REPLY_CMD = "addPublicAccountReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -154,6 +156,7 @@ public class Constant {
         replies.put(AUTO_REPLY_CONTENT_CMD, AUTO_REPLY_CONTENT_REPLY_CMD);
         replies.put(INTERACT_MOMENT_CMD, INTERACT_MOMENT_REPLY_CMD);
         replies.put(SCRIPT_CMD, SCRIPT_REPLY_CMD);
+        replies.put(ADD_PUBLIC_ACCOUNT_CMD, ADD_PUBLIC_ACCOUNT_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -188,13 +191,11 @@ public class Constant {
         backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
         backdoors.put(NOTIFY_RESULT_CMD, Action.TYPE_NOTIFY_RESULT);
         backdoors.put(SCRIPT_CMD, Action.TYPE_SCRIPT);
-
+        backdoors.put(ADD_PUBLIC_ACCOUNT_CMD, Action.TYPE_ADD_PUBLIC_ACCOUNT);
     }
 
     //机器人角色
     public static final int ROLE_KEFU = 0;
     public static final int ROLE_WODI = 1;
-    public static int sRole = ROLE_KEFU;
-
 
 }
