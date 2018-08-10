@@ -24,13 +24,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-//        host = "robot.kiway.cn";
-//        port = 5676;
-//        clientUrl = "http://robot.kiway.cn";
+        host = "robot.kiway.cn";
+        port = 5676;
+        clientUrl = "http://robot.kiway.cn";
 
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -128,10 +128,16 @@ public class Constant {
     public static final String INTERACT_MOMENT_CMD = "friendCircleCommentCmd";
     public static final String INTERACT_MOMENT_REPLY_CMD = "friendCircleCommentReplyCmd";
     public static final String NOTIFY_RESULT_CMD = "msgToWxNoCmd";
-    public static final String SCRIPT_CMD = "scriptCmd";
-    public static final String SCRIPT_REPLY_CMD = "scriptReplyCmd";
+    public static final String SEND_SCRIPT_CMD = "sendScriptCmd";
+    public static final String SEND_SCRIPT_REPLY_CMD = "sendScriptReplyCmd";
     public static final String ADD_PUBLIC_ACCOUNT_CMD = "addPublicAccountCmd";
     public static final String ADD_PUBLIC_ACCOUNT_REPLY_CMD = "addPublicAccountReplyCmd";
+    public static final String SEARCH_PUBLIC_ACCOUNT_CMD = "searchPublicAccountCmd";
+    public static final String SEARCH_PUBLIC_ACCOUNT_REPLY_CMD = "searchPublicAccountReplyCmd";
+    public static final String REMOVE_WODI_CMD = "removeUnderCoverCmd";
+    public static final String REMOVE_WODI_REPLY_CMD = "removeUnderCoverReplyCmd";
+    public static final String SET_WODI_CMD = "setUnderCoverCmd";
+    public static final String SET_WODI_REPLY_CMD = "setUnderCoverReplyCmd";
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -155,8 +161,11 @@ public class Constant {
         replies.put(AT_PERSONS_CMD, AT_PERSONS_REPLY_CMD);
         replies.put(AUTO_REPLY_CONTENT_CMD, AUTO_REPLY_CONTENT_REPLY_CMD);
         replies.put(INTERACT_MOMENT_CMD, INTERACT_MOMENT_REPLY_CMD);
-        replies.put(SCRIPT_CMD, SCRIPT_REPLY_CMD);
+        replies.put(SEND_SCRIPT_CMD, SEND_SCRIPT_REPLY_CMD);
         replies.put(ADD_PUBLIC_ACCOUNT_CMD, ADD_PUBLIC_ACCOUNT_REPLY_CMD);
+        replies.put(SEARCH_PUBLIC_ACCOUNT_CMD, SEARCH_PUBLIC_ACCOUNT_REPLY_CMD);
+        replies.put(REMOVE_WODI_CMD, REMOVE_WODI_REPLY_CMD);
+        replies.put(SET_WODI_CMD, SET_WODI_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -190,8 +199,9 @@ public class Constant {
         backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
         backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
         backdoors.put(NOTIFY_RESULT_CMD, Action.TYPE_NOTIFY_RESULT);
-        backdoors.put(SCRIPT_CMD, Action.TYPE_SCRIPT);
+        backdoors.put(SEND_SCRIPT_CMD, Action.TYPE_SCRIPT);
         backdoors.put(ADD_PUBLIC_ACCOUNT_CMD, Action.TYPE_ADD_PUBLIC_ACCOUNT);
+        backdoors.put(SEARCH_PUBLIC_ACCOUNT_CMD, Action.TYPE_SEARCH_PUBLIC_ACCOUNT);
     }
 
     //机器人角色
