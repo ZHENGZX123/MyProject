@@ -1,14 +1,11 @@
 package cn.kiway.robot.util;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
-import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -182,6 +179,8 @@ public class Utils {
                 new MyDBHelper(c).updateAddFriend(af);
                 Utils.updateUserStatus(af.phone, remark, STATUS_ADD_SUCCESS);
             }
+            //0808主动添加好友，请求通过后，上报一次好友列表。
+            MainActivity.instance.getAllFriends(false);
             return true;
         }
         return false;
@@ -201,10 +200,10 @@ public class Utils {
     public static String getParentRemark(Context c, int plus) {
         String parentId = FileUtils.readSDCardFile(ROOT + "parent.txt", c);
         if (TextUtils.isEmpty(parentId)) {
-            parentId = "1";//String.format("%04d", 1);
+            parentId = "1";
         } else {
             int id = Integer.parseInt(parentId);
-            parentId = "" + (id + plus);//String.format("%04d", (id + 1));
+            parentId = "" + (id + plus);
         }
         FileUtils.saveFile(parentId, "parent.txt");
         return parentId;
@@ -544,37 +543,7 @@ public class Utils {
                 }
             }
         }.start();
-
-        //0613不再调用
-//        if (status == STATUS_ADD_SUCCESS) {
-//            String current = System.currentTimeMillis() + "";
-//            ArrayList<Friend> friends = new ArrayList<>();
-//            friends.add(new Friend(Utils.getNicknameFromRemark(remark), remark, current, current));
-//            Utils.uploadFriend(getApplication(), friends);
-//        }
     }
-
-    public static String getPhoneNumber(Context c) {
-        TelephonyManager mTelephonyMgr;
-        mTelephonyMgr = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        String number = mTelephonyMgr.getLine1Number();
-        Log.d("test", "number = " + number);
-        return number;
-    }
-
-    public static void sendSMS(Context c, String phoneNumber, String message) {
-        //获取短信管理器
-        SmsManager manager = SmsManager.getDefault();
-        //自定一两个intent,发送两个隐式意图,这两个隐式意图自己定义
-        Intent intent1 = new Intent("com.example.SENT");
-        ;
-        Intent intent2 = new Intent("com.example.DELIVERY");
-        PendingIntent pi1 = PendingIntent.getBroadcast(c, 0, intent1, 0);//延迟意图
-        PendingIntent pi2 = PendingIntent.getBroadcast(c, 0, intent2, 0);
-        //发送短信
-        manager.sendTextMessage(phoneNumber, null, message, pi1, pi2);
-    }
-
 
     private static int lastStatus = -1;
 

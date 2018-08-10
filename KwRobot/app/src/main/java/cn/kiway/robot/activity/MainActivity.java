@@ -335,11 +335,8 @@ public class MainActivity extends BaseActivity {
 
 
     public void test2(View v) throws IOException, JSONException {
-//        getAllGroups();
-//        getAllWodis();
-//        getAllFriends();
-//        getAllMessages();
-//        getAllMessages();
+        getAllWodis();
+
         //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
         //Log.d("test", "moments = " + new MyDBHelper(this).getAllMoments());
         //new MyDBHelper(this).addMoment(new Moment("1111", "我是一条测试数据"));
@@ -531,7 +528,7 @@ public class MainActivity extends BaseActivity {
                 mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
-                getAllFriends();
+                getAllFriends(true);
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
@@ -569,60 +566,65 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private void getAllWodis() {
+    public void getAllWodis() {
         //1.获取所有卧底的微信号
         //2.相互加入过滤名单
         //3.相互加为好友
-        final String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            String url = clientUrl + "/robot?isUndercover=1&size=1024";
-            Log.d("test", "url = " + url);
-            client.get(MainActivity.this, url, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", " onSuccess = " + ret);
-                    try {
-                        JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
-                        int count = list.length();
-                        boolean isWodi = false;
-                        for (int i = 0; i < count; i++) {
-                            JSONObject o = list.getJSONObject(i);
-                            String name = o.getString("name");
-                            String imei = o.getString("imei");
-                            if (imei.equals(wxNo)) {
-                                isWodi = true;
-                                continue;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    String url = clientUrl + "/robot?isUndercover=1&size=1024";
+                    Log.d("test", "url = " + url);
+                    client.get(MainActivity.this, url, new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", " onSuccess = " + ret);
+                            try {
+                                JSONArray list = new JSONObject(ret).getJSONObject("data").getJSONArray("list");
+                                int count = list.length();
+                                boolean isWodi = false;
+                                for (int i = 0; i < count; i++) {
+                                    JSONObject o = list.getJSONObject(i);
+                                    String name = o.getString("name");
+                                    String imei = o.getString("imei");
+                                    if (imei.equals(wxNo)) {
+                                        isWodi = true;
+                                        continue;
+                                    }
+                                    //加入过滤名单
+                                    Utils.addFilter(MainActivity.this, new Filter(name, imei, Filter.TYPE_WODI));
+                                }
+                                Log.d("test", "isWodi = " + isWodi);
+                                if (isWodi) {
+                                    getSharedPreferences("role", 0).edit().putInt("role", ROLE_WODI).commit();
+                                } else {
+                                    getSharedPreferences("role", 0).edit().putInt("role", ROLE_KEFU).commit();
+                                }
+                                refreshRoleTV();
+                                //getAllFriends();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            //加入过滤名单
-                            Utils.addFilter(MainActivity.this, new Filter(name, imei, Filter.TYPE_WODI));
                         }
-                        Log.d("test", "isWodi = " + isWodi);
-                        if (isWodi) {
-                            getSharedPreferences("kiway", 0).edit().putInt("role", ROLE_WODI).commit();
-                        } else {
-                            getSharedPreferences("kiway", 0).edit().putInt("role", ROLE_KEFU).commit();
-                        }
-                        refreshRoleTV();
-                        //getAllFriends();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", " onFailure = " + s);
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", " onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
     private void refreshRoleTV() {
-        int role = getSharedPreferences("kiway", 0).getInt("role", ROLE_KEFU);
+        int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
         if (role == ROLE_KEFU) {
             roleTV.setText("当前角色：客服");
         } else if (role == ROLE_WODI) {
@@ -683,7 +685,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void getAllFriends() {
+    public void getAllFriends(final boolean doCheck) {
         new Thread() {
             @Override
             public void run() {
@@ -725,8 +727,10 @@ public class MainActivity extends BaseActivity {
                         });
                     }
                     //2.检查有没有转发使者
-                    checkTransfer(friends);
-                    checkWodis(friends);
+                    if (doCheck) {
+                        checkTransfer(friends);
+                        checkWodis(friends);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
