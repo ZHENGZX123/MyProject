@@ -301,7 +301,13 @@ public class AutoReplyService extends AccessibilityService {
     private void launchWechat(long id, long maxReleaseTime) {
         try {
             currentActionID = id;
-            actions.get(currentActionID).intent.send();
+            PendingIntent intent = actions.get(currentActionID).intent;
+            if (intent == null) {
+                Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                startActivity(i);
+            } else {
+                intent.send();
+            }
 
             if (maxReleaseTime < DEFAULT_RELEASE_TIME) {
                 maxReleaseTime = DEFAULT_RELEASE_TIME;
@@ -312,6 +318,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    //处理后台消息回复的命令
     public void handleZbusMsg(final ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
         new Thread() {
@@ -361,9 +368,26 @@ public class AutoReplyService extends AccessibilityService {
 
                     Action action = actions.get(id);
                     if (action == null) {
-                        Log.d("test", "action null , doFindAUsableAction");
-                        doFindAUsableAction(o);
+                        Log.d("test", "action为空的情况");
+                        JSONArray returnMessage = o.getJSONArray("returnMessage");
+                        Long firstKey;
+                        Action firstA;
+                        if (actions.size() == 0) {
+                            firstKey = System.currentTimeMillis();
+                            firstA = new Action();
+                            actions.put(firstKey, firstA);
+                        } else {
+                            firstKey = actions.keySet().iterator().next();
+                            firstA = actions.get(firstKey);
+                        }
+                        firstA.sender = o.optString("sender");
+                        firstA.content = o.optString("content");
+                        firstA.actionType = TYPE_TEXT;
+                        firstA.command = null;
+                        //因为使用的是别人的action，所以realReply是false
+                        doHandleZbusMsg(firstKey, firstA, returnMessage, false);
                     } else {
+                        Log.d("test", "action不为空的情况");
                         String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
                         String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
                         if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.contains(busyStr) || recv.msg.contains(offlineStr))) {
@@ -372,9 +396,9 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         //判断action是否被篡改
                         if (action.sender.equals(HOUTAI)) {
-                            action.actionType = TYPE_TEXT;
                             action.sender = o.optString("sender");
                             action.content = o.optString("content");
+                            action.actionType = TYPE_TEXT;
                             action.command = null;
                         }
                         JSONArray returnMessage = o.getJSONArray("returnMessage");
@@ -387,6 +411,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    //处理后台各种操作命令
     private void doActionCommand(String msg, Command command) {
         if (command.cmd.equals(UPGRADE_CMD)) {
             MainActivity.instance.checkNewVersion(null);
@@ -421,14 +446,16 @@ public class AutoReplyService extends AccessibilityService {
             sendMsgToServer2(200, command);
             return;
         }
-
-        if (actions.size() < 1) {
-            toast("需要至少有1个家长消息");
-            sendMsgToServer2(500, command);
-            return;
+        Long firstKey;
+        Action firstA;
+        if (actions.size() == 0) {
+            firstKey = System.currentTimeMillis();
+            firstA = new Action();
+            actions.put(firstKey, firstA);
+        } else {
+            firstKey = actions.keySet().iterator().next();
+            firstA = actions.get(firstKey);
         }
-        Long firstKey = actions.keySet().iterator().next();
-        Action firstA = actions.get(firstKey);
         firstA.sender = HOUTAI;
         firstA.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
         firstA.actionType = backdoors.get(command.cmd);
@@ -442,28 +469,6 @@ public class AutoReplyService extends AccessibilityService {
             shareToWechatMoments(command.id, command.content);
         } else {
             doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
-        }
-    }
-
-    private void doFindAUsableAction(JSONObject o) {
-        try {
-            String sender = o.getString("sender");
-            String content = o.getString("content");
-            JSONArray returnMessage = o.getJSONArray("returnMessage");
-            if (actions.size() < 1) {
-                toast("需要至少有1个家长消息");
-                return;
-            }
-            Long firstKey = actions.keySet().iterator().next();
-            Action firstA = actions.get(firstKey);
-            firstA.sender = sender;
-            firstA.content = content;
-            firstA.actionType = TYPE_TEXT;
-            firstA.command = null;
-            //因为使用的是别人的action，所以realReply是false
-            doHandleZbusMsg(firstKey, firstA, returnMessage, false);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -822,6 +827,8 @@ public class AutoReplyService extends AccessibilityService {
         ComponentName componentName = new ComponentName(this, AdminReceiver.class);
         if (mDevicePolicyManager.isAdminActive(componentName)) {
             mDevicePolicyManager.lockNow();
+        } else {
+            Log.d("test", "lockscreen no permissiom");
         }
         Log.d("test", "lockScreen Done");
     }
@@ -1020,42 +1027,40 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_ADD_PUBLIC_ACCOUNT
                                 || actionType == TYPE_SEARCH_PUBLIC_ACCOUNT
                                 ) {
-                            if (checkIsWxHomePage()) {
-                                doActionCommandByType(actionType);
-                            } else {
-                                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        doActionCommandByType(actionType);
-                                    }
-                                }, 2000);
-                            }
-                        } else {
-                            //聊天有关，需要容错
-                            final String targetSender = actions.get(currentActionID).sender;
-                            if (checkIsWxHomePage()) {
-                                searchTargetInWxHomePage(1, targetSender, true);
-                            } else {
-                                boolean isCorrectPage = findTargetNode(NODE_TEXTVIEW, targetSender, CLICK_NONE, false);
-                                Log.d("test", "isCorrectPage = " + isCorrectPage);
-                                if (isCorrectPage) {
-                                    doChatByActionType();
-                                } else {
-                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            searchTargetInWxHomePage(1, targetSender, true);
-                                        }
-                                    }, 2000);
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    goBacktoWechatHomepage();
+                                    doActionCommandByType(actionType);
                                 }
-                            }
+                            }.start();
+                        } else {
+                            //聊天有关，0810修改，一律退到首页再做处理
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    goBacktoWechatHomepage();
+                                    final String targetSender = actions.get(currentActionID).sender;
+                                    searchTargetInWxHomePage(1, targetSender, true);
+                                }
+                            }.start();
                         }
                     }
                 }, 2000);
                 break;
         }
+    }
+
+    public boolean goBacktoWechatHomepage() {
+        while (!checkIsWxHomePage()) {
+            performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 
     private void dispatchAction(long id, Action action) {
@@ -1170,14 +1175,12 @@ public class AutoReplyService extends AccessibilityService {
             } else if (o.has("clientGroupIds")) {
                 clientGroupId = o.optJSONArray("clientGroupIds").optString(0);
             }
-
             final JSONArray members = o.optJSONArray("members");
             final String finalContent = content;
             final String finalClientGroupId = clientGroupId;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    checkIsWxHomePage();
                     if (actionType == TYPE_CREATE_GROUP_CHAT
                             || actionType == TYPE_CLEAR_ZOMBIE_FAN
                             || actionType == TYPE_ADD_FRIEND) {
@@ -1276,7 +1279,6 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
         tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -3162,11 +3164,11 @@ public class AutoReplyService extends AccessibilityService {
                 JSONObject temp = scripts.getJSONObject(i);
                 String member = temp.getString("wxNo");
                 if (member.equals(wxNo)) {
-                    myScripts.add(new Script(temp.getString("content"), temp.getInt("intervals")));
+                    myScripts.add(new Script(temp.getString("content"), temp.getInt("intervals"), temp.getInt("type")));
                 }
             }
             Log.d("test", "我负责的脚本有" + myScripts.size() + "条");
-            resetMaxReleaseTime((myScripts.get(myScripts.size() - 1).time + 10) * 1000);
+            resetMaxReleaseTime((myScripts.get(myScripts.size() - 1).time + 15) * 1000);
 
             new Thread() {
                 @Override
@@ -3180,8 +3182,16 @@ public class AutoReplyService extends AccessibilityService {
                             } else {
                                 sleep(script.time * 1000 - 4000);
                             }
-                            sendTextOnly(script.content, false);
-                            sleep(4000);
+                            if (script.type == 1) {
+                                sendTextOnly(script.content, false);
+                            } else {
+                                sendImageOnly2(script.content);
+                            }
+                            if (script.type == 1) {
+                                sleep(4000);
+                            } else {
+                                sleep(10000);
+                            }
                             i++;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -3942,6 +3952,59 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    public void sendImageOnly2(String url) {
+        //1.下载图片
+        Bitmap bmp = ImageLoader.getInstance().loadImageSync(url);//, KWApplication.getLoaderOptions()
+        if (bmp == null) {
+            release(false);
+            return;
+        }
+        //2.保存图片
+        String localPath = saveImage(getApplication(), bmp, true);
+        if (localPath == null) {
+            release(false);
+            return;
+        }
+        Log.d("test", "sendImageOnly2");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                findTargetNode(NODE_IMAGEBUTTON, 3);
+                if (mFindTargetNode != null) {
+                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            final boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
+                            if (find) {
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findTargetNode(NODE_CHECKBOX, 1);
+                                        if (mFindTargetNode != null) {
+                                            clickSomeWhere(mFindTargetNode);
+                                            findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, false);
+                                        }
+                                    }
+                                }, 2000);
+                            } else {
+                                boolean find2 = findTargetNode(NODE_TEXTVIEW, "你可能要发送的照片：", CLICK_PARENT, true);
+                                if (find2) {
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
+                                        }
+                                    }, 2000);
+                                }
+                            }
+                        }
+                    }, 2000);
+                }
+            }
+        });
+    }
+
     private void sendVideoOnly() {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setText("视频");
@@ -4282,7 +4345,8 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-    public void test2() {
+
+    public void test3() {
         Log.d("test", "=================findLastMsgViewInListView====================");
         findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
 

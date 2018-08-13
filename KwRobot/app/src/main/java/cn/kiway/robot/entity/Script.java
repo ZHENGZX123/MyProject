@@ -8,10 +8,11 @@ public class Script {
 
     public String content;
     public int time;
+    public int type;
 
-
-    public Script(String content, int time) {
+    public Script(String content, int time , int type) {
         this.content = content;
         this.time = time;
+        this.type = type;
     }
 }
