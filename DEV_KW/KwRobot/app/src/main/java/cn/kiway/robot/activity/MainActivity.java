@@ -329,28 +329,13 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+//                AutoReplyService.instance.sendImageOnly2("http://202.104.136.9:3000/api/Files/1641528681728860/download");
             }
         }, 10000);
     }
 
-
     public void test2(View v) throws IOException, JSONException {
-        getAllWodis();
 
-        //ArrayList<String> peoples = doGetPeopleInGroup(getApplicationContext(), dbFile, password, "9189004002@chatroom");
-        //Log.d("test", "moments = " + new MyDBHelper(this).getAllMoments());
-        //new MyDBHelper(this).addMoment(new Moment("1111", "我是一条测试数据"));
-        //new MyDBHelper(this).addComment(new SnsInfo.Comment("1111", "评论人名字", "评论内容", "toUser", 1530867548, 0));
-
-        //getAllMomentComments();
-
-        //Log.d("test", "getAllMoments " + new MyDBHelper(this).getAllMoments());
-        //Log.d("test", "getCommentsByMomentID " + new MyDBHelper(this).getCommentsByMomentID("81f2aa68708147f3b9e794fdba0ae96d"));
-
-        //SnsInfo.Comment c = new SnsInfo.Comment("81f2aa68708147f3b9e794fdba0ae96d", "评论作者", "评论内容", "null", 1530867548, 0);
-        //new MyDBHelper(this).addComment(c);
-
-        //getAllMomentComments();
     }
 
     private void getAllMomentComments() {
