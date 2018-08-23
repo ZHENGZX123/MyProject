@@ -125,6 +125,7 @@ public class Constant {
     public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
     public static final String AUTO_REPLY_CONTENT_REPLY_CMD = "autoReplyContentReplyCmd";
     public static final String CHECK_MOMENT_CMD = "checkMomentCmd";//目前后台没有
+    public static final String CLEAR_CHAT_HISTORY_CMD = "clearChatHistoryCmd";
     public static final String INTERACT_MOMENT_CMD = "friendCircleCommentCmd";
     public static final String INTERACT_MOMENT_REPLY_CMD = "friendCircleCommentReplyCmd";
     public static final String NOTIFY_RESULT_CMD = "msgToWxNoCmd";
@@ -197,6 +198,7 @@ public class Constant {
         backdoors.put(AT_PERSONS_CMD, Action.TYPE_AT_GROUP_PEOPLE);
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
+        backdoors.put(CLEAR_CHAT_HISTORY_CMD, Action.TYPE_CLEAR_CHAT_HISTORY);
         backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
         backdoors.put(NOTIFY_RESULT_CMD, Action.TYPE_NOTIFY_RESULT);
         backdoors.put(SEND_SCRIPT_CMD, Action.TYPE_SCRIPT);

@@ -48,6 +48,7 @@ public class KWApplication extends Application {
 
 
     public static RabbitMQUtils rabbitMQUtils;
+    public static RabbitMQUtils rabbitMQUtils2;
     public static List<Channel> channels = new ArrayList<>();
 
     @Override
@@ -93,6 +94,10 @@ public class KWApplication extends Application {
                 if (rabbitMQUtils != null) {
                     rabbitMQUtils.close();
                     rabbitMQUtils = null;
+                }
+                if (rabbitMQUtils2 != null) {
+                    rabbitMQUtils2.close();
+                    rabbitMQUtils2 = null;
                 }
             }
         }.start();

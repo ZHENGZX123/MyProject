@@ -52,6 +52,7 @@ public class Action {
     public static final int TYPE_SCRIPT = 136;
     public static final int TYPE_ADD_PUBLIC_ACCOUNT = 137;
     public static final int TYPE_SEARCH_PUBLIC_ACCOUNT = 138;
+    public static final int TYPE_CLEAR_CHAT_HISTORY = 139;
 
 
     //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
