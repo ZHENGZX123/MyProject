@@ -26,20 +26,18 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
-        tools:replace="android:name"
         android:name=".KWApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:persistent="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:name">
         <activity
             android:name=".activity.APPkeyActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.LoginActivity"
             android:launchMode="singleTask"
@@ -54,8 +52,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".activity.NoNetActivity"
@@ -68,21 +65,27 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
-            android:name=".activity.WeChatActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
-        <activity
             android:name=".activity.InstructionActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
+
         <activity
-            android:name=".activity.MomentListActivity"
-            android:label="@string/export_moments"
-            android:parentActivityName=".activity.WeChatActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.WeChatActivity" />
+            android:name=".activity.WelcomeActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".activity.Guide1Activity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.Guide2Activity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.Guide3Activity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="weixin_key"
@@ -110,13 +113,6 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".receiver.MyBroadcastReceiver">
-            <intent-filter>
-                <action android:name="cn.kiway.robot.receiver" />
-            </intent-filter>
-        </receiver>
-
         <receiver
             android:name=".receiver.AdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">

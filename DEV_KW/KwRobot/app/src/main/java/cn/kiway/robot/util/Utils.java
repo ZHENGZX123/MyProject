@@ -17,6 +17,7 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.xiaoleilu.hutool.crypto.symmetric.DES;
 
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteDatabaseHook;
@@ -77,6 +78,7 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.KWApplication.channels;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
+import static cn.kiway.robot.KWApplication.rabbitMQUtils2;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
@@ -276,47 +278,65 @@ public class Utils {
 
     //初始化zbus
     public static void initZbus(Context c) {
+        Log.d("test", "initZbus");
         final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
         final String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+        final String businessID = c.getSharedPreferences("kiway", 0).getString("businessID", "");
         if (TextUtils.isEmpty(robotId)) {
+            Log.d("test", "robotId is null");
             return;
         }
         if (TextUtils.isEmpty(wxNo)) {
+            Log.d("test", "wxNo is null");
             return;
         }
+//        if (TextUtils.isEmpty(businessID)) {
+//            Log.d("test", "businessID is null");
+//            return;
+//        }
         Log.d("test", "initZbus");
         new Thread() {
             @Override
             public void run() {
                 try {
-                    String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
-                    Log.d("test", "topic = " + topic);
                     if (rabbitMQUtils == null) {
                         rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
                     }
-                    final Channel channel = rabbitMQUtils.createChannel(topic, topic);
-                    channels.add(channel);
-                    rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
-                        @Override
-                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                            String msg = new String(body, "utf-8");
-                            Log.d("test", "handleDelivery msg = " + msg);
-                            //处理逻辑
-                            if (AutoReplyService.instance != null) {
-                                //如果是心跳回复，扔掉
-                                if (!isHeartBeatReply(msg)) {
-                                    AutoReplyService.instance.sendReplyImmediately(msg, false);
-                                }
-                            }
-                            //手动消息确认
-                            channel.basicAck(envelope.getDeliveryTag(), false);
-                        }
-                    }, channel);
+                    if (rabbitMQUtils2 == null) {
+                        rabbitMQUtils2 = new RabbitMQUtils(Constant.host, Constant.port);
+                    }
+                    String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
+                    Log.d("test", "topic1 = " + topic1);
+                    String topic2 = "kiway_wx_reply_push_" + "123456789";//businessID
+                    Log.d("test", "topic2 = " + topic2);
+                    doConsume(rabbitMQUtils, topic1);
+                    doConsume(rabbitMQUtils2, topic2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+    }
+
+    private static void doConsume(RabbitMQUtils util, String topic) throws Exception {
+        final Channel channel = util.createChannel(topic, topic);
+        channels.add(channel);
+        util.consumeMsg(new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                String msg = new String(body, "utf-8");
+                Log.d("test", "handleDelivery msg = " + msg);
+                //处理逻辑
+                if (AutoReplyService.instance != null) {
+                    //如果是心跳回复，扔掉
+                    if (!isHeartBeatReply(msg)) {
+                        AutoReplyService.instance.sendReplyImmediately(msg, false);
+                    }
+                }
+                //手动消息确认
+                channel.basicAck(envelope.getDeliveryTag(), false);
+            }
+        }, channel);
     }
 
 
@@ -1043,5 +1063,14 @@ public class Utils {
             return;
         }
         new MyDBHelper(c).addFilter(filter);
+    }
+
+    public static String decrypt(String hex) {
+        DES des = new DES("kiwayWxReply".getBytes());
+        //String hex = des.encryptHex("kiway");
+        //Log.d("test", "hex = " + hex);
+        String ret = des.decryptStr(hex);
+        Log.d("test", "ret = " + ret);
+        return ret;
     }
 }

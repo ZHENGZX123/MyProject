@@ -65,6 +65,7 @@ import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
+import cn.kiway.robot.util.MyListener;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
@@ -72,6 +73,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.util.Base64.NO_WRAP;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
@@ -83,6 +85,7 @@ import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
 import static cn.kiway.robot.entity.Action.TYPE_CHECK_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_CHECK_NEW_VERSION;
+import static cn.kiway.robot.entity.Action.TYPE_CLEAR_CHAT_HISTORY;
 import static cn.kiway.robot.entity.Action.TYPE_CLEAR_ZOMBIE_FAN;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_CREATE_GROUP_CHAT;
@@ -121,6 +124,7 @@ import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
+import static cn.kiway.robot.util.Constant.CLEAR_CHAT_HISTORY_CMD;
 import static cn.kiway.robot.util.Constant.CLICK_NONE;
 import static cn.kiway.robot.util.Constant.CLICK_PARENT;
 import static cn.kiway.robot.util.Constant.CLICK_SELF;
@@ -318,7 +322,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    //处理后台消息回复的命令
+    //处理后台过来的消息回复的命令
     public void handleZbusMsg(final ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
         new Thread() {
@@ -616,7 +620,7 @@ public class AutoReplyService extends AccessibilityService {
 
     //后台操作命令，执行完后的回复
     public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
-        if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD)) {
+        if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD) || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD)) {
             return;
         }
 
@@ -1021,6 +1025,7 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_GROUP_SEND_HELPER
                                 || actionType == TYPE_SEND_BATCH
                                 || actionType == TYPE_CHECK_MOMENT
+                                || actionType == TYPE_CLEAR_CHAT_HISTORY
                                 || actionType == TYPE_INTERACT_MOMENT
                                 || actionType == TYPE_NOTIFY_RESULT
                                 || actionType == TYPE_SCRIPT
@@ -1119,6 +1124,7 @@ public class AutoReplyService extends AccessibilityService {
                         || action.actionType == TYPE_NEARBY_PEOPLE
                         || action.actionType == TYPE_GROUP_SEND_HELPER
                         || action.actionType == TYPE_CHECK_MOMENT
+                        || action.actionType == TYPE_CLEAR_CHAT_HISTORY
                         || action.actionType == TYPE_INTERACT_MOMENT
                         || action.actionType == TYPE_NOTIFY_RESULT
                         || action.actionType == TYPE_SCRIPT
@@ -1261,6 +1267,9 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_NOTIFY_RESULT) {
                         String target = o.optString("wxNo");
                         checkNotifier(target);
+                    } else if (actionType == TYPE_CLEAR_CHAT_HISTORY) {
+                        //发现-朋友圈
+                        clearChatHistory();
                     } else {
                         String target = actions.get(currentActionID).sender;
                         searchTargetInWxHomePage(actionType, target, true);
@@ -1271,6 +1280,56 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void clearChatHistory() {
+        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean find = findTargetNode(NODE_TEXTVIEW, "设置", CLICK_PARENT, true);
+                if (!find) {
+                    release(false);
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean find = findTargetNode(NODE_TEXTVIEW, "聊天", CLICK_PARENT, true);
+                        if (!find) {
+                            release(false);
+                            return;
+                        }
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean find = findTargetNode(NODE_TEXTVIEW, "清空聊天记录", CLICK_PARENT, true);
+                                if (!find) {
+                                    release(false);
+                                    return;
+                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        boolean find = findTargetNode(NODE_BUTTON, "清空", CLICK_SELF, true);
+                                        if (!find) {
+                                            release(false);
+                                            return;
+                                        }
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                release(true);
+                                            }
+                                        }, 2000);
+                                    }
+                                }, 2000);
+                            }
+                        }, 2000);
+                    }
+                }, 2000);
+            }
+        }, 2000);
     }
 
     private void searchPublicAccount() {
@@ -4156,7 +4215,7 @@ public class AutoReplyService extends AccessibilityService {
                 intent.setType("image/*");
                 intent.putExtra("Kdescription", description);
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
                 doShareToWechatMoments(id, description);
@@ -4531,4 +4590,45 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.removeCallbacksAndMessages(null);
     }
 
+    public void checkWechatLogin(final MyListener myListener) {
+        new Thread() {
+            @Override
+            public void run() {
+                //goBacktoWechatHomepage();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean isHomePage = checkIsWxHomePage();
+                        if (!isHomePage) {
+                            myListener.onResult(false);
+                            backToRobot();
+                            return;
+                        }
+                        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //FIXME 读取微信号、微信昵称
+                                //test(getRootInActiveWindow());
+                                findTargetNode(NODE_TEXTVIEW, "微信号：", CLICK_NONE, false);
+                                String wxNo = mFindTargetNode.getText().toString();
+                                Log.d("test", "wxNo = " + wxNo);
+                                getSharedPreferences("kiway", 0).edit().putString("wxNo", wxNo).commit();
+                                myListener.onResult(true);
+                                backToRobot();
+                            }
+                        }, 2000);
+                    }
+
+                    private void backToRobot() {
+                        Intent intent = new Intent();
+                        ComponentName cn = new ComponentName("cn.kiway.robot", "cn.kiway.robot.activity.Guide2Activity");
+                        intent.setComponent(cn);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }, 2000);
+            }
+        }.start();
+    }
 }

@@ -64,6 +64,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
+import static cn.kiway.robot.util.Constant.CLEAR_CHAT_HISTORY_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.DEFAULT_VALIDATION;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
@@ -97,6 +98,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_GET_ALL_MESSAGES = 114;//上报所有聊天消息
     private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
+    private static final int MSG_CLEAR_CHAT_HISTORY = 117;//检测key是否有效
 
     public static MainActivity instance;
     private Button start;
@@ -127,6 +129,8 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
+
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);  TODO 还有处理备注有图标的问题
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
     }
@@ -329,13 +333,12 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//                AutoReplyService.instance.sendImageOnly2("http://202.104.136.9:3000/api/Files/1641528681728860/download");
             }
         }, 10000);
     }
 
     public void test2(View v) throws IOException, JSONException {
-
+        clearChatHistory();
     }
 
     private void getAllMomentComments() {
@@ -533,7 +536,7 @@ public class MainActivity extends BaseActivity {
                 mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
-                missingFish();
+                doMissingFish();
                 mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 30 * 60 * 1000);
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
@@ -547,9 +550,27 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_GET_ALL_WODIS);
                 getAllWodis();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 60 * 60 * 1000);
+            } else if (msg.what == MSG_CLEAR_CHAT_HISTORY) {
+                mHandler.removeMessages(MSG_CLEAR_CHAT_HISTORY);
+                clearChatHistory();
+                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
             }
         }
     };
+
+    private void clearChatHistory() {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("cmd", CLEAR_CHAT_HISTORY_CMD);
+            o.put("id", "84f119408d6441358d24b668323f0a23");
+            o.put("token", "1526895528997");
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void getAllWodis() {
         //1.获取所有卧底的微信号
@@ -636,7 +657,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void missingFish() {
+    private void doMissingFish() {
         int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 0);
         if (friendCount > MAX_FRIENDS) {
             toast("好友已经到上限了");
