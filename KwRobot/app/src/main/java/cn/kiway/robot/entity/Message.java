@@ -12,12 +12,14 @@ public class Message {
     public String remark; //nickname, remark
     public String content;
 
+
     @Override
     public String toString() {
         return "Message{" +
                 "type=" + type +
                 ", createTime=" + createTime +
                 ", talker='" + talker + '\'' +
+                ", remark='" + remark + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }

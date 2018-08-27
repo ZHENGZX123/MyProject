@@ -695,6 +695,8 @@ public class AutoReplyService extends AccessibilityService {
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsgs(msg, chanel);
 
+                    new MyDBHelper(getApplication()).addMessage(sender, message , System.currentTimeMillis() + "");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -3859,7 +3861,7 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                                 findTargetNode(NODE_EDITTEXT, newRemark);
                             }
-                            
+
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
