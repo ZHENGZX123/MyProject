@@ -26,12 +26,9 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rabbitmq.client.Channel;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -188,7 +185,7 @@ public class AutoReplyService extends AccessibilityService {
     private String currentWechatPage;
 
     //清理僵尸粉
-    private Set<String> checkedFriends = new HashSet<>();//临时变量，已经勾选的好友
+    private Set<String> checkedFriends = new HashSet<>();//已经勾选的好友
     private int start;
     private int end;
 
@@ -300,10 +297,19 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void launchWechat(long id, long maxReleaseTime) {
-        //0823FIX不再使用pendingIntent，因此要修改很多地方
+        //0823FIX不再使用pendingIntent
+        //0827只有图片使用pendingIntent
         currentActionID = id;
-        Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
-        startActivity(i);
+        if (actions.get(currentActionID).actionType == TYPE_COLLECTOR_FORWARDING) {
+            try {
+                actions.get(currentActionID).intent.send();
+            } catch (PendingIntent.CanceledException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+            startActivity(i);
+        }
         if (maxReleaseTime < DEFAULT_RELEASE_TIME) {
             maxReleaseTime = DEFAULT_RELEASE_TIME;
         }
@@ -695,7 +701,7 @@ public class AutoReplyService extends AccessibilityService {
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsgs(msg, chanel);
 
-                    new MyDBHelper(getApplication()).addMessage(sender, message , System.currentTimeMillis() + "");
+                    new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -992,6 +998,9 @@ public class AutoReplyService extends AccessibilityService {
                                     doRequestFriend();
                                 }
                             }.start();
+                        } else if (actionType == TYPE_COLLECTOR_FORWARDING) {
+                            //FIXME??这里会被篡改吗
+                            doChatByActionType();
                         } else {
                             //聊天有关，0810修改，一律退到首页再做处理
                             new Thread() {
@@ -2877,8 +2886,15 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    //暂时去掉公众号、名片功能
                     Log.d("test", "=================findLastMsgViewInListView====================");
+                    //判断是群还是个人
+
+                    findTargetNode(NODE_TEXTVIEW, 1);
+                    String title = mFindTargetNode.getText().toString();
+                    Log.d("test", "previewAction title = " + title);
+                    final String clientGroupId = Utils.isFromGroup(getApplicationContext(), title);
+                    Log.d("test", "isFromGroup clientGroupId = " + clientGroupId);
+
                     findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
                     if (mFindTargetNode == null) {
                         Log.d("test", "没有找到最后一条消息。。。");
@@ -2895,13 +2911,13 @@ public class AutoReplyService extends AccessibilityService {
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        doLongClickLastMsg();
+                                        doLongClickLastMsg(clientGroupId);
                                     }
                                 }, 2000);
                             }
                         }, 5000);
                     } else {
-                        doLongClickLastMsg();
+                        doLongClickLastMsg(clientGroupId);
                     }
                 }
             }, 2000);
@@ -3669,7 +3685,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private void doLongClickLastMsg() {
+    private void doLongClickLastMsg(final String clientGroupId) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -3699,7 +3715,7 @@ public class AutoReplyService extends AccessibilityService {
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                String content = getCollectorForwardingContent();
+                                                String content = getCollectorForwardingContent(clientGroupId);
                                                 boolean find = findTargetNode(NODE_EDITTEXT, content);
                                                 if (!find) {
                                                     Log.d("test", "粘贴不上，不发过去");
@@ -4338,7 +4354,7 @@ public class AutoReplyService extends AccessibilityService {
         }, 5000);
     }
 
-    private String getCollectorForwardingContent() {
+    private String getCollectorForwardingContent(String clientGroupId) {
         JSONObject o = new JSONObject();
         try {
             String name = getSharedPreferences("kiway", 0).getString("name", "");
@@ -4349,14 +4365,18 @@ public class AutoReplyService extends AccessibilityService {
             String topic = robotId + "#" + wxNo;
             Action currentAction = actions.get(currentActionID);
             String content = currentAction.content;
+            String msg = "";
 
-            String msg = new JSONObject()
+            JSONObject msgObj = new JSONObject()
                     .put("id", System.currentTimeMillis() + "")
                     .put("sender", currentAction.sender)
                     .put("content", "content")
                     .put("me", name)
-                    .put("areaCode", areaCode)
-                    .toString();
+                    .put("areaCode", areaCode);
+            if (!TextUtils.isEmpty(clientGroupId)) {
+                msgObj.put("clientGroupId", clientGroupId);
+            }
+            msg = msgObj.toString();
 
             int msgType = TYPE_TEXT;
             if (content.startsWith("[图片]")) {
@@ -4381,6 +4401,9 @@ public class AutoReplyService extends AccessibilityService {
             o.put("type", msgType);
             o.put("title", "title");
             o.put("userId", new JSONArray().put(topic));
+            if (!TextUtils.isEmpty(clientGroupId)) {
+                o.put("froms", "groups");
+            }
 
             Log.d("test", "o = " + o.toString());
 
@@ -4408,187 +4431,6 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
-    }
-
-
-    public void test3() {
-        Log.d("test", "=================findLastMsgViewInListView====================");
-        findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
-
-        clickSomeWhere(mFindTargetNode);
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                longClickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() / 2);
-
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        findTargetNode(NODE_TEXTVIEW, "识别图中小程序码", CLICK_PARENT, true);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                findTargetNode(NODE_IMAGEBUTTON, 1);
-                                if (mFindTargetNode == null) {
-                                    release(false);
-                                    return;
-                                }
-                                mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        boolean find = findTargetNode(NODE_TEXTVIEW, "转发", CLICK_PARENT, true);
-                                        if (!find) {
-                                            release(false);
-                                            return;
-                                        }
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                boolean find = findTargetNode(NODE_EDITTEXT, "浪翻云");
-                                                if (!find) {
-                                                    release(false);
-                                                    return;
-                                                }
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        boolean find = findTargetNode(NODE_TEXTVIEW, "浪翻云", CLICK_PARENT, false);
-                                                        if (!find) {
-                                                            release(false);
-                                                            return;
-                                                        }
-                                                        mHandler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                final boolean find = findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
-                                                                mHandler.postDelayed(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        release(find);
-                                                                    }
-                                                                }, 2000);
-                                                            }
-                                                        }, 2000);
-                                                    }
-                                                }, 1000);
-                                            }
-                                        }, 2000);
-                                    }
-                                }, 1500);
-                            }
-                        }, 20000);
-                    }
-                }, 3000);
-            }
-        }, 3000);
-    }
-
-    public void sendMiniProgramCode() {
-        String name = getSharedPreferences("kiway", 0).getString("name", "");
-        String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
-        String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-        String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-        try {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            client.addHeader("x-auth-token", xtoken);
-            //String sender = actions.get(currentActionID).sender;
-            String sender = "5 浪翻云";
-            String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
-            Log.d("test", "url = " + url);
-            com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
-            param.put("me", name);
-            param.put("installationId", installationId);
-            param.put("areaCode", areaCode);
-            param.put("sender", sender);
-            param.put("senderId", wxNo);
-            client.post(this, url, param, new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "onSuccess = " + ret);
-                    try {
-                        final String url = new JSONObject(ret).getJSONObject("data").getString("url");
-                        Log.d("test", "url = " + url);
-                        //http://ifanr-cdn.b0.upaiyun.com/wp-content/uploads/2017/04/juhuama.jpg
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                //1.下载图片
-                                Bitmap bmp = ImageLoader.getInstance().loadImageSync(url);//, KWApplication.getLoaderOptions()
-                                if (bmp == null) {
-                                    release(false);
-                                    return;
-                                }
-                                //2.保存图片
-                                String localPath = saveImage(getApplication(), bmp, false);
-                                if (localPath == null) {
-                                    release(false);
-                                    return;
-                                }
-                                mHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                                        if (mFindTargetNode == null) {
-                                            release(false);
-                                            return;
-                                        }
-                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
-                                                if (!find) {
-                                                    release(false);
-                                                    return;
-                                                }
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        findTargetNode(NODE_RELATIVELAYOUT, 1);
-                                                        if (mFindTargetNode == null) {
-                                                            release(false);
-                                                            return;
-                                                        }
-                                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                                        mHandler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
-                                                                mHandler.postDelayed(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        release(true);
-                                                                    }
-                                                                }, 3000);
-                                                            }
-                                                        }, 3000);
-                                                    }
-                                                }, 3000);
-                                            }
-                                        }, 2000);
-                                    }
-                                });
-                            }
-                        }.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        release(false);
-                    }
-                }
-
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "onFailure = " + s);
-                    release(false);
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            release(false);
-        }
     }
 
     @Override
@@ -4639,4 +4481,5 @@ public class AutoReplyService extends AccessibilityService {
             }
         }.start();
     }
+
 }

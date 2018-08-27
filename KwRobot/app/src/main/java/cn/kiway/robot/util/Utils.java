@@ -644,7 +644,7 @@ public class Utils {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("test", "relogin exception = " + e.toString());
+            Log.d("test", "check301 exception = " + e.toString());
         }
     }
 
