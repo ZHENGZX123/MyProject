@@ -56,6 +56,7 @@ import cn.kiway.robot.moment.Task;
 import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
+import cn.kiway.robot.util.MyListener;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.sharesdk.framework.Platform;
@@ -73,10 +74,12 @@ import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
 import static cn.kiway.robot.util.Constant.PERSION_NEARBY_CMD;
 import static cn.kiway.robot.util.Constant.ROLE_KEFU;
 import static cn.kiway.robot.util.Constant.ROLE_WODI;
+import static cn.kiway.robot.util.Constant.UPDATE_FRIEND_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.doGetMessages;
+import static cn.kiway.robot.util.Utils.doGetPeopleInGroup;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -130,8 +133,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
-
-        //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);  TODO 还有处理备注有图标的问题
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
     }
 
@@ -244,9 +246,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
+                    client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/baseData/getDataByType?type=" + wxNo;
                     Log.d("test", "url = " + url);
                     client.get(MainActivity.this, url, new TextHttpResponseHandler() {
@@ -313,6 +317,8 @@ public class MainActivity extends BaseActivity {
                             "&origin=mp&areaCode=" + areaCode;
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
+                    String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    httpRequest.addHeader("x-auth-token", xtoken);
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());
                     String welcome = new JSONObject(ret).getJSONObject("data").getString("message");
@@ -326,19 +332,6 @@ public class MainActivity extends BaseActivity {
 
             }
         }.start();
-    }
-
-    public void test(View v) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-            }
-        }, 10000);
-    }
-
-    public void test2(View v) throws IOException, JSONException {
-        clearChatHistory();
     }
 
     private void getAllMomentComments() {
@@ -368,9 +361,11 @@ public class MainActivity extends BaseActivity {
             if (c.uploaded == 0 && c.toUser == null) {
                 Log.d("test", "do upload c = " + c);
                 String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 String url = Constant.clientUrl + "/robot/" + robotId + "/friendCircleComment/report";
                 Log.d("test", "url = " + url);
                 HttpPost httpRequest = new HttpPost(url);
+                httpRequest.addHeader("x-auth-token", xtoken);
                 DefaultHttpClient client = new DefaultHttpClient();
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("createDate", c.time * 1000 + ""));
@@ -394,7 +389,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void getCommentFromDB() throws Throwable {
-        File dbFile = getWxDBFile("SnsMicroMsg.db", null);
+        File dbFile = getWxDBFile("SnsMicroMsg.db", "getAllComments.db");
         Task task = new Task(getApplicationContext());
         boolean init = task.initSnsReader();
         if (init) {
@@ -427,11 +422,9 @@ public class MainActivity extends BaseActivity {
     private void checkMomemt() throws JSONException {
         JSONObject o = new JSONObject();
         o.put("cmd", CHECK_MOMENT_CMD);
-        o.put("id", "84f119408d6441358d24b668323f0a23");
-        o.put("token", "1526895528997");
         String temp = o.toString();
         Log.d("test", "temp = " + temp);
-        AutoReplyService.instance.sendReplyImmediately(temp, true);
+        AutoReplyService.instance.sendReplyImmediately(temp, false);
     }
 
     private void getAllMessages() {
@@ -449,22 +442,21 @@ public class MainActivity extends BaseActivity {
                     ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn1Hour();
                     //过滤掉已经发送的消息
                     for (Message m1 : wxMessages) {
-                        boolean send = false;
+                        boolean sended = false;
                         for (Message m2 : sendMessages) {
                             if (m1.remark.equals(m2.remark) && m1.content.equals(m2.content)) {
-                                send = true;
+                                sended = true;
                             }
                         }
                         Log.d("test", m1.remark + ":" + m1.content + "===>");
-                        if (send) {
+                        if (sended) {
                             Log.d("test", "不需要补发该消息");
                         } else {
                             Log.d("test", "需要补发该消息");
-                            long id = System.currentTimeMillis();
                             Action action = new Action();
                             action.sender = m1.remark;
                             action.content = m1.content;
-                            AutoReplyService.instance.sendMsgToServer(id, action);
+                            AutoReplyService.instance.sendMsgToServer(action);
                         }
                     }
                 } catch (Exception e) {
@@ -517,7 +509,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
                 getAllFriends(true);
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 24 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
                 getAllMomentComments();
@@ -525,19 +517,19 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_GROUPS) {
                 mHandler.removeMessages(MSG_GET_ALL_GROUPS);
                 getAllGroups();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 24 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_CELLPHONES) {
                 mHandler.removeMessages(MSG_GET_CELLPHONES);
                 getCellPhones();
                 mHandler.sendEmptyMessageDelayed(MSG_GET_CELLPHONES, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_ADD_NEARBY) {
                 mHandler.removeMessages(MSG_ADD_NEARBY);
-                addNearBy();
+                addNearByPeople();
                 mHandler.sendEmptyMessageDelayed(MSG_ADD_NEARBY, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 doMissingFish();
-                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 30 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 60 * 60 * 1000);
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
@@ -545,7 +537,10 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_MESSAGES) {
                 mHandler.removeMessages(MSG_GET_ALL_MESSAGES);
                 getAllMessages();
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 60 * 60 * 1000);
+                if (currentGrade < (intervalGrades.length - 1)) {
+                    currentGrade++;
+                }
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_WODIS) {
                 mHandler.removeMessages(MSG_GET_ALL_WODIS);
                 getAllWodis();
@@ -558,15 +553,28 @@ public class MainActivity extends BaseActivity {
         }
     };
 
+    public long lastUpdateTime;
+    public int currentGrade = 5;
+    public static final int[] intervalGrades = new int[]{2, 5, 10, 20, 30, 60};
+
+    public void updateCheckMsgInterval() {
+        long current = System.currentTimeMillis();
+        if ((current - lastUpdateTime) < 2 * 60 * 1000) {
+            return;
+        }
+        lastUpdateTime = current;
+        currentGrade = 0;
+        mHandler.removeMessages(MSG_GET_ALL_MESSAGES);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
+    }
+
     private void clearChatHistory() {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", CLEAR_CHAT_HISTORY_CMD);
-            o.put("id", "84f119408d6441358d24b668323f0a23");
-            o.put("token", "1526895528997");
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
-            AutoReplyService.instance.sendReplyImmediately(temp, true);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -580,9 +588,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 final String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
+                    client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/robot?isUndercover=1&size=1024";
                     Log.d("test", "url = " + url);
                     client.get(MainActivity.this, url, new TextHttpResponseHandler() {
@@ -670,22 +680,20 @@ public class MainActivity extends BaseActivity {
             o.put("token", "1526895528997");
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
-            AutoReplyService.instance.sendReplyImmediately(temp, true);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addNearBy() {
+    private void addNearByPeople() {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", PERSION_NEARBY_CMD);
-            o.put("id", "84f119408d6441358d24b668323f0a23");
             o.put("content", DEFAULT_VALIDATION);
-            o.put("token", "1526895528997");
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
-            AutoReplyService.instance.sendReplyImmediately(temp, true);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -702,14 +710,6 @@ public class MainActivity extends BaseActivity {
                     int friendCount = friends.size();
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
-                    //过滤表情符号测试代码
-                    /*for (Friend f : friends) {
-                        if (f.remark.startsWith("581")) {
-                            Log.d("test", "f = " + f);
-                            String remark = Utils.filterEmoji(f.remark);
-                            Log.d("test", "remark = " + remark);
-                        }
-                    }*/
                     //1.上传
                     int times = friendCount / 100 + 1;
                     for (int i = 0; i < times; i++) {
@@ -792,20 +792,26 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-                    ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
-                    new MyDBHelper(getApplicationContext()).deleteWXGroups();
+                    final String password = initDbPassword(getApplicationContext());
+                    final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+                    final ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
+
                     if (groups != null && groups.size() > 0) {
-                        for (Group group : groups) {
-                            new MyDBHelper(getApplicationContext()).addWXGroup(group);
-                        }
-                        Utils.uploadGroup(MainActivity.this, groups);
+                        Utils.uploadGroup(MainActivity.this, groups, new MyListener() {
+                            @Override
+                            public void onResult(boolean success) {
+                                if (success) {
+                                    for (Group group : groups) {
+                                        group.peoples = doGetPeopleInGroup(MainActivity.this, dbFile, password, group.clientGroupId);
+                                    }
+                                    Utils.uploadGroupPeoples(MainActivity.this, groups);
+                                }
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }.start();
     }
@@ -826,10 +832,11 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
                     Log.d("test", "areaCode = " + areaCode);
-
                     String url = clientUrl + "/users?status=0&areaCode=" + areaCode + "&current=1&size=10";
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
+                    String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    httpRequest.addHeader("x-auth-token", xtoken);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity(), "utf-8");
@@ -881,7 +888,7 @@ public class MainActivity extends BaseActivity {
 
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
-            AutoReplyService.instance.sendReplyImmediately(temp, true);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "服务没开");
@@ -911,6 +918,62 @@ public class MainActivity extends BaseActivity {
         //描述
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "激活后才能使用锁屏功能哦");
         startActivity(intent);
+    }
+
+    public void test(View v) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+            }
+        }, 10000);
+    }
+
+    public void test2(View v) throws IOException, JSONException {
+        //1.检查
+        String password = initDbPassword(getApplicationContext());
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
+        final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+
+        ArrayList<Friend> needUpdateFriends = new ArrayList();
+        for (Friend f : friends) {
+            Log.d("test", "f = " + f.toString());
+            String leftChinese = Utils.leftChinese(f.remark);
+            Log.d("test", "leftChinese = |" + leftChinese + "|");
+            if (TextUtils.isEmpty(leftChinese)) {
+                leftChinese = Utils.leftChinese(f.nickname);
+            }
+            if (TextUtils.isEmpty(leftChinese)) {
+                leftChinese = Utils.getRandomChineseName();
+            }
+            if (!Utils.isStartWithNumber(leftChinese)) {
+                leftChinese = Utils.getParentRemark(this, 1) + " " + leftChinese;
+            }
+            f.newRemark = leftChinese;
+            Log.d("test", "newRemark = " + f.newRemark);
+            if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
+                Log.d("test", "该好友要重新备注");
+                needUpdateFriends.add(f);
+            }
+        }
+        //1.发送改备注的命令：
+        for (Friend f : needUpdateFriends) {
+            JSONObject o = new JSONObject();
+            o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
+            o.put("id", "84f119408d6441358d24b668323f0a23");
+            o.put("token", "1526895528997");
+            o.put("oldName", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);
+            o.put("newName", f.newRemark);
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
+        }
+        //2.完成之后再上报一下好友
+        getAllFriends(false);
+    }
+
+    public void test3(View view) {
+
     }
 
 

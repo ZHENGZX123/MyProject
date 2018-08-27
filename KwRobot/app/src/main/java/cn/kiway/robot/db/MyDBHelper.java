@@ -214,7 +214,6 @@ import java.util.ArrayList;
 
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Filter;
-import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.moment.SnsInfo;
@@ -232,12 +231,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_MESSAGE = " create table IF NOT EXISTS "
             + TABLE_MESSAGE
             + "   (id integer primary key autoincrement,  talker text , remark text , content text , createTime text  ) ";
-
-
-    private static final String TABLE_WX_GROUP = "WX_GROUP";
-    private static final String CREATE_TABLE_WX_GROUP = " create table  IF NOT EXISTS "
-            + TABLE_WX_GROUP
-            + "   (id integer primary key autoincrement,  clientGroupId text , groupName  text ) ";
 
     //朋友圈
     private static final String TABLE_WX_MOMENT = "WX_MOMENT";
@@ -261,7 +254,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 28);
+        super(c, DB_NAME, null, 30);
     }
 
     @Override
@@ -272,9 +265,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
         db.execSQL(CREATE_TABLE_MESSAGE);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_GROUP);
-        db.execSQL(CREATE_TABLE_WX_GROUP);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_MOMENT);
         db.execSQL(CREATE_TABLE_WX_MOMENT);
@@ -293,7 +283,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         this.db = db;
         db.execSQL(CREATE_TABLE_ADDFRIEND);
         db.execSQL(CREATE_TABLE_MESSAGE);
-        db.execSQL(CREATE_TABLE_WX_GROUP);
         db.execSQL(CREATE_TABLE_WX_MOMENT);
         db.execSQL(CREATE_TABLE_WX_COMMNET);
         db.execSQL(CREATE_TABLE_FILTER);
@@ -445,61 +434,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cur.close();
         db.close();
         return messages;
-    }
-
-    //-------------------------group----------------------
-
-    public void addWXGroup(Group group) {
-        if (db == null)
-            db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("clientGroupId", group.clientGroupId);
-        values.put("groupName", group.groupName);
-        db.insert(TABLE_WX_GROUP, null, values);
-        db.close();
-    }
-
-    public ArrayList<Group> getWXGroups() {
-        if (db == null)
-            db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_WX_GROUP, null, null, null, null, null, null);
-
-        ArrayList<Group> groups = new ArrayList<>();
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int id = cur.getInt(cur.getColumnIndex("id"));
-            String clientGroupId = cur.getString(cur.getColumnIndex("clientGroupId"));
-            String groupName = cur.getString(cur.getColumnIndex("groupName"));
-            Group g = new Group(clientGroupId, groupName);
-            groups.add(g);
-        }
-        cur.close();
-        db.close();
-
-        return groups;
-    }
-
-    public Group getGroupById(String clientGroupId) {
-        if (db == null)
-            db = getWritableDatabase();
-        Cursor cur = db.query(TABLE_WX_GROUP, null, "clientGroupId=?", new String[]{clientGroupId}, null, null, null);
-        Group g = null;
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int id = cur.getInt(cur.getColumnIndex("id"));
-            clientGroupId = cur.getString(cur.getColumnIndex("clientGroupId"));
-            String groupName = cur.getString(cur.getColumnIndex("groupName"));
-            g = new Group(clientGroupId, groupName);
-
-        }
-        cur.close();
-        db.close();
-        return g;
-    }
-
-    public void deleteWXGroups() {
-        if (db == null)
-            db = getWritableDatabase();
-        db.delete(TABLE_WX_GROUP, null, null);
-        db.close();
     }
 
     //---------------------------moment------------------

@@ -48,16 +48,16 @@ public class Action {
     public static final int TYPE_SEND_BATCH = 132;
     public static final int TYPE_CHECK_MOMENT = 133;
     public static final int TYPE_INTERACT_MOMENT = 134;
-    public static final int TYPE_NOTIFY_RESULT = 135;
+    public static final int TYPE_NOTIFY_RESULT = 135;//发送定时命令执行结果给“通知人”
     public static final int TYPE_SCRIPT = 136;
     public static final int TYPE_ADD_PUBLIC_ACCOUNT = 137;
     public static final int TYPE_SEARCH_PUBLIC_ACCOUNT = 138;
     public static final int TYPE_CLEAR_CHAT_HISTORY = 139;
 
-
     //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
     //{"cmd":"addPublicAccountCmd" , "name":"广州91教育"}
 
+    public long id;
     public PendingIntent intent;
     public String sender;
     public String content;
@@ -65,7 +65,6 @@ public class Action {
     public int actionType; //事件类型
     public boolean replied;
     public Command command;
-    public long id;
     public String clientGroupId;
 
     @Override

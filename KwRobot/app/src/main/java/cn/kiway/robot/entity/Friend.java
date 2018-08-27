@@ -10,6 +10,7 @@ public class Friend {
     public String remark;
     public String wxId;
     public String wxNo;
+    public String newRemark;//创造的新备注
 
     public Friend(String nickname, String remark, String wxId, String wxNo) {
         this.nickname = nickname;

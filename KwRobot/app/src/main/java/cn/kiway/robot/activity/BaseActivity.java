@@ -75,6 +75,8 @@ public class BaseActivity extends Activity {
                     String url = clientUrl + "/static/download/version/zip_robot.json";
                     Log.d("test", "url = " + url);
                     HttpGet httpRequest = new HttpGet(url);
+                    String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    httpRequest.addHeader("x-auth-token", xtoken);
                     DefaultHttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(httpRequest);
                     String ret = EntityUtils.toString(response.getEntity());

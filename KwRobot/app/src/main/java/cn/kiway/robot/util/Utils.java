@@ -56,12 +56,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,6 +71,7 @@ import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
+import cn.kiway.robot.entity.GroupPeople;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
@@ -78,11 +79,11 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.KWApplication.channels;
 import static cn.kiway.robot.KWApplication.rabbitMQUtils;
-import static cn.kiway.robot.KWApplication.rabbitMQUtils2;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
@@ -179,7 +180,7 @@ public class Utils {
             if (af != null) {
                 af.status = STATUS_ADD_SUCCESS;
                 new MyDBHelper(c).updateAddFriend(af);
-                Utils.updateUserStatus(af.phone, remark, STATUS_ADD_SUCCESS);
+                Utils.updateUserStatus(c, af.phone, remark, STATUS_ADD_SUCCESS);
             }
             //0808主动添加好友，请求通过后，上报一次好友列表。
             MainActivity.instance.getAllFriends(false);
@@ -239,7 +240,7 @@ public class Utils {
 
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
-            Log.d("test", "xtoken = " + xtoken);
+            Log.d("test", "x-auth-token = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
 
             RequestParams param = new RequestParams();
@@ -294,7 +295,6 @@ public class Utils {
 //            Log.d("test", "businessID is null");
 //            return;
 //        }
-        Log.d("test", "initZbus");
         new Thread() {
             @Override
             public void run() {
@@ -302,15 +302,16 @@ public class Utils {
                     if (rabbitMQUtils == null) {
                         rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
                     }
-                    if (rabbitMQUtils2 == null) {
-                        rabbitMQUtils2 = new RabbitMQUtils(Constant.host, Constant.port);
-                    }
                     String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic1 = " + topic1);
-                    String topic2 = "kiway_wx_reply_push_" + "123456789";//businessID
-                    Log.d("test", "topic2 = " + topic2);
                     doConsume(rabbitMQUtils, topic1);
-                    doConsume(rabbitMQUtils2, topic2);
+
+//                    if (rabbitMQUtils2 == null) {
+//                        rabbitMQUtils2 = new RabbitMQUtils(Constant.host, Constant.port);
+//                    }
+//                    String topic2 = "kiway_wx_reply_push_" + "123456789";//businessID
+//                    Log.d("test", "topic2 = " + topic2);
+//                    doConsume(rabbitMQUtils2, topic2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -327,11 +328,13 @@ public class Utils {
                 String msg = new String(body, "utf-8");
                 Log.d("test", "handleDelivery msg = " + msg);
                 //处理逻辑
-                if (AutoReplyService.instance != null) {
-                    //如果是心跳回复，扔掉
-                    if (!isHeartBeatReply(msg)) {
-                        AutoReplyService.instance.sendReplyImmediately(msg, false);
+                if (AutoReplyService.instance != null && !isHeartBeatReply(msg)) {
+                    Log.d("test", "不是心跳");
+                    boolean imme = false;
+                    if (msg.contains(TICK_PERSON_GROUP_CMD)) {
+                        imme = true;
                     }
+                    AutoReplyService.instance.sendReplyImmediately(msg, imme);
                 }
                 //手动消息确认
                 channel.basicAck(envelope.getDeliveryTag(), false);
@@ -341,9 +344,19 @@ public class Utils {
 
 
     private static boolean isHeartBeatReply(String msg) {
-        if (msg.contains("\"content\":\"OK\",\"returnType\":1")) {
-            Log.d("test", "心跳回复");
-            return true;
+        try {
+            JSONArray returnMessage = new JSONObject(msg).optJSONArray("returnMessage");
+            if (returnMessage.length() > 0) {
+                JSONObject o = returnMessage.getJSONObject(0);
+                String content = o.optString("content");
+                int returnType = o.optInt("returnType");
+                if (content.equals("OK") && returnType == 1) {
+                    Log.d("test", "心跳回复");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            return false;
         }
         return false;
     }
@@ -400,9 +413,10 @@ public class Utils {
     public static void uploadFriend(Context c, ArrayList<Friend> friends) {
         try {
             String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
+            client.addHeader("x-auth-token", xtoken);
 
             String url = clientUrl + "/freind/all";
             Log.d("test", "freind url = " + url);
@@ -465,7 +479,7 @@ public class Utils {
         try {
             JSONObject o = new JSONObject(content);
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             isJsonString = false;
         }
         if (!isJsonString) {
@@ -532,7 +546,7 @@ public class Utils {
         return str;
     }
 
-    public static void updateUserStatus(final String phone, final String remark, final int status) {
+    public static void updateUserStatus(final Context c, final String phone, final String remark, final int status) {
         new Thread() {
             @Override
             public void run() {
@@ -541,6 +555,8 @@ public class Utils {
                     Log.d("test", "url = " + url);
                     Log.d("test", "phone = " + phone + " status = " + status);
                     HttpPut httpRequest = new HttpPut(url);
+                    String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    httpRequest.addHeader("x-auth-token", xtoken);
                     DefaultHttpClient client = new DefaultHttpClient();
 
                     List<NameValuePair> values = new ArrayList<>();
@@ -565,10 +581,8 @@ public class Utils {
         }.start();
     }
 
-    private static int lastStatus = -1;
-
     //status： 1机器人正常 2机器人异常 3微信正常 4微信异常
-    public static void updateOpenIdOrStatus(final MainActivity act, final Object o) {
+    public synchronized static void updateOpenIdOrStatus(final MainActivity act, final Object o) {
         if (act == null) {
             return;
         }
@@ -580,7 +594,6 @@ public class Utils {
                     String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
                     AsyncHttpClient client = new AsyncHttpClient();
                     client.setTimeout(10000);
-                    Log.d("test", "xtoken = " + xtoken);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/robot/" + robotId;
                     Log.d("test", "updateOpenIdOrStatus url = " + url);
@@ -589,15 +602,9 @@ public class Utils {
                     if (o instanceof String) {
                         param.put("openId", o);
                     } else if (o instanceof Integer) {
-                        if (lastStatus == (int) o) {
-                            Log.d("test", "状态一致，本次不上报");
-                            return;
-                        }
                         param.put("status", o);
-                        lastStatus = (int) o;
                     }
                     Log.d("test", "param = " + param.toString());
-
                     client.put(act, url, param, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
@@ -607,6 +614,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateOpenIdOrStatus onFailure = " + s);
+                            check301(act.getApplicationContext(), s);
                         }
                     });
                 } catch (Exception e) {
@@ -616,16 +624,27 @@ public class Utils {
         });
     }
 
-    public static String getNicknameFromRemark(String remark) {
+    private static void check301(Context c, String result) {
         try {
-            String nickname = remark.split(" ")[1];
-            if (TextUtils.isEmpty(nickname)) {
-                return remark;
+            int statusCode = new JSONObject(result).optInt("statusCode");
+            if (statusCode != 301) {
+                return;
             }
-            return nickname;
+            Log.d("test", "301 happen");
+            String username = c.getSharedPreferences("kiway", 0).getString("username", "");
+            String password = c.getSharedPreferences("kiway", 0).getString("password", "");
+            String name = c.getSharedPreferences("kiway", 0).getString("name", "");
+            String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+
+            doLogin(c, username, password, name, wxNo, new MyListener() {
+                @Override
+                public void onResult(boolean success) {
+
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
-            return remark;
+            Log.d("test", "relogin exception = " + e.toString());
         }
     }
 
@@ -766,9 +785,12 @@ public class Utils {
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
                 if (wxNo.equals(alias)) {
+                    //排除掉自己
                     Log.d("test", "wxNo = " + wxNo);
                     Log.d("test", "wxId = " + username);
                     c.getSharedPreferences("kiway", 0).edit().putString("wxId", username).commit();
+                } else if (username.equals("filehelper")) {
+                    //过滤掉文件传输助手等
                 } else {
                     friends.add(new Friend(nickname, conRemark, username, alias));
                 }
@@ -781,33 +803,6 @@ public class Utils {
             e.printStackTrace();
         }
         return friends;
-    }
-
-    public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password) {
-        Log.d("test", "doGetGroups");
-        ArrayList<Group> groups = new ArrayList<>();
-        try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            Cursor c1 = null;
-            String sql = "";
-            //type=2未保存的群
-            sql = "select username , nickname from rContact where type = 3 or type = 2";
-            Log.d("test", "sql = " + sql);
-            c1 = db.rawQuery(sql, null);
-            while (c1.moveToNext()) {
-                String username = c1.getString(c1.getColumnIndex("username"));  //clientGroupId
-                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //groupName
-                if (username.endsWith("chatroom")) {
-                    groups.add(new Group(username, nickname));
-                }
-            }
-            Log.d("test", "groups = " + groups);
-            c1.close();
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return groups;
     }
 
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
@@ -835,7 +830,9 @@ public class Utils {
                 m.type = type;
                 m.createTime = createTime;
                 m.talker = talker;
-                m.remark = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
+                String remark = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
+                remark = Utils.filterEmoji(remark);
+                m.remark = remark;
                 m.content = content;
                 messages.add(m);
             }
@@ -848,20 +845,51 @@ public class Utils {
         return messages;
     }
 
-    public static ArrayList<String> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
+    public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password) {
         Log.d("test", "doGetGroups");
-        ArrayList<String> peoples = new ArrayList<>();
+        ArrayList<Group> groups = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            String sql = "select  displayname  from chatroom where chatroomname = '" + clientGroupId + "'";
+            Cursor c1 = null;
+            String sql = "";
+            //type=2未保存的群,3是已经保存的
+            sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom' and (type = 2 or type = 3) ";
+            Log.d("test", "sql = " + sql);
+            c1 = db.rawQuery(sql, null);
+            while (c1.moveToNext()) {
+                String username = c1.getString(c1.getColumnIndex("username"));  //clientGroupId
+                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //groupName
+                int type = c1.getInt(c1.getColumnIndex("type"));  //type
+                String master = c1.getString(c1.getColumnIndex("roomowner"));
+                groups.add(new Group(username, nickname, type, master));
+            }
+            Log.d("test", "groups = " + groups);
+            c1.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return groups;
+    }
 
+    public static ArrayList<GroupPeople> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
+        Log.d("test", "doGetGroups clientGroupId = " + clientGroupId);
+        ArrayList<GroupPeople> peoples = new ArrayList<>();
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            String sql = "select memberlist ,  displayname   from chatroom where chatroomname = '" + clientGroupId + "'";
             Log.d("test", "sql = " + sql);
             Cursor c1 = db.rawQuery(sql, null);
             while (c1.moveToNext()) {
-                String username = c1.getString(c1.getColumnIndex("displayname"));
-                String[] temp = username.split("、");
-                Collections.addAll(peoples, temp);
-                Log.d("test", "username = " + username);
+                String memberlist = c1.getString(c1.getColumnIndex("memberlist"));
+                String displayname = c1.getString(c1.getColumnIndex("displayname"));
+
+                String[] temp1 = memberlist.split(";");
+                String[] temp2 = displayname.split("、");
+                for (int i = 0; i < temp1.length; i++) {
+                    peoples.add(new GroupPeople(temp1[i], filterEmoji(temp2[i])));
+                }
+                Log.d("test", "peples = " + peoples);
             }
             c1.close();
             db.close();
@@ -885,7 +913,6 @@ public class Utils {
         return SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), password, null, OPEN_READONLY, hook);
     }
 
-
     //null:private
     //string:group
     public static String isFromGroup(Context c, String name) {
@@ -894,7 +921,9 @@ public class Utils {
         if (lastRight != -1 && lastLeft != -1 && (lastRight - lastLeft > 1)) {
             name = name.substring(0, lastLeft);
         }
-        ArrayList<Group> groups = new MyDBHelper(c).getWXGroups();
+        final String password = initDbPassword(c);
+        final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+        final ArrayList<Group> groups = doGetGroups(c, dbFile, password);
         for (Group group : groups) {
             if (name.equals(group.groupName)) {
                 return group.clientGroupId;
@@ -902,48 +931,6 @@ public class Utils {
         }
         return null;
     }
-
-    public static void uploadGroup(final MainActivity act, final ArrayList<Group> groups) {
-        act.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
-                String wxNo = act.getSharedPreferences("kiway", 0).getString("wxNo", "");
-
-                try {
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
-                    String url = clientUrl + "/groups/name/change";
-                    Log.d("test", "groups/name/change url = " + url);
-                    JSONArray param = new JSONArray();
-                    for (Group g : groups) {
-                        JSONObject o = new JSONObject();
-                        o.put("clientGroupId", g.clientGroupId);
-                        o.put("name", g.groupName);
-                        o.put("robotId", robotId);
-                        o.put("userId", wxNo);
-                        param.put(o);
-                    }
-                    Log.d("test", "groups/name/change param = " + param.toString());
-                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-                    client.put(act, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "groups/name/change onSuccess = " + ret);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "groups/name/change onFailure = " + s);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.d("test", "e = " + e.toString());
-                }
-            }
-        });
-    }
-
 
     public static ArrayList<String> doGetMoments(Context c, File dbFile) {
         Log.d("test", "doGetMoments");
@@ -1026,7 +1013,6 @@ public class Utils {
                 final String savedFilePath = ROOT + "downloads/" + fileName;
                 File file = new File(savedFilePath);
                 if (file.exists()) {
-                    Log.d("test", "exist size = " + file.length());
                     return;
                 }
                 org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
@@ -1072,5 +1058,192 @@ public class Utils {
         String ret = des.decryptStr(hex);
         Log.d("test", "ret = " + ret);
         return ret;
+    }
+
+    public static void uploadGroup(final MainActivity act, final ArrayList<Group> groups, final MyListener myListener) {
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
+                String wxNo = act.getSharedPreferences("kiway", 0).getString("wxNo", "");
+                String xtoken = act.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    client.addHeader("x-auth-token", xtoken);
+                    String url = clientUrl + "/groups/name/change";
+                    Log.d("test", "groups/name/change url = " + url);
+                    JSONArray param = new JSONArray();
+                    for (Group g : groups) {
+                        JSONObject o = new JSONObject();
+                        o.put("clientGroupId", g.clientGroupId);
+                        o.put("name", TextUtils.isEmpty(g.groupName) ? "未命名群聊" : g.groupName);
+                        o.put("robotId", robotId);
+                        o.put("userId", wxNo);
+                        o.put("master", g.master);
+                        o.put("saved", g.type == 3 ? 1 : 0);//3是已保存，2是未保存
+                        param.put(o);
+                    }
+                    Log.d("test", "groups/name/change param = " + param.toString());
+                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                    client.put(act, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "groups/name/change onSuccess = " + ret);
+                            myListener.onResult(true);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "groups/name/change onFailure = " + s);
+                            myListener.onResult(false);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static void uploadGroupPeoples(final MainActivity act, final ArrayList<Group> groups) {
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
+                String xtoken = act.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                try {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(10000);
+                    client.addHeader("x-auth-token", xtoken);
+                    String url = clientUrl + "/groupMembersRel";
+                    Log.d("test", "groupMembersRel url = " + url);
+
+                    JSONArray param = new JSONArray();
+                    for (Group g : groups) {
+                        JSONObject o = new JSONObject();
+                        o.put("clientGroupId", g.clientGroupId);
+                        JSONArray members = new JSONArray();
+                        for (GroupPeople gp : g.peoples) {
+                            JSONObject temp = new JSONObject();
+                            temp.put("friendId", System.currentTimeMillis() + "" + new Random().nextInt(1000));
+                            temp.put("nickName", gp.displayname);
+                            temp.put("robotId", robotId);
+                            temp.put("wxId", gp.wxId);
+                            members.put(temp);
+                        }
+                        o.put("members", members);
+                        param.put(o);
+                    }
+                    Log.d("test", "groupMembersRel param = " + param.toString());
+                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                    client.post(act, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "groupMembersRel onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "groupMembersRel onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static void doLogin(final Context c, final String username, final String password, final String name, final String wxNo, final MyListener myListener) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = clientUrl + "/robot/login";
+            Log.d("test", "url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("imei", wxNo);
+            param.put("userName", username);
+            param.put("password", password);
+            param.put("name", name);
+            Log.d("test", "param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "login onSuccess = " + ret);
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        int statusCode = o.optInt("statusCode");
+                        JSONObject data = o.getJSONObject("data");
+                        String token = data.optString("token");
+                        String robotId = data.optString("robotId");
+                        String areaCode = data.optString("areaCode");
+                        Log.d("test", "login get token = " + token);
+                        if (statusCode == 200) {
+                            c.getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("username", username).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("name", name).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("wxNo", wxNo).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("robotId", robotId).commit();
+                            c.getSharedPreferences("kiway", 0).edit().putString("areaCode", areaCode).commit();
+                            myListener.onResult(true);
+                        } else {
+                            myListener.onResult(false);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        myListener.onResult(false);
+                    }
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    Log.d("test", "onFailure ret = " + ret);
+                    myListener.onResult(false);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "exception = " + e.toString());
+            myListener.onResult(false);
+        }
+    }
+
+    public static boolean isStartWithNumber(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str.charAt(0) + "");
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    public static String leftChinese(String str) {
+        String reg = "[^\u4e00-\u9fa5A-Za-z0-9\\s]";
+        str = str.replaceAll(reg, "");
+        return str;
+    }
+
+    public static String getRandomChineseName() {
+        String name = "";
+        for (int i = 0; i < 5; i++) {
+            char temp = (char) (0x4e00 + (int) (Math.random() * (0x9fa5 - 0x4e00 + 1)));
+            name += temp;
+        }
+        return name;
+    }
+
+    public static String getNewRemark(Context c, String current) {
+        if (TextUtils.isEmpty(current)) {
+            current = Utils.getRandomChineseName();
+        }
+        String leftChinese = Utils.leftChinese(current);
+        if (!Utils.isStartWithNumber(leftChinese)) {
+            leftChinese = Utils.getParentRemark(c, 1) + " " + leftChinese;
+        }
+        return leftChinese;
     }
 }
