@@ -947,7 +947,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test3(View view) {
-        getAllGroups();
+        resetNickName();
     }
 
     private void resetNickName() {
