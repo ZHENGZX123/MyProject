@@ -444,19 +444,32 @@ public class MainActivity extends BaseActivity {
                     for (Message m1 : wxMessages) {
                         boolean sended = false;
                         for (Message m2 : sendMessages) {
-                            if (m1.remark.equals(m2.remark) && m1.content.equals(m2.content)) {
+                            if (!m1.talker.endsWith("@chatroom") && m1.remark.equals(m2.remark) && m1.content.equals(m2.content)) {
+                                sended = true;
+                            } else if (m1.talker.endsWith("@chatroom") && m1.content.endsWith(m2.content)) {//displayName sender暂时不比较
                                 sended = true;
                             }
                         }
-                        Log.d("test", m1.remark + ":" + m1.content + "===>");
+                        Log.d("test", "check msg = " + m1.toString());
                         if (sended) {
                             Log.d("test", "不需要补发该消息");
                         } else {
                             Log.d("test", "需要补发该消息");
-                            Action action = new Action();
-                            action.sender = m1.remark;
-                            action.content = m1.content;
-                            AutoReplyService.instance.sendMsgToServer(action);
+                            if (m1.talker.endsWith("@chatroom")) {
+                                String wxId = m1.content.substring(0, m1.content.indexOf(":"));
+                                String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
+                                if (TextUtils.isEmpty(sender)) {
+                                    Log.d("test", "获取不到displayName");
+                                    continue;
+                                }
+                                String message = m1.content.substring(m1.content.indexOf(":") + 2);
+                                AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message);
+                            } else {
+                                Action action = new Action();
+                                action.sender = m1.remark;
+                                action.content = m1.content;
+                                AutoReplyService.instance.sendMsgToServer(action);
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -555,7 +568,7 @@ public class MainActivity extends BaseActivity {
 
     public long lastUpdateTime;
     public int currentGrade = 5;
-    public static final int[] intervalGrades = new int[]{2, 5, 10, 20, 30, 60};
+    public static final int[] intervalGrades = new int[]{2, 3, 5, 10, 20, 30, 60};
 
     public void updateCheckMsgInterval() {
         long current = System.currentTimeMillis();
@@ -929,51 +942,58 @@ public class MainActivity extends BaseActivity {
         }, 10000);
     }
 
-    public void test2(View v) throws IOException, JSONException {
-        //1.检查
-        String password = initDbPassword(getApplicationContext());
-        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
-        final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
-
-        ArrayList<Friend> needUpdateFriends = new ArrayList();
-        for (Friend f : friends) {
-            Log.d("test", "f = " + f.toString());
-            String leftChinese = Utils.leftChinese(f.remark);
-            Log.d("test", "leftChinese = |" + leftChinese + "|");
-            if (TextUtils.isEmpty(leftChinese)) {
-                leftChinese = Utils.leftChinese(f.nickname);
-            }
-            if (TextUtils.isEmpty(leftChinese)) {
-                leftChinese = Utils.getRandomChineseName();
-            }
-            if (!Utils.isStartWithNumber(leftChinese)) {
-                leftChinese = Utils.getParentRemark(this, 1) + " " + leftChinese;
-            }
-            f.newRemark = leftChinese;
-            Log.d("test", "newRemark = " + f.newRemark);
-            if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
-                Log.d("test", "该好友要重新备注");
-                needUpdateFriends.add(f);
-            }
-        }
-        //1.发送改备注的命令：
-        for (Friend f : needUpdateFriends) {
-            JSONObject o = new JSONObject();
-            o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
-            o.put("id", "84f119408d6441358d24b668323f0a23");
-            o.put("token", "1526895528997");
-            o.put("oldName", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);
-            o.put("newName", f.newRemark);
-            String temp = o.toString();
-            Log.d("test", "temp = " + temp);
-            AutoReplyService.instance.sendReplyImmediately(temp, false);
-        }
-        //2.完成之后再上报一下好友
-        getAllFriends(false);
+    public void test2(View v) {
+        getAllMessages();
     }
 
     public void test3(View view) {
+        getAllGroups();
+    }
 
+    private void resetNickName() {
+        try {
+            String password = initDbPassword(getApplicationContext());
+            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
+            final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+
+            ArrayList<Friend> needUpdateFriends = new ArrayList();
+            for (Friend f : friends) {
+                Log.d("test", "f = " + f.toString());
+                String leftChinese = Utils.leftChinese(f.remark);
+                Log.d("test", "leftChinese = |" + leftChinese + "|");
+                if (TextUtils.isEmpty(leftChinese)) {
+                    leftChinese = Utils.leftChinese(f.nickname);
+                }
+                if (TextUtils.isEmpty(leftChinese)) {
+                    leftChinese = Utils.getRandomChineseName();
+                }
+                if (!Utils.isStartWithNumber(leftChinese)) {
+                    leftChinese = Utils.getParentRemark(this, 1) + " " + leftChinese;
+                }
+                f.newRemark = leftChinese;
+                Log.d("test", "newRemark = " + f.newRemark);
+                if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
+                    Log.d("test", "该好友要重新备注");
+                    needUpdateFriends.add(f);
+                }
+            }
+            //1.发送改备注的命令：
+            for (Friend f : needUpdateFriends) {
+                JSONObject o = new JSONObject();
+                o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
+                o.put("id", "84f119408d6441358d24b668323f0a23");
+                o.put("token", "1526895528997");
+                o.put("oldName", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);
+                o.put("newName", f.newRemark);
+                String temp = o.toString();
+                Log.d("test", "temp = " + temp);
+                AutoReplyService.instance.sendReplyImmediately(temp, false);
+            }
+            //2.完成之后再上报一下好友
+            getAllFriends(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -822,17 +822,18 @@ public class Utils {
                 String nickname = c1.getString(c1.getColumnIndex("nickname"));
                 String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
                 String content = c1.getString(c1.getColumnIndex("content"));
-                //0613暂时只做个人发的消息
-                if (talker.endsWith("@chatroom")) {
-                    continue;
-                }
+
                 Message m = new Message();
                 m.type = type;
                 m.createTime = createTime;
                 m.talker = talker;
-                String remark = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
-                remark = Utils.filterEmoji(remark);
-                m.remark = remark;
+                if (talker.endsWith("@chatroom")) {
+                    m.remark = talker;//群聊remark=talker
+                } else {
+                    String remark = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
+                    remark = Utils.filterEmoji(remark);
+                    m.remark = remark;
+                }
                 m.content = content;
                 messages.add(m);
             }
@@ -909,7 +910,6 @@ public class Utils {
                 database.rawExecSQL("PRAGMA cipher_migrate;");
             }
         };
-//        return SQLiteDatabase.openOrCreateDatabase(dbFile, password, null, hook);
         return SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), password, null, OPEN_READONLY, hook);
     }
 
@@ -1245,5 +1245,18 @@ public class Utils {
             leftChinese = Utils.getParentRemark(c, 1) + " " + leftChinese;
         }
         return leftChinese;
+    }
+
+    public static String getDisplayNameFromGroup(Context c, String clientGroupId, String wxId) {
+        String displayName = "";
+        final String password = initDbPassword(c);
+        final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+        ArrayList<GroupPeople> peoples = doGetPeopleInGroup(c, dbFile, password, clientGroupId);
+        for (GroupPeople gp : peoples) {
+            if (gp.wxId.equals(wxId)) {
+                return gp.displayname;
+            }
+        }
+        return displayName;
     }
 }
