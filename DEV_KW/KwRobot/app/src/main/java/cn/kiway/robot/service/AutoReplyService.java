@@ -42,7 +42,6 @@ import org.xutils.x;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -134,7 +133,6 @@ import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
-import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME_TITLE;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INTERACT_MOMENT_CMD;
@@ -177,6 +175,8 @@ public class AutoReplyService extends AccessibilityService {
 
     public static AutoReplyService instance;
 
+    //没有拉起-分配的intents
+    private ArrayList<Action> preActions = new ArrayList<>();
     //事件map
     public LinkedHashMap<Long, Action> actions = new LinkedHashMap<>();
     //当前执行的事件id
@@ -184,8 +184,6 @@ public class AutoReplyService extends AccessibilityService {
     private boolean actioningFlag;
     //zbus接收队列
     public ArrayList<ZbusRecv> zbusRecvs = new ArrayList<>();
-    //家长busy次数
-    public HashMap<String, Integer> busyCountMap = new HashMap<>();
     //当前微信页面
     private String currentWechatPage;
 
@@ -255,11 +253,10 @@ public class AutoReplyService extends AccessibilityService {
                 return;
             }
             if (msg.what == MSG_SEND_HEARTBEAT) {
-                long id = System.currentTimeMillis();
                 Action action = new Action();
                 action.sender = "心跳测试使者";
                 action.content = "heartbeat";
-                sendMsgToServer(id, action);
+                sendMsgToServer(action);
 
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
                 mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 5 * 60 * 1000);
@@ -294,7 +291,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        dispatchAction(action.id, action);
+                        dispatchAction(action);
                         currentActionID = -1;
                     }
                 }, 2000);
@@ -303,26 +300,17 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void launchWechat(long id, long maxReleaseTime) {
-        try {
-            currentActionID = id;
-            PendingIntent intent = actions.get(currentActionID).intent;
-            if (intent == null) {
-                Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
-                startActivity(i);
-            } else {
-                intent.send();
-            }
-
-            if (maxReleaseTime < DEFAULT_RELEASE_TIME) {
-                maxReleaseTime = DEFAULT_RELEASE_TIME;
-            }
-            mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
-        } catch (Exception e) {
-            e.printStackTrace();
+        //0823FIX不再使用pendingIntent，因此要修改很多地方
+        currentActionID = id;
+        Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+        startActivity(i);
+        if (maxReleaseTime < DEFAULT_RELEASE_TIME) {
+            maxReleaseTime = DEFAULT_RELEASE_TIME;
         }
+        mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, maxReleaseTime);
     }
 
-    //处理后台过来的消息回复的命令
+    //处理后台过来的命令：
     public void handleZbusMsg(final ZbusRecv recv) {
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
         new Thread() {
@@ -334,7 +322,6 @@ public class AutoReplyService extends AccessibilityService {
                         Command command = new Command();
                         command.cmd = o.optString("cmd");
                         command.id = o.optString("id");
-                        //cmd太混乱没有统一性，有些有content有些没有；有些content是命令本身，有些只是简单文本。特喵的
                         if (o.has("content") && !command.cmd.equals(AT_PERSONS_CMD) && !command.cmd.equals(INTERACT_MOMENT_CMD)) {
                             command.content = o.optString("content");
                             if (TextUtils.isEmpty(command.content)) {
@@ -345,14 +332,13 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         //0718新增
                         command.original = Base64.encodeToString(recv.msg.getBytes(), NO_WRAP);
-
                         doActionCommand(recv.msg, command);
                         return;
                     }
                     if (o.has("clientGroupId")) {
                         //在群里发消息，这个没有cmd，偷懒了。。。
                         String clientGroupId = o.optString("clientGroupId");
-                        Group g = new MyDBHelper(getApplicationContext()).getGroupById(clientGroupId);
+                        Group g = getOneGroupFromWechatDB(clientGroupId);
                         if (g == null) {
                             toast("该群不存在或已经被删除1");
                             return;
@@ -363,51 +349,29 @@ public class AutoReplyService extends AccessibilityService {
                         doActionCommand(o.toString(), command);
                         return;
                     }
+                    JSONArray returnMessage = o.getJSONArray("returnMessage");
 
-                    long id = o.optLong("id");
-                    if (id == 0) {
-                        Log.d("test", "没有id！！！");
+                    //0823FIX 如果没有对应action，重新new一个
+                    Long key = o.optLong("id");
+                    Action action = actions.get(key);
+                    if (action == null) {
+                        Log.d("test", "action is null , create one action");
+                        action = new Action();
+                        key = System.currentTimeMillis();
+                        action.sender = o.optString("sender");
+                        action.content = o.optString("content");
+                        action.actionType = TYPE_TEXT;
+                        action.command = null;
+                        actions.put(key, action);
+                    }
+
+                    String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
+                    String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
+                    if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.contains(busyStr) || recv.msg.contains(offlineStr))) {
+                        Log.d("test", "action.replied");
                         return;
                     }
-
-                    Action action = actions.get(id);
-                    if (action == null) {
-                        Log.d("test", "action为空的情况");
-                        JSONArray returnMessage = o.getJSONArray("returnMessage");
-                        Long firstKey;
-                        Action firstA;
-                        if (actions.size() == 0) {
-                            firstKey = System.currentTimeMillis();
-                            firstA = new Action();
-                            actions.put(firstKey, firstA);
-                        } else {
-                            firstKey = actions.keySet().iterator().next();
-                            firstA = actions.get(firstKey);
-                        }
-                        firstA.sender = o.optString("sender");
-                        firstA.content = o.optString("content");
-                        firstA.actionType = TYPE_TEXT;
-                        firstA.command = null;
-                        //因为使用的是别人的action，所以realReply是false
-                        doHandleZbusMsg(firstKey, firstA, returnMessage, false);
-                    } else {
-                        Log.d("test", "action不为空的情况");
-                        String busyStr = getSharedPreferences("busy", 0).getString("busy", DEFAULT_BUSY);
-                        String offlineStr = getSharedPreferences("offline", 0).getString("offline", DEFAULT_OFFLINE);
-                        if (action.replied && recv.msg.contains("\"returnType\":1") && (recv.msg.contains(busyStr) || recv.msg.contains(offlineStr))) {
-                            Log.d("test", "action.replied");
-                            return;
-                        }
-                        //判断action是否被篡改
-                        if (action.sender.equals(HOUTAI)) {
-                            action.sender = o.optString("sender");
-                            action.content = o.optString("content");
-                            action.actionType = TYPE_TEXT;
-                            action.command = null;
-                        }
-                        JSONArray returnMessage = o.getJSONArray("returnMessage");
-                        doHandleZbusMsg(id, action, returnMessage, recv.realReply);
-                    }
+                    doHandleZbusMsg(key, action, returnMessage, recv.realReply);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -450,30 +414,21 @@ public class AutoReplyService extends AccessibilityService {
             sendMsgToServer2(200, command);
             return;
         }
-        Long firstKey;
-        Action firstA;
-        if (actions.size() == 0) {
-            firstKey = System.currentTimeMillis();
-            firstA = new Action();
-            actions.put(firstKey, firstA);
-        } else {
-            firstKey = actions.keySet().iterator().next();
-            firstA = actions.get(firstKey);
-        }
-        firstA.sender = HOUTAI;
-        firstA.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
-        firstA.actionType = backdoors.get(command.cmd);
-        firstA.command = command;
-
-        String cmd = command.cmd;
-        if (cmd.equals(SEND_FRIEND_CIRCLE_CMD)) {
+        Long key = System.currentTimeMillis();
+        Action action = new Action();
+        actions.put(key, action);
+        action.sender = HOUTAI;
+        action.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
+        action.actionType = backdoors.get(command.cmd);
+        action.command = command;
+        if (command.cmd.equals(SEND_FRIEND_CIRCLE_CMD)) {
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
-            currentActionID = firstKey;
+            currentActionID = key;
             actioningFlag = true;
             shareToWechatMoments(command.id, command.content);
-        } else {
-            doHandleZbusMsg(firstKey, firstA, new JSONArray(), false);
+            return;
         }
+        doHandleZbusMsg(key, action, new JSONArray(), false);
     }
 
     private void doHandleZbusMsg(final long id, final Action action, final JSONArray returnMessage, boolean realReply) {
@@ -559,7 +514,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //家长发来的消息，发给服务器
-    public synchronized void sendMsgToServer(final long id, final Action action) {
+    public void sendMsgToServer(final Action action) {
         new Thread() {
             @Override
             public void run() {
@@ -573,7 +528,7 @@ public class AutoReplyService extends AccessibilityService {
                     String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
 
                     String msg = new JSONObject()
-                            .put("id", id)
+                            .put("id", System.currentTimeMillis())
                             .put("sender", action.sender)
                             .put("content", action.content)
                             .put("me", name)
@@ -620,7 +575,8 @@ public class AutoReplyService extends AccessibilityService {
 
     //后台操作命令，执行完后的回复
     public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
-        if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD) || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD)) {
+        if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD)
+                || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD)) {
             return;
         }
 
@@ -662,16 +618,11 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("author", name);
                         o.put("toUser", new JSONObject(content).optString("author"));
                     } else if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
-                        //全删全改==>单独插入或修改
                         String groupName = o.optString("name");
-                        String password = initDbPassword(getApplicationContext());
-                        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-                        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
+                        ArrayList<Group> groups = getAllGroupsFromWechatDB();
                         String clientGroupId = null;
-                        new MyDBHelper(getApplicationContext()).deleteWXGroups();
                         if (groups != null && groups.size() > 0) {
                             for (Group group : groups) {
-                                new MyDBHelper(getApplicationContext()).addWXGroup(group);
                                 if (groupName.equals(group.groupName)) {
                                     clientGroupId = group.clientGroupId;
                                 }
@@ -697,6 +648,25 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }.start();
+    }
+
+    private ArrayList<Group> getAllGroupsFromWechatDB() {
+        String password = initDbPassword(getApplicationContext());
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
+        return groups;
+    }
+
+    private Group getOneGroupFromWechatDB(String clientGroupId) {
+        String password = initDbPassword(getApplicationContext());
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
+        for (Group g : groups) {
+            if (g.clientGroupId.equals(clientGroupId)) {
+                return g;
+            }
+        }
+        return null;
     }
 
     //群里发来的消息
@@ -740,7 +710,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void sendReply20sLater(long id, Action action) {
+    private void sendReply20sLater(Action action) {
         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
         if (role == ROLE_WODI) {
             return;
@@ -754,25 +724,11 @@ public class AutoReplyService extends AccessibilityService {
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
 
-        String hint = "";
         boolean in = Utils.isEffectiveDate();
-        String welcome = getSharedPreferences("welcome", 0).getString("welcome", DEFAULT_WELCOME);
-        String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle", DEFAULT_WELCOME_TITLE);
-        if (in) {
-            Integer i = busyCountMap.get(action.sender);
-            int busyCount = (i == null) ? 0 : i;
-            Log.d("test", "action.sender = " + action.sender + " ，busyCount = " + busyCount);
-            if (busyCount < 3) {
-                hint = busyStr;
-                busyCountMap.put(action.sender, busyCount + 1);
-            } else {
-                hint = welcome.replace(welcomeTitle, "客服正忙，您可以发送以下序号或关键字咨询：");
-                busyCountMap.put(action.sender, 0);
-            }
-        } else {
-            hint = offlineStr;
-        }
+        String hint = in ? busyStr : offlineStr;
+
         Log.d("test", "hint = " + hint);
+        long id = System.currentTimeMillis();
         String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + hint + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
         msg.obj = new ZbusRecv(fakeRecv, false);
         mHandler.sendMessageDelayed(msg, 20000);
@@ -858,9 +814,6 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "unlockScreen Done");
     }
 
-    //没有拉起-分配的intents
-    private ArrayList<Action> preActions = new ArrayList<>();
-
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         int eventType = event.getEventType();
@@ -870,11 +823,6 @@ public class AutoReplyService extends AccessibilityService {
                 Log.d("maptrix", "接收到通知");
                 if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     Log.d("test", "user do not login");
-                    return;
-                }
-                String fromPKG = event.getPackageName().toString();
-                Log.d("test", "fromPKG = " + fromPKG);
-                if (fromPKG.equals("com.tencent.mobileqq")) {
                     return;
                 }
                 List<CharSequence> texts = event.getText();
@@ -951,18 +899,18 @@ public class AutoReplyService extends AccessibilityService {
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     } else if (Utils.checkInBackDoor(content.trim()) > 0) {
                         action.actionType = Utils.checkInBackDoor(content.trim());
-                    }
-                    //其他文字直接走zbus即可
-                    else {
+                    } else {
                         action.actionType = TYPE_TEXT;
                     }
 
                     actions.put(id, action);
-
                     if (action.actionType == TYPE_TEXT) {
                         preActions.add(action);
+                        if (MainActivity.instance != null) {
+                            MainActivity.instance.updateCheckMsgInterval();
+                        }
                     } else {
-                        dispatchAction(id, action);
+                        dispatchAction(action);
                     }
                 }
                 break;
@@ -1000,12 +948,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (actionType == TYPE_REQUEST_FRIEND) {
-                            boolean find = hasAcceptButton(false);
-                            if (!find) {
-                                release(false);
-                            }
-                        } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN
+                        if (actionType == TYPE_CLEAR_ZOMBIE_FAN
                                 || actionType == TYPE_CREATE_GROUP_CHAT
                                 || actionType == TYPE_DELETE_GROUP_CHAT
                                 || actionType == TYPE_ADD_GROUP_PEOPLE
@@ -1039,6 +982,14 @@ public class AutoReplyService extends AccessibilityService {
                                     doActionCommandByType(actionType);
                                 }
                             }.start();
+                        } else if (actionType == TYPE_REQUEST_FRIEND) {
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    goBacktoWechatHomepage();
+                                    doRequestFriend();
+                                }
+                            }.start();
                         } else {
                             //聊天有关，0810修改，一律退到首页再做处理
                             new Thread() {
@@ -1068,28 +1019,29 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void dispatchAction(long id, Action action) {
+    //分发事件
+    private void dispatchAction(Action action) {
         if (action.actionType == TYPE_TEXT) {
             //刷新界面
             refreshUI1();
             //文字的话直接走zbus
             if (TextUtils.isEmpty(action.clientGroupId)) {
-                sendMsgToServer(id, action);
-                sendReply20sLater(id, action);
+                sendMsgToServer(action);
+                sendReply20sLater(action);
             } else {
                 sendMsgToServer3(action.clientGroupId, action.sender, action.content);
             }
             lockScreen();
         } else if (action.actionType == TYPE_AUTO_MATCH) {
-            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, false);
         } else if (action.actionType == TYPE_BACK_DOOR) {
             String ret = getBackDoorByKey(action.content.trim());
             action.returnMessages.add(new ReturnMessage(TYPE_TEXT, ret));
-            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
         } else if (action.actionType == TYPE_COLLECTOR_FORWARDING) {
-            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
         } else if (action.actionType == TYPE_SET_COLLECTOR) {
             String forwardto = action.content.replace("设置转发对象：", "").trim();
@@ -1099,40 +1051,39 @@ public class AutoReplyService extends AccessibilityService {
             getSharedPreferences("forwardto", 0).edit().putString("forwardto", forwardto).commit();
             getSharedPreferences("collector", 0).edit().putString("collector", forwardto).commit();
             toast("设置转发对象成功");
-            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, false);
         } else if (action.actionType == TYPE_REQUEST_FRIEND) {
-            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
-        } else if (
-                action.actionType == TYPE_CLEAR_ZOMBIE_FAN
-                        || action.actionType == TYPE_CREATE_GROUP_CHAT
-                        || action.actionType == TYPE_DELETE_GROUP_CHAT
-                        || action.actionType == TYPE_ADD_GROUP_PEOPLE
-                        || action.actionType == TYPE_DELETE_GROUP_PEOPLE
-                        || action.actionType == TYPE_FIX_GROUP_NAME
-                        || action.actionType == TYPE_FIX_GROUP_NOTICE
-                        || action.actionType == TYPE_GROUP_CHAT
-                        || action.actionType == TYPE_AT_GROUP_PEOPLE
-                        || action.actionType == TYPE_DELETE_MOMENT
-                        || action.actionType == TYPE_ADD_FRIEND
-                        || action.actionType == TYPE_DELETE_FRIEND
-                        || action.actionType == TYPE_MISSING_FISH
-                        || action.actionType == TYPE_FIX_NICKNAME
-                        || action.actionType == TYPE_FIX_FRIEND_NICKNAME
-                        || action.actionType == TYPE_FIX_ICON
-                        || action.actionType == TYPE_NEARBY_PEOPLE
-                        || action.actionType == TYPE_GROUP_SEND_HELPER
-                        || action.actionType == TYPE_CHECK_MOMENT
-                        || action.actionType == TYPE_CLEAR_CHAT_HISTORY
-                        || action.actionType == TYPE_INTERACT_MOMENT
-                        || action.actionType == TYPE_NOTIFY_RESULT
-                        || action.actionType == TYPE_SCRIPT
-                        || action.actionType == TYPE_ADD_PUBLIC_ACCOUNT
-                        || action.actionType == TYPE_SEARCH_PUBLIC_ACCOUNT
+        } else if (action.actionType == TYPE_CLEAR_ZOMBIE_FAN
+                || action.actionType == TYPE_CREATE_GROUP_CHAT
+                || action.actionType == TYPE_DELETE_GROUP_CHAT
+                || action.actionType == TYPE_ADD_GROUP_PEOPLE
+                || action.actionType == TYPE_DELETE_GROUP_PEOPLE
+                || action.actionType == TYPE_FIX_GROUP_NAME
+                || action.actionType == TYPE_FIX_GROUP_NOTICE
+                || action.actionType == TYPE_GROUP_CHAT
+                || action.actionType == TYPE_AT_GROUP_PEOPLE
+                || action.actionType == TYPE_DELETE_MOMENT
+                || action.actionType == TYPE_ADD_FRIEND
+                || action.actionType == TYPE_DELETE_FRIEND
+                || action.actionType == TYPE_MISSING_FISH
+                || action.actionType == TYPE_FIX_NICKNAME
+                || action.actionType == TYPE_FIX_FRIEND_NICKNAME
+                || action.actionType == TYPE_FIX_ICON
+                || action.actionType == TYPE_NEARBY_PEOPLE
+                || action.actionType == TYPE_GROUP_SEND_HELPER
+                || action.actionType == TYPE_CHECK_MOMENT
+                || action.actionType == TYPE_CLEAR_CHAT_HISTORY
+                || action.actionType == TYPE_INTERACT_MOMENT
+                || action.actionType == TYPE_NOTIFY_RESULT
+                || action.actionType == TYPE_SCRIPT
+                || action.actionType == TYPE_ADD_PUBLIC_ACCOUNT
+                || action.actionType == TYPE_SEARCH_PUBLIC_ACCOUNT
                 ) {
             action.content = Base64.encodeToString(action.content.getBytes(), NO_WRAP);
-            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + id + ",\"time\":" + id + ",\"content\":\"" + action.content + "\"}";
+            String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
         } else if (action.actionType == TYPE_CHECK_NEW_VERSION) {
             MainActivity.instance.checkNewVersion(null);
@@ -1165,7 +1116,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-
     private void doActionCommandByType(final int actionType) {
         try {
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -1174,13 +1124,13 @@ public class AutoReplyService extends AccessibilityService {
             content = o.optString("content");
             start = o.optInt("start");
             end = o.optInt("end");
-            final String url = o.optString("url");
             String clientGroupId = null;
             if (o.has("clientGroupId")) {
                 clientGroupId = o.optString("clientGroupId");
             } else if (o.has("clientGroupIds")) {
                 clientGroupId = o.optJSONArray("clientGroupIds").optString(0);
             }
+            final String url = o.optString("url");
             final JSONArray members = o.optJSONArray("members");
             final String finalContent = content;
             final String finalClientGroupId = clientGroupId;
@@ -1221,9 +1171,7 @@ public class AutoReplyService extends AccessibilityService {
                             || actionType == TYPE_SCRIPT
                             ) {
                         //通讯录-群聊-关于群的操作
-                        //zhengkang 0803 添加获取群组
-                        MainActivity.instance.getAllGroups();
-                        Group g = new MyDBHelper(getApplicationContext()).getGroupById(finalClientGroupId);
+                        Group g = getOneGroupFromWechatDB(finalClientGroupId);
                         if (g == null) {
                             if (actionType == TYPE_DELETE_GROUP_CHAT) {
                                 release(true);
@@ -1280,6 +1228,35 @@ public class AutoReplyService extends AccessibilityService {
             e.printStackTrace();
             release(false);
         }
+    }
+
+    private void doRequestFriend() {
+        if (tongxunluTextView == null) {
+            release(false);
+            return;
+        }
+        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
+                            sleep(3000);
+                            boolean has = hasAcceptButton(false);
+                            if (!has) {
+                                release(false);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+
+            }
+        }, 3000);
     }
 
     private void clearChatHistory() {
@@ -2083,6 +2060,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //1:30秒 2：10秒 3：3秒
+    //这里30秒不一定够！~
     private int hasAcceptButtonOrAddedTextView() {
         boolean find1 = hasAcceptButton(true);
         if (find1) {
@@ -2431,7 +2409,7 @@ public class AutoReplyService extends AccessibilityService {
                                     } else {
                                         //还不是好友
                                         //0.寻找昵称
-                                        final String remarkIndex = Utils.getParentRemark(getApplication(), 1);
+                                        final String remarkIndex = getParentRemark(getApplication(), 1);
                                         findTargetNode(NODE_TEXTVIEW, 3);
                                         String remark = remarkIndex + " " + mFindTargetNode.getText().toString();
                                         updateUserStatus(member, remark, STATUS_ADDING);
@@ -2480,7 +2458,7 @@ public class AutoReplyService extends AccessibilityService {
             af.remark = remark;
             af.status = status;
             new MyDBHelper(getApplicationContext()).updateAddFriend(af);
-            Utils.updateUserStatus(phone, remark, status);
+            Utils.updateUserStatus(getApplicationContext(), phone, remark, status);
         }
     }
 
@@ -3143,55 +3121,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_FIX_GROUP_NAME
                         || actionType == TYPE_FIX_GROUP_NOTICE
                         || actionType == TYPE_DELETE_GROUP_CHAT) {
-                    //群信息
-                    findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                    if (mFindTargetNode == null) {
-                        release(false);
-                        return;
-                    }
-                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
-                                addOrDeleteGroupPeople(actionType);
-                            } else if (actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
-                                String target = actionType == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
-                                boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
-                                if (!find) {
-                                    release(false);
-                                    return;
-                                }
-                                fixGroupNameOrNotice();
-                            } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
-                                execRootCmdSilent("input swipe 360 900 360 300");
-                                execRootCmdSilent("input swipe 360 900 360 300");
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        boolean find = findTargetNode(NODE_TEXTVIEW, "删除并退出", CLICK_PARENT, true);
-                                        if (!find) {
-                                            release(false);
-                                            return;
-                                        }
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                final boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
-                                                final boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        release(find1 || find2);
-                                                    }
-                                                }, 2000);
-                                            }
-                                        }, 2000);
-                                    }
-                                }, 2000);
-                            }
-                        }
-                    }, 2000);
+                    groupRelative(actionType);
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
@@ -3206,6 +3136,58 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }, 3000);
+    }
+
+    private void groupRelative(final int actionType) {
+        //群信息
+        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+        if (mFindTargetNode == null) {
+            release(false);
+            return;
+        }
+        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
+                    addOrDeleteGroupPeople(actionType);
+                } else if (actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
+                    String target = actionType == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
+                    boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
+                    if (!find) {
+                        release(false);
+                        return;
+                    }
+                    fixGroupNameOrNotice();
+                } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
+                    execRootCmdSilent("input swipe 360 900 360 300");
+                    execRootCmdSilent("input swipe 360 900 360 300");
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean find = findTargetNode(NODE_TEXTVIEW, "删除并退出", CLICK_PARENT, true);
+                            if (!find) {
+                                release(false);
+                                return;
+                            }
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final boolean find1 = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                    final boolean find2 = findTargetNode(NODE_TEXTVIEW, "离开群聊", CLICK_PARENT, true);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            release(find1 || find2);
+                                        }
+                                    }, 2000);
+                                }
+                            }, 2000);
+                        }
+                    }, 2000);
+                }
+            }
+        }, 2000);
     }
 
     private void doScript() {
@@ -3644,6 +3626,15 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    public String getTextInEditText(int index) {
+        findTargetNode(NODE_EDITTEXT, index);
+        if (mFindTargetNode == null) {
+            return "";
+        }
+        String text = mFindTargetNode.getText().toString();
+        return text;
+    }
+
     public int getTextLengthInEditText(int index, String compare) {
         findTargetNode(NODE_EDITTEXT, index);
         if (mFindTargetNode == null) {
@@ -3853,8 +3844,22 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            //1.粘贴后，系统会马上带上原名
                             remark = getParentRemark(getApplication(), 1);
                             findTargetNode(NODE_EDITTEXT, remark);
+
+                            //2.过滤特殊字符，使用newRemark
+                            String current = getTextInEditText(1);
+                            String newRemark = Utils.getNewRemark(getApplicationContext(), current);
+                            if (!current.equals(newRemark)) {
+                                int length = getTextLengthInEditText(1, "");
+                                execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_MOVE_END);
+                                for (int i = 0; i < length; i++) {
+                                    execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
+                                }
+                                findTargetNode(NODE_EDITTEXT, newRemark);
+                            }
+                            
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -4267,7 +4272,6 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
                         if (find) {
                             new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
@@ -4484,9 +4488,11 @@ public class AutoReplyService extends AccessibilityService {
         String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
         String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
         String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+        String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
         try {
             AsyncHttpClient client = new AsyncHttpClient();
             client.setTimeout(10000);
+            client.addHeader("x-auth-token", xtoken);
             //String sender = actions.get(currentActionID).sender;
             String sender = "5 浪翻云";
             String url = "http://192.168.8.59:8081/wxMiniProgram/getwxacodeunlimit";
