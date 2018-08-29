@@ -73,6 +73,7 @@ import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.GroupPeople;
 import cn.kiway.robot.entity.Message;
+import cn.kiway.robot.moment.SnsInfo;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
@@ -305,7 +306,6 @@ public class Utils {
                     String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic1 = " + topic1);
                     doConsume(rabbitMQUtils, topic1);
-
 //                    if (rabbitMQUtils2 == null) {
 //                        rabbitMQUtils2 = new RabbitMQUtils(Constant.host, Constant.port);
 //                    }
@@ -330,16 +330,28 @@ public class Utils {
                 //处理逻辑
                 if (AutoReplyService.instance != null && !isHeartBeatReply(msg)) {
                     Log.d("test", "不是心跳");
-                    boolean imme = false;
-                    if (msg.contains(TICK_PERSON_GROUP_CMD)) {
-                        imme = true;
-                    }
-                    AutoReplyService.instance.sendReplyImmediately(msg, imme);
+                    AutoReplyService.instance.sendReplyImmediately(msg, isNeedImme(msg));
                 }
                 //手动消息确认
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
         }, channel);
+    }
+
+    //需要插队的命令
+    private static boolean isNeedImme(String msg) {
+        try {
+            if (msg.contains(TICK_PERSON_GROUP_CMD)) {
+                return true;
+            }
+            JSONObject o = new JSONObject(msg);
+            if (o.optBoolean("schedule")) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -694,7 +706,6 @@ public class Utils {
         String uin = initCurrWxUin();
         TelephonyManager phone = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         String imei = phone.getDeviceId();
-        Log.d("test", "imei = " + imei);
         if (TextUtils.isEmpty(imei) || TextUtils.isEmpty(uin)) {
             LogUtil.e("初始化数据库密码失败：imei或uid为空");
             return null;
@@ -703,7 +714,7 @@ public class Utils {
         System.out.println(imei + uin + "初始数值");
         System.out.println(md5 + "MD5");
         String password = md5.substring(0, 7).toLowerCase();
-        Log.d("test", "password = " + password);
+
         return password;
     }
 
@@ -778,12 +789,12 @@ public class Utils {
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
-            Cursor c1 = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
-            while (c1.moveToNext()) {
-                String username = c1.getString(c1.getColumnIndex("username"));  //wxID
-                String alias = c1.getString(c1.getColumnIndex("alias"));        //wxNo
-                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //nickname
-                String conRemark = c1.getString(c1.getColumnIndex("conRemark"));//remark
+            Cursor cursor = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
+                String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //nickname
+                String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));//remark
                 if (wxNo.equals(alias)) {
                     //排除掉自己
                     Log.d("test", "wxNo = " + wxNo);
@@ -796,13 +807,32 @@ public class Utils {
                 }
             }
             Log.d("test", "friends = " + friends);
-            c1.close();
+            cursor.close();
             db.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return friends;
+    }
+
+    public static Friend doGetOneFriendByWxId(Context c, File dbFile, String password, String wxId) {
+        Friend f = null;
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            Cursor cursor = db.rawQuery("select * from rcontact where username = '" + wxId + "'", null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
+                String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //nickname
+                String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));//remark
+                f = new Friend(nickname, conRemark, username, alias);
+            }
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return f;
     }
 
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
@@ -814,14 +844,14 @@ public class Utils {
             long before1hour = current - 60 * 60 * 1000;
             String sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
             Log.d("test", "sql = " + sql);
-            Cursor c1 = db.rawQuery(sql, null);
-            while (c1.moveToNext()) {
-                int type = c1.getInt(c1.getColumnIndex("type"));
-                long createTime = c1.getLong(c1.getColumnIndex("createTime"));
-                String talker = c1.getString(c1.getColumnIndex("talker"));
-                String nickname = c1.getString(c1.getColumnIndex("nickname"));
-                String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
-                String content = c1.getString(c1.getColumnIndex("content"));
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                int type = cursor.getInt(cursor.getColumnIndex("type"));
+                long createTime = cursor.getLong(cursor.getColumnIndex("createTime"));
+                String talker = cursor.getString(cursor.getColumnIndex("talker"));
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));
+                String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));
+                String content = cursor.getString(cursor.getColumnIndex("content"));
 
                 Message m = new Message();
                 m.type = type;
@@ -838,7 +868,7 @@ public class Utils {
                 messages.add(m);
             }
             Log.d("test", "messages = " + messages);
-            c1.close();
+            cursor.close();
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -851,26 +881,82 @@ public class Utils {
         ArrayList<Group> groups = new ArrayList<>();
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            Cursor c1 = null;
-            String sql = "";
             //type=2未保存的群,3是已经保存的
-            sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom' and (type = 2 or type = 3) ";
+            String sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom'"; //and (type = 2 or type = 3 or type = 0)
             Log.d("test", "sql = " + sql);
-            c1 = db.rawQuery(sql, null);
-            while (c1.moveToNext()) {
-                String username = c1.getString(c1.getColumnIndex("username"));  //clientGroupId
-                String nickname = c1.getString(c1.getColumnIndex("nickname"));  //groupName
-                int type = c1.getInt(c1.getColumnIndex("type"));  //type
-                String master = c1.getString(c1.getColumnIndex("roomowner"));
-                groups.add(new Group(username, nickname, type, master));
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
+                int type = cursor.getInt(cursor.getColumnIndex("type"));  //type
+                String master = cursor.getString(cursor.getColumnIndex("roomowner"));//群主ID
+                String masterWxNo = getWxNoByWxId(c, master);//找不到就是空
+                groups.add(new Group(username, nickname, type, master, masterWxNo));
             }
             Log.d("test", "groups = " + groups);
-            c1.close();
+            cursor.close();
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return groups;
+    }
+
+    public static Group doGetOneGroupByGroupId(Context c, File dbFile, String password, String clientGroupId) {
+        Log.d("test", "doGetOneGroupByGroupId");
+        Group group = null;
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            //type=2未保存的群,3是已经保存的
+            String sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom' and username = '" + clientGroupId + "'"; //and (type = 2 or type = 3 or type = 0)
+            Log.d("test", "sql = " + sql);
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
+                group = new Group(username, nickname);
+            }
+            Log.d("test", "group = " + group);
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return group;
+    }
+
+    public static Group doGetOneGroupByGroupName(Context c, File dbFile, String password, String name) {
+        Log.d("test", "doGetOneGroupByGroupId");
+        Group group = null;
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            //type=2未保存的群,3是已经保存的
+            String sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom' and nickname = '" + name + "'"; //and (type = 2 or type = 3 or type = 0)
+            Log.d("test", "sql = " + sql);
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
+                group = new Group(username, nickname);
+            }
+            Log.d("test", "group = " + group);
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return group;
+    }
+
+    private static String getWxNoByWxId(Context c, String master) {
+        String wxNo = "";
+        String password = initDbPassword(c);
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
+        Friend f = doGetOneFriendByWxId(c, dbFile, password, master);
+        if (f != null) {
+            wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
+        }
+        return wxNo;
     }
 
     public static ArrayList<GroupPeople> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
@@ -880,11 +966,10 @@ public class Utils {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String sql = "select memberlist ,  displayname   from chatroom where chatroomname = '" + clientGroupId + "'";
             Log.d("test", "sql = " + sql);
-            Cursor c1 = db.rawQuery(sql, null);
-            while (c1.moveToNext()) {
-                String memberlist = c1.getString(c1.getColumnIndex("memberlist"));
-                String displayname = c1.getString(c1.getColumnIndex("displayname"));
-
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String memberlist = cursor.getString(cursor.getColumnIndex("memberlist"));
+                String displayname = cursor.getString(cursor.getColumnIndex("displayname"));
                 String[] temp1 = memberlist.split(";");
                 String[] temp2 = displayname.split("、");
                 for (int i = 0; i < temp1.length; i++) {
@@ -892,7 +977,7 @@ public class Utils {
                 }
                 Log.d("test", "peples = " + peoples);
             }
-            c1.close();
+            cursor.close();
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -913,25 +998,6 @@ public class Utils {
         return SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), password, null, OPEN_READONLY, hook);
     }
 
-    //null:private
-    //string:group
-    public static String isFromGroup(Context c, String name) {
-        int lastLeft = name.lastIndexOf("(");
-        int lastRight = name.lastIndexOf(")");
-        if (lastRight != -1 && lastLeft != -1 && (lastRight - lastLeft > 1)) {
-            name = name.substring(0, lastLeft);
-        }
-        final String password = initDbPassword(c);
-        final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-        final ArrayList<Group> groups = doGetGroups(c, dbFile, password);
-        for (Group group : groups) {
-            if (name.equals(group.groupName)) {
-                return group.clientGroupId;
-            }
-        }
-        return null;
-    }
-
     public static ArrayList<String> doGetMoments(Context c, File dbFile) {
         Log.d("test", "doGetMoments");
         ArrayList<String> moments = new ArrayList<>();
@@ -939,16 +1005,15 @@ public class Utils {
             SQLiteDatabase db = openWechatDB(c, dbFile, null);
             String sql = "select  *  from SnsInfo";
             Log.d("test", "sql = " + sql);
-            Cursor c1 = db.rawQuery(sql, null);
-            while (c1.moveToNext()) {
-                String userName = c.getString(c1.getColumnIndex("userName"));
-                byte[] content = c1.getBlob(c1.getColumnIndex("content"));
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String userName = cursor.getString(cursor.getColumnIndex("userName"));
+                byte[] content = cursor.getBlob(cursor.getColumnIndex("content"));
                 Log.d("test", "username = " + userName);
                 Log.d("test", "content = " + new String(content));
             }
-            c1.close();
+            cursor.close();
             db.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1081,6 +1146,7 @@ public class Utils {
                         o.put("robotId", robotId);
                         o.put("userId", wxNo);
                         o.put("master", g.master);
+                        o.put("masterWxNo", g.masterWxNo);
                         o.put("saved", g.type == 3 ? 1 : 0);//3是已保存，2是未保存
                         param.put(o);
                     }
@@ -1250,7 +1316,7 @@ public class Utils {
     public static String getDisplayNameFromGroup(Context c, String clientGroupId, String wxId) {
         String displayName = "";
         final String password = initDbPassword(c);
-        final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+        final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
         ArrayList<GroupPeople> peoples = doGetPeopleInGroup(c, dbFile, password, clientGroupId);
         for (GroupPeople gp : peoples) {
             if (gp.wxId.equals(wxId)) {
@@ -1258,5 +1324,17 @@ public class Utils {
             }
         }
         return displayName;
+    }
+
+    public static void getAuthorRemarkByAuthorId(Context c, ArrayList<SnsInfo.Comment> comments) {
+        String password = initDbPassword(c);
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
+        for (SnsInfo.Comment comment : comments) {
+            Friend f = doGetOneFriendByWxId(c, dbFile, password, comment.authorId);
+            if (f == null) {
+                continue;
+            }
+            comment.authorName = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
+        }
     }
 }

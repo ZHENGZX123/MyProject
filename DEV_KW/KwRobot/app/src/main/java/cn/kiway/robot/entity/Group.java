@@ -12,14 +12,22 @@ public class Group {
     public String groupName;
     public int type;
     public String master;
+    public String masterWxNo;
+
 
     public ArrayList<GroupPeople> peoples;
 
-    public Group(String clientGroupId, String groupName, int type, String master) {
+    public Group(String clientGroupId, String groupName) {
+        this.clientGroupId = clientGroupId;
+        this.groupName = groupName;
+    }
+
+    public Group(String clientGroupId, String groupName, int type, String master, String masterWxNo) {
         this.clientGroupId = clientGroupId;
         this.groupName = groupName;
         this.type = type;
         this.master = master;
+        this.masterWxNo = masterWxNo;
     }
 
     @Override

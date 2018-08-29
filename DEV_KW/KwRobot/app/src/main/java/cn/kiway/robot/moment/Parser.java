@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cn.kiway.robot.moment.Config.PROTOCAL_SNS_OBJECT_NICKNAME_FIELD;
+import static cn.kiway.robot.moment.Config.SNS_OBJECT_EXT_AUTHOR_NAME_FIELD;
+
 
 /**
  * Created by chiontang on 2/11/16.
@@ -130,7 +133,7 @@ public class Parser {
 
     static public void parseSnsObjectExt(Object apzObject, boolean isComment, SnsInfo matchSns) throws Throwable {
         if (isComment) {
-            Field field = apzObject.getClass().getField(Config.SNS_OBJECT_EXT_AUTHOR_NAME_FIELD);
+            Field field = apzObject.getClass().getField(PROTOCAL_SNS_OBJECT_NICKNAME_FIELD);//TODO 这里都是昵称，我要备注SNS_OBJECT_EXT_AUTHOR_NAME_FIELD
             Object authorName = field.get(apzObject);
 
             field = apzObject.getClass().getField(Config.SNS_OBJECT_EXT_REPLY_TO_FIELD);
@@ -173,7 +176,7 @@ public class Parser {
 
             matchSns.comments.add(newComment);
         } else {
-            Field field = apzObject.getClass().getField(Config.SNS_OBJECT_EXT_AUTHOR_NAME_FIELD);
+            Field field = apzObject.getClass().getField(SNS_OBJECT_EXT_AUTHOR_NAME_FIELD);
             Object nickname = field.get(apzObject);
             field = apzObject.getClass().getField(Config.SNS_OBJECT_EXT_AUTHOR_ID_FIELD);
             Object userId = field.get(apzObject);

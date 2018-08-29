@@ -19,6 +19,7 @@ import com.rabbitmq.client.Channel;
 
 import org.xutils.x;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,20 @@ public class KWApplication extends Application {
                 closeMQ();
             }
         });
+
+        deleteAllDBFiles();
+    }
+
+    private void deleteAllDBFiles() {
+        File[] files = new File(ROOT).listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
+        for (File f : files) {
+            if (!f.isDirectory() && f.getName().contains(".db")) {
+                f.delete();
+            }
+        }
     }
 
     public static void closeMQ() {

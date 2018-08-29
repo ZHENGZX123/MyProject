@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
@@ -334,14 +335,16 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    private void getAllMomentComments() {
+    private void getAllMomentComments(final boolean scan) {
         new Thread() {
             @Override
             public void run() {
                 try {
                     //1.先去朋友圈浏览一下
-                    checkMomemt();
-                    sleep(100 * 1000);
+                    if (scan) {
+                        checkMomemt();
+                        sleep(100 * 1000);
+                    }
                     //2.破解数据库
                     getCommentFromDB();
                     sleep(10 * 1000);
@@ -389,10 +392,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void getCommentFromDB() throws Throwable {
-        File dbFile = getWxDBFile("SnsMicroMsg.db", "getAllComments.db");
+        File dbFile = getWxDBFile("SnsMicroMsg.db", "getAllComments" + new Random().nextInt(9999) + ".db");
         Task task = new Task(getApplicationContext());
         boolean init = task.initSnsReader();
-        if (init) {
+        if (init && dbFile != null) {
             task.snsReader.run(getApplicationContext(), dbFile.getAbsolutePath());
             ArrayList<SnsInfo> infos = task.snsReader.getSnsList();
             for (SnsInfo info : infos) {
@@ -400,12 +403,16 @@ public class MainActivity extends BaseActivity {
                 int count = info.comments.size();
                 Log.d("test", "该SnsInfo有" + count + "条评论");
                 if (count > 0) {
-                    //判断数据库有没有对应的moment
+                    //1.判断数据库有没有对应的moment
                     Moment m = new MyDBHelper(getApplicationContext()).getMomentByDescription(info.content);
                     if (m == null) {
                         Log.d("test", "该SnsInfo没有对应的moment，是老数据，不再处理");
                         continue;
                     }
+                    //2.修改authorName
+                    Utils.getAuthorRemarkByAuthorId(getApplicationContext(), info.comments);
+
+                    //3.判断是否存在
                     for (SnsInfo.Comment c : info.comments) {
                         c.momentID = m.momentID;
                         boolean existed = new MyDBHelper(getApplicationContext()).checkCommentExisted(m.momentID, c.authorName, c.content, c.time);
@@ -437,7 +444,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages.db");
+                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
                     ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password);
                     ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn1Hour();
                     //过滤掉已经发送的消息
@@ -525,11 +532,11 @@ public class MainActivity extends BaseActivity {
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
-                getAllMomentComments();
+                getAllMomentComments(true);
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_GROUPS) {
                 mHandler.removeMessages(MSG_GET_ALL_GROUPS);
-                getAllGroups();
+                getAllGroups(true);
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_CELLPHONES) {
                 mHandler.removeMessages(MSG_GET_CELLPHONES);
@@ -718,7 +725,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     String password = initDbPassword(getApplicationContext());
-                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
+                    File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
                     final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
                     int friendCount = friends.size();
                     Log.d("test", "friendCount = " + friendCount);
@@ -800,20 +807,19 @@ public class MainActivity extends BaseActivity {
         doRequestFriends(requests);
     }
 
-    public void getAllGroups() {
+    public void getAllGroups(final boolean updatePeoples) {
         new Thread() {
             @Override
             public void run() {
                 try {
                     final String password = initDbPassword(getApplicationContext());
-                    final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
+                    final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
                     final ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
-
                     if (groups != null && groups.size() > 0) {
                         Utils.uploadGroup(MainActivity.this, groups, new MyListener() {
                             @Override
                             public void onResult(boolean success) {
-                                if (success) {
+                                if (updatePeoples) {
                                     for (Group group : groups) {
                                         group.peoples = doGetPeopleInGroup(MainActivity.this, dbFile, password, group.clientGroupId);
                                     }
@@ -943,8 +949,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllMessages();
+//        getAllMomentComments(false);
+//        getAllMessages();
+//        getAllFriends(false);
+        getAllGroups(false);
     }
+
 
     public void test3(View view) {
         resetNickName();
@@ -953,7 +963,7 @@ public class MainActivity extends BaseActivity {
     private void resetNickName() {
         try {
             String password = initDbPassword(getApplicationContext());
-            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
+            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
             final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
 
             ArrayList<Friend> needUpdateFriends = new ArrayList();

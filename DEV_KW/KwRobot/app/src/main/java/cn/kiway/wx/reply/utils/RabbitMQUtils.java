@@ -81,15 +81,14 @@ public class RabbitMQUtils {
         this.routingKey = routingKey;
         this.queueName = queueName;
         Channel channel = null;
-
         try {
             channel = this.connection.createChannel();
             channel.basicQos(1);
             channel.exchangeDeclare("wx-reply-exchanger", "direct", true);
             channel.queueDeclare(queueName, false, false, false, (Map) null);
             channel.queueBind(queueName, "wx-reply-exchanger", routingKey);
-        } catch (IOException var5) {
-            var5.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return channel;

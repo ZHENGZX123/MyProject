@@ -5,7 +5,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -196,30 +195,6 @@ public class FileUtils {
             }
         }
         return flag;
-    }
-
-    public static void copyRawToSdcard(Context c, int id, String name) {
-        InputStream inStream = c.getResources().openRawResource(id);//R.raw.tab0
-        File file = new File(KWApplication.ROOT + name);
-        FileOutputStream fileOutputStream = null;//存入SDCard
-        try {
-            fileOutputStream = new FileOutputStream(file);
-
-            byte[] buffer = new byte[1024];
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            int len = 0;
-            while ((len = inStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, len);
-            }
-            byte[] bs = outStream.toByteArray();
-            fileOutputStream.write(bs);
-            outStream.close();
-            inStream.close();
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static String readSDCardFile(String path, Context context) {

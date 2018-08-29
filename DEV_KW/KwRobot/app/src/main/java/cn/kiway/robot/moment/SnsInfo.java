@@ -9,9 +9,9 @@ import java.util.ArrayList;
  */
 public class SnsInfo {
     public String id = "";
+    public String authorId = "";
     public String authorName = "";
     public String content = "";
-    public String authorId = "";
     public ArrayList<Like> likes = new ArrayList<Like>();
     public ArrayList<Comment> comments = new ArrayList<Comment>();
     public ArrayList<String> mediaList = new ArrayList<String>();
@@ -23,7 +23,8 @@ public class SnsInfo {
     public void print() {
         Log.d("wechatmomentstat", "================================");
         Log.d("wechatmomentstat", "id: " + this.id);
-        Log.d("wechatmomentstat", "Author: " + this.authorName);
+        Log.d("wechatmomentstat", "authorId: " + this.authorId);
+        Log.d("wechatmomentstat", "authorName: " + this.authorName);
         Log.d("wechatmomentstat", "Content: " + this.content);
         Log.d("wechatmomentstat", "Likes:");
         for (int i = 0; i < likes.size(); i++) {
