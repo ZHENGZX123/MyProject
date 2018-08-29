@@ -10,7 +10,7 @@ public class RootCmd {
     // 判断机器Android是否已经root，即是否获取root权限
     public static boolean haveRoot() {
         int ret = execRootCmdSilent("echo test"); // 通过执行测试命令来检测
-        Log.d("test", "ret = " + ret);
+        Log.d("root", "ret = " + ret);
         if (ret == 0) {
             return true;
         }
@@ -24,7 +24,7 @@ public class RootCmd {
         try {
             Process p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            Log.d("test", cmd);
+            Log.d("root", cmd);
             dos.writeBytes(cmd + "\n");
             dos.flush();
             dos.writeBytes("exit\n");

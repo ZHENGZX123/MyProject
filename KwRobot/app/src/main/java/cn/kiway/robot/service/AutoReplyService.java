@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import cn.kiway.robot.KWApplication;
@@ -104,6 +105,7 @@ import static cn.kiway.robot.entity.Action.TYPE_MISSING_FISH;
 import static cn.kiway.robot.entity.Action.TYPE_NEARBY_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_NOTIFY_RESULT;
 import static cn.kiway.robot.entity.Action.TYPE_REQUEST_FRIEND;
+import static cn.kiway.robot.entity.Action.TYPE_SAVE_GROUP;
 import static cn.kiway.robot.entity.Action.TYPE_SCRIPT;
 import static cn.kiway.robot.entity.Action.TYPE_SEARCH_PUBLIC_ACCOUNT;
 import static cn.kiway.robot.entity.Action.TYPE_SEND_BATCH;
@@ -130,6 +132,7 @@ import static cn.kiway.robot.util.Constant.DEFAULT_BUSY;
 import static cn.kiway.robot.util.Constant.DEFAULT_OFFLINE;
 import static cn.kiway.robot.util.Constant.DEFAULT_RELEASE_TIME;
 import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
+import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.HOUTAI;
 import static cn.kiway.robot.util.Constant.INTERACT_MOMENT_CMD;
@@ -157,7 +160,6 @@ import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.doGetFriends;
-import static cn.kiway.robot.util.Utils.doGetGroups;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -278,7 +280,7 @@ public class AutoReplyService extends AccessibilityService {
                 String title = mFindTargetNode.getText().toString();
                 Log.d("test", "previewAction title = " + title);
 
-                String clientGroupId = Utils.isFromGroup(getApplicationContext(), title);
+                String clientGroupId = isFromGroup(getApplicationContext(), title);
                 Log.d("test", "isFromGroup clientGroupId = " + clientGroupId);
                 action.clientGroupId = clientGroupId;
 
@@ -344,7 +346,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (o.has("clientGroupId")) {
                         //在群里发消息，这个没有cmd，偷懒了。。。
                         String clientGroupId = o.optString("clientGroupId");
-                        Group g = getOneGroupFromWechatDB(clientGroupId);
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId);
                         if (g == null) {
                             toast("该群不存在或已经被删除1");
                             return;
@@ -594,7 +596,7 @@ public class AutoReplyService extends AccessibilityService {
                 try {
                     String topic = "kiway_wx_reply_result_react";
                     String content;
-                    if (command.cmd.equals(SEND_FRIEND_CIRCLE_CMD)) {
+                    if (command.cmd.equals(SEND_FRIEND_CIRCLE_CMD) || command.cmd.equals(DELETE_FRIEND_CIRCLE_CMD)) {
                         content = new String(Base64.decode(command.original.getBytes(), NO_WRAP));
                     } else {
                         content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
@@ -625,16 +627,10 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("toUser", new JSONObject(content).optString("author"));
                     } else if (command.cmd.equals(CREATE_GROUP_CHAT_CMD) || command.cmd.equals(UPDATE_GROUP_NAME_CMD)) {
                         String groupName = o.optString("name");
-                        ArrayList<Group> groups = getAllGroupsFromWechatDB();
-                        String clientGroupId = null;
-                        if (groups != null && groups.size() > 0) {
-                            for (Group group : groups) {
-                                if (groupName.equals(group.groupName)) {
-                                    clientGroupId = group.clientGroupId;
-                                }
-                            }
+                        Group g = getOneGroupFromWechatDB_ClientGroupName(groupName);
+                        if (g != null) {
+                            o.put("clientGroupId", g.clientGroupId);
                         }
-                        o.put("clientGroupId", clientGroupId);
                     }
 
                     String msg = o.toString();
@@ -656,24 +652,20 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private ArrayList<Group> getAllGroupsFromWechatDB() {
-        String password = initDbPassword(getApplicationContext());
-        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
-        return groups;
+    private Group getOneGroupFromWechatDB_ClientGroupName(String groupName) {
+        final String password = initDbPassword(getApplicationContext());
+        final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
+        Group g = Utils.doGetOneGroupByGroupName(getApplicationContext(), dbFile, password, groupName);
+        return g;
     }
 
-    private Group getOneGroupFromWechatDB(String clientGroupId) {
+    private Group getOneGroupFromWechatDB_ClientGroupId(String clientGroupId) {
         String password = initDbPassword(getApplicationContext());
-        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups.db");
-        ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
-        for (Group g : groups) {
-            if (g.clientGroupId.equals(clientGroupId)) {
-                return g;
-            }
-        }
-        return null;
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
+        Group g = Utils.doGetOneGroupByGroupId(getApplicationContext(), dbFile, password, clientGroupId);
+        return g;
     }
+
 
     //群里发来的消息
     public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message) {
@@ -982,6 +974,7 @@ public class AutoReplyService extends AccessibilityService {
                                 || actionType == TYPE_SCRIPT
                                 || actionType == TYPE_ADD_PUBLIC_ACCOUNT
                                 || actionType == TYPE_SEARCH_PUBLIC_ACCOUNT
+                                || actionType == TYPE_SAVE_GROUP
                                 ) {
                             new Thread() {
                                 @Override
@@ -1076,6 +1069,7 @@ public class AutoReplyService extends AccessibilityService {
                 || action.actionType == TYPE_FIX_GROUP_NOTICE
                 || action.actionType == TYPE_GROUP_CHAT
                 || action.actionType == TYPE_AT_GROUP_PEOPLE
+                || action.actionType == TYPE_SAVE_GROUP
                 || action.actionType == TYPE_DELETE_MOMENT
                 || action.actionType == TYPE_ADD_FRIEND
                 || action.actionType == TYPE_DELETE_FRIEND
@@ -1136,15 +1130,23 @@ public class AutoReplyService extends AccessibilityService {
             start = o.optInt("start");
             end = o.optInt("end");
             String clientGroupId = null;
+            String clientGroupIds = null;
             if (o.has("clientGroupId")) {
                 clientGroupId = o.optString("clientGroupId");
             } else if (o.has("clientGroupIds")) {
-                clientGroupId = o.optJSONArray("clientGroupIds").optString(0);
+                JSONArray array = o.optJSONArray("clientGroupIds");
+                if (array != null) {
+                    clientGroupId = array.optString(0);
+                } else {
+                    clientGroupIds = o.optString("clientGroupIds");
+                }
             }
+            Log.d("test", "clientGroupIds = " + clientGroupIds);
             final String url = o.optString("url");
             final JSONArray members = o.optJSONArray("members");
             final String finalContent = content;
             final String finalClientGroupId = clientGroupId;
+            final String finalClientGroupIds = clientGroupIds;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1176,13 +1178,13 @@ public class AutoReplyService extends AccessibilityService {
                             || actionType == TYPE_ADD_GROUP_PEOPLE
                             || actionType == TYPE_DELETE_GROUP_CHAT
                             || actionType == TYPE_FIX_GROUP_NAME
-                            || actionType == TYPE_FIX_GROUP_NOTICE
                             || actionType == TYPE_AT_GROUP_PEOPLE
+                            || actionType == TYPE_SAVE_GROUP
                             || actionType == TYPE_DELETE_GROUP_PEOPLE
                             || actionType == TYPE_SCRIPT
                             ) {
                         //通讯录-群聊-关于群的操作
-                        Group g = getOneGroupFromWechatDB(finalClientGroupId);
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(finalClientGroupId);
                         if (g == null) {
                             if (actionType == TYPE_DELETE_GROUP_CHAT) {
                                 release(true);
@@ -1195,11 +1197,33 @@ public class AutoReplyService extends AccessibilityService {
                         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
                         if (actionType == TYPE_GROUP_CHAT) {
                             groupchat2(g.groupName);
-                        } else if (actionType == TYPE_SCRIPT && role == ROLE_WODI) {
+                        } else if ((actionType == TYPE_SCRIPT && role == ROLE_WODI) || (actionType == TYPE_SAVE_GROUP)) {
                             searchTargetInWxHomePage(actionType, g.groupName, true);
                         } else {
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
                         }
+                    } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                String[] groups = finalClientGroupIds.split(",");
+                                resetMaxReleaseTime(50 * 1000 * groups.length);
+                                for (String clientGroupId : groups) {
+                                    Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId);
+                                    if (g == null) {
+                                        continue;
+                                    }
+                                    goBacktoWechatHomepage();
+                                    searchTargetInWxHomePage(actionType, g.groupName, false);//有些群没有保存，但是是群主。。。
+                                    try {
+                                        sleep(45 * 1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                release(true);
+                            }
+                        }.start();
                     } else if (actionType == TYPE_DELETE_FRIEND) {
                         startDeleteFriend(members);
                     } else if (actionType == TYPE_GROUP_SEND_HELPER) {
@@ -1477,7 +1501,7 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 String password = initDbPassword(getApplicationContext());
-                File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends.db");
+                File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
                 final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
                 boolean hasNotifyer = false;
                 for (Friend f : friends) {
@@ -1617,7 +1641,7 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "sendBatchMessage2");
         //用分享去做
         try {
-            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            final String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
             Log.d("test", "content = " + content);
             JSONArray messages = new JSONObject(content).optJSONArray("messages");
             int type = messages.getJSONObject(0).getInt("type");
@@ -1645,8 +1669,14 @@ public class AutoReplyService extends AccessibilityService {
                         sendLinkOnly(contentO.toString(), true);
                     }
                 }.start();
-            } else if (type == 4) {
-                //FIXME 郑群还没做到。
+            } else if (type == 50) {
+                final JSONObject contentO = messages.getJSONObject(0).getJSONObject("content");
+                new Thread() {
+                    @Override
+                    public void run() {
+                        sendFileOnly(contentO.optString("url"), contentO.optString("fileName"), true);
+                    }
+                }.start();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -2640,7 +2670,6 @@ public class AutoReplyService extends AccessibilityService {
                                                             @Override
                                                             public void run() {
                                                                 execRootCmdSilent("input swipe 360 900 360 300");
-
                                                                 mHandler.postDelayed(new Runnable() {
                                                                     @Override
                                                                     public void run() {
@@ -2892,7 +2921,7 @@ public class AutoReplyService extends AccessibilityService {
                     findTargetNode(NODE_TEXTVIEW, 1);
                     String title = mFindTargetNode.getText().toString();
                     Log.d("test", "previewAction title = " + title);
-                    final String clientGroupId = Utils.isFromGroup(getApplicationContext(), title);
+                    final String clientGroupId = isFromGroup(getApplicationContext(), title);
                     Log.d("test", "isFromGroup clientGroupId = " + clientGroupId);
 
                     findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
@@ -2925,6 +2954,21 @@ public class AutoReplyService extends AccessibilityService {
             Log.d("test", "没有匹配的消息，直接release");
             release(false);
         }
+    }
+
+    //null:private
+    //string:group
+    private String isFromGroup(Context c, String name) {
+        int lastLeft = name.lastIndexOf("(");
+        int lastRight = name.lastIndexOf(")");
+        if (lastRight != -1 && lastLeft != -1 && (lastRight - lastLeft > 1)) {
+            name = name.substring(0, lastLeft);
+        }
+        Group g = getOneGroupFromWechatDB_ClientGroupName(name);
+        if (g == null) {
+            return null;
+        }
+        return g.clientGroupId;
     }
 
     private void searchTargetInWxHomePage(final int actionType, final String target, final boolean canRelease) {
@@ -3138,8 +3182,9 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_DELETE_GROUP_PEOPLE
                         || actionType == TYPE_FIX_GROUP_NAME
                         || actionType == TYPE_FIX_GROUP_NOTICE
-                        || actionType == TYPE_DELETE_GROUP_CHAT) {
-                    groupRelative(actionType);
+                        || actionType == TYPE_DELETE_GROUP_CHAT
+                        || actionType == TYPE_SAVE_GROUP) {
+                    groupRelative(actionType, !(actionType == TYPE_FIX_GROUP_NOTICE));
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
@@ -3156,11 +3201,13 @@ public class AutoReplyService extends AccessibilityService {
         }, 3000);
     }
 
-    private void groupRelative(final int actionType) {
+    private void groupRelative(final int actionType, boolean canRelease) {
         //群信息
         findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
-            release(false);
+            if (canRelease) {
+                release(false);
+            }
             return;
         }
         mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -3169,14 +3216,19 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 if (actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE) {
                     addOrDeleteGroupPeople(actionType);
-                } else if (actionType == TYPE_FIX_GROUP_NOTICE || actionType == TYPE_FIX_GROUP_NAME) {
-                    String target = actionType == TYPE_FIX_GROUP_NAME ? "群聊名称" : "群公告";
-                    boolean find = findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
+                } else if (actionType == TYPE_FIX_GROUP_NAME) {
+                    boolean find = findTargetNode(NODE_TEXTVIEW, "群聊名称", CLICK_PARENT, true);
                     if (!find) {
                         release(false);
                         return;
                     }
-                    fixGroupNameOrNotice();
+                    fixGroupName();
+                } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
+                    boolean find = findTargetNode(NODE_TEXTVIEW, "群公告", CLICK_PARENT, true);
+                    if (!find) {
+                        return;
+                    }
+                    fixGroupNotice();
                 } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
                     execRootCmdSilent("input swipe 360 900 360 300");
                     execRootCmdSilent("input swipe 360 900 360 300");
@@ -3201,6 +3253,22 @@ public class AutoReplyService extends AccessibilityService {
                                     }, 2000);
                                 }
                             }, 2000);
+                        }
+                    }, 2000);
+                } else if (actionType == TYPE_SAVE_GROUP) {
+                    findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
+                    if (mFindTargetNode == null) {
+                        release(false);
+                        return;
+                    }
+                    clickSomeWhere(mFindTargetNode.getParent().getChild(1));
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.getAllGroups(true);
+                    }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            release(true);
                         }
                     }, 2000);
                 }
@@ -3307,21 +3375,14 @@ public class AutoReplyService extends AccessibilityService {
         }, 2000);
     }
 
-    private void fixGroupNameOrNotice() {
+    private void fixGroupName() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //判断是不是已经有了公告
                 try {
                     String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                     JSONObject o = new JSONObject(content);
-                    String text = "";
-                    if (o.has("name")) {
-                        text = o.optString("name");
-                    } else if (o.has("notice")) {
-                        text = o.optString("notice");
-                    }
-
+                    String text = o.optString("name");
                     boolean has = findTargetNode(NODE_TEXTVIEW, "编辑", CLICK_SELF, true);
                     long sleepTime = 0;
                     if (has) {
@@ -3333,7 +3394,71 @@ public class AutoReplyService extends AccessibilityService {
                         public void run() {
                             //1.先执行删除键
                             clearAndPasteEditText(1, finalText);
-                            doFixGroupNameOrNotice();
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final boolean find = findTargetNode(NODE_TEXTVIEW, "保存|发布|完成", CLICK_SELF, true);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!find) {
+                                                release(false);
+                                                return;
+                                            }
+                                            findTargetNode(NODE_BUTTON, "发布", CLICK_SELF, true);
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    release(true);
+                                                }
+                                            }, 2000);
+                                        }
+                                    }, 5000);
+                                }
+                            }, 1000);
+                        }
+                    }, sleepTime);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 2000);
+    }
+
+    private void fixGroupNotice() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    JSONObject o = new JSONObject(content);
+                    String text = o.optString("notice");
+                    boolean has = findTargetNode(NODE_TEXTVIEW, "编辑", CLICK_SELF, true);
+                    long sleepTime = 0;
+                    if (has) {
+                        sleepTime = 2000;
+                    }
+                    final String finalText = text;
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //1.先执行删除键
+                            clearAndPasteEditText(1, finalText);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final boolean find = findTargetNode(NODE_TEXTVIEW, "保存|发布|完成", CLICK_SELF, true);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!find) {
+                                                return;
+                                            }
+                                            findTargetNode(NODE_BUTTON, "发布", CLICK_SELF, true);
+                                        }
+                                    }, 5000);
+                                }
+                            }, 1000);
                         }
                     }, sleepTime);
                 } catch (Exception e) {
@@ -3606,31 +3731,6 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
-    }
-
-    private void doFixGroupNameOrNotice() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final boolean find = findTargetNode(NODE_TEXTVIEW, "保存|发布|完成", CLICK_SELF, true);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!find) {
-                            release(false);
-                            return;
-                        }
-                        findTargetNode(NODE_BUTTON, "发布", CLICK_SELF, true);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release(true);
-                            }
-                        }, 2000);
-                    }
-                }, 5000);
-            }
-        }, 1000);
     }
 
     private void clearAndPasteEditText(int index, String newContent) {
