@@ -254,7 +254,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 31);
+        super(c, DB_NAME, null, 32);
     }
 
     @Override
