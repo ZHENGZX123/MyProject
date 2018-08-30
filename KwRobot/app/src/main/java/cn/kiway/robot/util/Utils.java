@@ -348,12 +348,14 @@ public class Utils {
             if (o.optBoolean("schedule")) {
                 return true;
             }
+            if (!TextUtils.isEmpty(o.optString("sendTime"))) {
+                return true;
+            }
         } catch (Exception e) {
             return false;
         }
         return true;
     }
-
 
     private static boolean isHeartBeatReply(String msg) {
         try {
@@ -594,7 +596,7 @@ public class Utils {
     }
 
     //status： 1机器人正常 2机器人异常 3微信正常 4微信异常
-    public synchronized static void updateOpenIdOrStatus(final MainActivity act, final Object o) {
+    public static void updateRobotStatus(final MainActivity act, final int status) {
         if (act == null) {
             return;
         }
@@ -608,24 +610,19 @@ public class Utils {
                     client.setTimeout(10000);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/robot/" + robotId;
-                    Log.d("test", "updateOpenIdOrStatus url = " + url);
-
+                    Log.d("test", "updateRobotStatus url = " + url);
                     com.loopj.android.http.RequestParams param = new com.loopj.android.http.RequestParams();
-                    if (o instanceof String) {
-                        param.put("openId", o);
-                    } else if (o instanceof Integer) {
-                        param.put("status", o);
-                    }
+                    param.put("status", status);
                     Log.d("test", "param = " + param.toString());
                     client.put(act, url, param, new TextHttpResponseHandler() {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
-                            Log.d("test", "updateOpenIdOrStatus onSuccess = " + ret);
+                            Log.d("test", "updateRobotStatus onSuccess = " + ret);
                         }
 
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                            Log.d("test", "updateOpenIdOrStatus onFailure = " + s);
+                            Log.d("test", "updateRobotStatus onFailure = " + s);
                             check301(act.getApplicationContext(), s);
                         }
                     });
@@ -700,7 +697,12 @@ public class Utils {
 
     public static final String WX_DB_DIR_PATH = WX_ROOT_PATH + "MicroMsg";
 
+    public static String password = null;
+
     public static String initDbPassword(Context c) {
+        if (!TextUtils.isEmpty(password)) {
+            return password;
+        }
         execRootCmdSilent("chmod -R 777 " + WX_ROOT_PATH);
         execRootCmdSilent("chmod  777 /data/data/com.tencent.mm/shared_prefs/auth_info_key_prefs.xml");
         String uin = initCurrWxUin();
@@ -713,8 +715,7 @@ public class Utils {
         String md5 = getMD5(imei + uin);
         System.out.println(imei + uin + "初始数值");
         System.out.println(md5 + "MD5");
-        String password = md5.substring(0, 7).toLowerCase();
-
+        password = md5.substring(0, 7).toLowerCase();
         return password;
     }
 
@@ -789,7 +790,7 @@ public class Utils {
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
-            Cursor cursor = db.rawQuery("select * from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
+            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -819,7 +820,27 @@ public class Utils {
         Friend f = null;
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            Cursor cursor = db.rawQuery("select * from rcontact where username = '" + wxId + "'", null);
+            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (username = '" + wxId + "')", null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
+                String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //nickname
+                String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));//remark
+                f = new Friend(nickname, conRemark, username, alias);
+            }
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return f;
+    }
+
+    public static Friend doGetOneFriendByNickNameOrRemark(Context c, File dbFile, String password, String name) {
+        Friend f = null;
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where  (username not like '%@chatroom') and  (nickname = '" + name + "' or  conRemark = '" + name + "')", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo

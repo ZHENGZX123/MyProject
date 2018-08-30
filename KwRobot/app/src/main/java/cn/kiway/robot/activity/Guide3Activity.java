@@ -40,7 +40,6 @@ public class Guide3Activity extends BaseActivity {
             Log.d("test", "result = " + result);
             String decryptStr = Utils.decrypt(result);
             toast("decryptStr = " + decryptStr);
-
             //执行登录，登录完跳去MainActivity
             startActivity(new Intent(this, MainActivity.class));
         }

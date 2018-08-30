@@ -500,11 +500,9 @@ public class MainActivity extends BaseActivity {
         if (isServiceEnabled()) {
             start.setText("服务已经开启");
             start.setEnabled(false);
-            Utils.updateOpenIdOrStatus(this, 1);
         } else {
             start.setText("点击开启服务");
             start.setEnabled(true);
-            Utils.updateOpenIdOrStatus(this, 2);
         }
     }
 

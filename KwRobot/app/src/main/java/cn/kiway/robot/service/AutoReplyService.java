@@ -153,6 +153,7 @@ import static cn.kiway.robot.util.Constant.ROLE_WODI;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.SET_WODI_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NAME_CMD;
+import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.UPGRADE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.port;
@@ -256,9 +257,8 @@ public class AutoReplyService extends AccessibilityService {
                 action.sender = "心跳测试使者";
                 action.content = "heartbeat";
                 sendMsgToServer(action);
-
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
-                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 5 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 60 * 1000);
                 return;
             }
         }
@@ -278,10 +278,9 @@ public class AutoReplyService extends AccessibilityService {
                 //判断是来自个人还是群组
                 findTargetNode(NODE_TEXTVIEW, 1);
                 String title = mFindTargetNode.getText().toString();
-                Log.d("test", "previewAction title = " + title);
 
-                String clientGroupId = isFromGroup(getApplicationContext(), title);
-                Log.d("test", "isFromGroup clientGroupId = " + clientGroupId);
+                String clientGroupId = isFromPrivateOrGroup(title);
+                Log.d("test", "isFromPrivateOrGroup clientGroupId = " + clientGroupId);
                 action.clientGroupId = clientGroupId;
 
                 Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
@@ -564,10 +563,16 @@ public class AutoReplyService extends AccessibilityService {
                     chanel = rabbitMQUtils.createChannel(topic, topic);
                     rabbitMQUtils.sendMsg(pushMessageVo, chanel);
 
-                    new MyDBHelper(getApplication()).addMessage(action.sender, action.content, System.currentTimeMillis() + "");
-
+                    if (action.sender.equals("心跳测试使者")) {
+                        Utils.updateRobotStatus(MainActivity.instance, 1);
+                    } else {
+                        new MyDBHelper(getApplication()).addMessage(action.sender, action.content, System.currentTimeMillis() + "");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (action.sender.equals("心跳测试使者")) {
+                        Utils.updateRobotStatus(MainActivity.instance, 2);
+                    }
                 } finally {
                     try {
                         if (chanel != null) {
@@ -631,6 +636,8 @@ public class AutoReplyService extends AccessibilityService {
                         if (g != null) {
                             o.put("clientGroupId", g.clientGroupId);
                         }
+                    } else if (command.cmd.equals(UPDATE_GROUP_NOTICE_CMD)) {
+                        o.put("schedule", !TextUtils.isEmpty(o.optString("sendTime")));
                     }
 
                     String msg = o.toString();
@@ -652,6 +659,13 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    private Friend getOneFriendFromWechatDB_Name(String name) {
+        String password = initDbPassword(getApplicationContext());
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
+        Friend f = Utils.doGetOneFriendByNickNameOrRemark(getApplicationContext(), dbFile, password, name);
+        return f;
+    }
+
     private Group getOneGroupFromWechatDB_ClientGroupName(String groupName) {
         final String password = initDbPassword(getApplicationContext());
         final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
@@ -665,7 +679,6 @@ public class AutoReplyService extends AccessibilityService {
         Group g = Utils.doGetOneGroupByGroupId(getApplicationContext(), dbFile, password, clientGroupId);
         return g;
     }
-
 
     //群里发来的消息
     public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message) {
@@ -1029,11 +1042,15 @@ public class AutoReplyService extends AccessibilityService {
             //刷新界面
             refreshUI1();
             //文字的话直接走zbus
-            if (TextUtils.isEmpty(action.clientGroupId)) {
+            if (action.clientGroupId.equals("-1")) {
+                Log.d("test", "好友消息");
                 sendMsgToServer(action);
                 sendReply20sLater(action);
-            } else {
+            } else if (!TextUtils.isEmpty(action.clientGroupId)) {
+                Log.d("test", "群组消息");
                 sendMsgToServer3(action.clientGroupId, action.sender, action.content);
+            } else {
+                Log.d("test", "既不是好友也不是群组，不处理这个消息");
             }
             lockScreen();
         } else if (action.actionType == TYPE_AUTO_MATCH) {
@@ -1105,20 +1122,23 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    findTargetNode(NODE_TEXTVIEW, "是", CLICK_SELF, true);
                     findTargetNode(NODE_BUTTON, "是", CLICK_SELF, true);
                 }
             }, 2000);
         }
-        //2、微信封号弹出框、退到登录页面
-        boolean find3 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
-        boolean find4 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);
-        boolean find5 = findTargetNode(NODE_BUTTON, "更多", CLICK_NONE, true);
-        if (find3 && find4 && find5) {
-            Utils.updateOpenIdOrStatus(MainActivity.instance, 4);
-        } else {
-            Utils.updateOpenIdOrStatus(MainActivity.instance, 3);
+        boolean find3 = findTargetNode(NODE_TEXTVIEW, "是否取消安装？", CLICK_NONE, false);
+        if (find3) {
+            findTargetNode(NODE_BUTTON, "是", CLICK_SELF, true);
         }
+        //2、微信封号弹出框、退到登录页面 0830不需要了
+//        boolean find4 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
+//        boolean find5 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);
+//        boolean find6 = findTargetNode(NODE_BUTTON, "更多", CLICK_NONE, true);
+//        if (find4 && find5 && find6) {
+//            Utils.updateRobotStatus(MainActivity.instance, 4);
+//        } else {
+//            Utils.updateRobotStatus(MainActivity.instance, 3);
+//        }
     }
 
     private void doActionCommandByType(final int actionType) {
@@ -1130,23 +1150,18 @@ public class AutoReplyService extends AccessibilityService {
             start = o.optInt("start");
             end = o.optInt("end");
             String clientGroupId = null;
-            String clientGroupIds = null;
             if (o.has("clientGroupId")) {
                 clientGroupId = o.optString("clientGroupId");
             } else if (o.has("clientGroupIds")) {
                 JSONArray array = o.optJSONArray("clientGroupIds");
                 if (array != null) {
                     clientGroupId = array.optString(0);
-                } else {
-                    clientGroupIds = o.optString("clientGroupIds");
                 }
             }
-            Log.d("test", "clientGroupIds = " + clientGroupIds);
             final String url = o.optString("url");
             final JSONArray members = o.optJSONArray("members");
             final String finalContent = content;
             final String finalClientGroupId = clientGroupId;
-            final String finalClientGroupIds = clientGroupIds;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1206,7 +1221,7 @@ public class AutoReplyService extends AccessibilityService {
                         new Thread() {
                             @Override
                             public void run() {
-                                String[] groups = finalClientGroupIds.split(",");
+                                String[] groups = finalClientGroupId.split(",");
                                 resetMaxReleaseTime(50 * 1000 * groups.length);
                                 for (String clientGroupId : groups) {
                                     Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId);
@@ -2916,13 +2931,12 @@ public class AutoReplyService extends AccessibilityService {
                 @Override
                 public void run() {
                     Log.d("test", "=================findLastMsgViewInListView====================");
-                    //判断是群还是个人
 
+                    //判断是群还是个人
                     findTargetNode(NODE_TEXTVIEW, 1);
                     String title = mFindTargetNode.getText().toString();
-                    Log.d("test", "previewAction title = " + title);
-                    final String clientGroupId = isFromGroup(getApplicationContext(), title);
-                    Log.d("test", "isFromGroup clientGroupId = " + clientGroupId);
+                    final String clientGroupId = isFromPrivateOrGroup(title);
+                    Log.d("test", "isFromPrivateOrGroup clientGroupId = " + clientGroupId);
 
                     findTargetNode(NODE_FRAMELAYOUT, Integer.MAX_VALUE);
                     if (mFindTargetNode == null) {
@@ -2956,20 +2970,27 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    //null:private
+    //"":既不是个人也不是群组
+    //-1：个人
     //string:group
-    private String isFromGroup(Context c, String name) {
+    private String isFromPrivateOrGroup(String name) {
+        Log.d("test", "isFromPrivateOrGroup title = " + name);
         int lastLeft = name.lastIndexOf("(");
         int lastRight = name.lastIndexOf(")");
         if (lastRight != -1 && lastLeft != -1 && (lastRight - lastLeft > 1)) {
             name = name.substring(0, lastLeft);
         }
+        Friend f = getOneFriendFromWechatDB_Name(name);
+        if (f != null) {
+            return "-1";
+        }
         Group g = getOneGroupFromWechatDB_ClientGroupName(name);
         if (g == null) {
-            return null;
+            return "";
         }
         return g.clientGroupId;
     }
+
 
     private void searchTargetInWxHomePage(final int actionType, final String target, final boolean canRelease) {
         mHandler.post(new Runnable() {
