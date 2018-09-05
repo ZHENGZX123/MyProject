@@ -85,6 +85,7 @@ import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
+import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
@@ -330,7 +331,9 @@ public class Utils {
                 //处理逻辑
                 if (AutoReplyService.instance != null && !isHeartBeatReply(msg)) {
                     Log.d("test", "不是心跳");
-                    AutoReplyService.instance.sendReplyImmediately(msg, isNeedImme(msg));
+                    boolean imme = isNeedImme(msg);
+                    Log.d("test", "imme = " + imme);
+                    AutoReplyService.instance.sendReplyImmediately(msg, imme);
                 }
                 //手动消息确认
                 channel.basicAck(envelope.getDeliveryTag(), false);
@@ -348,13 +351,13 @@ public class Utils {
             if (o.optBoolean("schedule")) {
                 return true;
             }
-            if (!TextUtils.isEmpty(o.optString("sendTime"))) {
+            if (msg.contains(UPDATE_GROUP_NOTICE_CMD) && !TextUtils.isEmpty(o.optString("sendTime"))) {
                 return true;
             }
         } catch (Exception e) {
             return false;
         }
-        return true;
+        return false;
     }
 
     private static boolean isHeartBeatReply(String msg) {
@@ -595,7 +598,7 @@ public class Utils {
         }.start();
     }
 
-    //status： 1机器人正常 2机器人异常 3微信正常 4微信异常
+    //status： 1机器人正常 2机器人异常 /*3微信正常 4微信异常*/
     public static void updateRobotStatus(final MainActivity act, final int status) {
         if (act == null) {
             return;
@@ -701,6 +704,7 @@ public class Utils {
 
     public static String initDbPassword(Context c) {
         if (!TextUtils.isEmpty(password)) {
+            System.out.println("password = " + password);
             return password;
         }
         execRootCmdSilent("chmod -R 777 " + WX_ROOT_PATH);
@@ -713,9 +717,8 @@ public class Utils {
             return null;
         }
         String md5 = getMD5(imei + uin);
-        System.out.println(imei + uin + "初始数值");
-        System.out.println(md5 + "MD5");
         password = md5.substring(0, 7).toLowerCase();
+        System.out.println("password = " + password);
         return password;
     }
 
@@ -817,6 +820,7 @@ public class Utils {
     }
 
     public static Friend doGetOneFriendByWxId(Context c, File dbFile, String password, String wxId) {
+        Log.d("test", "doGetOneFriendByWxId");
         Friend f = null;
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
@@ -836,7 +840,29 @@ public class Utils {
         return f;
     }
 
+    public static Friend doGetOneFriendByWxNo(Context c, File dbFile, String password, String wxNo) {
+        Log.d("test", "doGetOneFriendByWxNo");
+        Friend f = null;
+        try {
+            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (alias = '" + wxNo + "')", null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
+                String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
+                String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //nickname
+                String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));//remark
+                f = new Friend(nickname, conRemark, username, alias);
+            }
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return f;
+    }
+
     public static Friend doGetOneFriendByNickNameOrRemark(Context c, File dbFile, String password, String name) {
+        Log.d("test", "doGetOneFriendByNickNameOrRemark");
         Friend f = null;
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
@@ -947,7 +973,7 @@ public class Utils {
     }
 
     public static Group doGetOneGroupByGroupName(Context c, File dbFile, String password, String name) {
-        Log.d("test", "doGetOneGroupByGroupId");
+        Log.d("test", "doGetOneGroupByGroupName");
         Group group = null;
         try {
             SQLiteDatabase db = openWechatDB(c, dbFile, password);
@@ -970,6 +996,7 @@ public class Utils {
     }
 
     private static String getWxNoByWxId(Context c, String master) {
+        Log.d("test", "getWxNoByWxId");
         String wxNo = "";
         String password = initDbPassword(c);
         File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");

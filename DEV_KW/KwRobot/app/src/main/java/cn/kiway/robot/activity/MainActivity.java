@@ -113,11 +113,15 @@ public class MainActivity extends BaseActivity {
     private CheckBox lockscreen;
     private Button admin;
 
+    private boolean newLogin = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
+        newLogin = getIntent().getBooleanExtra("newLogin", false);
+
         initView();
         initListener();
         checkRoot(null);
@@ -208,16 +212,9 @@ public class MainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String username = getSharedPreferences("kiway", 0).getString("username", "");
                 String name = getSharedPreferences("kiway", 0).getString("name", "");
                 String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-                int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0);
-                int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0);
-                String areaCode = getSharedPreferences("kiway", 0).getString("areaCode", "");
-                nameTV.setText(
-                        "帐号：" + username + " 昵称：" + name + " 微信号：" + wxNo + "\n"
-                                + "接收次数：" + recvCount + " 回复次数：" + replyCount + "\n"
-                                + "areaCode：" + areaCode);
+                nameTV.setText("微信号：" + wxNo + "\n昵称：" + name);
             }
         });
     }
@@ -235,10 +232,36 @@ public class MainActivity extends BaseActivity {
     }
 
     public void reLogin(View view) {
-        KWApplication.closeMQ();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("微信是否切换帐号");
+        builder.setPositiveButton("不切换", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                doRelogin(false);
+            }
+        });
+        builder.setNegativeButton("切换", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                doRelogin(true);
+            }
+        });
+        builder.show();
+    }
 
+    private void doRelogin(boolean change) {
+        KWApplication.closeMQ();
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
-        startActivity(new Intent(this, LoginActivity.class));
+        if (newLogin) {
+            if (change) {
+                startActivity(new Intent(this, Guide3Activity.class));
+            } else {
+                startActivity(new Intent(this, Guide4Activity.class));
+            }
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
         finish();
     }
 
@@ -500,9 +523,11 @@ public class MainActivity extends BaseActivity {
         if (isServiceEnabled()) {
             start.setText("服务已经开启");
             start.setEnabled(false);
+            //Utils.updateRobotStatus(MainActivity.instance, 1);
         } else {
             start.setText("点击开启服务");
             start.setEnabled(true);
+            Utils.updateRobotStatus(MainActivity.instance, 2);
         }
     }
 
@@ -950,7 +975,7 @@ public class MainActivity extends BaseActivity {
 //        getAllMomentComments(false);
 //        getAllMessages();
 //        getAllFriends(false);
-        getAllGroups(false);
+        getAllGroups(true);
     }
 
 

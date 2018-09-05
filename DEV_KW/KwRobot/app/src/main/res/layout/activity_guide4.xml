@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2、开启ROOT"
+            android:text="4、扫码登录"
             android:textColor="#000000"
             android:textSize="30sp" />
 
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="120dp"
-            android:text="点击按钮->弹出授权框->开启ROOT"
+            android:text="点击按钮->扫描平台二维码->登录->完成"
             android:textColor="#ff0000" />
 
         <Button
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="开启ROOT" />
+            android:text="点击扫码" />
     </LinearLayout>
 
 </RelativeLayout>

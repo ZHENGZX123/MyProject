@@ -147,6 +147,7 @@ import static cn.kiway.robot.util.Constant.NODE_LINEARLAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_RADIOBUTTON;
 import static cn.kiway.robot.util.Constant.NODE_RELATIVELAYOUT;
 import static cn.kiway.robot.util.Constant.NODE_TEXTVIEW;
+import static cn.kiway.robot.util.Constant.NOTIFY_RESULT_CMD;
 import static cn.kiway.robot.util.Constant.REMOVE_WODI_CMD;
 import static cn.kiway.robot.util.Constant.ROLE_KEFU;
 import static cn.kiway.robot.util.Constant.ROLE_WODI;
@@ -589,7 +590,7 @@ public class AutoReplyService extends AccessibilityService {
     //后台操作命令，执行完后的回复
     public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
         if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD)
-                || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD)) {
+                || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD) || command.cmd.equals(NOTIFY_RESULT_CMD)) {
             return;
         }
 
@@ -611,7 +612,6 @@ public class AutoReplyService extends AccessibilityService {
                     o.put("type", replies.get(command.cmd));
                     o.put("statusCode", statusCode);
                     o.put("robotId", getSharedPreferences("kiway", 0).getString("robotId", ""));
-
                     if (command.cmd.equals(DELETE_FRIEND_CMD)) {
                         JSONArray members = new JSONArray();
                         JSONArray recvMembers = new JSONObject(content).optJSONArray("members");
@@ -663,6 +663,13 @@ public class AutoReplyService extends AccessibilityService {
         String password = initDbPassword(getApplicationContext());
         File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
         Friend f = Utils.doGetOneFriendByNickNameOrRemark(getApplicationContext(), dbFile, password, name);
+        return f;
+    }
+
+    private Friend getOneFriendFromWechatDB_WxNo(String wxNo) {
+        String password = initDbPassword(getApplicationContext());
+        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
+        Friend f = Utils.doGetOneFriendByWxNo(getApplicationContext(), dbFile, password, wxNo);
         return f;
     }
 
@@ -2280,6 +2287,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private boolean getMomentInListView(String text) {
+        //zhengkang 0831
+        if (text.length() > 10) {
+            text = text.substring(0, 10);
+        }
         boolean find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT, false);
         if (!find) {
             return false;
@@ -2323,9 +2334,10 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //TODO删除DB对应的记录。
+                                    //TODO 删除DB对应的记录。
+                                    //if (true){
                                     //new MyDBHelper(getApplicationContext()).deleteMoment();
-                                    //new MyDBHelper(getApplicationContext()).deleteMoment();
+                                    //}
                                     release(true);
                                 }
                             }, 3000);
@@ -3277,21 +3289,27 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }, 2000);
                 } else if (actionType == TYPE_SAVE_GROUP) {
-                    findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
-                    if (mFindTargetNode == null) {
-                        release(false);
-                        return;
-                    }
-                    clickSomeWhere(mFindTargetNode.getParent().getChild(1));
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.getAllGroups(true);
-                    }
+                    execRootCmdSilent("input swipe 360 900 360 300");
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            release(true);
+                            findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
+                            if (mFindTargetNode == null) {
+                                release(false);
+                                return;
+                            }
+                            clickSomeWhere(mFindTargetNode.getParent().getChild(1));
+                            if (MainActivity.instance != null) {
+                                MainActivity.instance.getAllGroups(true);
+                            }
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    release(true);
+                                }
+                            }, 2000);
                         }
-                    }, 2000);
+                    }, 3000);
                 }
             }
         }, 2000);
@@ -4522,12 +4540,10 @@ public class AutoReplyService extends AccessibilityService {
             o.put("type", msgType);
             o.put("title", "title");
             o.put("userId", new JSONArray().put(topic));
-            if (!TextUtils.isEmpty(clientGroupId)) {
+            if (clientGroupId.endsWith("chatroom")) {
                 o.put("froms", "groups");
             }
-
             Log.d("test", "o = " + o.toString());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -4565,7 +4581,7 @@ public class AutoReplyService extends AccessibilityService {
         new Thread() {
             @Override
             public void run() {
-                //goBacktoWechatHomepage();
+                goBacktoWechatHomepage();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -4579,12 +4595,29 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                //FIXME 读取微信号、微信昵称
                                 //test(getRootInActiveWindow());
-                                findTargetNode(NODE_TEXTVIEW, "微信号：", CLICK_NONE, false);
-                                String wxNo = mFindTargetNode.getText().toString();
+                                boolean find = findTargetNode(NODE_TEXTVIEW, "微信号：", CLICK_NONE, false);
+                                if (!find) {
+                                    myListener.onResult(false);
+                                    backToRobot();
+                                    return;
+                                }
+                                String wxNo = mFindTargetNode.getText().toString().substring(4);
                                 Log.d("test", "wxNo = " + wxNo);
+                                if (TextUtils.isEmpty(wxNo)) {
+                                    myListener.onResult(false);
+                                    backToRobot();
+                                    return;
+                                }
+                                Friend f = getOneFriendFromWechatDB_WxNo(wxNo);
+                                if (f == null) {
+                                    myListener.onResult(false);
+                                    backToRobot();
+                                    return;
+                                }
+                                Log.d("test", "f = " + f.toString());
                                 getSharedPreferences("kiway", 0).edit().putString("wxNo", wxNo).commit();
+                                getSharedPreferences("kiway", 0).edit().putString("name", f.nickname).commit();
                                 myListener.onResult(true);
                                 backToRobot();
                             }
@@ -4593,7 +4626,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     private void backToRobot() {
                         Intent intent = new Intent();
-                        ComponentName cn = new ComponentName("cn.kiway.robot", "cn.kiway.robot.activity.Guide2Activity");
+                        ComponentName cn = new ComponentName("cn.kiway.robot", "cn.kiway.robot.activity.Guide3Activity");
                         intent.setComponent(cn);
                         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
