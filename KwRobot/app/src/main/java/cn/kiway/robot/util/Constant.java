@@ -24,13 +24,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -53,18 +53,19 @@ public class Constant {
     public static Map<String, String> qas = new HashMap<>();
 
     static {
-        qas.put("你好", "家长您好。");
-        qas.put("您好", "家长您好。");
-        qas.put("客服你好", "家长您好。");
-        qas.put("客服您好", "家长您好。");
-        qas.put("客服在吗", "家长您好，请问您要咨询什么问题？");
-        qas.put("谢谢", "不用谢。欢迎下次再咨询。");
-        /*qas.put("[图片]", "暂不支持图片咨询。");*/
-        qas.put("[文件]", "暂不支持文件咨询。");
-        qas.put("[视频]", "暂不支持视频咨询。");
-        qas.put("[语音]", "暂不支持语音咨询。");
-        qas.put("[位置]", "暂不支持位置咨询。");
-        qas.put("[动画表情]", "暂不支持动画表情咨询。");
+        //0830注释
+//        qas.put("你好", "家长您好。");
+//        qas.put("您好", "家长您好。");
+//        qas.put("客服你好", "家长您好。");
+//        qas.put("客服您好", "家长您好。");
+//        qas.put("客服在吗", "家长您好，请问您要咨询什么问题？");
+//        qas.put("谢谢", "不用谢。欢迎下次再咨询。");
+//        /*qas.put("[图片]", "暂不支持图片咨询。");*/
+//        qas.put("[文件]", "暂不支持文件咨询。");
+//        qas.put("[视频]", "暂不支持视频咨询。");
+//        qas.put("[语音]", "暂不支持语音咨询。");
+//        qas.put("[位置]", "暂不支持位置咨询。");
+//        qas.put("[动画表情]", "暂不支持动画表情咨询。");
     }
 
     public static final String DEFAULT_WELCOME_TITLE = "感谢您添加招生客服，您可以发送您的问题进行人工咨询。为了减少您的等待，您可以按以下序号或关键字发送咨询招生相关问题。谢谢！";

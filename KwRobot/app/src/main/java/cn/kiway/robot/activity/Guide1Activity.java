@@ -20,7 +20,13 @@ public class Guide1Activity extends BaseActivity {
     }
 
     public void clickStart(View view) {
-        doStartService();
+        if (isServiceEnabled()) {
+            toast("服务已开启");
+            startActivity(new Intent(Guide1Activity.this, Guide2Activity.class));
+            finish();
+        } else {
+            doStartService();
+        }
     }
 
     @Override

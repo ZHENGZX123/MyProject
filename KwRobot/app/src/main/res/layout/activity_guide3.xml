@@ -18,23 +18,23 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3、扫码登录"
+            android:text="3、登录微信"
             android:textColor="#000000"
             android:textSize="30sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="120dp"
-            android:text="点击按钮->扫描平台二维码->登录->完成"
+            android:text="点击按钮->微信->注册并登录微信->微信首页->回到该页面"
             android:textColor="#ff0000" />
 
         <Button
-            android:onClick="clickStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="点击扫码" />
+            android:onClick="clickStart"
+            android:text="登录微信" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -17,10 +17,15 @@ public class WelcomeActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        if (getSharedPreferences("kiway", 0).getBoolean("login", false)) {
+            startActivity(new Intent(WelcomeActivity.this, MainActivity.class).putExtra("newLogin", true));
+            finish();
+        }
     }
 
     public void clickStart(View view) {
-        startActivity(new Intent(this , Guide1Activity.class));
+        startActivity(new Intent(this, Guide1Activity.class));
         finish();
     }
 
