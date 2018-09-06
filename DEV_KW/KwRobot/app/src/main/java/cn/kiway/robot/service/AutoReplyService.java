@@ -817,9 +817,8 @@ public class AutoReplyService extends AccessibilityService {
         Log.d("test", "unlockScreen");
         //判断当前是锁屏状态
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        boolean screenOn = pm.isScreenOn();
-        Log.d("test", "screenOn = " + screenOn);
-        if (!screenOn) {
+        while (!pm.isScreenOn()) {
+            Log.d("test", "screenon = false");
             // 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
             wl.acquire(10000); // 点亮屏幕

@@ -21,20 +21,29 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@mipmap/ic_launcher" />
+
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_nonet"
         android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/iv"
         android:text="title"
         android:textColor="#000000"
         android:textSize="20sp" />
 
     <cn.kiway.robot.view.FlowLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/name">
+        android:layout_below="@+id/iv">
 
         <Button
             android:id="@+id/start"
@@ -52,25 +61,10 @@
 
 
         <Button
-            android:id="@+id/filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="filter"
-            android:text="设置过滤谁的消息" />
-
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkRoot"
             android:text="检测Root权限" />
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="clickInstruction"
-            android:text="使用说明和注意事项" />
 
 
         <Button
@@ -85,6 +79,30 @@
             android:onClick="reLogin"
             android:text="重新登录" />
 
+        <Button
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="filter"
+            android:text="设置过滤" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test"
+            android:text="测试用1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test2"
+            android:text="测试用2" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="test3"
+            android:text="测试用3" />
 
         <CheckBox
             android:id="@+id/lockscreen"
@@ -119,20 +137,9 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="test"
-            android:text="测试用" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="test2"
-            android:text="测试用2" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="test3"
-            android:text="测试用3" />
+            android:onClick="clickInstruction"
+            android:text="使用说明和注意事项"
+            android:visibility="gone" />
 
     </cn.kiway.robot.view.FlowLayout>
 
@@ -151,6 +158,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
-        android:text="角色" />
+        android:text="" />
 
 </RelativeLayout>
