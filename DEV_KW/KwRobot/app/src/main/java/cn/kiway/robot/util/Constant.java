@@ -20,7 +20,6 @@ public class Constant {
     public static String clientUrl = "";
 
     public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
-    public static final String HOUTAI = "开维后台";
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
@@ -143,6 +142,10 @@ public class Constant {
     public static final String SAVE_GROUP_CMD = "saveGroupCmd";
     public static final String SAVE_GROUP_REPLY_CMD = "saveGroupReplyCmd";
 
+    public static final String UPDATE_BASEDATA_CMD = "updateBaseDate";
+    public static final String INSERT_BASEDATA_CMD = "insertBaseDate";
+    public static final String DELETE_BASEDATA_CMD = "deleteBaseDate";
+
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -193,7 +196,7 @@ public class Constant {
         backdoors.put(UPDATE_FRIEND_NICKNAME_CMD, Action.TYPE_FIX_FRIEND_NICKNAME);
         backdoors.put(DELETE_FRIEND_CMD, Action.TYPE_DELETE_FRIEND);
         backdoors.put(CREATE_GROUP_CHAT_CMD, Action.TYPE_CREATE_GROUP_CHAT);
-        backdoors.put(CHAT_IN_GROUP_CMD, Action.TYPE_GROUP_CHAT);
+        backdoors.put(CHAT_IN_GROUP_CMD, Action.TYPE_CHAT_IN_GROUP);
         backdoors.put(INVITE_GROUP_CMD, Action.TYPE_ADD_GROUP_PEOPLE);
         backdoors.put(TICK_PERSON_GROUP_CMD, Action.TYPE_DELETE_GROUP_PEOPLE);
         backdoors.put(UPDATE_GROUP_NAME_CMD, Action.TYPE_FIX_GROUP_NAME);
@@ -201,7 +204,6 @@ public class Constant {
         backdoors.put(DELETE_GROUP_CMD, Action.TYPE_DELETE_GROUP_CHAT);
         backdoors.put(SEND_BATCH_CMD, Action.TYPE_SEND_BATCH);
         backdoors.put(AT_PERSONS_CMD, Action.TYPE_AT_GROUP_PEOPLE);
-        backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(CHECK_MOMENT_CMD, Action.TYPE_CHECK_MOMENT);
         backdoors.put(CLEAR_CHAT_HISTORY_CMD, Action.TYPE_CLEAR_CHAT_HISTORY);
         backdoors.put(INTERACT_MOMENT_CMD, Action.TYPE_INTERACT_MOMENT);
@@ -210,6 +212,12 @@ public class Constant {
         backdoors.put(ADD_PUBLIC_ACCOUNT_CMD, Action.TYPE_ADD_PUBLIC_ACCOUNT);
         backdoors.put(SEARCH_PUBLIC_ACCOUNT_CMD, Action.TYPE_SEARCH_PUBLIC_ACCOUNT);
         backdoors.put(SAVE_GROUP_CMD, Action.TYPE_SAVE_GROUP);
+
+        backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
+        backdoors.put(UPDATE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
+        backdoors.put(INSERT_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
+        backdoors.put(DELETE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
+
     }
 
     //机器人角色

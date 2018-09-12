@@ -8,9 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -92,7 +94,6 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_ERR = 102;
     private static final int MSG_UPGRADE = 103;
     private static final int MSG_GET_BASEDATA = 104;
-
     private static final int MSG_GET_CELLPHONES = 106;
     private static final int MSG_ADD_NEARBY = 109;    //主动加附近的人
     private static final int MSG_MISSING_FISH = 110;    //漏网之鱼
@@ -102,7 +103,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_GET_ALL_MESSAGES = 114;//上报所有聊天消息
     private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
-    private static final int MSG_CLEAR_CHAT_HISTORY = 117;//检测key是否有效
+    private static final int MSG_CLEAR_CHAT_HISTORY = 117;//删除聊天历史记录
 
     public static MainActivity instance;
     private Button start;
@@ -121,12 +122,14 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         instance = this;
         newLogin = getIntent().getBooleanExtra("newLogin", false);
+        getSharedPreferences("kiway", 0).edit().putBoolean("newLogin", newLogin).commit();
 
         initView();
         initListener();
         checkRoot(null);
         Utils.installationPush(getApplication());
         Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
+        setBrightness();
 
         mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 60 * 1000);
@@ -140,6 +143,36 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
+    }
+
+    private void setBrightness() {
+        //先关闭系统的亮度自动调节
+        try {
+            if (android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE)
+                    == android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                android.provider.Settings.System.putInt(getContentResolver(),
+                        android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE,
+                        android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        //不让屏幕全暗
+        int brightness = 1;
+        //设置当前activity的屏幕亮度
+        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
+        //0到1,调整亮度暗到全亮
+        lp.screenBrightness = Float.valueOf(brightness / 255f);
+        this.getWindow().setAttributes(lp);
+        //保存为系统亮度方法1
+        android.provider.Settings.System.putInt(getContentResolver(),
+                android.provider.Settings.System.SCREEN_BRIGHTNESS,
+                brightness);
+        //保存为系统亮度方法2
+//        Uri uri = android.provider.Settings.System.getUriFor("screen_brightness");
+//        android.provider.Settings.System.putInt(getContentResolver(), "screen_brightness", brightness);
+//        // resolver.registerContentObserver(uri, true, myContentObserver);
+//        getContentResolver().notifyChange(uri, null);
     }
 
     private void initView() {
@@ -232,6 +265,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public void reLogin(View view) {
+        if (!newLogin) {
+            getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
+            KWApplication.closeMQ();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示");
         builder.setMessage("微信是否切换帐号");
@@ -253,19 +293,16 @@ public class MainActivity extends BaseActivity {
     private void doRelogin(boolean change) {
         KWApplication.closeMQ();
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
-        if (newLogin) {
-            if (change) {
-                startActivity(new Intent(this, Guide3Activity.class));
-            } else {
-                startActivity(new Intent(this, Guide4Activity.class));
-            }
+        if (change) {
+            startActivity(new Intent(this, Guide3Activity.class));
         } else {
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, Guide4Activity.class));
         }
         finish();
     }
 
     public void getBaseData() {
+        Log.d("test", "getBaseData");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -716,6 +753,9 @@ public class MainActivity extends BaseActivity {
             toast("好友已经到上限了");
             return;
         }
+        if (AutoReplyService.instance == null) {
+            return;
+        }
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", FORGET_FISH_CMD);
@@ -975,9 +1015,9 @@ public class MainActivity extends BaseActivity {
 //        getAllMomentComments(false);
 //        getAllMessages();
 //        getAllFriends(false);
-        getAllGroups(true);
+//        getAllGroups(true);
+        doMissingFish();
     }
-
 
     public void test3(View view) {
         resetNickName();

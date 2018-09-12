@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.util.Utils.saveDefaultFile;
@@ -46,7 +47,6 @@ public class KWApplication extends Application {
 
     public static String defaultWechat = ROOT + "/downloads/wechat.apk";
 
-
     public static RabbitMQUtils rabbitMQUtils;
     public static RabbitMQUtils rabbitMQUtils2;
     public static List<Channel> channels = new ArrayList<>();
@@ -58,7 +58,7 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         MobSDK.init(this);
-        //CrashHandler.getInstance().init(this);
+        CrashHandler.getInstance().init(this);
 
         saveDefaultFile(this, "file.png", R.mipmap.file);
         saveDefaultFile(this, "video.png", R.mipmap.video);
@@ -77,16 +77,18 @@ public class KWApplication extends Application {
             }
         });
 
-        deleteAllDBFiles();
+        deleteAllCachedFiles(ROOT);
+        deleteAllCachedFiles("/sdcard/DCIM/Camera/");
+        ImageLoader.getInstance().clearDiskCache();
     }
 
-    private void deleteAllDBFiles() {
-        File[] files = new File(ROOT).listFiles();
+    private void deleteAllCachedFiles(String folder) {
+        File[] files = new File(folder).listFiles();
         if (files == null || files.length == 0) {
             return;
         }
         for (File f : files) {
-            if (!f.isDirectory() && f.getName().contains(".db")) {
+            if (!f.isDirectory() && (f.getName().endsWith(".db") || f.getName().endsWith(".jpg"))) {
                 f.delete();
             }
         }

@@ -378,16 +378,27 @@ public class Utils {
         return false;
     }
 
-    public static boolean isEffectiveDate() {
+    public static boolean isWeekend() {
+        Calendar c = Calendar.getInstance();
+        int weekday = c.get(Calendar.DAY_OF_WEEK);
+        if (weekday == 1 || weekday == 7) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isEffectiveDate(String startStr, String endStr) {
         try {
+
+
             String format = "HH:mm:ss";
 
             String dateStr = new SimpleDateFormat(format).format(new Date());
             Date nowTime = new SimpleDateFormat(format).parse(dateStr);
 
 
-            Date startTime = new SimpleDateFormat(format).parse("08:30:00");
-            Date endTime = new SimpleDateFormat(format).parse("22:00:00");
+            Date startTime = new SimpleDateFormat(format).parse(startStr);
+            Date endTime = new SimpleDateFormat(format).parse(endStr);
 
             if (nowTime.getTime() == startTime.getTime()
                     || nowTime.getTime() == endTime.getTime()) {
@@ -647,13 +658,23 @@ public class Utils {
             String password = c.getSharedPreferences("kiway", 0).getString("password", "");
             String name = c.getSharedPreferences("kiway", 0).getString("name", "");
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+            String tenantId = c.getSharedPreferences("kiway", 0).getString("tenantId", "");
+            boolean newLogin = c.getSharedPreferences("kiway", 0).getBoolean("newLogin", false);
+            if (newLogin) {
+                doNewLogin(c, name, wxNo, tenantId, new MyListener() {
+                    @Override
+                    public void onResult(boolean success) {
 
-            doLogin(c, username, password, name, wxNo, new MyListener() {
-                @Override
-                public void onResult(boolean success) {
+                    }
+                });
+            } else {
+                doLogin(c, username, password, name, wxNo, new MyListener() {
+                    @Override
+                    public void onResult(boolean success) {
 
-                }
-            });
+                    }
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "check301 exception = " + e.toString());
@@ -790,10 +811,12 @@ public class Utils {
 
     public static ArrayList<Friend> doGetFriends(Context c, File dbFile, String password) {
         ArrayList<Friend> friends = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
-            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -811,10 +834,19 @@ public class Utils {
                 }
             }
             Log.d("test", "friends = " + friends);
-            cursor.close();
-            db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return friends;
     }
@@ -822,9 +854,11 @@ public class Utils {
     public static Friend doGetOneFriendByWxId(Context c, File dbFile, String password, String wxId) {
         Log.d("test", "doGetOneFriendByWxId");
         Friend f = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (username = '" + wxId + "')", null);
+            db = openWechatDB(c, dbFile, password);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (username = '" + wxId + "')", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -836,6 +870,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return f;
     }
@@ -843,9 +888,11 @@ public class Utils {
     public static Friend doGetOneFriendByWxNo(Context c, File dbFile, String password, String wxNo) {
         Log.d("test", "doGetOneFriendByWxNo");
         Friend f = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (alias = '" + wxNo + "')", null);
+            db = openWechatDB(c, dbFile, password);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (alias = '" + wxNo + "')", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -857,6 +904,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return f;
     }
@@ -864,9 +922,11 @@ public class Utils {
     public static Friend doGetOneFriendByNickNameOrRemark(Context c, File dbFile, String password, String name) {
         Log.d("test", "doGetOneFriendByNickNameOrRemark");
         Friend f = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
-            Cursor cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where  (username not like '%@chatroom') and  (nickname = '" + name + "' or  conRemark = '" + name + "')", null);
+            db = openWechatDB(c, dbFile, password);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where  (username not like '%@chatroom') and  (nickname = '" + name + "' or  conRemark = '" + name + "')", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -878,6 +938,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return f;
     }
@@ -885,13 +956,15 @@ public class Utils {
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
         Log.d("test", "doGetMessages");
         ArrayList<Message> messages = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            db = openWechatDB(c, dbFile, password);
             long current = System.currentTimeMillis();
             long before1hour = current - 60 * 60 * 1000;
             String sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
             Log.d("test", "sql = " + sql);
-            Cursor cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 int type = cursor.getInt(cursor.getColumnIndex("type"));
                 long createTime = cursor.getLong(cursor.getColumnIndex("createTime"));
@@ -919,6 +992,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return messages;
     }
@@ -926,12 +1010,14 @@ public class Utils {
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password) {
         Log.d("test", "doGetGroups");
         ArrayList<Group> groups = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            db = openWechatDB(c, dbFile, password);
             //type=2未保存的群,3是已经保存的
             String sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom'"; //and (type = 2 or type = 3 or type = 0)
             Log.d("test", "sql = " + sql);
-            Cursor cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
                 String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
@@ -945,6 +1031,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return groups;
     }
@@ -952,12 +1049,14 @@ public class Utils {
     public static Group doGetOneGroupByGroupId(Context c, File dbFile, String password, String clientGroupId) {
         Log.d("test", "doGetOneGroupByGroupId");
         Group group = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            db = openWechatDB(c, dbFile, password);
             //type=2未保存的群,3是已经保存的
             String sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom' and username = '" + clientGroupId + "'"; //and (type = 2 or type = 3 or type = 0)
             Log.d("test", "sql = " + sql);
-            Cursor cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
                 String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
@@ -968,6 +1067,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return group;
     }
@@ -975,12 +1085,14 @@ public class Utils {
     public static Group doGetOneGroupByGroupName(Context c, File dbFile, String password, String name) {
         Log.d("test", "doGetOneGroupByGroupName");
         Group group = null;
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            db = openWechatDB(c, dbFile, password);
             //type=2未保存的群,3是已经保存的
             String sql = "select username,nickname,type  , roomowner  from rcontact  left JOIN chatroom on  rcontact.username = chatroom.chatroomname where username like '%@chatroom' and nickname = '" + name + "'"; //and (type = 2 or type = 3 or type = 0)
             Log.d("test", "sql = " + sql);
-            Cursor cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
                 String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
@@ -991,6 +1103,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return group;
     }
@@ -1010,11 +1133,13 @@ public class Utils {
     public static ArrayList<GroupPeople> doGetPeopleInGroup(Context c, File dbFile, String password, String clientGroupId) {
         Log.d("test", "doGetGroups clientGroupId = " + clientGroupId);
         ArrayList<GroupPeople> peoples = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, password);
+            db = openWechatDB(c, dbFile, password);
             String sql = "select memberlist ,  displayname   from chatroom where chatroomname = '" + clientGroupId + "'";
             Log.d("test", "sql = " + sql);
-            Cursor cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 String memberlist = cursor.getString(cursor.getColumnIndex("memberlist"));
                 String displayname = cursor.getString(cursor.getColumnIndex("displayname"));
@@ -1029,6 +1154,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return peoples;
     }
@@ -1049,11 +1185,13 @@ public class Utils {
     public static ArrayList<String> doGetMoments(Context c, File dbFile) {
         Log.d("test", "doGetMoments");
         ArrayList<String> moments = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
-            SQLiteDatabase db = openWechatDB(c, dbFile, null);
+            db = openWechatDB(c, dbFile, null);
             String sql = "select  *  from SnsInfo";
             Log.d("test", "sql = " + sql);
-            Cursor cursor = db.rawQuery(sql, null);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 String userName = cursor.getString(cursor.getColumnIndex("userName"));
                 byte[] content = cursor.getBlob(cursor.getColumnIndex("content"));
@@ -1064,6 +1202,17 @@ public class Utils {
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return moments;
     }
@@ -1316,6 +1465,62 @@ public class Utils {
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
                     Log.d("test", "onFailure ret = " + ret);
+                    myListener.onResult(false);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "exception = " + e.toString());
+            myListener.onResult(false);
+        }
+    }
+
+    public static void doNewLogin(final Context c, final String name, final String wxNo, String tenantId, final MyListener myListener) {
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            String url = clientUrl + "/robot/newLogin";
+            Log.d("test", "url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("wxNo", wxNo);
+            param.put("name", name);
+            param.put("tenantId", tenantId);
+            Log.d("test", "param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "login onSuccess = " + ret);
+                    //登录成功
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        int statusCode = o.optInt("statusCode");
+                        if (statusCode != 200) {
+                            myListener.onResult(false);
+                            return;
+                        }
+                        JSONObject data = o.optJSONObject("data");
+                        String token = data.optString("token");
+                        String areaCode = data.optString("areaCode");
+                        String robotId = data.optString("robotId");
+                        String userName = data.optString("userName");
+                        String password = data.optString("password");
+                        c.getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("username", userName).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("password", password).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("robotId", robotId).commit();
+                        c.getSharedPreferences("kiway", 0).edit().putString("areaCode", areaCode).commit();
+                        myListener.onResult(true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
+                    Log.d("test", "onFailure ret = " + ret);
+                    //登录失败原因
                     myListener.onResult(false);
                 }
             });
