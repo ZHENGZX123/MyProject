@@ -27,8 +27,8 @@ import org.xutils.x;
 import java.io.File;
 import java.util.List;
 
-import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.util.RootCmd;
+import cn.kiway.robot.util.Utils;
 
 import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
@@ -125,7 +125,7 @@ public class BaseActivity extends Activity {
                 startActivity(intent);
                 finish();
             } else if (msg.what == 5) {
-                KWApplication.closeMQ();
+                Utils.closeMQ();
                 final String savedFilePath = (String) msg.obj;
                 new Thread() {
                     @Override

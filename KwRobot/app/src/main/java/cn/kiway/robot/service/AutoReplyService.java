@@ -73,7 +73,8 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.util.Base64.NO_WRAP;
-import static cn.kiway.robot.KWApplication.rabbitMQUtils;
+import static cn.kiway.robot.util.Constant.INSERT_BASEDATA_CMD;
+import static cn.kiway.robot.util.Utils.rabbitMQUtils;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_PUBLIC_ACCOUNT;
@@ -407,12 +408,16 @@ public class AutoReplyService extends AccessibilityService {
             MainActivity.instance.checkNewVersion(null);
             //偷偷放在这里
             MainActivity.instance.getBaseData();
-
-            Utils.installationPush(getApplication());
-
+            Utils.closeMQ();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.installationPush(getApplication());
+                }
+            }, 3000);
             return;
         }
-        if (command.cmd.equals(UPDATE_BASEDATA_CMD) || command.cmd.equals(UPDATE_BASEDATA_CMD) || command.cmd.equals(DELETE_BASEDATA_CMD)) {
+        if (command.cmd.equals(UPDATE_BASEDATA_CMD) || command.cmd.equals(INSERT_BASEDATA_CMD) || command.cmd.equals(DELETE_BASEDATA_CMD)) {
             MainActivity.instance.getBaseData();
             return;
         }

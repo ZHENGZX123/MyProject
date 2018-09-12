@@ -15,8 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.kiway.robot.KWApplication;
-
 /**
  * Created by Administrator on 2018/3/5.
  */
@@ -74,7 +72,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
-            KWApplication.closeMQ();
+            Utils.closeMQ();
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
