@@ -15,17 +15,13 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.rabbitmq.client.Channel;
 
 import org.xutils.x;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import cn.kiway.robot.util.CrashHandler;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
+import cn.kiway.robot.util.Utils;
 
 import static cn.kiway.robot.util.Utils.saveDefaultFile;
 
@@ -46,10 +42,6 @@ public class KWApplication extends Application {
     public static String defaultZIPIcon = ROOT + "/downloads/zip.png";
 
     public static String defaultWechat = ROOT + "/downloads/wechat.apk";
-
-    public static RabbitMQUtils rabbitMQUtils;
-    public static RabbitMQUtils rabbitMQUtils2;
-    public static List<Channel> channels = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -73,7 +65,7 @@ public class KWApplication extends Application {
             @Override
             public void run() {
                 Log.d("test", "addShutdownHook");
-                closeMQ();
+                Utils.closeMQ();
             }
         });
 
@@ -92,31 +84,6 @@ public class KWApplication extends Application {
                 f.delete();
             }
         }
-    }
-
-    public static void closeMQ() {
-        Log.d("test", "closeMQ");
-        new Thread() {
-            @Override
-            public void run() {
-                for (Channel channel : channels) {
-                    try {
-                        channel.abort();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (rabbitMQUtils != null) {
-                    rabbitMQUtils.close();
-                    rabbitMQUtils = null;
-                }
-                if (rabbitMQUtils2 != null) {
-                    rabbitMQUtils2.close();
-                    rabbitMQUtils2 = null;
-                }
-            }
-        }.start();
     }
 
     private void initImageCache() {

@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.R;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.Action;
@@ -267,7 +266,7 @@ public class MainActivity extends BaseActivity {
     public void reLogin(View view) {
         if (!newLogin) {
             getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
-            KWApplication.closeMQ();
+            Utils.closeMQ();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
@@ -291,7 +290,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void doRelogin(boolean change) {
-        KWApplication.closeMQ();
+        Utils.closeMQ();
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         if (change) {
             startActivity(new Intent(this, Guide3Activity.class));

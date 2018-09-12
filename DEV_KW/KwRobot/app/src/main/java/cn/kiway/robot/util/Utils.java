@@ -78,8 +78,6 @@ import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static cn.kiway.robot.KWApplication.ROOT;
-import static cn.kiway.robot.KWApplication.channels;
-import static cn.kiway.robot.KWApplication.rabbitMQUtils;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
@@ -97,6 +95,10 @@ import static net.sqlcipher.database.SQLiteDatabase.OPEN_READONLY;
  */
 
 public class Utils {
+
+    public static RabbitMQUtils rabbitMQUtils;
+    public static RabbitMQUtils rabbitMQUtils2;
+    public static List<Channel> channels = new ArrayList<>();
 
     public static String getIMEI(Context c) {
         TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
@@ -1589,5 +1591,30 @@ public class Utils {
             }
             comment.authorName = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
         }
+    }
+
+    public static void closeMQ() {
+        Log.d("test", "closeMQ");
+        new Thread() {
+            @Override
+            public void run() {
+                for (Channel channel : channels) {
+                    try {
+                        channel.abort();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (rabbitMQUtils != null) {
+                    rabbitMQUtils.close();
+                    rabbitMQUtils = null;
+                }
+                if (rabbitMQUtils2 != null) {
+                    rabbitMQUtils2.close();
+                    rabbitMQUtils2 = null;
+                }
+            }
+        }.start();
     }
 }
