@@ -31,7 +31,7 @@ public class Action {
     public static final int TYPE_DELETE_GROUP_PEOPLE = 115;//踢人出群
     public static final int TYPE_FIX_GROUP_NAME = 116;//修改群名称
     public static final int TYPE_FIX_GROUP_NOTICE = 117;//修改群公告
-    public static final int TYPE_GROUP_CHAT = 118;//修改群公告
+    public static final int TYPE_CHAT_IN_GROUP = 118;//群内聊天
     public static final int TYPE_AT_GROUP_PEOPLE = 119;//艾特某人
     public static final int TYPE_DELETE_MOMENT = 120;//删除朋友圈
     public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友
@@ -43,7 +43,6 @@ public class Action {
     public static final int TYPE_DELETE_GROUP_CHAT = 127;//解散群聊
     public static final int TYPE_DELETE_FRIEND = 128;//主动搜索并添加好友
     public static final int TYPE_SEND_MOMENT = 129;
-    public static final int TYPE_GROUP_SEND_HELPER = 130;//群发助手
     public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
     public static final int TYPE_SEND_BATCH = 132;
     public static final int TYPE_CHECK_MOMENT = 133;
@@ -54,6 +53,7 @@ public class Action {
     public static final int TYPE_SEARCH_PUBLIC_ACCOUNT = 138;
     public static final int TYPE_CLEAR_CHAT_HISTORY = 139;
     public static final int TYPE_SAVE_GROUP = 140;
+    public static final int TYPE_UPDATE_BASEDATA = 141;//检查新版本
 
     //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
     //{"cmd":"addPublicAccountCmd" , "name":"广州91教育"}
