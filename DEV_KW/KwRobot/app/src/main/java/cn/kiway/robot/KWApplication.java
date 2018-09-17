@@ -80,7 +80,9 @@ public class KWApplication extends Application {
             return;
         }
         for (File f : files) {
-            if (!f.isDirectory() && (f.getName().endsWith(".db") || f.getName().endsWith(".jpg"))) {
+            Log.d("test", "f = " + f.getAbsolutePath());
+            if (!f.isDirectory() && (f.getName().contains("db") || f.getName().endsWith("jpg"))) {
+                Log.d("test", "delete file = " + f.getName());
                 f.delete();
             }
         }

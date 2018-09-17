@@ -1013,9 +1013,8 @@ public class MainActivity extends BaseActivity {
     public void test2(View v) {
 //        getAllMomentComments(false);
 //        getAllMessages();
-//        getAllFriends(false);
+        getAllFriends(false);
 //        getAllGroups(true);
-        doMissingFish();
     }
 
     public void test3(View view) {

@@ -23,13 +23,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -141,11 +141,12 @@ public class Constant {
     public static final String SET_WODI_REPLY_CMD = "setUnderCoverReplyCmd";
     public static final String SAVE_GROUP_CMD = "saveGroupCmd";
     public static final String SAVE_GROUP_REPLY_CMD = "saveGroupReplyCmd";
+    public static final String GROUP_QRCODE_CMD = "createGroupQrcodeCmd";
+    public static final String GROUP_QRCODE_REPLY_CMD = "createGroupQrcodeReplyCmd";
 
     public static final String UPDATE_BASEDATA_CMD = "updateBaseDate";
     public static final String INSERT_BASEDATA_CMD = "insertBaseDate";
     public static final String DELETE_BASEDATA_CMD = "deleteBaseDate";
-
 
     public static Map<String, String> replies = new HashMap<>();
 
@@ -175,6 +176,7 @@ public class Constant {
         replies.put(REMOVE_WODI_CMD, REMOVE_WODI_REPLY_CMD);
         replies.put(SET_WODI_CMD, SET_WODI_REPLY_CMD);
         replies.put(SAVE_GROUP_CMD, SAVE_GROUP_REPLY_CMD);
+        replies.put(GROUP_QRCODE_CMD, GROUP_QRCODE_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -212,6 +214,7 @@ public class Constant {
         backdoors.put(ADD_PUBLIC_ACCOUNT_CMD, Action.TYPE_ADD_PUBLIC_ACCOUNT);
         backdoors.put(SEARCH_PUBLIC_ACCOUNT_CMD, Action.TYPE_SEARCH_PUBLIC_ACCOUNT);
         backdoors.put(SAVE_GROUP_CMD, Action.TYPE_SAVE_GROUP);
+        backdoors.put(GROUP_QRCODE_CMD, Action.TYPE_GROUP_QRCODE);
 
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(UPDATE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);

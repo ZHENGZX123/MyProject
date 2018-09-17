@@ -33,8 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.DensityUtil;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,8 +71,6 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.util.Base64.NO_WRAP;
-import static cn.kiway.robot.util.Constant.INSERT_BASEDATA_CMD;
-import static cn.kiway.robot.util.Utils.rabbitMQUtils;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_PUBLIC_ACCOUNT;
@@ -99,6 +95,7 @@ import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NAME;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_GROUP_NOTICE;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_ICON;
 import static cn.kiway.robot.entity.Action.TYPE_FIX_NICKNAME;
+import static cn.kiway.robot.entity.Action.TYPE_GROUP_QRCODE;
 import static cn.kiway.robot.entity.Action.TYPE_IMAGE;
 import static cn.kiway.robot.entity.Action.TYPE_INTERACT_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_LINK;
@@ -138,6 +135,8 @@ import static cn.kiway.robot.util.Constant.DEFAULT_WELCOME;
 import static cn.kiway.robot.util.Constant.DELETE_BASEDATA_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.DELETE_FRIEND_CMD;
+import static cn.kiway.robot.util.Constant.GROUP_QRCODE_CMD;
+import static cn.kiway.robot.util.Constant.INSERT_BASEDATA_CMD;
 import static cn.kiway.robot.util.Constant.INTERACT_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.INVITE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.MAX_FRIENDS;
@@ -173,6 +172,7 @@ import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
+import static cn.kiway.robot.util.Utils.rabbitMQUtils;
 import static java.lang.System.currentTimeMillis;
 
 public class AutoReplyService extends AccessibilityService {
@@ -203,6 +203,9 @@ public class AutoReplyService extends AccessibilityService {
 
     //附近的人
     private ArrayList<AccessibilityNodeInfo> peoples = new ArrayList<>();
+
+    //群二维码
+    private String qrCodeUrl;
 
     private final Object object = new Object();
 
@@ -359,7 +362,7 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                     if (o.has("clientGroupId")) {
-                        //在群里发消息，这个没有cmd，偷懒了。。。
+                        //在群里发消息，这个没有cmd，无语。。。
                         String clientGroupId = o.optString("clientGroupId");
                         Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId);
                         if (g == null) {
@@ -661,7 +664,7 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("author", name);
                         o.put("toUser", new JSONObject(content).optString("author"));
                     } else if (command.cmd.equals(CREATE_GROUP_CHAT_CMD)) {
-                        //FIXME 创建后微信数据库延时问题。。。
+                        // 创建群之后，微信数据库延时问题。。。
                         String groupName = o.optString("name");
                         Group g = getOneGroupFromWechatDB_ClientGroupName(groupName);
                         if (g != null) {
@@ -673,9 +676,11 @@ public class AutoReplyService extends AccessibilityService {
                         o.put("masterWxNo", wxNo);
                         sendGroupInfoDelay(true);
                     } else if (command.cmd.equals(UPDATE_GROUP_NAME_CMD) || command.cmd.equals(INVITE_GROUP_CMD) || command.cmd.equals(TICK_PERSON_GROUP_CMD) || command.cmd.equals(SAVE_GROUP_CMD)) {
-                        sendGroupInfoDelay(false);
+                        sendGroupInfoDelay(true);
                     } else if (command.cmd.equals(UPDATE_GROUP_NOTICE_CMD)) {
                         o.put("schedule", !TextUtils.isEmpty(o.optString("sendTime")));
+                    } else if (command.cmd.equals(GROUP_QRCODE_CMD)) {
+                        o.put("icon", "http://photocdn.sohu.com/20150305/mp4752718_1425527970535_1_th_fv23.jpeg");//http://www.hinews.cn/pic/0/16/68/50/16685046_957412.jpg
                     }
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
@@ -819,7 +824,7 @@ public class AutoReplyService extends AccessibilityService {
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
 
-        boolean in = Utils.isEffectiveDate("08:30:00", "22:00:00");
+        boolean in = Utils.isEffectiveDate("08:30:00", "18:00:00");
         String hint = in ? busyStr : offlineStr;
 
         Log.d("test", "hint = " + hint);
@@ -876,7 +881,6 @@ public class AutoReplyService extends AccessibilityService {
         if (role == ROLE_WODI) {
             return;
         }
-
         boolean weekend = Utils.isWeekend();
         boolean in = Utils.isEffectiveDate("08:30:00", "18:00:00");
         //周一到周五的白天时间不锁屏；
@@ -897,12 +901,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void unlockScreen() {
-        //周一到周五，白天都点亮
-        boolean weekend = Utils.isWeekend();
-        boolean in = Utils.isEffectiveDate("08:30:00", "18:00:00");
-        if (!in) {
-            return;
-        }
         Log.d("test", "unlockScreen");
         //判断当前是锁屏状态
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -1050,17 +1048,14 @@ public class AutoReplyService extends AccessibilityService {
                 FileUtils.saveFile("" + actioningFlag, "actioningFlag.txt");
                 final int actionType = actions.get(currentActionID).actionType;
 
-                boolean exception = false;
-                if (actionType == TYPE_MISSING_FISH) {
-                    exception = checkWechatExceptionStatus();
-                }
+                boolean exception = checkWechatExceptionStatus();
                 if (exception) {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             dododo(actionType);
                         }
-                    }, 5000);
+                    }, 8000);
                     return;
                 } else {
                     dododo(actionType);
@@ -1099,6 +1094,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_ADD_PUBLIC_ACCOUNT
                         || actionType == TYPE_SEARCH_PUBLIC_ACCOUNT
                         || actionType == TYPE_SAVE_GROUP
+                        || actionType == TYPE_GROUP_QRCODE
                         ) {
                     new Thread() {
                         @Override
@@ -1196,6 +1192,7 @@ public class AutoReplyService extends AccessibilityService {
                 || action.actionType == TYPE_CHAT_IN_GROUP
                 || action.actionType == TYPE_AT_GROUP_PEOPLE
                 || action.actionType == TYPE_SAVE_GROUP
+                || action.actionType == TYPE_GROUP_QRCODE
                 || action.actionType == TYPE_DELETE_MOMENT
                 || action.actionType == TYPE_ADD_FRIEND
                 || action.actionType == TYPE_DELETE_FRIEND
@@ -1234,24 +1231,16 @@ public class AutoReplyService extends AccessibilityService {
                 public void run() {
                     findTargetNode(NODE_BUTTON, "是", CLICK_SELF, true);
                 }
-            }, 2000);
+            }, 3000);
             return true;
-        }
-        boolean find3 = findTargetNode(NODE_TEXTVIEW, "是否取消安装？", CLICK_NONE, false);
-        if (find3) {
-            findTargetNode(NODE_BUTTON, "是", CLICK_SELF, true);
-            return true;
+        } else {
+            boolean find3 = findTargetNode(NODE_TEXTVIEW, "是否取消安装？", CLICK_NONE, false);
+            if (find3) {
+                findTargetNode(NODE_BUTTON, "是", CLICK_SELF, true);
+                return true;
+            }
         }
         return false;
-        //2、微信封号弹出框、退到登录页面 0830不需要了
-//        boolean find4 = findTargetNode(NODE_BUTTON, "找回密码", CLICK_NONE, true);
-//        boolean find5 = findTargetNode(NODE_BUTTON, "紧急冻结", CLICK_NONE, true);
-//        boolean find6 = findTargetNode(NODE_BUTTON, "更多", CLICK_NONE, true);
-//        if (find4 && find5 && find6) {
-//            Utils.updateRobotStatus(MainActivity.instance, 4);
-//        } else {
-//            Utils.updateRobotStatus(MainActivity.instance, 3);
-//        }
     }
 
     private void doActionCommandByType(final int actionType) {
@@ -1308,6 +1297,7 @@ public class AutoReplyService extends AccessibilityService {
                             || actionType == TYPE_FIX_GROUP_NAME
                             || actionType == TYPE_AT_GROUP_PEOPLE
                             || actionType == TYPE_SAVE_GROUP
+                            || actionType == TYPE_GROUP_QRCODE
                             || actionType == TYPE_DELETE_GROUP_PEOPLE
                             || actionType == TYPE_SCRIPT
                             ) {
@@ -2855,118 +2845,124 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doSendBatchMessage() {
-        {
-            try {
-                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                JSONObject o = new JSONObject(content);
-                int flag = o.optInt("flag");
-                if (flag == 1) {
-                    final boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
-                    if (!find) {
-                        release(false);
-                        return;
+
+        try {
+            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            JSONObject o = new JSONObject(content);
+            int flag = o.optInt("flag");
+            if (flag == 1) {
+                final boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
+                if (!find) {
+                    release(false);
+                    return;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final boolean find = findTargetNode(NODE_BUTTON, "留在微信", CLICK_SELF, true);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release(find);
+                            }
+                        }, 3000);
                     }
+                }, 2000);
+            } else if (flag == 2) {
+                JSONObject msg = o.optJSONArray("messages").optJSONObject(0);
+                int type = msg.optInt("type");
+                final String text = msg.optString("content");//url
+                if (type == 1) {
+                    // 判断文本框是不是有文字
+                    clearAndPasteEditText(1, text);
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            final boolean find = findTargetNode(NODE_BUTTON, "留在微信", CLICK_SELF, true);
+                            findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
+                        }
+                    }, 2000);
+                } else if (type == 2) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            Bitmap bmp = ImageLoader.getInstance().loadImageSync(text);
+                            if (bmp == null) {
+                                release(false);
+                                return;
+                            }
+                            saveImage(getApplication(), bmp, true);
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    release(find);
-                                }
-                            }, 3000);
-                        }
-                    }, 2000);
-                } else if (flag == 2) {
-                    JSONObject msg = o.optJSONArray("messages").optJSONObject(0);
-                    int type = msg.optInt("type");
-                    final String text = msg.optString("content");//url
-                    if (type == 1) {
-                        sendTextOnly(text, true);
-                    } else if (type == 2) {
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                Bitmap bmp = ImageLoader.getInstance().loadImageSync(text);
-                                if (bmp == null) {
-                                    release(false);
-                                    return;
-                                }
-                                saveImage(getApplication(), bmp, true);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
-                                        if (mFindTargetNode == null) {
-                                            release(false);
-                                            return;
-                                        }
-                                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                        mHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                final boolean find = findTargetNode(NODE_TEXTVIEW, "你可能要发送的照片：", CLICK_NONE, true);
-                                                if (!find) {
-                                                    release(false);
-                                                    return;
-                                                }
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                                                        mHandler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                mHandler.postDelayed(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
-                                                                        if (!find) {
-                                                                            release(false);
-                                                                            return;
-                                                                        }
-                                                                        mHandler.postDelayed(new Runnable() {
-                                                                            @Override
-                                                                            public void run() {
-                                                                                findTargetNode(NODE_RELATIVELAYOUT, 1);
-                                                                                if (mFindTargetNode == null) {
-                                                                                    release(false);
-                                                                                    return;
-                                                                                }
-                                                                                mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                                                                                mHandler.postDelayed(new Runnable() {
-                                                                                    @Override
-                                                                                    public void run() {
-                                                                                        final boolean find = findTargetNode(NODE_BUTTON, "完成", CLICK_SELF, true);
-                                                                                        mHandler.postDelayed(new Runnable() {
-                                                                                            @Override
-                                                                                            public void run() {
-                                                                                                release(find);
-                                                                                            }
-                                                                                        }, 4000);
-                                                                                    }
-                                                                                }, 2000);
-                                                                            }
-                                                                        }, 2000);
-                                                                    }
-                                                                }, 2000);
-                                                            }
-                                                        }, 2000);
-                                                    }
-                                                }, 2000);
-                                            }
-                                        }, 2000);
+                                    findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
+                                    if (mFindTargetNode == null) {
+                                        release(false);
+                                        return;
                                     }
-                                }, 2000);
-                            }
-                        }.start();
-                    }
+                                    mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            final boolean find = findTargetNode(NODE_TEXTVIEW, "你可能要发送的照片：", CLICK_NONE, true);
+                                            if (!find) {
+                                                release(false);
+                                                return;
+                                            }
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                                                    mHandler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            mHandler.postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
+                                                                    if (!find) {
+                                                                        release(false);
+                                                                        return;
+                                                                    }
+                                                                    mHandler.postDelayed(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            findTargetNode(NODE_RELATIVELAYOUT, 1);
+                                                                            if (mFindTargetNode == null) {
+                                                                                release(false);
+                                                                                return;
+                                                                            }
+                                                                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                                                            mHandler.postDelayed(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    final boolean find = findTargetNode(NODE_BUTTON, "完成", CLICK_SELF, true);
+                                                                                    mHandler.postDelayed(new Runnable() {
+                                                                                        @Override
+                                                                                        public void run() {
+                                                                                            release(find);
+                                                                                        }
+                                                                                    }, 4000);
+                                                                                }
+                                                                            }, 2000);
+                                                                        }
+                                                                    }, 2000);
+                                                                }
+                                                            }, 2000);
+                                                        }
+                                                    }, 2000);
+                                                }
+                                            }, 2000);
+                                        }
+                                    }, 2000);
+                                }
+                            }, 2000);
+                        }
+                    }.start();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                release(false);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            release(false);
         }
     }
 
@@ -3248,7 +3244,11 @@ public class AutoReplyService extends AccessibilityService {
         });
     }
 
-    private void searchTargetInWxGroupPage(final int actionType, final String groupName, final boolean canRelease) {
+    private void searchTargetInWxGroupPage(final int actionType, String groupName, final boolean canRelease) {
+        if (groupName.length() > 10) {
+            groupName = groupName.substring(0, 10);
+        }
+        final String finalGroupName = groupName;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -3280,18 +3280,18 @@ public class AutoReplyService extends AccessibilityService {
                                             mHandler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    findTargetNode(NODE_EDITTEXT, groupName);
+                                                    findTargetNode(NODE_EDITTEXT, finalGroupName);
                                                     mHandler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            findTargetNode(NODE_TEXTVIEW, groupName, CLICK_PARENT, false);
+                                                            findTargetNode(NODE_TEXTVIEW, finalGroupName, CLICK_PARENT, false);
                                                             if (mFindTargetNode == null) {
                                                                 if (canRelease) {
                                                                     release(false);
                                                                 }
                                                                 return;
                                                             }
-                                                            enterChatView(actionType, groupName);
+                                                            enterChatView(actionType, finalGroupName);
                                                         }
                                                     }, 3000);
                                                 }
@@ -3430,7 +3430,8 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_FIX_GROUP_NAME
                         || actionType == TYPE_FIX_GROUP_NOTICE
                         || actionType == TYPE_DELETE_GROUP_CHAT
-                        || actionType == TYPE_SAVE_GROUP) {
+                        || actionType == TYPE_SAVE_GROUP
+                        || actionType == TYPE_GROUP_QRCODE) {
                     groupRelative(actionType, !(actionType == TYPE_FIX_GROUP_NOTICE));
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
@@ -3524,10 +3525,64 @@ public class AutoReplyService extends AccessibilityService {
                             }, 2000);
                         }
                     }, 3000);
+                } else if (actionType == TYPE_GROUP_QRCODE) {
+                    boolean find = findTargetNode(NODE_TEXTVIEW, "群二维码", CLICK_PARENT, true);
+                    if (!find) {
+                        release(false);
+                        return;
+                    }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            findTargetNode(NODE_IMAGEBUTTON, 1);
+                            if (mFindTargetNode == null) {
+                                release(false);
+                                return;
+                            }
+                            mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findTargetNode(NODE_TEXTVIEW, "保存到手机", CLICK_PARENT, true);
+                                    if (!find) {
+                                        release(false);
+                                        return;
+                                    }
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            boolean ret = getQRCodeFromSdcard();
+                                            release(ret);
+                                        }
+                                    }, 2000);
+                                }
+                            }, 2000);
+                        }
+                    }, 2000);
                 }
             }
         }, 2000);
     }
+
+    private boolean getQRCodeFromSdcard() {
+        qrCodeUrl = "";
+        String path = "/sdcard/tencent/MicroMsg/WeiXin/";
+        File[] files = new File(path).listFiles();
+        if (files == null || files.length == 0) {
+            return false;
+        }
+        File latestFile = null;
+        long latestModified = 0L;
+        for (File f : files) {
+            if (f.lastModified() > latestModified) {
+                latestModified = f.lastModified();
+                latestFile = f;
+            }
+        }
+        qrCodeUrl = latestFile.getAbsolutePath();
+        return true;
+    }
+
 
     private void doScript() {
         //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
@@ -4011,7 +4066,11 @@ public class AutoReplyService extends AccessibilityService {
         if (mFindTargetNode == null) {
             return 0;
         }
-        String text = mFindTargetNode.getText().toString();
+        CharSequence cs = mFindTargetNode.getText();
+        if (cs == null) {
+            return 0;
+        }
+        String text = cs.toString();
         if (text.equals("搜索")) {
             return 0;
         }
@@ -4456,61 +4515,35 @@ public class AutoReplyService extends AccessibilityService {
     private void sendFileOnly(String url, final String fileName, final boolean multiple) {
         //1.下载
         final String savedFilePath = KWApplication.ROOT + "downloads/" + fileName;
-
-        RequestParams params = new RequestParams(url);
-        params.setSaveFilePath(savedFilePath);
-        params.setAutoRename(false);
-        params.setAutoResume(true);
-        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
-            @Override
-            public void onSuccess(File result) {
-                Log.d("test", "onSuccess");
-
-                Log.d("test", "sendFileOnly");
-                Platform.ShareParams sp = new Platform.ShareParams();
-                sp.setTitle(fileName);
-                sp.setFilePath(savedFilePath);
-                String imagePath = KWApplication.defaultFileIcon;
-                if (fileName.toLowerCase().endsWith("ppt") || fileName.toLowerCase().endsWith("pptx")) {
-                    imagePath = KWApplication.defaultPPTIcon;
-                } else if (fileName.toLowerCase().endsWith("pdf")) {
-                    imagePath = KWApplication.defaultPDFIcon;
-                } else if (fileName.toLowerCase().endsWith("doc") || fileName.toLowerCase().endsWith("docx")) {
-                    imagePath = KWApplication.defaultWordIcon;
-                } else if (fileName.toLowerCase().endsWith("xls") || fileName.toLowerCase().endsWith("xlsx")) {
-                    imagePath = KWApplication.defaultXlsIcon;
-                } else if (fileName.toLowerCase().endsWith("zip") || fileName.toLowerCase().endsWith("rar")) {
-                    imagePath = KWApplication.defaultZIPIcon;
-                }
-                sp.setImagePath(imagePath);
-                sp.setShareType(Platform.SHARE_FILE);
-                Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-                wx.share(sp);
-
-                if (multiple) {
-                    doShareToWechatFriend2();
-                } else {
-                    doShareToWechatFriend();
-                }
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Log.d("test", "onError");
-                release(false);
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                Log.d("test", "onCancelled");
-                release(false);
-            }
-
-            @Override
-            public void onFinished() {
-                Log.d("test", "onFinished");
-            }
-        });
+        if (!new File(savedFilePath).exists()) {
+            release(false);
+            return;
+        }
+        Log.d("test", "sendFileOnly");
+        Platform.ShareParams sp = new Platform.ShareParams();
+        sp.setTitle(fileName);
+        sp.setFilePath(savedFilePath);
+        String imagePath = KWApplication.defaultFileIcon;
+        if (fileName.toLowerCase().endsWith("ppt") || fileName.toLowerCase().endsWith("pptx")) {
+            imagePath = KWApplication.defaultPPTIcon;
+        } else if (fileName.toLowerCase().endsWith("pdf")) {
+            imagePath = KWApplication.defaultPDFIcon;
+        } else if (fileName.toLowerCase().endsWith("doc") || fileName.toLowerCase().endsWith("docx")) {
+            imagePath = KWApplication.defaultWordIcon;
+        } else if (fileName.toLowerCase().endsWith("xls") || fileName.toLowerCase().endsWith("xlsx")) {
+            imagePath = KWApplication.defaultXlsIcon;
+        } else if (fileName.toLowerCase().endsWith("zip") || fileName.toLowerCase().endsWith("rar")) {
+            imagePath = KWApplication.defaultZIPIcon;
+        }
+        sp.setImagePath(imagePath);
+        sp.setShareType(Platform.SHARE_FILE);
+        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+        wx.share(sp);
+        if (multiple) {
+            doShareToWechatFriend2();
+        } else {
+            doShareToWechatFriend();
+        }
     }
 
     private void sendLinkOnly(String content, boolean multiple) {
@@ -4787,7 +4820,7 @@ public class AutoReplyService extends AccessibilityService {
                 continue;
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
-            Log.d("test", "nodeInfo.getText() = " + nodeInfo.getText());
+            Log.d("test", "nodeInfo.getText() = |" + nodeInfo.getText() + "|");
             if (test(nodeInfo)) {
                 return true;
             }
