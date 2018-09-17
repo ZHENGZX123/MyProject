@@ -47,7 +47,6 @@ public class UploadUtil {
             conn.setRequestProperty("Charset", CHARSET); // 设置编码
             conn.setRequestProperty("connection", "keep-alive");
             conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
-//            conn.setRequestProperty("Cookie", jsessionid);
             conn.connect();
 
             if (file != null) {
