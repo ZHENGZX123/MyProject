@@ -65,6 +65,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
@@ -82,6 +83,7 @@ import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
@@ -286,7 +288,6 @@ public class Utils {
         Log.d("test", "initZbus");
         final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
         final String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
-        final String businessID = c.getSharedPreferences("kiway", 0).getString("businessID", "");
         if (TextUtils.isEmpty(robotId)) {
             Log.d("test", "robotId is null");
             return;
@@ -295,10 +296,6 @@ public class Utils {
             Log.d("test", "wxNo is null");
             return;
         }
-//        if (TextUtils.isEmpty(businessID)) {
-//            Log.d("test", "businessID is null");
-//            return;
-//        }
         new Thread() {
             @Override
             public void run() {
@@ -309,17 +306,13 @@ public class Utils {
                     String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                     Log.d("test", "topic1 = " + topic1);
                     doConsume(rabbitMQUtils, topic1);
-//                    if (rabbitMQUtils2 == null) {
-//                        rabbitMQUtils2 = new RabbitMQUtils(Constant.host, Constant.port);
-//                    }
-//                    String topic2 = "kiway_wx_reply_push_" + "123456789";//businessID
-//                    Log.d("test", "topic2 = " + topic2);
-//                    doConsume(rabbitMQUtils2, topic2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+
+        startCheckFileDownloadThread();
     }
 
     private static void doConsume(RabbitMQUtils util, String topic) throws Exception {
@@ -331,7 +324,7 @@ public class Utils {
                 String msg = new String(body, "utf-8");
                 Log.d("test", "handleDelivery msg = " + msg);
                 //处理逻辑
-                if (AutoReplyService.instance != null && !isHeartBeatReply(msg)) {
+                if (AutoReplyService.instance != null && !isHeartBeatReply(msg) && !isType50(msg)) {
                     Log.d("test", "不是心跳");
                     boolean imme = isNeedImme(msg);
                     Log.d("test", "imme = " + imme);
@@ -341,6 +334,108 @@ public class Utils {
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
         }, channel);
+    }
+
+    private static Thread fileDownloadThread;
+    private static ArrayList<FileDownload> downloads = new ArrayList<>();
+
+    private static void startCheckFileDownloadThread() {
+        if (fileDownloadThread != null) {
+            return;
+        }
+        fileDownloadThread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        sleep(10000);
+                        for (FileDownload fd : downloads) {
+                            if (fd.status == 0) {
+                                fd.status = 1;
+                                doDownloadFile(fd);
+                            } else if (fd.status == 2) {
+                                fd.status = 4;
+                                AutoReplyService.instance.sendReplyImmediately(fd.original, false);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        fileDownloadThread.start();
+    }
+
+    private static void doDownloadFile(final FileDownload fd) {
+        final String savedFilePath = fd.filepath;
+        org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(fd.url);
+        params.setSaveFilePath(savedFilePath);
+        params.setAutoRename(false);
+        params.setMaxRetryCount(5);
+        params.setAutoResume(true);
+        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                Log.d("test", "onSuccess");
+                fd.status = 2;
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Log.d("test", "onError");
+                fd.status = 3;
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Log.d("test", "onCancelled");
+                fd.status = 3;
+            }
+
+            @Override
+            public void onFinished() {
+                Log.d("test", "onFinished");
+            }
+        });
+    }
+
+
+    private static boolean isType50(String msg) {
+        //单人聊天50
+        try {
+            if (msg.contains("\"returnType\":50") || msg.contains("\"type\":50")) {
+                JSONObject msgO = new JSONObject(msg);
+                String url = null;
+                String filepath = null;
+                int status = 0;
+                if (msg.contains("\"returnType\":50")) {
+                    JSONObject o = msgO.optJSONArray("returnMessage").optJSONObject(0);
+                    url = o.optString("content");
+                    filepath = KWApplication.ROOT + "downloads/" + o.optString("fileName");
+                } else if (msg.contains("\"type\":50")) {
+                    if (msg.contains("groupSendBatchMessageCmd")) {
+                        JSONObject messageO = msgO.optJSONArray("messages").optJSONObject(0);
+                        JSONObject contentO = messageO.optJSONObject("content");
+                        url = contentO.optString("url");
+                        filepath = KWApplication.ROOT + "downloads/" + contentO.optString("fileName");
+                    } else {
+                        String message = msgO.optString("message");
+                        JSONObject messageO = new JSONObject(message);
+                        url = messageO.optString("content");
+                        filepath = KWApplication.ROOT + "downloads/" + messageO.optString("fileName");
+                    }
+                }
+                FileDownload fd = new FileDownload(url, filepath, status, msg);
+                Log.d("test", "fd = " + fd.toString());
+                downloads.add(fd);
+                Log.d("test", "isType50");
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     //需要插队的命令
@@ -391,13 +486,10 @@ public class Utils {
 
     public static boolean isEffectiveDate(String startStr, String endStr) {
         try {
-
-
             String format = "HH:mm:ss";
 
             String dateStr = new SimpleDateFormat(format).format(new Date());
             Date nowTime = new SimpleDateFormat(format).parse(dateStr);
-
 
             Date startTime = new SimpleDateFormat(format).parse(startStr);
             Date endTime = new SimpleDateFormat(format).parse(endStr);
@@ -812,13 +904,14 @@ public class Utils {
     }
 
     public static ArrayList<Friend> doGetFriends(Context c, File dbFile, String password) {
+        String transfer = c.getSharedPreferences("transfer", 0).getString("transfer", DEFAULT_TRANSFER);
         ArrayList<Friend> friends = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
             db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
-            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and showHead<>43 and type<>65536", null);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and type<>8 and showHead<>43 and type<>65536", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -829,7 +922,7 @@ public class Utils {
                     Log.d("test", "wxNo = " + wxNo);
                     Log.d("test", "wxId = " + username);
                     c.getSharedPreferences("kiway", 0).edit().putString("wxId", username).commit();
-                } else if (username.equals("filehelper")) {
+                } else if (username.equals("filehelper") || alias.equals(transfer)) {
                     //过滤掉文件传输助手等
                 } else {
                     friends.add(new Friend(nickname, conRemark, username, alias));
@@ -1009,6 +1102,7 @@ public class Utils {
         return messages;
     }
 
+    //TODO getWxNoByWxId 太耗时，用关联表来做
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password) {
         Log.d("test", "doGetGroups");
         ArrayList<Group> groups = new ArrayList<>();
