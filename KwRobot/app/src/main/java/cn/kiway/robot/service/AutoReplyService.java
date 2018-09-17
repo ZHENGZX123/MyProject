@@ -62,6 +62,7 @@ import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.MyListener;
+import cn.kiway.robot.util.UploadUtil;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
@@ -164,6 +165,7 @@ import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NAME_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.UPGRADE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
+import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
@@ -680,7 +682,9 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (command.cmd.equals(UPDATE_GROUP_NOTICE_CMD)) {
                         o.put("schedule", !TextUtils.isEmpty(o.optString("sendTime")));
                     } else if (command.cmd.equals(GROUP_QRCODE_CMD)) {
-                        o.put("icon", "http://photocdn.sohu.com/20150305/mp4752718_1425527970535_1_th_fv23.jpeg");//http://www.hinews.cn/pic/0/16/68/50/16685046_957412.jpg
+                        if (!TextUtils.isEmpty(qrCodeUrl)) {
+                            o.put("icon", qrCodeUrl);
+                        }
                     }
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
@@ -3548,13 +3552,13 @@ public class AutoReplyService extends AccessibilityService {
                                         release(false);
                                         return;
                                     }
-                                    mHandler.postDelayed(new Runnable() {
+                                    new Thread() {
                                         @Override
                                         public void run() {
                                             boolean ret = getQRCodeFromSdcard();
                                             release(ret);
                                         }
-                                    }, 2000);
+                                    }.start();
                                 }
                             }, 2000);
                         }
@@ -3579,7 +3583,15 @@ public class AutoReplyService extends AccessibilityService {
                 latestFile = f;
             }
         }
-        qrCodeUrl = latestFile.getAbsolutePath();
+        final String ret = UploadUtil.uploadFile(latestFile, clientUrl + "/common/file?origin=true", latestFile
+                .getName());
+        try {
+            JSONObject o = new JSONObject(ret);
+            qrCodeUrl = o.optJSONObject("data").optString("url");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
