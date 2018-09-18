@@ -10,7 +10,9 @@ import android.util.Log;
 
 import com.android.kiway.KWApp;
 import com.android.kiway.utils.Logger;
-import com.android.kiway.zbus.ZbusHost;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.aidl.RemoteInterface;
@@ -96,12 +98,28 @@ public class RemoteAidlService extends Service {
         @Override
         public boolean callbackMessage(String msg) throws RemoteException {
             //课堂互动的相应消息
-
-            if (msg.equals("hello")) {
-                return ZbusHost.doSendMsg2(RemoteAidlService.this, msg);
+            Log.e("-----", msg);
+            JSONObject data = null;
+            try {
+                data = new JSONObject(msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
-
+            String cmd = data.optString("cmd");
+            if (cmd.equals("init")) {
+            } else if (cmd.equals("uninit")) {
+            } else if (cmd.equals("shutdown")) {
+            } else if (cmd.equals("lockApp")) {
+            } else if (cmd.equals("unlockApp")) {
+            } else if (cmd.equals("forceStopApp")) {
+            } else if (cmd.equals("installPackage")) {
+            } else if (cmd.equals("uninstallPackage")) {
+            }
+//            if (msg.equals("hello")) {
+//                return ZbusHost.doSendMsg2(RemoteAidlService.this, msg);
+//            }
+//            return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
+            return true;
         }
     };
 

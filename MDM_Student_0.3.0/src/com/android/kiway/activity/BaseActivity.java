@@ -3,6 +3,7 @@ package com.android.kiway.activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -41,6 +42,7 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("test", "Model = " + Build.MODEL);
         pd = new ProgressDialog(this);
         pd.setMessage("网络请求中");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
