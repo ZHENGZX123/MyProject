@@ -604,6 +604,8 @@ public class Utils {
             }
             whiteList.add("cn.kiway.mdm");
             whiteList.add("cn.kiway.session");
+            whiteList.add("com.kiway.smartclass.student");
+            whiteList.add("com.library.smartclass.student");
             m.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

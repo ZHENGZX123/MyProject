@@ -21,8 +21,8 @@
 
     <!-- Bottom row -->
     <favorite
-        launcher:className="cn.kiway.mdm.activity.MainActivity"
-        launcher:packageName="cn.kiway.session"
+        launcher:className="com.clovsoft.core.demo.MainActivity"
+        launcher:packageName="com.kiway.smartclass.student"
         launcher:screen="0"
         launcher:x="0"
         launcher:y="-1">

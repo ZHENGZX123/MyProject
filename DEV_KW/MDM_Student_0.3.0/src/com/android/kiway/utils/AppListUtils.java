@@ -40,6 +40,8 @@ public class AppListUtils {
         preinstallAPP.add("com.android.browser");
         preinstallAPP.add("com.android.camera2");
         preinstallAPP.add("cn.kiway.session");
+        preinstallAPP.add("com.kiway.smartclass.student");
+        preunstallApp.add("com.library.smartclass.student");
         preinstallAPP.add("cn.kiway.message");
     }
 
