@@ -23,6 +23,7 @@ import java.io.File;
 import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.robot.util.Utils;
 
+import static cn.kiway.robot.R.mipmap.file;
 import static cn.kiway.robot.util.Utils.saveDefaultFile;
 
 
@@ -33,15 +34,18 @@ import static cn.kiway.robot.util.Utils.saveDefaultFile;
 public class KWApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
-    public static String defaultVideoIcon = ROOT + "/downloads/video.png";
-    public static String defaultFileIcon = ROOT + "/downloads/file.png";
-    public static String defaultPPTIcon = ROOT + "/downloads/ppt.png";
-    public static String defaultPDFIcon = ROOT + "/downloads/pdf.png";
-    public static String defaultWordIcon = ROOT + "/downloads/word.png";
-    public static String defaultXlsIcon = ROOT + "/downloads/xls.png";
-    public static String defaultZIPIcon = ROOT + "/downloads/zip.png";
+    public static String DOWNLOAD = "/mnt/sdcard/kiway_robot/downloads/";
+    public static String DCIM = "/mnt/sdcard/DCIM/Camera/";
 
-    public static String defaultWechat = ROOT + "/downloads/wechat.apk";
+
+    public static String defaultVideoIcon = DOWNLOAD + "video.png";
+    public static String defaultFileIcon = DOWNLOAD + "file.png";
+    public static String defaultPPTIcon = DOWNLOAD + "ppt.png";
+    public static String defaultPDFIcon = DOWNLOAD + "pdf.png";
+    public static String defaultWordIcon = DOWNLOAD + "word.png";
+    public static String defaultXlsIcon = DOWNLOAD + "xls.png";
+    public static String defaultZIPIcon = DOWNLOAD + "zip.png";
+    public static String defaultWechat = DOWNLOAD + "wechat.apk";
 
     @Override
     public void onCreate() {
@@ -52,7 +56,7 @@ public class KWApplication extends Application {
         MobSDK.init(this);
         CrashHandler.getInstance().init(this);
 
-        saveDefaultFile(this, "file.png", R.mipmap.file);
+        saveDefaultFile(this, "file.png", file);
         saveDefaultFile(this, "video.png", R.mipmap.video);
         saveDefaultFile(this, "ppt.png", R.mipmap.ppt);
         saveDefaultFile(this, "pdf.png", R.mipmap.pdf);
@@ -70,7 +74,8 @@ public class KWApplication extends Application {
         });
 
         deleteAllCachedFiles(ROOT);
-        deleteAllCachedFiles("/sdcard/DCIM/Camera/");
+        deleteAllCachedFiles(DOWNLOAD);
+        deleteAllCachedFiles(DCIM);
         ImageLoader.getInstance().clearDiskCache();
     }
 
