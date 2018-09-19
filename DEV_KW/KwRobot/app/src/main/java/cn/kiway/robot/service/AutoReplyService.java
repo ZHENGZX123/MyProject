@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
@@ -72,6 +71,7 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.util.Base64.NO_WRAP;
+import static cn.kiway.robot.KWApplication.DCIM;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_PUBLIC_ACCOUNT;
@@ -4401,7 +4401,7 @@ public class AutoReplyService extends AccessibilityService {
             return null;
         }
         // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "DCIM/Camera/");
+        File appDir = new File(DCIM);
         if (!appDir.exists()) {
             appDir.mkdirs();
         }
@@ -4609,26 +4609,18 @@ public class AutoReplyService extends AccessibilityService {
             String imageUrl = contentO.optString("imgUrl");
             String url = contentO.optString("url");
             int type = contentO.optInt("type");
-
             if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
                 ArrayList<Uri> imageUris = new ArrayList<>();
                 for (String anImageArray : imageArray) {
                     String image = anImageArray.replace("\"", "");
-                    Log.d("test", "image = " + image);
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(image);
-                    if (bmp != null) {
-                        String localPath = saveImage(getApplication(), bmp, false);
-                        Log.d("test", "localPath = " + localPath);
-                        imageUris.add(Uri.fromFile(new File(localPath)));
+                    File f = new File(KWApplication.DCIM + Utils.getMD5(image) + ".jpg");
+                    if (f.exists()) {
+                        imageUris.add(Uri.fromFile(f));
                     }
                 }
-                if (imageUris.size() == 0) {
-                    release(false);
-                    return;
-                }
-
+                Log.d("test", "imageUris count = " + imageUris.size());
                 Intent intent = new Intent();
                 ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
                 intent.setComponent(comp);

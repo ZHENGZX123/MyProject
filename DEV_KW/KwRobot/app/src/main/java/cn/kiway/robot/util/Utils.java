@@ -78,6 +78,7 @@ import cn.kiway.robot.moment.SnsInfo;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
+import static cn.kiway.robot.KWApplication.DOWNLOAD;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.util.Constant.APPID;
@@ -324,7 +325,7 @@ public class Utils {
                 String msg = new String(body, "utf-8");
                 Log.d("test", "handleDelivery msg = " + msg);
                 //处理逻辑
-                if (AutoReplyService.instance != null && !isHeartBeatReply(msg) && !isType50(msg)) {
+                if (AutoReplyService.instance != null && !isHeartBeatReply(msg) && !needPreDownload(msg)) {
                     Log.d("test", "不是心跳");
                     boolean imme = isNeedImme(msg);
                     Log.d("test", "imme = " + imme);
@@ -368,68 +369,101 @@ public class Utils {
     }
 
     private static void doDownloadFile(final FileDownload fd) {
-        final String savedFilePath = fd.filepath;
-        org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(fd.url);
-        params.setSaveFilePath(savedFilePath);
-        params.setAutoRename(false);
-        params.setMaxRetryCount(5);
-        params.setAutoResume(true);
-        x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
-            @Override
-            public void onSuccess(File result) {
-                Log.d("test", "onSuccess");
-                fd.status = 2;
-            }
+        ArrayList<String> urls = fd.urls;
+        ArrayList<String> filepaths = fd.filepaths;
+        int count = urls.size();
+        for (int i = 0; i < count; i++) {
+            String url = urls.get(i);
+            String savedFilePath = filepaths.get(i);
+            org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
+            params.setSaveFilePath(savedFilePath);
+            params.setAutoRename(false);
+            params.setMaxRetryCount(5);
+            params.setAutoResume(true);
+            x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
+                @Override
+                public void onSuccess(File result) {
+                    fd.successUrl++;
+                    Log.d("test", "onSuccess");
+                    if (fd.successUrl == fd.urls.size()) {
+                        fd.status = 2;
+                    }
+                }
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Log.d("test", "onError");
-                fd.status = 3;
-            }
+                @Override
+                public void onError(Throwable ex, boolean isOnCallback) {
+                    Log.d("test", "onError");
+                    fd.status = 3;
+                }
 
-            @Override
-            public void onCancelled(CancelledException cex) {
-                Log.d("test", "onCancelled");
-                fd.status = 3;
-            }
+                @Override
+                public void onCancelled(CancelledException cex) {
+                    Log.d("test", "onCancelled");
+                    fd.status = 3;
+                }
 
-            @Override
-            public void onFinished() {
-                Log.d("test", "onFinished");
-            }
-        });
+                @Override
+                public void onFinished() {
+                    Log.d("test", "onFinished");
+                }
+            });
+        }
+
     }
 
-
-    private static boolean isType50(String msg) {
-        //单人聊天50
+    private static boolean needPreDownload(String msg) {
         try {
+            //需要预先下载文件type 50
             if (msg.contains("\"returnType\":50") || msg.contains("\"type\":50")) {
                 JSONObject msgO = new JSONObject(msg);
                 String url = null;
                 String filepath = null;
-                int status = 0;
                 if (msg.contains("\"returnType\":50")) {
                     JSONObject o = msgO.optJSONArray("returnMessage").optJSONObject(0);
                     url = o.optString("content");
-                    filepath = KWApplication.ROOT + "downloads/" + o.optString("fileName");
+                    filepath = DOWNLOAD + o.optString("fileName");
                 } else if (msg.contains("\"type\":50")) {
                     if (msg.contains("groupSendBatchMessageCmd")) {
                         JSONObject messageO = msgO.optJSONArray("messages").optJSONObject(0);
                         JSONObject contentO = messageO.optJSONObject("content");
                         url = contentO.optString("url");
-                        filepath = KWApplication.ROOT + "downloads/" + contentO.optString("fileName");
+                        filepath = DOWNLOAD + contentO.optString("fileName");
                     } else {
                         String message = msgO.optString("message");
                         JSONObject messageO = new JSONObject(message);
                         url = messageO.optString("content");
-                        filepath = KWApplication.ROOT + "downloads/" + messageO.optString("fileName");
+                        filepath = DOWNLOAD + messageO.optString("fileName");
                     }
                 }
-                FileDownload fd = new FileDownload(url, filepath, status, msg);
-                Log.d("test", "fd = " + fd.toString());
+                FileDownload fd = new FileDownload();
+                fd.urls.add(url);
+                fd.filepaths.add(filepath);
+                fd.original = msg;
+                Log.d("test", "add a fd = " + fd.toString());
                 downloads.add(fd);
-                Log.d("test", "isType50");
+                return true;
+            }
+            //预先下载朋友圈的图文
+            if (msg.contains("sendFriendCircleCmd")) {
+                JSONObject msgO = new JSONObject(msg);
+                JSONObject contentO = msgO.optJSONObject("content");
+                String imageUrl = contentO.optString("imgUrl");
+                int type = contentO.optInt("type");
+                if (type == 1) {
+                    return false;
+                }
+                String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
+                if (imageArray.length == 0) {
+                    return false;
+                }
+                FileDownload fd = new FileDownload();
+                for (String anImageArray : imageArray) {
+                    String image = anImageArray.replace("\"", "");
+                    fd.urls.add(image);
+                    fd.filepaths.add(KWApplication.DCIM + Utils.getMD5(image) + ".jpg");
+                    fd.original = msg;
+                }
+                downloads.add(fd);
                 return true;
             }
         } catch (Exception e) {
@@ -1333,10 +1367,10 @@ public class Utils {
             @Override
             public void run() {
                 try {
-                    if (!new File(ROOT + "downloads/").exists()) {
-                        new File(ROOT + "downloads/").mkdirs();
+                    if (!new File(DOWNLOAD).exists()) {
+                        new File(DOWNLOAD).mkdirs();
                     }
-                    File file = new File(ROOT + "downloads/" + fileName);
+                    File file = new File(DOWNLOAD + fileName);
                     if (file.exists()) {
                         return;
                     }
@@ -1365,10 +1399,10 @@ public class Utils {
         new Thread() {
             @Override
             public void run() {
-                if (!new File(ROOT + "downloads/").exists()) {
-                    new File(ROOT + "downloads/").mkdirs();
+                if (!new File(DOWNLOAD).exists()) {
+                    new File(DOWNLOAD).mkdirs();
                 }
-                final String savedFilePath = ROOT + "downloads/" + fileName;
+                final String savedFilePath = DOWNLOAD + fileName;
                 File file = new File(savedFilePath);
                 if (file.exists()) {
                     return;
