@@ -1690,7 +1690,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void checkNotifier(final String target) {
-        //检查是不是绑定人是不是好友。
+        //TODO 检查是不是绑定人是不是好友。这里优化一下。getFriendByWxNo
         new Thread() {
             @Override
             public void run() {
@@ -2111,20 +2111,19 @@ public class AutoReplyService extends AccessibilityService {
                                                 Log.d("test", "content = " + content);
                                                 JSONObject o = new JSONObject(content);
                                                 final String newName = o.optString("newName");
-
                                                 clearAndPasteEditText(1, newName);
-
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        boolean find = findTargetNode(NODE_TEXTVIEW, "保存", CLICK_SELF, true);
+                                                        final boolean find = findTargetNode(NODE_TEXTVIEW, "保存", CLICK_SELF, true);
                                                         if (find) {
                                                             getSharedPreferences("kiway", 0).edit().putString("name", newName).commit();
+                                                            Utils.blackfile(getApplication());
                                                         }
                                                         mHandler.postDelayed(new Runnable() {
                                                             @Override
                                                             public void run() {
-                                                                release(true);
+                                                                release(find);
                                                             }
                                                         }, 3000);
                                                     }
@@ -2518,11 +2517,8 @@ public class AutoReplyService extends AccessibilityService {
                     JSONObject o = new JSONObject(content);
                     JSONArray members = o.optJSONArray("members");
                     String message = o.optString("message");
-
                     int count = members.length();
-
                     resetMaxReleaseTime(DEFAULT_RELEASE_TIME * count);
-
                     for (int i = 0; i < count; i++) {
                         String member = members.getString(i);
                         addFriend(member, message);
@@ -2541,7 +2537,6 @@ public class AutoReplyService extends AccessibilityService {
 
     private void addFriend(final String member, final String message) {
         Log.d("test", "addFriend member = " + member);
-
         AddFriend af = new MyDBHelper(getApplicationContext()).getAddFriendByPhone(member);
         if (af == null) {
             af = new AddFriend();
@@ -2554,12 +2549,10 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 findTargetNode(NODE_EDITTEXT, member);
-
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         findTargetNode(NODE_TEXTVIEW, member, CLICK_PARENT, false);
-
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -2568,9 +2561,7 @@ public class AutoReplyService extends AccessibilityService {
                                     updateUserStatus(member, "该用户不存在", STATUS_NOT_EXISTED);
                                     notifyObj(2000);
                                 } else if (currentWechatPage.equals("com.tencent.mm.plugin.profile.ui.ContactInfoUI")) {
-
                                     findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_NONE, true);
-
                                     if (mFindTargetNode == null) {
                                         //已经是好友,返回即可
                                         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -2585,7 +2576,6 @@ public class AutoReplyService extends AccessibilityService {
                                         findTargetNode(NODE_TEXTVIEW, 3);
                                         String remark = remarkIndex + " " + mFindTargetNode.getText().toString();
                                         updateUserStatus(member, remark, STATUS_ADDING);
-
                                         findTargetNode(NODE_BUTTON, "添加到通讯录", CLICK_SELF, true);
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
@@ -2597,10 +2587,8 @@ public class AutoReplyService extends AccessibilityService {
                                                     }
                                                     //2.备注 TODO 判断备注前面是数字，可以不用加了
                                                     findTargetNode(NODE_EDITTEXT, 2, remarkIndex);
-
                                                     //3.点击发送按钮
                                                     findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
-
                                                     mHandler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -2875,14 +2863,20 @@ public class AutoReplyService extends AccessibilityService {
             } else if (flag == 2) {
                 JSONObject msg = o.optJSONArray("messages").optJSONObject(0);
                 int type = msg.optInt("type");
-                final String text = msg.optString("content");//url
+                final String text = msg.optString("content");
                 if (type == 1) {
                     // 判断文本框是不是有文字
                     clearAndPasteEditText(1, text);
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
+                            final boolean find = findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    release(find);
+                                }
+                            }, 2000);
                         }
                     }, 2000);
                 } else if (type == 2) {
@@ -3232,7 +3226,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, false);
+                                findTargetNode(NODE_TEXTVIEW, target, CLICK_PARENT, true);
                                 if (mFindTargetNode == null) {
                                     if (canRelease) {
                                         release(false);

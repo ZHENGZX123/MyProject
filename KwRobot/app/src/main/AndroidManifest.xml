@@ -33,12 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:name">
+
         <activity
-            android:name=".activity.APPkeyActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.WelcomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -47,6 +44,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.APPkeyActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".activity.MainActivity"
@@ -67,13 +72,6 @@
             android:name=".activity.InstructionActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activity.WelcomeActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
         <activity
             android:name=".activity.Guide1Activity"
             android:launchMode="singleTask"

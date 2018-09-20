@@ -47,9 +47,7 @@ public class Guide4Activity extends BaseActivity {
             try {
                 JSONObject o = new JSONObject(decryptStr);
                 String tenantId = o.optString("tenantId");
-
                 getSharedPreferences("kiway", 0).edit().putString("tenantId", tenantId).commit();
-                toast("扫码解析错误，请联系管理员");
                 Utils.doNewLogin(this, name, wxNo, tenantId, new MyListener() {
                     @Override
                     public void onResult(boolean success) {
