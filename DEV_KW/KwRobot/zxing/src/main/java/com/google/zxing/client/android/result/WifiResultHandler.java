@@ -16,6 +16,7 @@
 
 package com.google.zxing.client.android.result;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -61,7 +62,7 @@ public final class WifiResultHandler extends ResultHandler {
   public void handleButtonPress(int index) {
     if (index == 0) {
       WifiParsedResult wifiResult = (WifiParsedResult) getResult();
-      WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+      @SuppressLint("WifiManagerLeak") WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
       if (wifiManager == null) {
         Log.w(TAG, "No WifiManager available from device");
         return;
