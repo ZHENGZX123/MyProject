@@ -126,6 +126,7 @@ public class MainActivity extends BaseActivity {
         initView();
         initListener();
         checkRoot(null);
+        Utils.blackfile(getApplication());
         Utils.installationPush(getApplication());
         Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
         setBrightness();
@@ -793,27 +794,7 @@ public class MainActivity extends BaseActivity {
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
                     //1.上传
-                    int times = friendCount / 100 + 1;
-                    for (int i = 0; i < times; i++) {
-                        final ArrayList<Friend> temp = new ArrayList<Friend>();
-                        int tempSize = 0;
-                        if (i == times - 1) {
-                            tempSize = friendCount - 100 * i;
-                        } else {
-                            tempSize = 100;
-                        }
-                        for (int j = 0; j < tempSize; j++) {
-                            temp.add(friends.get(i * 100 + j));
-                        }
-                        Log.d("test", "temp = " + temp);
-                        Log.d("test", "temp size = " + temp.size());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Utils.uploadFriend(getApplication(), temp);
-                            }
-                        });
-                    }
+                    Utils.uploadFriend(MainActivity.instance, friends);
                     //2.检查有没有转发使者
                     if (doCheck) {
                         checkTransfer(friends);
@@ -1011,10 +992,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-//        getAllMomentComments(false);
-//        getAllMessages();
         getAllFriends(false);
-//        getAllGroups(true);
+        getAllGroups(true);
     }
 
     public void test3(View view) {
@@ -1044,10 +1023,11 @@ public class MainActivity extends BaseActivity {
                 f.newRemark = leftChinese;
                 Log.d("test", "newRemark = " + f.newRemark);
                 if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
-                    Log.d("test", "该好友要重新备注");
+                    //Log.d("test", "该好友要重新备注");
                     needUpdateFriends.add(f);
                 }
             }
+            Log.d("test", "needUpdateFriends size = " + needUpdateFriends.size());
             //1.发送改备注的命令：
             for (Friend f : needUpdateFriends) {
                 JSONObject o = new JSONObject();

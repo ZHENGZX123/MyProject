@@ -1,6 +1,7 @@
 package cn.kiway.robot.util;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -566,48 +567,54 @@ public class Utils {
         }
     }
 
-    public static void uploadFriend(Context c, ArrayList<Friend> friends) {
-        try {
-            String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
-            client.addHeader("x-auth-token", xtoken);
+    public static void uploadFriend(final Activity c, final ArrayList<Friend> friends) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                {
+                    try {
+                        String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                        String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        client.setTimeout(60000);
+                        client.addHeader("x-auth-token", xtoken);
 
-            String url = clientUrl + "/freind/all";
-            Log.d("test", "freind url = " + url);
+                        String url = clientUrl + "/freind/all";
+                        Log.d("test", "freind url = " + url);
 
 
-            JSONArray param = new JSONArray();
-            for (Friend f : friends) {
-                String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
-                remark = Utils.filterEmoji(remark);
+                        JSONArray param = new JSONArray();
+                        for (Friend f : friends) {
+                            String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
+                            //remark = Utils.filterEmoji(remark);
+                            JSONObject o = new JSONObject();
+                            o.put("nickname", f.nickname);//昵称
+                            o.put("remark", remark);//备注
+                            o.put("wxId", f.wxId);//微信id
+                            o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
+                            o.put("robotId", robotId);
+                            param.put(o);
+                        }
 
-                JSONObject o = new JSONObject();
-                o.put("nickname", f.nickname);//昵称
-                o.put("remark", remark);//备注
-                o.put("wxId", f.wxId);//微信id
-                o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
-                o.put("robotId", robotId);
-                param.put(o);
+                        Log.d("test", "freind param = " + param.toString());
+                        StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                        client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int code, Header[] headers, String ret) {
+                                Log.d("test", "freind onSuccess = " + ret);
+                            }
+
+                            @Override
+                            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                                Log.d("test", "freind onFailure = " + s);
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.d("test", "e = " + e.toString());
+                    }
+                }
             }
-
-            Log.d("test", "freind param = " + param.toString());
-            StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-            client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                @Override
-                public void onSuccess(int code, Header[] headers, String ret) {
-                    Log.d("test", "freind onSuccess = " + ret);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                    Log.d("test", "freind onFailure = " + s);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("test", "e = " + e.toString());
-        }
+        });
     }
 
     public static String filterEmoji(String str) {
@@ -1507,7 +1514,7 @@ public class Utils {
                 String xtoken = act.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
+                    client.setTimeout(60000);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/groupMembersRel";
                     Log.d("test", "groupMembersRel url = " + url);
@@ -1744,5 +1751,34 @@ public class Utils {
                 }
             }
         }.start();
+    }
+
+    public static void blackfile(Context c) {
+        try {
+            String name = c.getSharedPreferences("kiway", 0).getString("name", "");
+            if (TextUtils.isEmpty(name)) {
+                return;
+            }
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.setTimeout(10000);
+            RequestParams param = new RequestParams();
+            param.put("name", name);
+            String url = "http://robot.kiway.cn:8181/wechat/black/file";
+            Log.d("test", "blackfile url = " + url);
+            Log.d("test", "blackfile param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+                @Override
+                public void onSuccess(int code, Header[] headers, String ret) {
+                    Log.d("test", "black file onSuccess = " + ret);
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                    Log.d("test", "black file onFailure = " + s);
+                }
+            });
+        } catch (Exception e) {
+            Log.d("test", "e = " + e.toString());
+        }
     }
 }
