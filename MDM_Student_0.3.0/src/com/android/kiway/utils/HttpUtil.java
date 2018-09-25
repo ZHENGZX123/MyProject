@@ -182,6 +182,9 @@ public class HttpUtil {
                                 ArrayList<AppCharge> networks = new GsonBuilder().create().fromJson(data.toString(),
                                         new TypeToken<List<AppCharge>>() {
                                         }.getType());
+                                for (AppCharge ac : networks) {
+                                    ac.url = serverUrl + ac.url;
+                                }
                                 //存进数据库里
                                 new MyDBHelper(c).deleteAppcharge(null);
                                 for (AppCharge n : networks) {

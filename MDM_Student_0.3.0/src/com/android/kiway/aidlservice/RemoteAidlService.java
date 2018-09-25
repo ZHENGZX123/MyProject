@@ -10,9 +10,7 @@ import android.util.Log;
 
 import com.android.kiway.KWApp;
 import com.android.kiway.utils.Logger;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.android.kiway.zbus.ZbusHost;
 
 import cn.kiway.aidl.ClientCallback;
 import cn.kiway.aidl.RemoteInterface;
@@ -91,35 +89,55 @@ public class RemoteAidlService extends Service {
 
         @Override
         public boolean init(String key) throws RemoteException {
-            Logger.log("init::::::::" + key);
+            //课堂互动的相应消息
+//            Log.e("-----", msg);
+//            JSONObject data = null;
+//            try {
+//                data = new JSONObject(msg);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            String cmd = data.optString("cmd");
+//            if (cmd.equals("init")) {
+//                MDMHelper.getAdapter().setBluetoothDisabled(true);//禁用/启动蓝牙
+//                MDMHelper.getAdapter().setExternalStorageDisabled(true);
+//                //MDMHelper.getAdapter().setGPSDisabled(true);
+//                //MDMHelper.getAdapter().setUSBDataDisabled(true);
+//                MDMHelper.getAdapter().setRestoreFactoryDisabled(true);
+//            } else if (cmd.equals("uninit")) {
+//                MDMHelper.getAdapter().setBluetoothDisabled(false);
+//                MDMHelper.getAdapter().setGPSDisabled(false);
+//                MDMHelper.getAdapter().setExternalStorageDisabled(false);
+//                MDMHelper.getAdapter().setUSBDataDisabled(false);
+//            } else if (cmd.equals("shutdown")) {
+//                MDMHelper.getAdapter().shutdownDevice();
+//            } else if (cmd.equals("lockApp")) {
+//                //MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(true);
+//                MDMHelper.getAdapter().setBackButtonDisabled(true);
+//                MDMHelper.getAdapter().setTaskButtonDisabled(true);
+//            } else if (cmd.equals("unlockApp")) {
+//                //MDMHelper.getAdapter().setStatusBarExpandPanelDisabled(false);
+//                MDMHelper.getAdapter().setBackButtonDisabled(false);
+//                MDMHelper.getAdapter().setTaskButtonDisabled(false);
+//            } else if (cmd.equals("forceStopApp")) {
+//                Intent intent = new Intent(RemoteAidlService.this, MainActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
+//            } else if (cmd.equals("installPackage")) {
+//                MDMHelper.getAdapter().installPackage(data.optString("data"));
+//            } else if (cmd.equals("uninstallPackage")) {
+//                MDMHelper.getAdapter().uninstallPackage(data.optString("data"));
+//            }
             return false;
         }
 
         @Override
         public boolean callbackMessage(String msg) throws RemoteException {
-            //课堂互动的相应消息
-            Log.e("-----", msg);
-            JSONObject data = null;
-            try {
-                data = new JSONObject(msg);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (msg.equals("hello")) {
+                return ZbusHost.doSendMsg2(RemoteAidlService.this, msg);
             }
-            String cmd = data.optString("cmd");
-            if (cmd.equals("init")) {
-            } else if (cmd.equals("uninit")) {
-            } else if (cmd.equals("shutdown")) {
-            } else if (cmd.equals("lockApp")) {
-            } else if (cmd.equals("unlockApp")) {
-            } else if (cmd.equals("forceStopApp")) {
-            } else if (cmd.equals("installPackage")) {
-            } else if (cmd.equals("uninstallPackage")) {
-            }
-//            if (msg.equals("hello")) {
-//                return ZbusHost.doSendMsg2(RemoteAidlService.this, msg);
-//            }
-//            return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
-            return true;
+            return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
+            //  return true;
         }
     };
 

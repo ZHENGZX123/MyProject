@@ -27,7 +27,13 @@
         launcher:x="0"
         launcher:y="-1">
     </favorite>
-
+    <!--<favorite-->
+        <!--launcher:className="cn.kiway.mdm.activity.MainActivity"-->
+        <!--launcher:packageName="cn.kiway.session"-->
+        <!--launcher:screen="0"-->
+        <!--launcher:x="0"-->
+        <!--launcher:y="-1">-->
+    <!--</favorite>-->
     <favorite
         launcher:className="cn.kiway.marketplace.activity.MarkePlaceViewActivity"
         launcher:packageName="cn.kiway.marketplace"

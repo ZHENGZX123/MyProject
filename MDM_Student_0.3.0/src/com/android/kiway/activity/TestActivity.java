@@ -36,11 +36,9 @@ public class TestActivity extends BaseActivity implements SensorEventListener {
 //        MDMHelper.getAdapter().setBackButtonDisabled(false);
 //        MDMHelper.getAdapter().setHomeButtonDisabled(false);
 //        MDMHelper.getAdapter().setWifiDisabled(false);
-
         MDMHelper.getAdapter().setProximityEnable(true);
         MDMHelper.getAdapter().setProximityDistance(20);
         MDMHelper.getAdapter().setProximityDelay(1000);
-
         dialog = new AlertDialog.Builder(this).setTitle("自定义对话框").setMessage("自定义对话框消息").setNegativeButton("ok", null).create();
         registerSensor();
     }
@@ -67,8 +65,6 @@ public class TestActivity extends BaseActivity implements SensorEventListener {
 //        MDMHelper.getAdapter().setBackButtonDisabled(flag);
 //        MDMHelper.getAdapter().setHomeButtonDisabled(flag);
 //        MDMHelper.getAdapter().setWifiDisabled(flag);
-
-
     }
 
     @Override

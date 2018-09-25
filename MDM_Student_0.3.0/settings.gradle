@@ -1,1 +1,1 @@
-include ':mdmsdk', ':zxing', ':materiallockview', ':classify'
+include ':mdmsdk', ':zxing', ':materiallockview'
