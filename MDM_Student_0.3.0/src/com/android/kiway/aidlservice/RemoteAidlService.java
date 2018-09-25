@@ -137,7 +137,6 @@ public class RemoteAidlService extends Service {
                 return ZbusHost.doSendMsg2(RemoteAidlService.this, msg);
             }
             return ZbusHost.doSendMsg(RemoteAidlService.this, msg);
-            //  return true;
         }
     };
 

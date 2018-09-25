@@ -204,6 +204,7 @@ public class KWApp extends Application {
                     // 屏幕锁定
                     keyguardLock.reenableKeyguard();
                     keyguardLock.disableKeyguard(); // 解锁
+
                     MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
 
