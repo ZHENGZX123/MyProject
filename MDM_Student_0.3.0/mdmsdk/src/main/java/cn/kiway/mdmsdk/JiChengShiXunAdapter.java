@@ -408,7 +408,9 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void removeInstallPackageWhiteList(List<String> currentList) {
         try {
-            mManager.appWhiteListDeleteAll();
+            for (String s : currentList) {
+                mManager.appWhiteListDelete(s);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
