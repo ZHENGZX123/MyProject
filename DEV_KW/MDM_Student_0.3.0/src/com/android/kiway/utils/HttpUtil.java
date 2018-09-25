@@ -341,9 +341,6 @@ public class HttpUtil {
                                 @Override
                                 public void onSuccess(int code, Header[] headers, String ret) {
                                     Log.d("test", "applist onSuccess = " + ret);
-
-                                    String today = Utils.getToday();
-                                    c.getSharedPreferences("kiway", 0).edit().putBoolean(today, true).commit();
                                 }
 
                                 @Override
