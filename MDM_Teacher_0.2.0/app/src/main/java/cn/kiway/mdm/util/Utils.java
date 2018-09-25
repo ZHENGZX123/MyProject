@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -150,7 +151,7 @@ public class Utils {
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context,context.getString(R.string.mobile_no_play), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.mobile_no_play), Toast.LENGTH_SHORT).show();
                     }
                 });
             else
@@ -161,5 +162,20 @@ public class Utils {
                     }
                 });
         }
+    }
+
+    public static String getIMEI(Context c) {
+        String imei = FileUtils.readSDCardFile(KWApplication.ROOT + "/imei.txt", c);
+        if (TextUtils.isEmpty(imei)) {
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+            imei = tm.getDeviceId();
+            if (TextUtils.isEmpty(imei)) {
+                Log.d("test", "这个IMEI是生成的");
+                imei = genIMEI();
+            }
+            FileUtils.saveFile(imei);
+        }
+        Log.d("test", "IMEI = " + imei);
+        return imei;
     }
 }
