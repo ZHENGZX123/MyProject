@@ -116,6 +116,7 @@
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-25.0.1" level="project" />
+    <orderEntry type="library" exported="" name="image_compress" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.0.1" level="project" />
     <orderEntry type="module" module-name="zxing" exported="" />
     <orderEntry type="module" module-name="photoview" exported="" />
