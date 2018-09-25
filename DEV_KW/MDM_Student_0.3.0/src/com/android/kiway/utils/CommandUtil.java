@@ -43,6 +43,7 @@ import static com.android.kiway.KWApp.MSG_UNINSTALL;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
 import static com.android.kiway.KWApp.MSG_UNMUTE;
 import static com.android.kiway.utils.Constant.currentTeacher;
+import static com.android.kiway.utils.Constant.serverUrl;
 
 /**
  * Created by Administrator on 2018/1/23.
@@ -172,6 +173,9 @@ public class CommandUtil {
                 ArrayList<AppCharge> apps = new GsonBuilder().create().fromJson(content.toString(), new
                         TypeToken<List<AppCharge>>() {
                         }.getType());
+                for (AppCharge ac : apps) {
+                    ac.url = serverUrl + ac.url;
+                }
                 AppCharge app = apps.get(0);
                 app.priority = data.optInt("priority");
                 if (app.operation.equals("save")) {

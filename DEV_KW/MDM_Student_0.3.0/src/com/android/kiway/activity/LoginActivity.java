@@ -42,7 +42,6 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         schollBtn = (Button) findViewById(R.id.schollBtn);
         classBtn = (Button) findViewById(R.id.classBtn);
         codeET = (EditText) findViewById(R.id.codeET);

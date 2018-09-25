@@ -83,8 +83,7 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BaseActivity.this, id, Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(BaseActivity.this, id, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -748,7 +748,7 @@ public class Utils {
         JSONArray content = data.optJSONArray("content");
         try {
             packageName = content.getJSONObject(0).optString("packages");
-            url = content.getJSONObject(0).optString("url");
+            url = Constant.serverUrl+content.getJSONObject(0).optString("url");
             name = content.getJSONObject(0).optString("name");
             version = content.getJSONObject(0).optString("version");
         } catch (JSONException e) {
