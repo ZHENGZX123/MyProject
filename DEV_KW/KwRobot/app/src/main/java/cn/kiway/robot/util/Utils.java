@@ -191,7 +191,7 @@ public class Utils {
                 Utils.updateUserStatus(c, af.phone, remark, STATUS_ADD_SUCCESS);
             }
             //0808主动添加好友，请求通过后，上报一次好友列表。
-            MainActivity.instance.getAllFriends(false);
+            MainActivity.instance.getAllFriends(false, true);
             return true;
         }
         return false;
@@ -571,47 +571,89 @@ public class Utils {
         c.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                {
-                    try {
-                        String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
-                        String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                        AsyncHttpClient client = new AsyncHttpClient();
-                        client.setTimeout(60000);
-                        client.addHeader("x-auth-token", xtoken);
+                try {
+                    String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(60000);
+                    client.addHeader("x-auth-token", xtoken);
 
-                        String url = clientUrl + "/freind/all";
-                        Log.d("test", "freind url = " + url);
+                    String url = clientUrl + "/freind/all";
+                    Log.d("test", "freind url = " + url);
 
 
-                        JSONArray param = new JSONArray();
-                        for (Friend f : friends) {
-                            String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
-                            //remark = Utils.filterEmoji(remark);
-                            JSONObject o = new JSONObject();
-                            o.put("nickname", f.nickname);//昵称
-                            o.put("remark", remark);//备注
-                            o.put("wxId", f.wxId);//微信id
-                            o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
-                            o.put("robotId", robotId);
-                            param.put(o);
+                    JSONArray param = new JSONArray();
+                    for (Friend f : friends) {
+                        String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
+                        //remark = Utils.filterEmoji(remark);
+                        JSONObject o = new JSONObject();
+                        o.put("nickname", f.nickname);//昵称
+                        o.put("remark", remark);//备注
+                        o.put("wxId", f.wxId);//微信id
+                        o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
+                        o.put("robotId", robotId);
+                        param.put(o);
+                    }
+
+                    Log.d("test", "freind param = " + param.toString());
+                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                    client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "freind onSuccess = " + ret);
                         }
 
-                        Log.d("test", "freind param = " + param.toString());
-                        StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
-                        client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int code, Header[] headers, String ret) {
-                                Log.d("test", "freind onSuccess = " + ret);
-                            }
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "freind onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
+                }
+            }
+        });
+    }
 
-                            @Override
-                            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                                Log.d("test", "freind onFailure = " + s);
-                            }
-                        });
-                    } catch (Exception e) {
-                        Log.d("test", "e = " + e.toString());
+    public static void updateFriendRemark(final Activity c, final ArrayList<Friend> friends) {
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.setTimeout(60000);
+                    client.addHeader("x-auth-token", xtoken);
+                    String url = clientUrl + "/freind/remark";
+                    Log.d("test", "updateFriendRemark url = " + url);
+                    JSONArray param = new JSONArray();
+                    for (Friend f : friends) {
+                        String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
+                        //remark = Utils.filterEmoji(remark);
+                        JSONObject o = new JSONObject();
+                        o.put("nickname", f.nickname);//昵称
+                        o.put("remark", remark);//备注
+                        o.put("wxId", f.wxId);//微信id
+                        o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);//微信号
+                        o.put("robotId", robotId);
+                        param.put(o);
                     }
+                    Log.d("test", "updateFriendRemark param = " + param.toString());
+                    StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
+                    client.put(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int code, Header[] headers, String ret) {
+                            Log.d("test", "updateFriendRemark onSuccess = " + ret);
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                            Log.d("test", "updateFriendRemark onFailure = " + s);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.d("test", "e = " + e.toString());
                 }
             }
         });
@@ -952,7 +994,7 @@ public class Utils {
         try {
             db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
-            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and type<>8 and showHead<>43 and type<>65536", null);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark,type from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and type<>8 and showHead<>43 and type<>65536 and type<> 11 and type <> 2 and type<> 512", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -963,8 +1005,10 @@ public class Utils {
                     Log.d("test", "wxNo = " + wxNo);
                     Log.d("test", "wxId = " + username);
                     c.getSharedPreferences("kiway", 0).edit().putString("wxId", username).commit();
-                } else if (username.equals("filehelper") || alias.equals(transfer)) {
+
+                } else if (alias.equals(transfer)) {
                     //过滤掉文件传输助手等
+                    Log.d("test", "过滤的username = " + username + " alias = " + alias);
                 } else {
                     friends.add(new Friend(nickname, conRemark, username, alias));
                 }
@@ -1089,7 +1133,7 @@ public class Utils {
         return f;
     }
 
-    public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password) {
+    public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password, String sql) {
         Log.d("test", "doGetMessages");
         ArrayList<Message> messages = new ArrayList<>();
         SQLiteDatabase db = null;
@@ -1098,7 +1142,9 @@ public class Utils {
             db = openWechatDB(c, dbFile, password);
             long current = System.currentTimeMillis();
             long before1hour = current - 60 * 60 * 1000;
-            String sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
+            if (sql == null) {
+                sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
+            }
             Log.d("test", "sql = " + sql);
             cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
@@ -1641,7 +1687,8 @@ public class Utils {
                         String areaCode = data.optString("areaCode");
                         String robotId = data.optString("robotId");
                         String userName = data.optString("userName");
-                        String password = data.optString("password");
+                        String password = Utils.decrypt(data.optString("password"));
+                        Log.d("test", "password解密 = " + password);
                         c.getSharedPreferences("kiway", 0).edit().putBoolean("login", true).commit();
                         c.getSharedPreferences("kiway", 0).edit().putString("x-auth-token", token).commit();
                         c.getSharedPreferences("kiway", 0).edit().putString("username", userName).commit();
@@ -1704,7 +1751,6 @@ public class Utils {
     }
 
     public static String getDisplayNameFromGroup(Context c, String clientGroupId, String wxId) {
-        String displayName = "";
         final String password = initDbPassword(c);
         final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
         ArrayList<GroupPeople> peoples = doGetPeopleInGroup(c, dbFile, password, clientGroupId);
@@ -1713,7 +1759,7 @@ public class Utils {
                 return gp.displayname;
             }
         }
-        return displayName;
+        return "";
     }
 
     public static void getAuthorRemarkByAuthorId(Context c, ArrayList<SnsInfo.Comment> comments) {

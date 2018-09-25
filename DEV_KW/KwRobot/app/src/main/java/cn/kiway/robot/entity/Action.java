@@ -55,6 +55,7 @@ public class Action {
     public static final int TYPE_SAVE_GROUP = 140;
     public static final int TYPE_UPDATE_BASEDATA = 141;
     public static final int TYPE_GROUP_QRCODE = 142;
+    public static final int TYPE_TRANSFER_MASTER = 143;
 
     //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
     //{"cmd":"addPublicAccountCmd" , "name":"广州91教育"}

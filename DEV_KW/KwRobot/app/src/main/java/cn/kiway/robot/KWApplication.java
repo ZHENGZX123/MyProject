@@ -18,8 +18,6 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.xutils.x;
 
-import java.io.File;
-
 import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.robot.util.Utils;
 
@@ -72,25 +70,6 @@ public class KWApplication extends Application {
                 Utils.closeMQ();
             }
         });
-
-        deleteAllCachedFiles(ROOT);
-        deleteAllCachedFiles(DOWNLOAD);
-        deleteAllCachedFiles(DCIM);
-        ImageLoader.getInstance().clearDiskCache();
-    }
-
-    private void deleteAllCachedFiles(String folder) {
-        File[] files = new File(folder).listFiles();
-        if (files == null || files.length == 0) {
-            return;
-        }
-        for (File f : files) {
-            Log.d("test", "f = " + f.getAbsolutePath());
-            if (!f.isDirectory() && (f.getName().contains("db") || f.getName().endsWith("jpg"))) {
-                Log.d("test", "delete file = " + f.getName());
-                f.delete();
-            }
-        }
     }
 
     private void initImageCache() {
