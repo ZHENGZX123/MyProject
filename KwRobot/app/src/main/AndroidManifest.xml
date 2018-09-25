@@ -38,6 +38,11 @@
             android:name=".activity.WelcomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,11 +53,6 @@
             android:name=".activity.APPkeyActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.LoginActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
-
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTask"

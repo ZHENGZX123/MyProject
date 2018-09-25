@@ -143,6 +143,8 @@ public class Constant {
     public static final String SAVE_GROUP_REPLY_CMD = "saveGroupReplyCmd";
     public static final String GROUP_QRCODE_CMD = "createGroupQrcodeCmd";
     public static final String GROUP_QRCODE_REPLY_CMD = "createGroupQrcodeReplyCmd";
+    public static final String TRANSFER_MASTER_CMD = "exchangeGroupMasterCmd";
+    public static final String TRANSFER_MASTER_REPLY_CMD = "exchangeGroupMasterReplyCmd";
 
     public static final String UPDATE_BASEDATA_CMD = "updateBaseDate";
     public static final String INSERT_BASEDATA_CMD = "insertBaseDate";
@@ -177,6 +179,7 @@ public class Constant {
         replies.put(SET_WODI_CMD, SET_WODI_REPLY_CMD);
         replies.put(SAVE_GROUP_CMD, SAVE_GROUP_REPLY_CMD);
         replies.put(GROUP_QRCODE_CMD, GROUP_QRCODE_REPLY_CMD);
+        replies.put(TRANSFER_MASTER_CMD, TRANSFER_MASTER_REPLY_CMD);
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
@@ -215,6 +218,8 @@ public class Constant {
         backdoors.put(SEARCH_PUBLIC_ACCOUNT_CMD, Action.TYPE_SEARCH_PUBLIC_ACCOUNT);
         backdoors.put(SAVE_GROUP_CMD, Action.TYPE_SAVE_GROUP);
         backdoors.put(GROUP_QRCODE_CMD, Action.TYPE_GROUP_QRCODE);
+        backdoors.put(TRANSFER_MASTER_CMD, Action.TYPE_TRANSFER_MASTER);
+
 
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(UPDATE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);

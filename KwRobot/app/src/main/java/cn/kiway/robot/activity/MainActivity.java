@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -40,6 +41,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -65,6 +68,9 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 
+import static cn.kiway.robot.KWApplication.DCIM;
+import static cn.kiway.robot.KWApplication.DOWNLOAD;
+import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.CLEAR_CHAT_HISTORY_CMD;
@@ -103,6 +109,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
     private static final int MSG_CLEAR_CHAT_HISTORY = 117;//删除聊天历史记录
+    private static final int MSG_CLEAR_CACHE_FILE = 118;    //漏网之鱼
 
     public static MainActivity instance;
     private Button start;
@@ -140,7 +147,9 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 8 * 60 * 60 * 1000);
+        clearCachedFiles(true);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 30 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
     }
@@ -505,7 +514,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
-                    ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password);
+                    ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password, null);
                     ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn1Hour();
                     //过滤掉已经发送的消息
                     for (Message m1 : wxMessages) {
@@ -525,12 +534,12 @@ public class MainActivity extends BaseActivity {
                             if (m1.talker.endsWith("@chatroom")) {
                                 String wxId = m1.content.substring(0, m1.content.indexOf(":"));
                                 String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
-                                if (TextUtils.isEmpty(sender)) {
-                                    Log.d("test", "获取不到displayName");
-                                    continue;
+                                if (!TextUtils.isEmpty(sender)) {
+                                    String message = m1.content.substring(m1.content.indexOf(":") + 2);
+                                    AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message);
+                                } else {
+                                    Log.d("test", "sender is null");
                                 }
-                                String message = m1.content.substring(m1.content.indexOf(":") + 2);
-                                AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message);
                             } else {
                                 Action action = new Action();
                                 action.sender = m1.remark;
@@ -588,7 +597,7 @@ public class MainActivity extends BaseActivity {
                 mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
-                getAllFriends(true);
+                getAllFriends(true, true);
                 mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
@@ -609,7 +618,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 doMissingFish();
-                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 30 * 60 * 1000);
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
@@ -629,6 +638,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_CLEAR_CHAT_HISTORY);
                 clearChatHistory();
                 mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_CLEAR_CACHE_FILE) {
+                mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
+                clearCachedFiles(false);
+                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 30 * 60 * 1000);
             }
         }
     };
@@ -782,7 +795,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void getAllFriends(final boolean doCheck) {
+    public void getAllFriends(final boolean doCheck, final boolean upload) {
         new Thread() {
             @Override
             public void run() {
@@ -794,7 +807,9 @@ public class MainActivity extends BaseActivity {
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
                     //1.上传
-                    Utils.uploadFriend(MainActivity.instance, friends);
+                    if (upload) {
+                        Utils.uploadFriend(MainActivity.instance, friends);
+                    }
                     //2.检查有没有转发使者
                     if (doCheck) {
                         checkTransfer(friends);
@@ -961,10 +976,6 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, InstructionActivity.class));
     }
 
-    public void Xposed(View view) {
-        //startActivity(new Intent(this, WeChatActivity.class));
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -992,8 +1003,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllFriends(false);
-        getAllGroups(true);
+        getAllFriends(false, false);
     }
 
     public void test3(View view) {
@@ -1005,9 +1015,11 @@ public class MainActivity extends BaseActivity {
             String password = initDbPassword(getApplicationContext());
             File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
             final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+            ArrayList<Friend> needUpdateFriends = new ArrayList<>();
 
-            ArrayList<Friend> needUpdateFriends = new ArrayList();
-            for (Friend f : friends) {
+            int count = friends.size();
+            for (int i = 0; i < count; i++) {
+                Friend f = friends.get(i);
                 Log.d("test", "f = " + f.toString());
                 String leftChinese = Utils.leftChinese(f.remark);
                 Log.d("test", "leftChinese = |" + leftChinese + "|");
@@ -1018,7 +1030,12 @@ public class MainActivity extends BaseActivity {
                     leftChinese = Utils.getRandomChineseName();
                 }
                 if (!Utils.isStartWithNumber(leftChinese)) {
-                    leftChinese = Utils.getParentRemark(this, 1) + " " + leftChinese;
+                    //zhengkang fix0920: Utils.getParentRemark(this, 1)
+                    leftChinese = i + " " + leftChinese;
+                }
+                //zhengkang add 0925
+                if (leftChinese.length() > 10) {
+                    leftChinese = leftChinese.substring(0, 10);
                 }
                 f.newRemark = leftChinese;
                 Log.d("test", "newRemark = " + f.newRemark);
@@ -1034,18 +1051,98 @@ public class MainActivity extends BaseActivity {
                 o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
                 o.put("id", "84f119408d6441358d24b668323f0a23");
                 o.put("token", "1526895528997");
+                o.put("fromFront", true);
+                o.put("nickname", f.nickname);
+                o.put("wxId", f.wxId);
+                o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);
                 o.put("oldName", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);
                 o.put("newName", f.newRemark);
                 String temp = o.toString();
                 Log.d("test", "temp = " + temp);
-                AutoReplyService.instance.sendReplyImmediately(temp, false);
+                AutoReplyService.instance.sendRenameTaskQueue(temp);
             }
             //2.完成之后再上报一下好友
-            getAllFriends(false);
+            getAllFriends(false, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void debugUse() {
+        new Thread() {
+            @Override
+            public void run() {
+                String password = initDbPassword(getApplicationContext());
+                File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
+                String sql = "select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and talker = '7188448662@chatroom'";
+                ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password, sql);
+                for (Message m1 : wxMessages) {
+                    String wxId = m1.content.substring(0, m1.content.indexOf(":"));
+                    String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
+                    Log.d("test", "sender = " + sender);
+                }
+            }
+        }.start();
+    }
 
+    private void clearCachedFiles(boolean force) {
+        if (force) {
+            deleteAllCachedFiles(ROOT);
+            deleteAllCachedFiles(DOWNLOAD);
+            deleteAllCachedFiles(DCIM);
+            ImageLoader.getInstance().clearDiskCache();
+        } else {
+            //删除部分db
+            deleteUselessDBFiles(ROOT);
+        }
+    }
+
+    private void deleteAllCachedFiles(String folder) {
+        File[] files = new File(folder).listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
+        for (File f : files) {
+            Log.d("test", "f = " + f.getAbsolutePath());
+            if (!f.isDirectory() && (f.getName().contains("db") || f.getName().endsWith("jpg"))) {
+                Log.d("test", "delete file = " + f.getName());
+                f.delete();
+            }
+        }
+    }
+
+    private void deleteUselessDBFiles(String folder) {
+        File[] files = new File(folder).listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
+        int max = 100;
+        int count = files.length;
+        Log.d("test", "count = " + count);
+        if (count < max) {
+            return;
+        }
+        for (File f : files) {
+            Log.d("test", "f = " + f.getAbsolutePath());
+        }
+        Arrays.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return (int) (o1.lastModified() - o2.lastModified());
+            }
+        });
+        Log.d("test", "=============================");
+        for (File f : files) {
+            Log.d("test", "f = " + f.getAbsolutePath());
+        }
+        int delete = max / 2;
+        for (int i = 0; i < delete; i++) {
+            File f = files[i];
+            Log.d("test", "f = " + f.getAbsolutePath());
+            if (!f.isDirectory() && f.getName().contains("db")) {
+                Log.d("test", "delete file = " + f.getName());
+                f.delete();
+            }
+        }
+    }
 }
