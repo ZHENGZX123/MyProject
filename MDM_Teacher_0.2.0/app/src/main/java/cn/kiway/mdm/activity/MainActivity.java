@@ -52,7 +52,6 @@ public class MainActivity extends BaseActivity {
 
     private boolean isSuccess = false;
     private boolean isJump = false;
-    private boolean checking = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
     private X5WebView wv;
@@ -78,27 +77,6 @@ public class MainActivity extends BaseActivity {
         wv = (X5WebView) findViewById(R.id.wv);
         layout_welcome = (LinearLayout) findViewById(R.id.layout_welcome);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("test", "onresume checking = " + checking);
-        new Thread() {
-            @Override
-            public void run() {
-                while (checking) {
-                    Log.d("test", "checking loop...");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d("test", "checking loop end");
-            }
-        }.start();
-    }
-
 
     private void load() {
         wv.clearCache(true);
@@ -134,11 +112,6 @@ public class MainActivity extends BaseActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setLoadWithOverviewMode(true);
-        if (Utils.isTabletDevice(this)) {
-            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.LARGER);
-        } else {
-            settings.setTextSize(com.tencent.smtt.sdk.WebSettings.TextSize.NORMAL);
-        }
         wv.setWebViewClient(new MyWebViewClient());
         wv.setVerticalScrollBarEnabled(false);
         wv.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient());
@@ -172,7 +145,6 @@ public class MainActivity extends BaseActivity {
 
     //下面是版本更新相关
     public void checkNewVersion() {
-        checking = true;
         new Thread() {
             @Override
             public void run() {
@@ -435,8 +407,6 @@ public class MainActivity extends BaseActivity {
                 if (refresh) {
                     load();
                 }
-                //更新完成完成
-                checking = false;
             }
         });
     }
