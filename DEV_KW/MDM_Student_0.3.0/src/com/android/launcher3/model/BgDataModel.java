@@ -312,12 +312,17 @@ public class BgDataModel {
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                         item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                    Logger.log(TAG+item.getIntent()
+                    Logger.log(TAG + item.getIntent()
                             .getComponent().getPackageName());
-                    workspaceItems.add(item);
-                    //zzx add 桌面数据
-                    new MyDBHelper(context).addLauncerApp(item.getIntent()
-                            .getComponent().getPackageName());
+                    //zzx add2018/09/25
+                    if (new MyDBHelper(context).checkAppInLauncher(item.getIntent()
+                            .getComponent().getPackageName())) {
+                        workspaceItems.add(item);
+                        //zzx add 桌面数据
+                        new MyDBHelper(context).addLauncerApp(item.getIntent()
+                                .getComponent().getPackageName());
+                    }
+
                 } else {
                     if (newItem) {
                         if (!folders.containsKey(item.container)) {
