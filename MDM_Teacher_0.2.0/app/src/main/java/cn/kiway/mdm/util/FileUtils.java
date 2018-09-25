@@ -228,11 +228,8 @@ public class FileUtils {
         StringBuilder builder;
         try {
             File f = new File(path);
-
             InputStream in = new FileInputStream(f);
-
             builder = new StringBuilder(in.available() + 10);
-
             BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(in));
             char[] data = new char[2048];
             int len = -1;
@@ -255,6 +252,23 @@ public class FileUtils {
         }
 
         return "";
+    }
+
+    public static void saveFile(String str) {
+        String filePath = WXApplication.ROOT + "imei.txt";
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                File dir = new File(file.getParent());
+                dir.mkdirs();
+                file.createNewFile();
+            }
+            FileOutputStream outStream = new FileOutputStream(file);
+            outStream.write(str.getBytes());
+            outStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

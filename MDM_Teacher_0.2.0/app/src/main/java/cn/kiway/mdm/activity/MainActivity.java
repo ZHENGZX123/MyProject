@@ -17,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImagePreviewActivity;
+import com.nanchen.compresshelper.CompressHelper;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -32,12 +35,14 @@ import org.xutils.x;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.teacher.R;
 import cn.kiway.mdm.util.FileUtils;
 import cn.kiway.mdm.util.HttpDownload;
 import cn.kiway.mdm.util.NetworkUtil;
+import cn.kiway.mdm.util.UploadUtil;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
@@ -416,27 +421,48 @@ public class MainActivity extends BaseActivity {
     }
 
     public static final int SELECT_PHOTO = 8888;
+    public final static String accpterFilePath = "javascript:accpterFilePath('fileName','filePath','fileSize')";//发送文件给web的回调
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_PHOTO && resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-//            if (data == null) {
-//                return;
-//            }
-//            boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
-//            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker
-//                    .EXTRA_RESULT_ITEMS);
-//            if (!isOrig) {
-//                Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
-//                File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
-//                images.get(0).path = newFile.getAbsolutePath();
-//                images.get(0).size = newFile.length();
-//                Log.d("test", "压缩后大小" + images.get(0).size);
-//            }
-//            String path = images.get(0).path;
-//            Log.d("test", "path = " + path);
+            if (data == null) {
+                return;
+            }
+            boolean isOrig = data.getBooleanExtra(ImagePreviewActivity.ISORIGIN, false);
+            ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker
+                    .EXTRA_RESULT_ITEMS);
+            if (!isOrig) {
+                Log.d("test", "压缩前大小" + new File(images.get(0).path).length());
+                File newFile = CompressHelper.getDefault(this).compressToFile(new File(images.get(0).path));
+                images.get(0).path = newFile.getAbsolutePath();
+                images.get(0).size = newFile.length();
+                Log.d("test", "压缩后大小" + images.get(0).size);
+            }
+            final String path = images.get(0).path;
+            Log.d("test", "path = " + path);
+            final File f = new File(path);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        String accessToken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                        final String ret = UploadUtil.uploadFile(f, WXApplication.url + "/common/file?x-auth-token=" + accessToken, f.getName());
+                        Log.d("test", "upload ret = " + ret);
+                        JSONObject obj = new JSONObject(ret);
+                        final String url = obj.optJSONObject("data").optString("url");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                wv.loadUrl(accpterFilePath.replace("fileName", f.getName()).replace("filePath", url).replace("fileSize", f.length() + ""));
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         }
     }
-
 }
