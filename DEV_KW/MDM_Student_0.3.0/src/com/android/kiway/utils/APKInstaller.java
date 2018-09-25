@@ -24,14 +24,14 @@ public class APKInstaller {
             return;
         }
         packages.add(packageName);
-
         new Thread() {
             @Override
             public void run() {
+                Log.d("test", "开始下载" + name);
                 final String savePath = "/mnt/sdcard/kiway_mdm_student/apk/";
                 final String saveName = name + "_" + version + ".apk";
                 int ret = new HttpDownload().downFile(url, savePath, saveName);
-                Log.d("test", "下载" + name + "，ret = " + ret);
+                Log.d("test", "下载完成" + name + "，ret = " + ret);
                 if (ret != 0) {
                     packages.remove(packageName);//下载失败要移除包名，下次继续
                     return;

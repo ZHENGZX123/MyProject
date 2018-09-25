@@ -554,9 +554,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
-//        if (mLocationClient != null) {
-//            mLocationClient.stop();
-//        }
+        if (mLocationClient != null) {
+            mLocationClient.stop();
+        }
         closeMQ();
     }
 
@@ -674,7 +674,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
         mLocationClient.setLocOption(option);
     }
-
 
     //下面获取app使用时间
     public void getAppCanUseData() {
