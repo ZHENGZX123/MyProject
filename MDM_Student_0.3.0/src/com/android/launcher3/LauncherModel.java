@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -488,6 +490,7 @@ public class LauncherModel extends BroadcastReceiver
                                       UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
+
     /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
@@ -1765,6 +1768,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         private void loadAllApps() {// zzx 加载所有的app
             final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
@@ -1802,7 +1806,6 @@ public class LauncherModel extends BroadcastReceiver
                     //Log.e("AppListUtils", AppListUtils.getAppListData().toString());
                     if (AppListUtils.getAppListData().toString().contains(app.getApplicationInfo().packageName) ||
                             new MyDBHelper(mContext).checkAppInCustom(app.getApplicationInfo().packageName)) {
-
                         mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
                         new MyDBHelper(mContext).addCustonApp(app.getApplicationInfo().packageName);
                     }

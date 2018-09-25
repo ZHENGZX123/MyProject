@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //17.检查通话功能
         checkTelephoney();
         //18.获取经纬度
-        getLocation();
+       // getLocation();
         //19.检查lock状态
         checkLock();
         //20.鉴权
