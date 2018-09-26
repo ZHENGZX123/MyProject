@@ -46,4 +46,10 @@ dependencies {
     compile project(':ImagePicker')
     compile project(':photoview')
     compile files('libs/image_compress.jar')
+    //rabbitmq
+    compile files('libs/amqp-client-4.1.0.jar')
+    compile files('libs/fastjson-1.2.47.jar')
+    compile files('libs/logback-classic-1.1.11.jar')
+    compile files('libs/logback-core-1.1.11.jar')
+    compile files('libs/slf4j-api-1.7.25.jar')
 }

@@ -25,7 +25,6 @@ public class BaseActivity extends Activity {
 
             @Override
             public void run() {
-
                 Toast.makeText(BaseActivity.this, txt, Toast.LENGTH_SHORT)
                         .show();
             }

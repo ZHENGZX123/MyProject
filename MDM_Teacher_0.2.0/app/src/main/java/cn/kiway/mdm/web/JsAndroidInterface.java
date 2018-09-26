@@ -17,12 +17,17 @@ import com.lzy.imagepicker.view.CropImageView;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.activity.MainActivity;
 import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
+import cn.kiway.mdm.zbus.OnListener;
+import cn.kiway.mdm.zbus.ZbusHost;
 
 import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.activity.MainActivity.SELECT_PHOTO;
@@ -53,6 +58,7 @@ public class JsAndroidInterface {
 
     @JavascriptInterface
     public String getHost() {
+        Log.d("test", "getHost is called");
         return url;
     }
 
@@ -94,6 +100,36 @@ public class JsAndroidInterface {
         uninstallPush(this.activity);
     }
 
+    //{"tokens":[] , "cmd":"snapshot"}
+    @JavascriptInterface
+    public void sendCommand(String command) {
+        Log.d("test", "sendCommand command = " + command);
+        try {
+            JSONObject o = new JSONObject(command);
+            JSONArray tokens = o.optJSONArray("tokens");
+            ArrayList<String> students = new ArrayList<>();
+            int count = tokens.length();
+            for (int i = 0; i < count; i++) {
+                students.add(tokens.optString(i));
+            }
+            String cmd = o.optString("cmd");
+            ZbusHost.sendMsg(MainActivity.instance, cmd, students, new OnListener() {
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void installationPush(final Context c, final String userId, final String imei) {
         try {
             String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
@@ -119,7 +155,7 @@ public class JsAndroidInterface {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "installationPush onSuccess = " + ret);
-                    //JsAndroidInterface.this.activity.initZbus();
+                    MainActivity.instance.initZbus();
                 }
 
                 @Override
