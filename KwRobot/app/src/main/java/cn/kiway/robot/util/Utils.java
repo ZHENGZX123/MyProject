@@ -1014,6 +1014,7 @@ public class Utils {
                 }
             }
             Log.d("test", "friends = " + friends);
+            FileUtils.saveFile(friends.toString(), "friends.txt");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

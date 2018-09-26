@@ -1003,7 +1003,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllFriends(false, false);
+        getAllFriends(false, true);
     }
 
     public void test3(View view) {

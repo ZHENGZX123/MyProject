@@ -864,7 +864,7 @@ public class AutoReplyService extends AccessibilityService {
         Message msg = new Message();
         msg.what = MSG_INSERT_QUEUE;
 
-        boolean in = Utils.isEffectiveDate("08:30:00", "18:00:00");
+        boolean in = Utils.isEffectiveDate("08:30:00", "20:00:00");
         String hint = in ? busyStr : offlineStr;
 
         Log.d("test", "hint = " + hint);
@@ -929,7 +929,7 @@ public class AutoReplyService extends AccessibilityService {
             return;
         }
         boolean weekend = Utils.isWeekend();
-        boolean in = Utils.isEffectiveDate("08:30:00", "18:00:00");
+        boolean in = Utils.isEffectiveDate("08:30:00", "20:00:00");
         //周一到周五的白天时间不锁屏；
         if (!weekend && in) {
             return;
