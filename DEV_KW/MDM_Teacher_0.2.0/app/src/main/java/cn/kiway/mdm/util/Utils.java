@@ -14,6 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import cn.kiway.mdm.WXApplication;
 import cn.kiway.mdm.activity.MainActivity;
@@ -202,5 +204,12 @@ public class Utils {
             last = 10 - last;
         }
         return input + last;
+    }
+
+    public static String longToDate(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = new Date(time);
+        String str = sdf.format(date);
+        return str;
     }
 }

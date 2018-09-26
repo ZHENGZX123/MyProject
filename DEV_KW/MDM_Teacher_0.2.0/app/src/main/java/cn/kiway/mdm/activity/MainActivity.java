@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,6 +21,10 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewActivity;
 import com.nanchen.compresshelper.CompressHelper;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -33,6 +38,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,9 +53,17 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.web.JsAndroidInterface;
 import cn.kiway.mdm.web.MyWebViewClient;
+import cn.kiway.mdm.zbus.OnListener;
+import cn.kiway.mdm.zbus.RabbitMQUtils;
+import cn.kiway.mdm.zbus.ZbusHost;
+import cn.kiway.mdm.zbus.ZbusMessageHandler;
 
 import static cn.kiway.mdm.WXApplication.url;
+import static cn.kiway.mdm.WXApplication.zbusHost;
+import static cn.kiway.mdm.WXApplication.zbusPort;
 import static cn.kiway.mdm.util.Utils.getCurrentVersion;
+import static cn.kiway.mdm.zbus.ZbusHost.channels;
+import static cn.kiway.mdm.zbus.ZbusHost.consumeUtil;
 
 
 public class MainActivity extends BaseActivity {
@@ -59,10 +73,11 @@ public class MainActivity extends BaseActivity {
     private boolean isJump = false;
     private Dialog dialog_download;
     public ProgressDialog pd;
-    private X5WebView wv;
+    public X5WebView wv;
     private LinearLayout layout_welcome;
     public static MainActivity instance;
     private long time;
+    private ZbusMessageHandler zbusMessageHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +90,7 @@ public class MainActivity extends BaseActivity {
         initData();
         load();
         checkNewVersion();
+        initZbus();
     }
 
     private void initView() {
@@ -142,7 +158,7 @@ public class MainActivity extends BaseActivity {
         long t = System.currentTimeMillis();
         if (t - time >= 2000) {
             time = t;
-            toast("Click again to exit");
+            toast("再按一下返回退出");
         } else {
             finish();
         }
@@ -422,6 +438,7 @@ public class MainActivity extends BaseActivity {
 
     public static final int SELECT_PHOTO = 8888;
     public final static String accpterFilePath = "javascript:accpterFilePath('fileName','filePath','fileSize')";//发送文件给web的回调
+    public final static String sendCommandCallback = "javascript:onlineCallback('studentIMEI','command')";//发送文件给web的回调
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -464,5 +481,64 @@ public class MainActivity extends BaseActivity {
                 }
             }.start();
         }
+    }
+
+    //初始化zbus
+    public void initZbus() {
+        Log.d("test", "initZbus");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String userId = Utils.getIMEI(instance);
+                    if (TextUtils.isEmpty(userId)) {
+                        return;
+                    }
+                    String topic = "kiway_push_" + userId;
+                    if (consumeUtil == null)
+                        consumeUtil = new RabbitMQUtils(zbusHost, zbusPort);
+                    Channel channel = consumeUtil.createChannel(topic, topic);
+                    channels.add(channel);
+                    consumeUtil.consumeMsg(new DefaultConsumer(channel) {
+                        @Override
+                        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties
+                                properties, byte[] body) throws IOException {
+                            String msg = new String(body, "utf-8");
+                            System.out.println("consume msg: " + msg);
+                            if (zbusMessageHandler == null)
+                                zbusMessageHandler = new ZbusMessageHandler();
+                            zbusMessageHandler.handle(msg);
+                            super.getChannel().basicAck(envelope.getDeliveryTag(), false);
+                        }
+                    }, channel);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ZbusHost.closeMQ();
+    }
+
+    public void clickTest(View view) {
+        ArrayList<String> students = new ArrayList<>();
+        students.add("_9bb5b19c61be4ba300000804300CN01");//IMT1
+        ZbusHost.sendMsg(this, "online", students, new OnListener() {
+
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 }
