@@ -28,9 +28,12 @@ import cn.kiway.mdm.util.Utils;
 import cn.kiway.mdm.view.X5WebView;
 import cn.kiway.mdm.zbus.OnListener;
 import cn.kiway.mdm.zbus.ZbusHost;
+import uk.co.senab.photoview.sample.ViewPagerActivity;
 
 import static cn.kiway.mdm.WXApplication.url;
 import static cn.kiway.mdm.activity.MainActivity.SELECT_PHOTO;
+import static cn.kiway.mdm.activity.MainActivity.sendCommandCallback;
+import static cn.kiway.mdm.zbus.ZbusMessageHandler.callbackArray;
 
 /**
  * Created by Administrator on 2017/11/9.
@@ -112,12 +115,29 @@ public class JsAndroidInterface {
             for (int i = 0; i < count; i++) {
                 students.add(tokens.optString(i));
             }
-            String cmd = o.optString("cmd");
+            final String cmd = o.optString("cmd");
             ZbusHost.sendMsg(MainActivity.instance, cmd, students, new OnListener() {
 
                 @Override
                 public void onSuccess() {
-
+                    try {
+                        callbackArray = new JSONArray();
+                        if (cmd.startsWith("online")) {
+                            Thread.sleep(5000);
+                            final JSONObject o = new JSONObject();
+                            o.put("online", callbackArray);
+                            MainActivity.instance.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String js = sendCommandCallback.replace("callbackString", o.toString());
+                                    Log.d("test", "js = " + js);
+                                    MainActivity.instance.wv.loadUrl(js);
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -199,6 +219,24 @@ public class JsAndroidInterface {
             });
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    @JavascriptInterface
+    public void showPhoto(String param1, String param2) {
+        try {
+            try {
+                Log.d("test", "showPhoto param1 = " + param1);
+                Log.d("test", "showPhoto param2 = " + param2);
+                ViewPagerActivity.sDrawables = param1.replace("[", "").replace("]", "").replace("\"", "").split(",");
+                Intent intent = new Intent(MainActivity.instance, ViewPagerActivity.class);
+                intent.putExtra("position", Integer.parseInt(param2));
+                MainActivity.instance.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

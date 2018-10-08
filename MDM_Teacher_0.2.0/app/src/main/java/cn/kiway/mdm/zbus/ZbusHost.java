@@ -52,22 +52,12 @@ public class ZbusHost {
                     String msg = new JSONObject().put("data", new JSONObject().put("command", command).put("teacherUserId", userId).put("currentTime", Utils.longToDate(System.currentTimeMillis()))).toString();
                     doSendMsg(c, title, userId, msg, students);
                     if (onListener != null) {
-                        c.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                onListener.onSuccess();
-                            }
-                        });
+                        onListener.onSuccess();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (onListener != null) {
-                        c.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                onListener.onFailure();
-                            }
-                        });
+                        onListener.onFailure();
                     }
                 }
             }

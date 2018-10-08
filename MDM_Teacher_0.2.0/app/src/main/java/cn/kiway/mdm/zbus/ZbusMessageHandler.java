@@ -2,7 +2,7 @@ package cn.kiway.mdm.zbus;
 
 import android.util.Log;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -17,6 +17,8 @@ import static cn.kiway.mdm.activity.MainActivity.sendCommandCallback;
 
 public class ZbusMessageHandler {
 
+    public static JSONArray callbackArray;
+
     public ZbusMessageHandler() {
     }
 
@@ -29,15 +31,26 @@ public class ZbusMessageHandler {
             JSONObject o = new JSONObject(msg);
             final String command = o.optString("command");
             final String studentIMEI = o.optString("studentIMEI");
-            if (command.startsWith("online") || command.startsWith("snapshot")) {
+            if (command.startsWith("online")) {
+                JSONObject student = new JSONObject().put("imei", studentIMEI);
+                callbackArray.put(student);
+            } else if (command.startsWith("snapshot")) {
+                JSONObject student = new JSONObject().put("imei", studentIMEI).put("url", command.substring(command.indexOf("_") + 1));
+                callbackArray.put(student);
+
+                final JSONObject obj = new JSONObject();
+                obj.put("snapshot", callbackArray);
                 MainActivity.instance.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        MainActivity.instance.wv.loadUrl(sendCommandCallback.replace("studentIMEI", studentIMEI).replace("command", command));
+                        String js = sendCommandCallback.replace("callbackString", obj.toString());
+                        Log.d("test", "js = " + js);
+                        MainActivity.instance.wv.loadUrl(js);
                     }
                 });
+
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
