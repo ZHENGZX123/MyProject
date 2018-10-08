@@ -438,7 +438,7 @@ public class MainActivity extends BaseActivity {
 
     public static final int SELECT_PHOTO = 8888;
     public final static String accpterFilePath = "javascript:accpterFilePath('fileName','filePath','fileSize')";//发送文件给web的回调
-    public final static String sendCommandCallback = "javascript:onlineCallback('studentIMEI','command')";//发送文件给web的回调
+    public final static String sendCommandCallback = "javascript:sendCommandCallback('callbackString')";//发送命令的回调
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -523,11 +523,15 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         ZbusHost.closeMQ();
+        //退出程序
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 
     public void clickTest(View view) {
         ArrayList<String> students = new ArrayList<>();
         students.add("_9bb5b19c61be4ba300000804300CN01");//IMT1
+        students.add("_7732385041364ea300000804300CN01");//IMTnnn
         ZbusHost.sendMsg(this, "online", students, new OnListener() {
 
             @Override
