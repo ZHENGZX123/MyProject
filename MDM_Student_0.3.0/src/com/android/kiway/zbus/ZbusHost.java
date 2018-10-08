@@ -33,7 +33,7 @@ public class ZbusHost {
     public static void closeMQ() {
         if (consumeUtil != null) {
             consumeUtil.close();
-            consumeUtil=null;
+            consumeUtil = null;
         }
         for (Channel channel : channels) {
             try {
@@ -43,6 +43,7 @@ public class ZbusHost {
             }
         }
     }
+
     public static boolean doSendMsg(Context c, String cmd) {
         try {
             JSONObject obj = new JSONObject();
@@ -52,7 +53,6 @@ public class ZbusHost {
             String title = "标题";
             String desc = "描述";
             final String msg = obj.toString();
-
             String token = c.getSharedPreferences("huawei", 0).getString("token", "");
             //topic : 上报的 deviceId#userId
             final String topic = Utils.getIMEI(c) + "#" + token;
@@ -70,12 +70,10 @@ public class ZbusHost {
             pushMessageVo.setPushType("zbus");
 
             Log.d("test", "sendMSG " + msg.toString());
-            //ZbusUtils.sendMsg(topic, pushMessageVo);
-
             new Thread() {
                 @Override
                 public void run() {
-                   Channel channel = consumeUtil.createChannel(topic, topic);
+                    Channel channel = consumeUtil.createChannel(topic, topic);
                     try {
                         consumeUtil.sendMsg(pushMessageVo, channel);
                         channel.abort();
@@ -85,13 +83,11 @@ public class ZbusHost {
 
                 }
             }.start();
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "doSendMsg e = " + e.toString());
         }
-
         return false;
     }
 
@@ -133,7 +129,7 @@ public class ZbusHost {
             new Thread() {
                 @Override
                 public void run() {
-                     Channel  channel = consumeUtil.createChannel(topic, topic);
+                    Channel channel = consumeUtil.createChannel(topic, topic);
                     try {
                         consumeUtil.sendMsg(pushMessageVo, channel);
                         channel.abort();

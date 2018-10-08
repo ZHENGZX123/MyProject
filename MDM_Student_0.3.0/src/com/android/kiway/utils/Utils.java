@@ -1363,6 +1363,28 @@ public class Utils {
         }
     }
 
+    public static boolean saveBitmap(Bitmap bm, String picName, String savePath) {
+        if (!new File(savePath).exists()) {
+            new File(savePath).mkdirs();
+        }
+        File f = new File(savePath, picName);
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static String secToTime(int time) {
         String timeStr = null;
         int hour = 0;

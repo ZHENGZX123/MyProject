@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import static com.android.kiway.utils.Constant.clientUrl;
+
 /**
  * Created by Administrator on 2017/12/1.
  */
@@ -53,7 +55,7 @@ public class APPIconUploader {
         }
         //3.上传到服务器
         String token = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-        String result = UploadUtil.uploadFile(localPath, Constant.clientUrl + "common/file?x-auth-token=" + token, packageName);
+        String result = UploadUtil.uploadFile(localPath, clientUrl + "common/file?x-auth-token=" + token, packageName);
         //4.成功的话保存路径到icon
         try {
             String url = new JSONObject(result).getJSONObject("data").getString("url");
