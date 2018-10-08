@@ -1,0 +1,29 @@
+
+
+一、开发及使用步骤：
+1.编写jar的代码，可以使用eclipse，也可以使用Android Studio；
+2.导出jar包：如果是eclipse，在package右键Export-java-JAR file；
+            如果是Android Studio，代码如示例所示，Gradle-library-Tasks-other-transformClassesAndResourcesWithSyncLibjarsForRelease
+2.使用dx工具，将jar包转为Android虚拟机可以认识的字节码；
+3.把jar包放在sdcard下；
+4.运行Android项目DynamicLoader，进行测试。
+
+二、其他注意事项：
+1.eclipse的编译环境最好是Java6.0；（7.0和8.0要修改Android项目的配置文件）
+2.(1)第2步导出的jar包不能直接使用，需要使用dx工具处理，将java的jar包转为Android虚拟机可以认识的字节码；
+  (2)dx工具位于Android Sdk下：D:\Android\sdk\build-tools\19.0.0
+  (3)dx命令：dx --dex --output=test.jar test_java.jar
+
+3.动态调用jar相关
+（1）输入参数：为简便，输入参数的类型统一为String[]，如果没有则传null；
+（2）返回值：为简便，返回值的类型统一是String；如果是图片，返回图片的路径String，而不是Bitmap；
+
+
+三、参考网页
+https://blog.csdn.net/shiyuzhengfeng/article/details/47070459
+https://blog.csdn.net/guyuegongsui/article/details/50998744
+
+四、示例代码
+
+
+
