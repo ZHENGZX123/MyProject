@@ -188,6 +188,7 @@ public class MainActivity extends BaseActivity {
 
         @JavascriptInterface
         public String getHost() {
+            Log.d("test", "getHost is called");
             return WXApplication.url;
         }
 
