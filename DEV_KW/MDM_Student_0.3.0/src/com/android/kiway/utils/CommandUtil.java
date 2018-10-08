@@ -12,7 +12,6 @@ import com.android.kiway.activity.MainActivity;
 import com.android.kiway.entity.AppCharge;
 import com.android.kiway.entity.Call;
 import com.android.kiway.entity.Network;
-import com.android.kiway.entity.Teacher;
 import com.android.kiway.entity.TimeSet;
 import com.android.kiway.entity.Wifi;
 import com.android.kiway.zbus.ZbusHost;
@@ -34,10 +33,12 @@ import static com.android.kiway.KWApp.MSG_LAUNCH_MDM;
 import static com.android.kiway.KWApp.MSG_LOCK;
 import static com.android.kiway.KWApp.MSG_MESSAGE;
 import static com.android.kiway.KWApp.MSG_MUTE;
+import static com.android.kiway.KWApp.MSG_ONLINE;
 import static com.android.kiway.KWApp.MSG_PARENT_BIND;
 import static com.android.kiway.KWApp.MSG_PORTRAIT;
 import static com.android.kiway.KWApp.MSG_REBOOT;
 import static com.android.kiway.KWApp.MSG_SHUTDOWN;
+import static com.android.kiway.KWApp.MSG_SNAOPSHOT;
 import static com.android.kiway.KWApp.MSG_TOAST;
 import static com.android.kiway.KWApp.MSG_UNINSTALL;
 import static com.android.kiway.KWApp.MSG_UNLOCK;
@@ -75,17 +76,17 @@ public class CommandUtil {
             String command = data.optString("command");
             currentTeacher = data.optString("teacherUserId");
 
-            boolean existed = false;
-            ArrayList<Teacher> teachers = new MyDBHelper(context).getAllTeachers();
-            for (Teacher t : teachers) {
-                if (t.teacherID.equals(currentTeacher)) {
-                    Log.d("test", "该老师已添加过了");
-                    existed = true;
-                }
-            }
-            if (!existed) {
-                new MyDBHelper(context).addTeacher(new Teacher(currentTeacher));
-            }
+//            boolean existed = false;
+//            ArrayList<Teacher> teachers = new MyDBHelper(context).getAllTeachers();
+//            for (Teacher t : teachers) {
+//                if (t.teacherID.equals(currentTeacher)) {
+//                    Log.d("test", "该老师已添加过了");
+//                    existed = true;
+//                }
+//            }
+//            if (!existed) {
+//                new MyDBHelper(context).addTeacher(new Teacher(currentTeacher));
+//            }
 
             Message m = new Message();
             if (command.equals("allowAppFunction")) {
@@ -381,6 +382,20 @@ public class CommandUtil {
                     return false;
                 }
                 m.what = MSG_MESSAGE;
+                m.obj = data;
+            } else if (command.equals("online")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                m.what = MSG_ONLINE;
+                m.obj = data;
+            } else if (command.equals("snapshot")) {
+                String currentTime = data.optString("currentTime");
+                if (!Utils.checkCommandAvailable(currentTime)) {
+                    return false;
+                }
+                m.what = MSG_SNAOPSHOT;
                 m.obj = data;
             } else if (command.equals("test")) {
                 int id = data.optInt("id");

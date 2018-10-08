@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
@@ -15,8 +16,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.kiway.activity.BaseActivity;
+import com.android.kiway.activity.MainActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
 import com.android.kiway.utils.HttpUtil;
+import com.android.kiway.utils.UploadUtil;
 import com.android.kiway.utils.Utils;
 import com.android.kiway.windows.LockSreenService;
 import com.android.kiway.zbus.ZbusHost;
@@ -29,6 +32,7 @@ import cn.kiway.mdmsdk.MDMHelper;
 
 import static com.android.kiway.utils.AppListUtils.isAppInstalled;
 import static com.android.kiway.utils.Constant.ZHIHUIKETANGPG;
+import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.utils.Utils.huaweiPush;
 import static com.android.kiway.zbus.ZbusHost.closeMQ;
 
@@ -57,10 +61,10 @@ public class KWApp extends Application {
     public static final int MSG_SMS = 17;//短信
     public static final int MSG_MESSAGE = 18;//发送消息
     public static final int MSG_PUSH_FILE_I = 19;//局域网接收文件
-
     public static final int MSG_MUTE = 20;//静音
     public static final int MSG_UNMUTE = 21;//解除禁音
-
+    public static final int MSG_ONLINE = 22;//发送消息
+    public static final int MSG_SNAOPSHOT = 23;//发送消息
 
     public static KWApp instance;
     public Activity currentActivity;
@@ -208,7 +212,7 @@ public class KWApp extends Application {
                     MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
 
-                    if (Build.MODEL.equals("ZTE Q5-T")|| Build.MODEL.equals("HM NOTE 1TD")) {
+                    if (Build.MODEL.equals("ZTE Q5-T") || Build.MODEL.equals("HM NOTE 1TD")) {
                         try {
                             Message m = new Message();
                             m.what = MSG_LAUNCH_APP;
@@ -247,15 +251,50 @@ public class KWApp extends Application {
                 isAttendClass = false;
                 //MDMHelper.getAdapter().setTaskButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
-                if (Build.MODEL.equals("ZTE Q5-T")|| Build.MODEL.equals("HM NOTE 1TD")) {
+                if (Build.MODEL.equals("ZTE Q5-T") || Build.MODEL.equals("HM NOTE 1TD")) {
                     temporary_app = false;
                 }
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
+
             } else if (msg.what == MSG_PUSH_FILE_I) {
+            } else if (msg.what == MSG_ONLINE) {
+                //zhengkang add0926 online
+                ZbusHost.doSendMsg(KWApp.instance, "online");
+            } else if (msg.what == MSG_SNAOPSHOT) {
+                //zhengkang add0926   snapshot
+                //ZbusHost.doSendMsg(KWApp.instance, "snapshot_http://www.yyfsb.com/upload/allimg/180903/1-1PZ3213438.jpg");
+                doSnapshot(MainActivity.instance);
             }
         }
     };
+
+    private void doSnapshot(final MainActivity main) {
+        new Thread() {
+            @Override
+            public void run() {
+                //保存截图到本地
+                try {
+                    Bitmap bitmap = MDMHelper.getAdapter().captureScreen();
+                    if (bitmap == null) {
+                        main.getWindow().getDecorView().setDrawingCacheEnabled(true);
+                        bitmap = main.getWindow().getDecorView().getDrawingCache();
+                    }
+
+                    String time = System.currentTimeMillis() + "";
+                    final String fileName = time + ".png";
+                    Utils.saveBitmap(bitmap, fileName, "/mnt/sdcard/kiway_mdm_student/downloads/");
+                    String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    final String result = UploadUtil.uploadFile("/mnt/sdcard/kiway_mdm_student/downloads/" + fileName, clientUrl + "common/file?x-auth-token=" + token, fileName);
+                    String url = new JSONObject(result).getJSONObject("data").getString("url");
+                    ZbusHost.doSendMsg(KWApp.instance, "snapshot_" + url);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+    }
 
 
     @Override
@@ -276,8 +315,6 @@ public class KWApp extends Application {
             }
         });
     }
-
-
 
 
     public void excuteFlagCommand() {
