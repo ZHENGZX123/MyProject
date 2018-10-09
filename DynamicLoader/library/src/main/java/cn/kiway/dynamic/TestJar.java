@@ -17,13 +17,13 @@ public class TestJar {
 	}
 
 	public static String test1() {
-		return "aaaaaa";
+		return "无参数调用升级成功";
 	}
 
 	public static String test2(String params[]) {
 		for (String p : params) {
 			System.out.println("p = " + p);
 		}
-		return "bbbbb";
+		return "有参数调用升级成功";
 	}
 }
