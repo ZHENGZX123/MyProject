@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.zk.dynamicloader.utils.HttpDownload;
+import com.zk.dynamicloader.utils.IContant;
+import com.zk.dynamicloader.utils.Utils;
+
 import java.io.File;
 import java.lang.reflect.Method;
 
@@ -24,6 +28,32 @@ public class MainActivity extends Activity {
 
     public void test2(View view) {
         callMethod("/mnt/sdcard/test.jar", "cn.kiway.dynamic.TestJar", "test2", new String[]{"param1", "param2"});
+    }
+
+    public void upgrade(View view) {
+        if (new File("/mnt/sdcard/test.jar").exists()) {
+            new File("/mnt/sdcard/test.jar").delete();
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                int i = new HttpDownload().downFile(IContant.downloadUrl, "/mnt/sdcard/", "test.jar");
+                if (i == 0) {
+                    toast("升级成功");
+                } else {
+                    toast("升级失败");
+                }
+            }
+        }.start();
+    }
+
+    public void degrade(View view) {
+        if (new File("/mnt/sdcard/test.jar").exists()) {
+            new File("/mnt/sdcard/test.jar").delete();
+        }
+        Utils.copyDBToSD(this, "/mnt/sdcard/", "test.jar");
+        toast("降级成功");
     }
 
     private String callMethod(String jarFilePath, String className, String methodName, String[] params) {
@@ -52,8 +82,12 @@ public class MainActivity extends Activity {
         return ret;
     }
 
-    private void toast(String txt) {
-        Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
+    private void toast(final String txt) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, txt, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
 }
