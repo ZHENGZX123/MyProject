@@ -222,6 +222,9 @@ public class AutoReplyService extends AccessibilityService {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
         instance = this;
+        if (rabbitMQUtils==null){
+            Utils.installationPush(this);
+        }
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
         mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 1000);
     }
@@ -385,7 +388,7 @@ public class AutoReplyService extends AccessibilityService {
                     if (o.has("clientGroupId")) {
                         //在群里发消息，这个没有cmd，无语。。。
                         String clientGroupId = o.optString("clientGroupId");
-                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId);
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, false);
                         if (g == null) {
                             toast("该群不存在或已经被删除1");
                             return;
@@ -715,11 +718,15 @@ public class AutoReplyService extends AccessibilityService {
                         if (!TextUtils.isEmpty(qrCodeUrl)) {
                             o.put("icon", qrCodeUrl);
                         }
-                    } else if (command.cmd.equals(TRANSFER_MASTER_CMD)) {
+                    } else if (command.cmd.equals(TRANSFER_MASTER_CMD) && statusCode == 200) {
                         //读取数据库，获取新群主
-//                        getOneGroupFromWechatDB_ClientGroupId();
-//                        o.put("masterWxId", );
-//                        o.put("masterWxNo", );
+                        String clientGroupId = o.optString("clientGroupId");
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, true);
+                        if (g != null) {
+                            o.put("masterWxId", g.master);
+                            o.put("masterWxNo", g.masterWxNo);
+                        }
+                        sendGroupInfoDelay(false);
                     }
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
@@ -760,12 +767,12 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private synchronized void sendGroupInfoDelay(final boolean flag) {
+    private synchronized void sendGroupInfoDelay(final boolean updatePeoples) {
         new Thread() {
             @Override
             public void run() {
                 if (MainActivity.instance != null) {
-                    MainActivity.instance.getAllGroups(flag);
+                    MainActivity.instance.getAllGroups(updatePeoples);
                 }
                 try {
                     Thread.sleep(120 * 1000);
@@ -773,7 +780,7 @@ public class AutoReplyService extends AccessibilityService {
                     e.printStackTrace();
                 }
                 if (MainActivity.instance != null) {
-                    MainActivity.instance.getAllGroups(flag);
+                    MainActivity.instance.getAllGroups(updatePeoples);
                 }
             }
         }.start();
@@ -800,10 +807,10 @@ public class AutoReplyService extends AccessibilityService {
         return g;
     }
 
-    private Group getOneGroupFromWechatDB_ClientGroupId(String clientGroupId) {
+    public Group getOneGroupFromWechatDB_ClientGroupId(String clientGroupId, boolean needOwer) {
         String password = initDbPassword(getApplicationContext());
         File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
-        Group g = Utils.doGetOneGroupByGroupId(getApplicationContext(), dbFile, password, clientGroupId);
+        Group g = Utils.doGetOneGroupByGroupId(getApplicationContext(), dbFile, password, clientGroupId, needOwer);
         return g;
     }
 
@@ -851,6 +858,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendReply20sLater(Action action) {
+        //卧底不需要发这个
         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
         if (role == ROLE_WODI) {
             return;
@@ -924,10 +932,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void lockScreen() {
-        int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
-        if (role == ROLE_WODI) {
-            return;
-        }
         boolean weekend = Utils.isWeekend();
         boolean in = Utils.isEffectiveDate("08:30:00", "20:00:00");
         //周一到周五的白天时间不锁屏；
@@ -1047,7 +1051,7 @@ public class AutoReplyService extends AccessibilityService {
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") /*|| content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.contains("向你推荐了")*/) {
                         action.actionType = TYPE_COLLECTOR_FORWARDING;
-                    } else if (role != ROLE_WODI && !TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
+                    } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.actionType = TYPE_AUTO_MATCH;
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
                     } else if (Utils.checkInBackDoor(content.trim()) > 0) {
@@ -1355,7 +1359,7 @@ public class AutoReplyService extends AccessibilityService {
                             || actionType == TYPE_SCRIPT
                             ) {
                         //通讯录-群聊-关于群的操作
-                        Group g = getOneGroupFromWechatDB_ClientGroupId(finalClientGroupId);
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(finalClientGroupId, false);
                         if (g == null) {
                             if (actionType == TYPE_DELETE_GROUP_CHAT) {
                                 release(true);
@@ -1380,7 +1384,7 @@ public class AutoReplyService extends AccessibilityService {
                                 String[] groups = finalClientGroupId.split(",");
                                 resetMaxReleaseTime(50 * 1000 * groups.length);
                                 for (String clientGroupId : groups) {
-                                    Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId);
+                                    Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, false);
                                     if (g == null) {
                                         continue;
                                     }
@@ -2235,11 +2239,19 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         try {
                             while (!checkIsTongxunluTop()) {
+                                execRootCmdSilent("input swipe 360 300 360 900");
+                                sleep(1000);
                                 if (!actioningFlag) {
                                     break;
                                 }
-                                execRootCmdSilent("input swipe 360 300 360 900");
-                                sleep(3000);
+                                sleep(1000);
+                                if (!actioningFlag) {
+                                    break;
+                                }
+                                sleep(1000);
+                                if (!actioningFlag) {
+                                    break;
+                                }
                             }
                             //新的朋友
                             clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
@@ -3319,11 +3331,19 @@ public class AutoReplyService extends AccessibilityService {
                             public void run() {
                                 try {
                                     while (!checkIsTongxunluTop()) {
+                                        execRootCmdSilent("input swipe 360 300 360 900");
+                                        sleep(1000);
                                         if (!actioningFlag) {
                                             break;
                                         }
-                                        execRootCmdSilent("input swipe 360 300 360 900");
-                                        sleep(3000);
+                                        sleep(1000);
+                                        if (!actioningFlag) {
+                                            break;
+                                        }
+                                        sleep(1000);
+                                        if (!actioningFlag) {
+                                            break;
+                                        }
                                     }
                                     //群聊
                                     clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
@@ -3671,7 +3691,7 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "管理群", CLICK_PARENT, true);
+                            boolean find = findTargetNode(NODE_TEXTVIEW, "群管理", CLICK_PARENT, true);
                             if (!find) {
                                 execRootCmdSilent("input swipe 360 900 360 300");
                                 try {
@@ -3679,15 +3699,63 @@ public class AutoReplyService extends AccessibilityService {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                find = findTargetNode(NODE_TEXTVIEW, "管理群", CLICK_PARENT, true);
+                                find = findTargetNode(NODE_TEXTVIEW, "群管理", CLICK_PARENT, true);
                             }
                             if (!find) {
                                 release(false);
                                 return;
                             }
-                            //TODO 郑群大佬说明天再做这个功能
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean find = findTargetNode(NODE_TEXTVIEW, "群主管理权转让", CLICK_PARENT, true);
+                                    if (!find) {
+                                        release(false);
+                                        return;
+                                    }
+                                    doTransferMaster();
+                                }
+                            }, 2000);
                         }
                     }.start();
+                }
+            }
+        }, 2000);
+    }
+
+    private void doTransferMaster() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                    JSONObject o = new JSONObject(content);
+                    final String text = o.optString("name");
+                    findTargetNode(NODE_EDITTEXT, text);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT, true);
+                            if (!find) {
+                                release(false);
+                                return;
+                            }
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final boolean find = findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            release(find);
+                                        }
+                                    }, 2000);
+                                }
+                            }, 2000);
+                        }
+                    }, 1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, 2000);
@@ -4825,7 +4893,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, delay);
             }
-        }, 4000);
+        }, 10000);
     }
 
     private void doShareToWechatFriend() {
@@ -4868,7 +4936,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 1000);
             }
-        }, 5000);
+        }, 10000);
     }
 
     //分享给多人
@@ -4883,7 +4951,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 checkFriendInListView2();
             }
-        }, 5000);
+        }, 10000);
     }
 
     private String getCollectorForwardingContent(String clientGroupId) {
@@ -4956,6 +5024,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
             Log.d("test", "nodeInfo.getText() = |" + nodeInfo.getText() + "|");
+            //Log.d("test", "nodeInfo.isChecked() = " + nodeInfo.isChecked());
             if (test(nodeInfo)) {
                 return true;
             }

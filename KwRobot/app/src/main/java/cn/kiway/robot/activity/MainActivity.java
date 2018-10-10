@@ -171,17 +171,9 @@ public class MainActivity extends BaseActivity {
         //设置当前activity的屏幕亮度
         WindowManager.LayoutParams lp = this.getWindow().getAttributes();
         //0到1,调整亮度暗到全亮
-        lp.screenBrightness = Float.valueOf(brightness / 255f);
+        lp.screenBrightness = brightness / 255.0f;
         this.getWindow().setAttributes(lp);
-        //保存为系统亮度方法1
-        android.provider.Settings.System.putInt(getContentResolver(),
-                android.provider.Settings.System.SCREEN_BRIGHTNESS,
-                brightness);
-        //保存为系统亮度方法2
-//        Uri uri = android.provider.Settings.System.getUriFor("screen_brightness");
-//        android.provider.Settings.System.putInt(getContentResolver(), "screen_brightness", brightness);
-//        // resolver.registerContentObserver(uri, true, myContentObserver);
-//        getContentResolver().notifyChange(uri, null);
+        android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
     }
 
     private void initView() {
@@ -352,9 +344,13 @@ public class MainActivity extends BaseActivity {
                                         case "转发使者的微信":
                                             getSharedPreferences("transfer", 0).edit().putString("transfer", s.description).commit();
                                             break;
+                                        case "卧底好友的微信":
+                                            getSharedPreferences("wodis", 0).edit().putString("wodis", s.description).commit();
+                                            break;
                                     }
                                 }
                                 getWelcome();
+                                getAllFriends(true, false);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -673,10 +669,11 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    //剧本改版之后，这个接口可以暂时不要了。
     public void getAllWodis() {
         //1.获取所有卧底的微信号
         //2.相互加入过滤名单
-        //3.相互加为好友
+        //3.相互加为好友（这个没做？！）
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -714,7 +711,7 @@ public class MainActivity extends BaseActivity {
                                     getSharedPreferences("role", 0).edit().putInt("role", ROLE_KEFU).commit();
                                 }
                                 refreshRoleTV();
-                                //getAllFriends();
+                                getAllFriends(true, false);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -806,6 +803,20 @@ public class MainActivity extends BaseActivity {
                     int friendCount = friends.size();
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
+                    //0.校验
+                    boolean validate = true;
+                    for (Friend f : friends) {
+                        if (TextUtils.isEmpty(f.nickname.trim()) && TextUtils.isEmpty(f.remark.trim())) {
+                            Log.d("test", "校验不通过的f = " + f.toString());
+                            validate = false;
+                            break;
+                        }
+                    }
+                    if (!validate) {
+                        toast("校验不通过，有空的昵称或备注名");
+                        return;
+                    }
+
                     //1.上传
                     if (upload) {
                         Utils.uploadFriend(MainActivity.instance, friends);
@@ -824,24 +835,30 @@ public class MainActivity extends BaseActivity {
 
     private void checkWodis(ArrayList<Friend> friends) {
         Log.d("test", "checkWodis");
-        ArrayList<Filter> filters = new MyDBHelper(this).getAllFilters(1);
-        Log.d("test", "filters = " + filters);
-
-        for (Filter filter : filters) {
-            boolean hasWodi = false;
-            for (Friend f : friends) {
-                String wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
-                if (wxNo.equals(filter.wxNo)) {
-                    hasWodi = true;
-                }
-            }
-            Log.d("test", "hasWodi = " + hasWodi);
-            if (hasWodi) {
+        String wodis = getSharedPreferences("wodis", 0).getString("wodis", "");
+        if (TextUtils.isEmpty(wodis)) {
+            return;
+        }
+        String wodi[] = wodis.split(",");
+        if (wodi.length == 0) {
+            return;
+        }
+        for (String str : wodi) {
+            if (TextUtils.isEmpty(str)) {
                 continue;
             }
-            ArrayList<String> requests = new ArrayList<>();
-            requests.add(filter.wxNo);
-            doRequestFriends(requests);
+            boolean has = false;
+            for (Friend f : friends) {
+                String wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
+                if (wxNo.equals(str)) {
+                    has = true;
+                }
+            }
+            if (!has) {
+                ArrayList<String> requests = new ArrayList<>();
+                requests.add(str);
+                doRequestFriends(requests);
+            }
         }
     }
 
@@ -1008,6 +1025,7 @@ public class MainActivity extends BaseActivity {
 
     public void test3(View view) {
         resetNickName();
+//        resetNickName2();
     }
 
     private void resetNickName() {
@@ -1056,6 +1074,68 @@ public class MainActivity extends BaseActivity {
                 o.put("wxId", f.wxId);
                 o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);
                 o.put("oldName", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);
+                o.put("newName", f.newRemark);
+                String temp = o.toString();
+                Log.d("test", "temp = " + temp);
+                AutoReplyService.instance.sendRenameTaskQueue(temp);
+            }
+            //2.完成之后再上报一下好友
+            getAllFriends(false, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //替补方法
+    private void resetNickName2() {
+        try {
+            String password = initDbPassword(getApplicationContext());
+            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
+            final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+            ArrayList<Friend> needUpdateFriends = new ArrayList<>();
+
+            int count = friends.size();
+            for (int i = 0; i < count; i++) {
+                Friend f = friends.get(i);
+                Log.d("test", "f = " + f.toString());
+                String leftChinese = Utils.leftChinese(f.remark);
+                Log.d("test", "leftChinese = |" + leftChinese + "|");
+                if (TextUtils.isEmpty(leftChinese)) {
+                    leftChinese = Utils.leftChinese(f.nickname);
+                }
+                if (TextUtils.isEmpty(leftChinese)) {
+                    leftChinese = Utils.getRandomChineseName();
+                }
+                if (!Utils.isStartWithNumber(leftChinese)) {
+                    //zhengkang fix0920: Utils.getParentRemark(this, 1)
+                    leftChinese = i + " " + leftChinese;
+                }
+                //zhengkang add 0925
+                if (leftChinese.length() > 10) {
+                    leftChinese = leftChinese.substring(0, 10);
+                }
+                f.newRemark = leftChinese;
+                Log.d("test", "newRemark = " + f.newRemark);
+                if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
+                    //Log.d("test", "该好友要重新备注");
+                    needUpdateFriends.add(f);
+                }
+            }
+            Log.d("test", "needUpdateFriends size = " + needUpdateFriends.size());
+            //1.发送改备注的命令：
+            for (Friend f : needUpdateFriends) {
+                if (TextUtils.isEmpty(f.wxNo)) {
+                    continue;
+                }
+                JSONObject o = new JSONObject();
+                o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
+                o.put("id", "84f119408d6441358d24b668323f0a23");
+                o.put("token", "1526895528997");
+                o.put("fromFront", true);
+                o.put("nickname", f.nickname);
+                o.put("wxId", f.wxId);
+                o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);
+                o.put("oldName", f.wxNo);
                 o.put("newName", f.newRemark);
                 String temp = o.toString();
                 Log.d("test", "temp = " + temp);
@@ -1144,5 +1224,10 @@ public class MainActivity extends BaseActivity {
                 f.delete();
             }
         }
+    }
+
+    public void upload(View view) {
+        getAllGroups(true);
+        getAllFriends(false, true);
     }
 }

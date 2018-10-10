@@ -37,6 +37,7 @@ public class Group {
                 ", groupName='" + groupName + '\'' +
                 ", type=" + type +
                 ", master='" + master + '\'' +
+                ", masterWxNo='" + masterWxNo + '\'' +
                 '}';
     }
 }
