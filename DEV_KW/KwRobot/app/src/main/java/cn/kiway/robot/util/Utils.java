@@ -238,7 +238,7 @@ public class Utils {
         return today;
     }
 
-    public static void installationPush(final Context c) {
+    public synchronized static void installationPush(final Context c) {
         try {
             String imei = Utils.getIMEI(c);
 
@@ -278,6 +278,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "installationPush onFailure = " + s);
+                    check301(c, s);
                 }
             });
         } catch (Exception e) {
@@ -326,11 +327,15 @@ public class Utils {
                 String msg = new String(body, "utf-8");
                 Log.d("test", "handleDelivery msg = " + msg);
                 //处理逻辑
-                if (AutoReplyService.instance != null && !isHeartBeatReply(msg) && !needPreDownload(msg)) {
-                    Log.d("test", "不是心跳");
-                    boolean imme = isNeedImme(msg);
-                    Log.d("test", "imme = " + imme);
-                    AutoReplyService.instance.sendReplyImmediately(msg, imme);
+                if (AutoReplyService.instance == null) {
+                    Log.d("test", "服务没开");
+                } else {
+                    if (!isHeartBeatReply(msg) && !needPreDownload(msg)) {
+                        Log.d("test", "不是心跳");
+                        boolean imme = isNeedImme(msg);
+                        Log.d("test", "imme = " + imme);
+                        AutoReplyService.instance.sendReplyImmediately(msg, imme);
+                    }
                 }
                 //手动消息确认
                 channel.basicAck(envelope.getDeliveryTag(), false);
@@ -357,6 +362,7 @@ public class Utils {
                                 doDownloadFile(fd);
                             } else if (fd.status == 2) {
                                 fd.status = 4;
+                                //重发
                                 AutoReplyService.instance.sendReplyImmediately(fd.original, false);
                             }
                         }
@@ -581,9 +587,13 @@ public class Utils {
                     String url = clientUrl + "/freind/all";
                     Log.d("test", "freind url = " + url);
 
-
+                    String transfer = c.getSharedPreferences("transfer", 0).getString("transfer", DEFAULT_TRANSFER);
                     JSONArray param = new JSONArray();
                     for (Friend f : friends) {
+                        //过滤转发使者
+                        if (f.wxNo.equals(transfer)) {
+                            continue;
+                        }
                         String remark = TextUtils.isEmpty(f.remark) ? f.nickname : f.remark;
                         //remark = Utils.filterEmoji(remark);
                         JSONObject o = new JSONObject();
@@ -606,6 +616,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "freind onFailure = " + s);
+                            check301(c, s);
                         }
                     });
                 } catch (Exception e) {
@@ -650,6 +661,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateFriendRemark onFailure = " + s);
+                            check301(c, s);
                         }
                     });
                 } catch (Exception e) {
@@ -987,14 +999,13 @@ public class Utils {
     }
 
     public static ArrayList<Friend> doGetFriends(Context c, File dbFile, String password) {
-        String transfer = c.getSharedPreferences("transfer", 0).getString("transfer", DEFAULT_TRANSFER);
         ArrayList<Friend> friends = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
             db = openWechatDB(c, dbFile, password);
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");//me
-            cursor = db.rawQuery("select username ,alias,nickname, conRemark,type from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and type<>8 and showHead<>43 and type<>65536 and type<> 11 and type <> 2 and type<> 512", null);
+            cursor = db.rawQuery("select username ,alias,nickname, conRemark,type from rcontact where username not like 'gh_%' and username not like '%@chatroom' and  verifyFlag<>24 and verifyFlag<>29 and verifyFlag<>56 and type<>33 and type<>70 and verifyFlag=0 and type<>4 and type<>0 and type<>8 and showHead<>43 and type<>65536 and type<> 11 and type <> 2 and type<> 512 and type<> 9 and type<> 520", null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -1002,12 +1013,8 @@ public class Utils {
                 String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));//remark
                 if (wxNo.equals(alias)) {
                     //排除掉自己
-                    Log.d("test", "wxNo = " + wxNo);
-                    Log.d("test", "wxId = " + username);
                     c.getSharedPreferences("kiway", 0).edit().putString("wxId", username).commit();
-
-                } else if (alias.equals(transfer)) {
-                    //过滤掉文件传输助手等
+                } else if (username.equals("filehelper")) {
                     Log.d("test", "过滤的username = " + username + " alias = " + alias);
                 } else {
                     friends.add(new Friend(nickname, conRemark, username, alias));
@@ -1039,7 +1046,9 @@ public class Utils {
         Cursor cursor = null;
         try {
             db = openWechatDB(c, dbFile, password);
-            cursor = db.rawQuery("select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (username = '" + wxId + "')", null);
+            String sql = "select username ,alias,nickname, conRemark from rcontact where (username not like '%@chatroom') and  (username = '" + wxId + "')";
+            Log.d("test", "sql = " + sql);
+            cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //wxID
                 String alias = cursor.getString(cursor.getColumnIndex("alias"));        //wxNo
@@ -1190,7 +1199,6 @@ public class Utils {
         return messages;
     }
 
-    //TODO getWxNoByWxId 太耗时，用关联表来做
     public static ArrayList<Group> doGetGroups(Context c, File dbFile, String password) {
         Log.d("test", "doGetGroups");
         ArrayList<Group> groups = new ArrayList<>();
@@ -1230,7 +1238,7 @@ public class Utils {
         return groups;
     }
 
-    public static Group doGetOneGroupByGroupId(Context c, File dbFile, String password, String clientGroupId) {
+    public static Group doGetOneGroupByGroupId(Context c, File dbFile, String password, String clientGroupId, boolean needOwner) {
         Log.d("test", "doGetOneGroupByGroupId");
         Group group = null;
         SQLiteDatabase db = null;
@@ -1244,7 +1252,14 @@ public class Utils {
             while (cursor.moveToNext()) {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
                 String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
-                group = new Group(username, nickname);
+                int type = cursor.getInt(cursor.getColumnIndex("type"));  //type
+                String master = cursor.getString(cursor.getColumnIndex("roomowner"));//群主ID
+                String masterWxNo = getWxNoByWxId(c, master);//找不到就是空
+                if (needOwner) {
+                    group = new Group(username, nickname, type, master, masterWxNo);
+                } else {
+                    group = new Group(username, nickname);
+                }
             }
             Log.d("test", "group = " + group);
             cursor.close();
@@ -1544,6 +1559,7 @@ public class Utils {
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "groups/name/change onFailure = " + s);
                             myListener.onResult(false);
+                            check301(act.getApplicationContext(), s);
                         }
                     });
                 } catch (Exception e) {
@@ -1593,6 +1609,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "groupMembersRel onFailure = " + s);
+                            check301(act.getApplicationContext(), s);
                         }
                     });
                 } catch (Exception e) {
@@ -1647,9 +1664,10 @@ public class Utils {
                 }
 
                 @Override
-                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                    Log.d("test", "onFailure ret = " + ret);
+                public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                    Log.d("test", "onFailure ret = " + s);
                     myListener.onResult(false);
+                    check301(c, s);
                 }
             });
         } catch (Exception e) {
@@ -1703,10 +1721,11 @@ public class Utils {
                 }
 
                 @Override
-                public void onFailure(int arg0, Header[] arg1, String ret, Throwable arg3) {
-                    Log.d("test", "onFailure ret = " + ret);
+                public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                    Log.d("test", "onFailure ret = " + s);
                     //登录失败原因
                     myListener.onResult(false);
+                    check301(c, s);
                 }
             });
         } catch (Exception e) {
@@ -1800,7 +1819,7 @@ public class Utils {
         }.start();
     }
 
-    public static void blackfile(Context c) {
+    public static void blackfile(final Context c) {
         try {
             String name = c.getSharedPreferences("kiway", 0).getString("name", "");
             if (TextUtils.isEmpty(name)) {
@@ -1822,6 +1841,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "black file onFailure = " + s);
+                    check301(c, s);
                 }
             });
         } catch (Exception e) {

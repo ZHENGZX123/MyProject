@@ -34,10 +34,17 @@
         android:theme="@style/AppTheme"
         tools:replace="android:name">
 
+        <!--welcome是扫码登录，login是旧版登录 -->
+
         <activity
             android:name=".activity.WelcomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
         </activity>
         <activity
             android:name=".activity.LoginActivity"
