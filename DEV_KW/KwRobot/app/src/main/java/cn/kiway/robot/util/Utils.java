@@ -604,7 +604,7 @@ public class Utils {
                         o.put("robotId", robotId);
                         param.put(o);
                     }
-
+                    Log.d("test", "freind param count = " + param.length());
                     Log.d("test", "freind param = " + param.toString());
                     StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
                     client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
@@ -1543,7 +1543,11 @@ public class Utils {
                         o.put("userId", wxNo);
                         o.put("master", g.master);
                         o.put("masterWxNo", g.masterWxNo);
-                        o.put("saved", g.type == 3 ? 1 : 0);//3是已保存，2是未保存
+                        int saved = 0;
+                        if (g.type == 3 || g.type == 2051) {
+                            saved = 1;
+                        }
+                        o.put("saved", saved);
                         param.put(o);
                     }
                     Log.d("test", "groups/name/change param = " + param.toString());

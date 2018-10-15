@@ -135,6 +135,7 @@ public class MainActivity extends BaseActivity {
         checkRoot(null);
         Utils.blackfile(getApplication());
         Utils.installationPush(getApplication());
+        Utils.updateRobotStatus(this, AutoReplyService.instance == null ? 2 : 1);
         Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
         setBrightness();
 
@@ -149,7 +150,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 8 * 60 * 60 * 1000);
         clearCachedFiles(true);
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 30 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
     }
@@ -325,6 +326,12 @@ public class MainActivity extends BaseActivity {
                                 Log.d("test", "seconds = " + seconds);
 
                                 for (Second s : seconds) {
+                                    if (TextUtils.isEmpty(s.description)) {
+                                        continue;
+                                    }
+                                    if (s.description.equals("null")) {
+                                        s.description = "";
+                                    }
                                     switch (s.name) {
                                         case "被动加好友，欢迎语句":
                                             getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", s.description).commit();
@@ -637,7 +644,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_CLEAR_CACHE_FILE) {
                 mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
                 clearCachedFiles(false);
-                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 30 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
             }
         }
     };
