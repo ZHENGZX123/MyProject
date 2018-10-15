@@ -23,13 +23,13 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
 
-//        host = "rbtest.kiway.cn";
-//        port = 5672;
-//        clientUrl = "http://rbtest.kiway.cn";
+        host = "rbtest.kiway.cn";
+        port = 5672;
+        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
@@ -219,8 +219,6 @@ public class Constant {
         backdoors.put(SAVE_GROUP_CMD, Action.TYPE_SAVE_GROUP);
         backdoors.put(GROUP_QRCODE_CMD, Action.TYPE_GROUP_QRCODE);
         backdoors.put(TRANSFER_MASTER_CMD, Action.TYPE_TRANSFER_MASTER);
-
-
         backdoors.put(UPGRADE_CMD, Action.TYPE_CHECK_NEW_VERSION);
         backdoors.put(UPDATE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
         backdoors.put(INSERT_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);

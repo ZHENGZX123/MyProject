@@ -222,7 +222,7 @@ public class AutoReplyService extends AccessibilityService {
         super.onCreate();
         Log.d("maptrix", "service oncreate");
         instance = this;
-        if (rabbitMQUtils==null){
+        if (rabbitMQUtils == null) {
             Utils.installationPush(this);
         }
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
@@ -306,7 +306,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     };
 
-    //FIXME 由于这里send和post都是异步方法，所以会有bug
+    //由于微信的问题，打开的可能是首页，所以该方法可能会有遗漏消息
     private void previewAction(final Action action) {
         currentActionID = -2;
         try {
@@ -666,6 +666,7 @@ public class AutoReplyService extends AccessibilityService {
                     o.put("type", replies.get(command.cmd));
                     o.put("statusCode", statusCode);
                     o.put("robotId", getSharedPreferences("kiway", 0).getString("robotId", ""));
+
                     if (command.cmd.equals(ADD_FRIEND_CMD)) {
                         sendFriendInfoDelay();
                     } else if (command.cmd.equals(UPDATE_FRIEND_NICKNAME_CMD)) {
@@ -1372,7 +1373,8 @@ public class AutoReplyService extends AccessibilityService {
                         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
                         if (actionType == TYPE_CHAT_IN_GROUP) {
                             chatInGroup(g.groupName);
-                        } else if ((actionType == TYPE_SCRIPT && role == ROLE_WODI) || (actionType == TYPE_SAVE_GROUP)) {
+                        } else if ((actionType == TYPE_SCRIPT && role == ROLE_WODI) || (actionType == TYPE_SAVE_GROUP) || actionType == TYPE_DELETE_GROUP_CHAT) {
+                            //从首页找到群
                             searchTargetInWxHomePage(actionType, g.groupName, true);
                         } else {
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
@@ -4288,19 +4290,33 @@ public class AutoReplyService extends AccessibilityService {
         return length;
     }
 
-    private void addOrDeleteGroupPeople(int type) {
-        findTargetNode(NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
-        if (mFindTargetNode == null) {
-            release(false);
-            return;
-        }
-        mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
-        mHandler.postDelayed(new Runnable() {
+    private void addOrDeleteGroupPeople(final int type) {
+        new Thread() {
             @Override
             public void run() {
-                checkFriendInListView2();
+                findTargetNode(NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
+                if (mFindTargetNode == null) {
+                    execRootCmdSilent("input swipe 360 900 360 300");
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    findTargetNode(NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
+                }
+                if (mFindTargetNode == null) {
+                    release(false);
+                    return;
+                }
+                mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkFriendInListView2();
+                    }
+                }, 2000);
             }
-        }, 2000);
+        }.start();
     }
 
     private void doLongClickLastMsg(final String clientGroupId) {
@@ -4500,6 +4516,7 @@ public class AutoReplyService extends AccessibilityService {
                                 @Override
                                 public void run() {
                                     boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF, true);
+                                    sendFriendInfoDelay();
                                     if (find) {
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
@@ -4561,7 +4578,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendTextOnly(String reply, boolean release) {
-        reply = reply.replace("<br />", "\n").replace("<br>", "\n").replace("<div>", "").replace("</div>", "");
+        reply = reply.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n").replace("<div>", "").replace("</div>", "").replace("&nbsp;", " ");
         final String finalReply = reply;
         Log.d("test", "sendTextOnly finalReply = " + finalReply);
         mHandler.postDelayed(new Runnable() {
