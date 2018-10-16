@@ -120,7 +120,7 @@ public class EulaActivity extends Activity {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 startActivity(new Intent(this, MainActivity2.class));
             } else {
-                startActivity(new Intent(this, Launcher.class));
+                startActivity(new Intent(this, Launcher.class));//TestActivity.class
             }
         } else {
             startActivity(new Intent(this, LoginActivity.class));
