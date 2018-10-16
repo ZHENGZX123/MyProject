@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import com.android.kiway.utils.Utils;
 import com.android.launcher3.R;
 
 import cn.kiway.mdmsdk.MDMHelper;
@@ -32,13 +33,10 @@ public class TestActivity extends BaseActivity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-
-//        MDMHelper.getAdapter().setBackButtonDisabled(false);
-//        MDMHelper.getAdapter().setHomeButtonDisabled(false);
-//        MDMHelper.getAdapter().setWifiDisabled(false);
         MDMHelper.getAdapter().setProximityEnable(true);
         MDMHelper.getAdapter().setProximityDistance(20);
         MDMHelper.getAdapter().setProximityDelay(1000);
+
         dialog = new AlertDialog.Builder(this).setTitle("自定义对话框").setMessage("自定义对话框消息").setNegativeButton("ok", null).create();
         registerSensor();
     }
@@ -62,9 +60,9 @@ public class TestActivity extends BaseActivity implements SensorEventListener {
 
     public void clickTest(View view) {
         flag = !flag;
-//        MDMHelper.getAdapter().setBackButtonDisabled(flag);
-//        MDMHelper.getAdapter().setHomeButtonDisabled(flag);
-//        MDMHelper.getAdapter().setWifiDisabled(flag);
+        MDMHelper.getAdapter().setBackButtonDisabled(flag);
+        MDMHelper.getAdapter().setHomeButtonDisabled(flag);
+        MDMHelper.getAdapter().setWifiDisabled(flag);
     }
 
     @Override
@@ -86,5 +84,9 @@ public class TestActivity extends BaseActivity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    public void clickHuawei(View view) {
+        Utils.huaweiPush(this);
     }
 }

@@ -713,6 +713,7 @@ public class Utils {
         return false;
     }
 
+
     public static void huaweiPush(final Context c) {
         PushManager.requestToken(c);
     }
