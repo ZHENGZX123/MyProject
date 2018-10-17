@@ -101,7 +101,6 @@ import static net.sqlcipher.database.SQLiteDatabase.OPEN_READONLY;
 public class Utils {
 
     public static RabbitMQUtils rabbitMQUtils;
-    public static RabbitMQUtils rabbitMQUtils2;
     public static List<Channel> channels = new ArrayList<>();
 
     public static String getIMEI(Context c) {
@@ -220,24 +219,6 @@ public class Utils {
         return parentId;
     }
 
-    public static String getForwardFrom(Context c) {
-        return c.getSharedPreferences("forwardfrom", 0).getString("forwardfrom", "wxid_cokkmqud47e121的接口测试号");//转发使者
-        // wxid_cokkmqud47e121的接口测试号
-    }
-
-    public static String getFCFrom(Context c) {
-        return c.getSharedPreferences("FCFrom", 0).getString("FCFrom", "朋友圈使者");
-    }
-
-    public static String getToday() {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH) + 1;
-        int date = c.get(Calendar.DATE);
-        String today = "" + year + month + date;
-        return today;
-    }
-
     public synchronized static void installationPush(final Context c) {
         try {
             String imei = Utils.getIMEI(c);
@@ -305,10 +286,10 @@ public class Utils {
                 try {
                     if (rabbitMQUtils == null) {
                         rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
+                        String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
+                        Log.d("test", "topic1 = " + topic1);
+                        doConsume(rabbitMQUtils, topic1);
                     }
-                    String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
-                    Log.d("test", "topic1 = " + topic1);
-                    doConsume(rabbitMQUtils, topic1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -320,6 +301,9 @@ public class Utils {
 
     private static void doConsume(RabbitMQUtils util, String topic) throws Exception {
         final Channel channel = util.createChannel(topic, topic);
+        if (channels == null) {
+            channels = new ArrayList<>();
+        }
         channels.add(channel);
         util.consumeMsg(new DefaultConsumer(channel) {
             @Override
@@ -400,13 +384,13 @@ public class Utils {
                 @Override
                 public void onError(Throwable ex, boolean isOnCallback) {
                     Log.d("test", "onError");
-                    fd.status = 3;
+                    fd.status = 0;
                 }
 
                 @Override
                 public void onCancelled(CancelledException cex) {
                     Log.d("test", "onCancelled");
-                    fd.status = 3;
+                    fd.status = 0;
                 }
 
                 @Override
@@ -826,7 +810,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateRobotStatus onFailure = " + s);
-                            check301(act.getApplicationContext(), s);
+                            check301(act, s);
                         }
                     });
                 } catch (Exception e) {
@@ -853,14 +837,18 @@ public class Utils {
                 doNewLogin(c, name, wxNo, tenantId, new MyListener() {
                     @Override
                     public void onResult(boolean success) {
+                        if (success) {
 
+                        }
                     }
                 });
             } else {
                 doLogin(c, username, password, name, wxNo, new MyListener() {
                     @Override
                     public void onResult(boolean success) {
+                        if (success) {
 
+                        }
                     }
                 });
             }
@@ -1563,7 +1551,7 @@ public class Utils {
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "groups/name/change onFailure = " + s);
                             myListener.onResult(false);
-                            check301(act.getApplicationContext(), s);
+                            check301(act, s);
                         }
                     });
                 } catch (Exception e) {
@@ -1613,7 +1601,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "groupMembersRel onFailure = " + s);
-                            check301(act.getApplicationContext(), s);
+                            check301(act, s);
                         }
                     });
                 } catch (Exception e) {
@@ -1671,7 +1659,6 @@ public class Utils {
                 public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
                     Log.d("test", "onFailure ret = " + s);
                     myListener.onResult(false);
-                    check301(c, s);
                 }
             });
         } catch (Exception e) {
@@ -1729,7 +1716,6 @@ public class Utils {
                     Log.d("test", "onFailure ret = " + s);
                     //登录失败原因
                     myListener.onResult(false);
-                    check301(c, s);
                 }
             });
         } catch (Exception e) {
@@ -1803,21 +1789,19 @@ public class Utils {
         new Thread() {
             @Override
             public void run() {
-                for (Channel channel : channels) {
-                    try {
-                        channel.abort();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                try {
+                    if (channels != null) {
+                        for (Channel channel : channels) {
+                            channel.abort();
+                            channels = null;
+                        }
                     }
-                }
-
-                if (rabbitMQUtils != null) {
-                    rabbitMQUtils.close();
-                    rabbitMQUtils = null;
-                }
-                if (rabbitMQUtils2 != null) {
-                    rabbitMQUtils2.close();
-                    rabbitMQUtils2 = null;
+                    if (rabbitMQUtils != null) {
+                        rabbitMQUtils.close();
+                        rabbitMQUtils = null;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.start();

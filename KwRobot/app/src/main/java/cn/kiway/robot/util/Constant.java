@@ -145,6 +145,8 @@ public class Constant {
     public static final String GROUP_QRCODE_REPLY_CMD = "createGroupQrcodeReplyCmd";
     public static final String TRANSFER_MASTER_CMD = "exchangeGroupMasterCmd";
     public static final String TRANSFER_MASTER_REPLY_CMD = "exchangeGroupMasterReplyCmd";
+    public static final String TEST_CMD = "testCmd";
+    public static final String TEST_REPLY_CMD = "testReplyCmd";
 
     public static final String UPDATE_BASEDATA_CMD = "updateBaseDate";
     public static final String INSERT_BASEDATA_CMD = "insertBaseDate";
@@ -180,6 +182,7 @@ public class Constant {
         replies.put(SAVE_GROUP_CMD, SAVE_GROUP_REPLY_CMD);
         replies.put(GROUP_QRCODE_CMD, GROUP_QRCODE_REPLY_CMD);
         replies.put(TRANSFER_MASTER_CMD, TRANSFER_MASTER_REPLY_CMD);
+
     }
 
     public static final String BACK_DOOR1 = "开维一本万利";
