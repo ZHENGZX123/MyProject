@@ -12,7 +12,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 
-import java.io.IOException;
 import java.util.Map;
 
 import cn.kiway.wx.reply.vo.PushMessageVo;
@@ -51,7 +50,6 @@ public class RabbitMQUtils {
         } catch (Exception var7) {
             var7.printStackTrace();
         }
-
     }
 
     public RabbitMQUtils(String url, Integer port) {
@@ -74,7 +72,6 @@ public class RabbitMQUtils {
         } catch (Exception var5) {
             var5.printStackTrace();
         }
-
     }
 
     public Channel createChannel(String routingKey, String queueName) {

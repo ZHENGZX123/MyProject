@@ -172,6 +172,7 @@ import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
+import static cn.kiway.robot.util.Utils.channels;
 import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
@@ -433,15 +434,6 @@ public class AutoReplyService extends AccessibilityService {
     private void doActionCommand(String msg, Command command) {
         if (command.cmd.equals(UPGRADE_CMD)) {
             MainActivity.instance.checkNewVersion(null);
-            //偷偷放在这里
-            MainActivity.instance.getBaseData();
-            Utils.closeMQ();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.installationPush(getApplication());
-                }
-            }, 3000);
             return;
         }
         if (command.cmd.equals(UPDATE_BASEDATA_CMD) || command.cmd.equals(INSERT_BASEDATA_CMD) || command.cmd.equals(DELETE_BASEDATA_CMD)) {
@@ -581,7 +573,6 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendMsgToServer");
-                Channel chanel = null;
                 try {
                     String name = getSharedPreferences("kiway", 0).getString("name", "");
                     String installationId = getSharedPreferences("kiway", 0).getString("installationId", "");
@@ -615,8 +606,8 @@ public class AutoReplyService extends AccessibilityService {
                     pushMessageVo.setInstallationId(installationId);
 
                     Log.d("test", "sendMsgToServer topic = " + topic + " , msg = " + msg + ", url = " + url);
-                    chanel = rabbitMQUtils.createChannel(topic, topic);
-                    rabbitMQUtils.sendMsg(pushMessageVo, chanel);
+
+                    doSendMessageToServer(topic, pushMessageVo);
 
                     if (action.sender.equals("心跳测试使者")) {
                         Utils.updateRobotStatus(MainActivity.instance, 1);
@@ -627,14 +618,6 @@ public class AutoReplyService extends AccessibilityService {
                     e.printStackTrace();
                     if (action.sender.equals("心跳测试使者")) {
                         Utils.updateRobotStatus(MainActivity.instance, 2);
-                    }
-                } finally {
-                    try {
-                        if (chanel != null) {
-                            chanel.abort();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
             }
@@ -652,7 +635,6 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendMsgToServer2");
-                Channel chanel = null;
                 try {
                     String topic = "kiway_wx_reply_result_react";
                     String content;
@@ -731,18 +713,11 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
-                    chanel = rabbitMQUtils.createChannel(topic, topic);
-                    rabbitMQUtils.sendMsgs(msg, chanel);
+
+                    doSendMessageToServer(topic, msg);
+
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    try {
-                        if (chanel != null) {
-                            chanel.abort();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }.start();
@@ -821,7 +796,6 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 Log.d("test", "sendMsgToServer3");
-                Channel chanel = null;
                 try {
                     String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
                     String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
@@ -838,21 +812,12 @@ public class AutoReplyService extends AccessibilityService {
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
 
-                    chanel = rabbitMQUtils.createChannel(topic, topic);
-                    rabbitMQUtils.sendMsgs(msg, chanel);
+                    doSendMessageToServer(topic, msg);
 
                     new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    try {
-                        if (chanel != null) {
-                            chanel.abort();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }.start();
@@ -5115,4 +5080,60 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    private void doSendMessageToServer(String topic, PushMessageVo vo) {
+        Channel channel = null;
+        try {
+            channel = rabbitMQUtils.createChannel(topic, topic);
+            if (channels == null) {
+                channels = new ArrayList<>();
+            }
+            channels.add(channel);
+            rabbitMQUtils.sendMsg(vo, channel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (channel != null) {
+                    channel.abort();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void doSendMessageToServer(String topic, String msg) {
+        Channel channel = null;
+        try {
+            channel = rabbitMQUtils.createChannel(topic, topic);
+            if (channels == null) {
+                channels = new ArrayList<>();
+            }
+            channels.add(channel);
+            rabbitMQUtils.sendMsgs(msg, channel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (channel != null) {
+                    channel.abort();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean hasTasks() {
+        if (preActionsQueue.size() > 0) {
+            return true;
+        }
+        if (zbusRecvsQueue.size() > 0) {
+            return true;
+        }
+        if (renameTasksQueue.size() > 0) {
+            return true;
+        }
+        return false;
+    }
 }

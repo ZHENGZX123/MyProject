@@ -91,6 +91,7 @@ import static cn.kiway.robot.util.Utils.doGetPeopleInGroup;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
+import static cn.kiway.robot.util.Utils.installationPush;
 
 public class MainActivity extends BaseActivity {
 
@@ -110,6 +111,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
     private static final int MSG_CLEAR_CHAT_HISTORY = 117;//删除聊天历史记录
     private static final int MSG_CLEAR_CACHE_FILE = 118;    //漏网之鱼
+    private static final int MSG_RECONNECT = 119;//重连
 
     public static MainActivity instance;
     private Button start;
@@ -134,7 +136,7 @@ public class MainActivity extends BaseActivity {
         initListener();
         checkRoot(null);
         Utils.blackfile(getApplication());
-        Utils.installationPush(getApplication());
+        installationPush(getApplication());
         Utils.updateRobotStatus(this, AutoReplyService.instance == null ? 2 : 1);
         Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
         setBrightness();
@@ -152,6 +154,8 @@ public class MainActivity extends BaseActivity {
         clearCachedFiles(true);
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
+
+        mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 4 * 60 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
     }
 
@@ -267,29 +271,29 @@ public class MainActivity extends BaseActivity {
     }
 
     public void reLogin(View view) {
-        if (!newLogin) {
+        if (newLogin) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("提示");
+            builder.setMessage("微信是否切换帐号");
+            builder.setPositiveButton("不切换", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    doRelogin(false);
+                }
+            });
+            builder.setNegativeButton("切换", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    doRelogin(true);
+                }
+            });
+            builder.show();
+        } else {
             getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
             Utils.closeMQ();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-            return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示");
-        builder.setMessage("微信是否切换帐号");
-        builder.setPositiveButton("不切换", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                doRelogin(false);
-            }
-        });
-        builder.setNegativeButton("切换", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                doRelogin(true);
-            }
-        });
-        builder.show();
     }
 
     private void doRelogin(boolean change) {
@@ -586,6 +590,8 @@ public class MainActivity extends BaseActivity {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
+                //断开再重连
+                reConnect(false);
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
@@ -645,9 +651,61 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
                 clearCachedFiles(false);
                 mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
+            } else if (msg.what == MSG_RECONNECT) {
+                mHandler.removeMessages(MSG_RECONNECT);
+                reConnect(true);
+                mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 4 * 60 * 60 * 1000);
             }
         }
     };
+
+    private boolean reconnecting = false;
+
+    private void reConnect(boolean checkTasks) {
+        if (checkTasks) {
+            //检查当前任务
+            if (AutoReplyService.instance == null) {
+                doReConnect();
+            } else {
+                boolean has = AutoReplyService.instance.hasTasks();
+                if (has) {
+                    mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 60 * 1000);
+                } else {
+                    doReConnect();
+                }
+            }
+        } else {
+            doReConnect();
+        }
+    }
+
+    private void doReConnect() {
+        if (reconnecting) {
+            return;
+        }
+        Log.d("test", "reconnecting...");
+        reconnecting = true;
+        new Thread() {
+            @Override
+            public void run() {
+                Utils.closeMQ();
+                try {
+                    sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (MainActivity.instance != null) {
+                    MainActivity.instance.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            installationPush(MainActivity.this);
+                            reconnecting = false;
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
 
     public long lastUpdateTime;
     public int currentGrade = 5;
@@ -1027,7 +1085,9 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllFriends(false, true);
+        //getAllFriends(false, true);
+        //debugUse();
+        //getAllMessages();
     }
 
     public void test3(View view) {
