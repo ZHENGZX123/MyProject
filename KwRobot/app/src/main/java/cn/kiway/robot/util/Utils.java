@@ -259,7 +259,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "installationPush onFailure = " + s);
-                    check301(c, s);
+                    check301(c, s, "installationPush");
                 }
             });
         } catch (Exception e) {
@@ -557,7 +557,10 @@ public class Utils {
         }
     }
 
+    private static ArrayList<Friend> friends;
+
     public static void uploadFriend(final Activity c, final ArrayList<Friend> friends) {
+        Utils.friends = friends;
         c.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -600,7 +603,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "freind onFailure = " + s);
-                            check301(c, s);
+                            check301(c, s, "uploadFriend");
                         }
                     });
                 } catch (Exception e) {
@@ -611,6 +614,7 @@ public class Utils {
     }
 
     public static void updateFriendRemark(final Activity c, final ArrayList<Friend> friends) {
+        Utils.friends = friends;
         c.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -645,7 +649,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateFriendRemark onFailure = " + s);
-                            check301(c, s);
+                            check301(c, s, "updateFriendRemark");
                         }
                     });
                 } catch (Exception e) {
@@ -782,8 +786,11 @@ public class Utils {
         }.start();
     }
 
+    private static int status;
+
     //status： 1机器人正常 2机器人异常 /*3微信正常 4微信异常*/
-    public static void updateRobotStatus(final MainActivity act, final int status) {
+    public synchronized static void updateRobotStatus(final MainActivity act, final int status) {
+        Utils.status = status;
         if (act == null) {
             return;
         }
@@ -810,7 +817,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "updateRobotStatus onFailure = " + s);
-                            check301(act, s);
+                            check301(act, s, "updateRobotStatus");
                         }
                     });
                 } catch (Exception e) {
@@ -820,7 +827,7 @@ public class Utils {
         });
     }
 
-    private static void check301(Context c, String result) {
+    private static void check301(final Context c, String result, final String type) {
         try {
             int statusCode = new JSONObject(result).optInt("statusCode");
             if (statusCode != 301) {
@@ -838,7 +845,7 @@ public class Utils {
                     @Override
                     public void onResult(boolean success) {
                         if (success) {
-
+                            dealWithloginSuccess(c, type);
                         }
                     }
                 });
@@ -847,7 +854,7 @@ public class Utils {
                     @Override
                     public void onResult(boolean success) {
                         if (success) {
-
+                            dealWithloginSuccess(c, type);
                         }
                     }
                 });
@@ -855,6 +862,40 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "check301 exception = " + e.toString());
+        }
+    }
+
+    private static void dealWithloginSuccess(Context c, String type) {
+        if (TextUtils.isEmpty(type)) {
+            return;
+        }
+        if (type.equals("installationPush")) {
+            installationPush(c);
+            return;
+        }
+        if (type.equals("uploadFriend")) {
+            uploadFriend(MainActivity.instance, Utils.friends);
+            return;
+        }
+        if (type.equals("updateFriendRemark")) {
+            updateFriendRemark(MainActivity.instance, Utils.friends);
+            return;
+        }
+        if (type.equals("updateRobotStatus")) {
+            updateRobotStatus(MainActivity.instance, Utils.status);
+            return;
+        }
+        if (type.equals("uploadGroup")) {
+            uploadGroup(MainActivity.instance, Utils.groups, Utils.listener);
+            return;
+        }
+        if (type.equals("uploadGroupPeoples")) {
+            uploadGroupPeoples(MainActivity.instance, Utils.groups);
+            return;
+        }
+        if (type.equals("blackfile")) {
+            blackfile(MainActivity.instance);
+            return;
         }
     }
 
@@ -1509,7 +1550,12 @@ public class Utils {
         return ret;
     }
 
+    private static ArrayList<Group> groups;
+    private static MyListener listener;
+
     public static void uploadGroup(final MainActivity act, final ArrayList<Group> groups, final MyListener myListener) {
+        Utils.groups = groups;
+        Utils.listener = myListener;
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1551,7 +1597,7 @@ public class Utils {
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "groups/name/change onFailure = " + s);
                             myListener.onResult(false);
-                            check301(act, s);
+                            check301(act, s, "uploadGroup");
                         }
                     });
                 } catch (Exception e) {
@@ -1562,6 +1608,7 @@ public class Utils {
     }
 
     public static void uploadGroupPeoples(final MainActivity act, final ArrayList<Group> groups) {
+        Utils.groups = groups;
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1601,7 +1648,7 @@ public class Utils {
                         @Override
                         public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                             Log.d("test", "groupMembersRel onFailure = " + s);
-                            check301(act, s);
+                            check301(act, s, "uploadGroupPeoples");
                         }
                     });
                 } catch (Exception e) {
@@ -1829,7 +1876,7 @@ public class Utils {
                 @Override
                 public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
                     Log.d("test", "black file onFailure = " + s);
-                    check301(c, s);
+                    check301(c, s, "blackfile");
                 }
             });
         } catch (Exception e) {

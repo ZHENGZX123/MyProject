@@ -1088,6 +1088,7 @@ public class MainActivity extends BaseActivity {
         //getAllFriends(false, true);
         //debugUse();
         //getAllMessages();
+        getSharedPreferences("kiway", 0).edit().putString("x-auth-token", "").commit();
     }
 
     public void test3(View view) {
