@@ -29,16 +29,16 @@ public class ZbusHost {
     public static List<Channel> channels = new ArrayList<>();
 
     public static void closeMQ() {
-        if (consumeUtil != null) {
-            consumeUtil.close();
-        }
-
         for (Channel channel : channels) {
             try {
                 channel.abort();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        if (consumeUtil != null) {
+            consumeUtil.close();
+            consumeUtil = null;
         }
     }
 
