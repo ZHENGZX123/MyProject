@@ -23,13 +23,15 @@ public class Constant {
     public static final String PASSWORD = "kiwayedukiway123";
 
     static {
-//        host = "robot.kiway.cn";
-//        port = 5676;
-//        clientUrl = "http://robot.kiway.cn";
+        //正式
+        host = "robot.kiway.cn";
+        port = 5676;
+        clientUrl = "http://robot.kiway.cn";
 
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
+        //测试
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型

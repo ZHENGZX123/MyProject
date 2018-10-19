@@ -275,8 +275,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
         db.execSQL(CREATE_TABLE_FILTER);
 
-
     }
+
+    //id , index , content , status:  0默认 1接收 ， 2接收，正在做  3接收到并做完，上传结果中  4，接收到并做完，上传成功
 
     @Override
     public void onCreate(SQLiteDatabase db) {

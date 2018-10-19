@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -228,7 +229,7 @@ public class Utils {
             String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
 
             AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
+            client.setMaxRetriesAndTimeout(3, 10000);
             Log.d("test", "x-auth-token = " + xtoken);
             client.addHeader("x-auth-token", xtoken);
 
@@ -286,9 +287,9 @@ public class Utils {
                 try {
                     if (rabbitMQUtils == null) {
                         rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
-                        String topic1 = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
-                        Log.d("test", "topic1 = " + topic1);
-                        doConsume(rabbitMQUtils, topic1);
+                        String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
+                        Log.d("test", "topic = " + topic);
+                        doConsume(rabbitMQUtils, topic);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -310,6 +311,8 @@ public class Utils {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String msg = new String(body, "utf-8");
                 Log.d("test", "handleDelivery msg = " + msg);
+                //TODO 存DB状态1
+
                 //处理逻辑
                 if (AutoReplyService.instance == null) {
                     Log.d("test", "服务没开");
@@ -328,7 +331,7 @@ public class Utils {
     }
 
     private static Thread fileDownloadThread;
-    private static ArrayList<FileDownload> downloads = new ArrayList<>();
+    public static ArrayList<FileDownload> downloads = new ArrayList<>();
 
     private static void startCheckFileDownloadThread() {
         if (fileDownloadThread != null) {
@@ -365,6 +368,7 @@ public class Utils {
         int count = urls.size();
         for (int i = 0; i < count; i++) {
             String url = urls.get(i);
+            Log.d("test", "doDownloadFile url = " + url);
             String savedFilePath = filepaths.get(i);
             org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
             params.setSaveFilePath(savedFilePath);
@@ -482,6 +486,9 @@ public class Utils {
         return false;
     }
 
+    public static boolean hbReply = false;
+    public static int lastMsgId = 0;
+
     private static boolean isHeartBeatReply(String msg) {
         try {
             JSONArray returnMessage = new JSONObject(msg).optJSONArray("returnMessage");
@@ -489,8 +496,11 @@ public class Utils {
                 JSONObject o = returnMessage.getJSONObject(0);
                 String content = o.optString("content");
                 int returnType = o.optInt("returnType");
+                lastMsgId = o.optInt("lastMsgId");
                 if (content.equals("OK") && returnType == 1) {
                     Log.d("test", "心跳回复");
+                    //TODO lastMessage 检查非4状态， 12重新发一遍
+                    compareWithServer();
                     return true;
                 }
             }
@@ -498,6 +508,10 @@ public class Utils {
             return false;
         }
         return false;
+    }
+
+    private static void compareWithServer() {
+        //get post
     }
 
     public static boolean isWeekend() {
@@ -593,6 +607,7 @@ public class Utils {
                     }
                     Log.d("test", "freind param count = " + param.length());
                     Log.d("test", "freind param = " + param.toString());
+                    FileUtils.saveFile(friends.toString(), "friends.txt");
                     StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
                     client.post(c, url, stringEntity, "application/json", new TextHttpResponseHandler() {
                         @Override
@@ -801,7 +816,7 @@ public class Utils {
                     String xtoken = act.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                     String robotId = act.getSharedPreferences("kiway", 0).getString("robotId", "");
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
+                    client.setMaxRetriesAndTimeout(3, 10000);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/robot/" + robotId;
                     Log.d("test", "updateRobotStatus url = " + url);
@@ -828,6 +843,9 @@ public class Utils {
     }
 
     private static void check301(final Context c, String result, final String type) {
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
         try {
             int statusCode = new JSONObject(result).optInt("statusCode");
             if (statusCode != 301) {
@@ -896,6 +914,13 @@ public class Utils {
         if (type.equals("blackfile")) {
             blackfile(MainActivity.instance);
             return;
+        }
+        if (type.equals("getConsumers")) {
+            getConsumers(c, Utils.listener);
+            return;
+        }
+        if (type.equals("resultReact")) {
+            resultReact(c, msg, Utils.listener);
         }
     }
 
@@ -1050,7 +1075,6 @@ public class Utils {
                 }
             }
             Log.d("test", "friends = " + friends);
-            FileUtils.saveFile(friends.toString(), "friends.txt");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -1282,9 +1306,9 @@ public class Utils {
                 String username = cursor.getString(cursor.getColumnIndex("username"));  //clientGroupId
                 String nickname = cursor.getString(cursor.getColumnIndex("nickname"));  //groupName
                 int type = cursor.getInt(cursor.getColumnIndex("type"));  //type
-                String master = cursor.getString(cursor.getColumnIndex("roomowner"));//群主ID
-                String masterWxNo = getWxNoByWxId(c, master);//找不到就是空
                 if (needOwner) {
+                    String master = cursor.getString(cursor.getColumnIndex("roomowner"));//群主ID
+                    String masterWxNo = getWxNoByWxId(c, master);//找不到就是空
                     group = new Group(username, nickname, type, master, masterWxNo);
                 } else {
                     group = new Group(username, nickname);
@@ -1564,7 +1588,7 @@ public class Utils {
                 String xtoken = act.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
+                    client.setMaxRetriesAndTimeout(3, 10000);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/groups/name/change";
                     Log.d("test", "groups/name/change url = " + url);
@@ -1637,6 +1661,7 @@ public class Utils {
                         o.put("members", members);
                         param.put(o);
                     }
+                    FileUtils.saveFile(param.toString(), "groupMembersRel.txt");
                     Log.d("test", "groupMembersRel param = " + param.toString());
                     StringEntity stringEntity = new StringEntity(param.toString(), "utf-8");
                     client.post(act, url, stringEntity, "application/json", new TextHttpResponseHandler() {
@@ -1661,7 +1686,7 @@ public class Utils {
     public static void doLogin(final Context c, final String username, final String password, final String name, final String wxNo, final MyListener myListener) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
+            client.setMaxRetriesAndTimeout(3, 10000);
             String url = clientUrl + "/robot/login";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
@@ -1718,7 +1743,7 @@ public class Utils {
     public static void doNewLogin(final Context c, final String name, final String wxNo, String tenantId, final MyListener myListener) {
         try {
             AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
+            client.setMaxRetriesAndTimeout(3, 10000);
             String url = clientUrl + "/robot/newLogin";
             Log.d("test", "url = " + url);
             RequestParams param = new RequestParams();
@@ -1840,8 +1865,8 @@ public class Utils {
                     if (channels != null) {
                         for (Channel channel : channels) {
                             channel.abort();
-                            channels = null;
                         }
+                        channels = null;
                     }
                     if (rabbitMQUtils != null) {
                         rabbitMQUtils.close();
@@ -1861,7 +1886,7 @@ public class Utils {
                 return;
             }
             AsyncHttpClient client = new AsyncHttpClient();
-            client.setTimeout(10000);
+            client.setMaxRetriesAndTimeout(3, 10000);
             RequestParams param = new RequestParams();
             param.put("name", name);
             String url = "http://robot.kiway.cn:8181/wechat/black/file";
@@ -1881,6 +1906,94 @@ public class Utils {
             });
         } catch (Exception e) {
             Log.d("test", "e = " + e.toString());
+        }
+    }
+
+    public static void getConsumers(final Context c, final MyListener myListener) {
+        Utils.listener = myListener;
+        try {
+            final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+            final String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
+            if (TextUtils.isEmpty(robotId)) {
+                Log.d("test", "robotId is null");
+                return;
+            }
+            if (TextUtils.isEmpty(wxNo)) {
+                Log.d("test", "wxNo is null");
+                return;
+            }
+            String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
+            topic = URLEncoder.encode(topic);
+            AsyncHttpClient client = new AsyncHttpClient();
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            Log.d("test", "x-auth-token = " + xtoken);
+            client.addHeader("x-auth-token", xtoken);
+
+            client.setMaxRetriesAndTimeout(3, 10000);
+            String url = clientUrl + "/system/rabbitMq/consumers?topic=" + topic;
+            Log.d("test", "url = " + url);
+            client.get(c, url, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "consumer onSuccess ret = " + ret);
+                    try {
+                        JSONObject o = new JSONObject(ret);
+                        int count = o.optInt("data");
+                        Log.d("test", "消费者个数为" + count);
+                        if (count > 1) {
+                            myListener.onResult(false);
+                        } else {
+                            myListener.onResult(true);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                    Log.d("test", "consumer onFailure ret = " + s);
+                    check301(c, s, "getConsumers");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "consumer exception = " + e.toString());
+        }
+    }
+
+    private static String msg;
+
+    public static void resultReact(final Context c, String msg, MyListener myListener) {
+        Utils.msg = msg;
+        Utils.listener = myListener;
+        try {
+            AsyncHttpClient client = new AsyncHttpClient();
+            String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+            client.addHeader("x-auth-token", xtoken);
+            client.setMaxRetriesAndTimeout(3, 10000);
+            String url = clientUrl + "/resultReact";
+            Log.d("test", "resultReact url = " + url);
+            RequestParams param = new RequestParams();
+            param.put("msg", msg);
+            Log.d("test", "resultReact param = " + param.toString());
+            client.post(c, url, param, new TextHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int arg0, Header[] arg1, String ret) {
+                    Log.d("test", "resultReact onSuccess ret = " + ret);
+                }
+
+                @Override
+                public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                    Log.d("test", "resultReact onFailure ret = " + s);
+                    check301(c, s, "resultReact");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("test", "resultReact exception = " + e.toString());
         }
     }
 }
