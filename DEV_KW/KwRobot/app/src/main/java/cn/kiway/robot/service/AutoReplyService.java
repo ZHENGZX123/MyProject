@@ -59,6 +59,7 @@ import cn.kiway.robot.entity.Script;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.util.Constant;
+import cn.kiway.robot.util.FileDownload;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.MyListener;
 import cn.kiway.robot.util.UploadUtil;
@@ -174,6 +175,7 @@ import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.channels;
 import static cn.kiway.robot.util.Utils.doGetFriends;
+import static cn.kiway.robot.util.Utils.downloads;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -187,6 +189,7 @@ public class AutoReplyService extends AccessibilityService {
     public static int MSG_INSERT_RENAME_QUEUE = 5;
     public static int MSG_TRAVERSAL_QUEUE = 3;
     public static int MSG_SEND_HEARTBEAT = 4;
+    public static int MSG_CHECK_HEARTBEAT = 5;
 
     public static AutoReplyService instance;
 
@@ -228,6 +231,7 @@ public class AutoReplyService extends AccessibilityService {
         }
         mHandler.sendEmptyMessage(MSG_TRAVERSAL_QUEUE);
         mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 5 * 60 * 1000);
     }
 
     @Override
@@ -263,6 +267,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     return;
                 }
+                //Log.d("test", "MSG_TRAVERSAL_QUEUE currentActionID = " + currentActionID);
                 if (currentActionID == -2) {
                     return;
                 }
@@ -294,13 +299,28 @@ public class AutoReplyService extends AccessibilityService {
                 action.content = "heartbeat";
                 sendMsgToServer(action);
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
-                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 60 * 1000);
+                //1019
+                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 2 * 60 * 1000);
 
                 Calendar c = Calendar.getInstance();
                 int weekday = c.get(Calendar.DAY_OF_WEEK);
                 int hour = c.get(Calendar.HOUR);
                 if (weekday > 1 && weekday < 7 && hour == 8) {
                     unlockScreen();
+                }
+                return;
+            }
+            if (msg.what == MSG_CHECK_HEARTBEAT) {
+                mHandler.removeMessages(MSG_CHECK_HEARTBEAT);
+                mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 5 * 60 * 1000);
+                if (Utils.hbReply) {
+                    //5分钟内收到了心跳回复
+                    Utils.hbReply = false;
+                } else {
+                    //5分钟内没有收到心跳回复
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.doReConnect();
+                    }
                 }
                 return;
             }
@@ -363,6 +383,10 @@ public class AutoReplyService extends AccessibilityService {
 
     //处理后台过来的命令：
     public void handleZbusMsg(final ZbusRecv recv) {
+        if (recv == null) {
+            Log.d("test", "recv==null，error!!!");
+            return;
+        }
         Log.d("test", "handleZbusMsg msg = " + recv.msg);
         new Thread() {
             @Override
@@ -388,12 +412,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     if (o.has("clientGroupId")) {
                         //在群里发消息，这个没有cmd，无语。。。
-                        String clientGroupId = o.optString("clientGroupId");
-                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, false);
-                        if (g == null) {
-                            toast("该群不存在或已经被删除1");
-                            return;
-                        }
+                        //这里校验，导致了时间超过2000
                         Command command = new Command();
                         command.cmd = CHAT_IN_GROUP_CMD;
                         command.content = Base64.encodeToString(o.toString().getBytes(), NO_WRAP);
@@ -474,6 +493,7 @@ public class AutoReplyService extends AccessibilityService {
         action.sender = "开维后台";
         action.content = Base64.encodeToString(msg.getBytes(), NO_WRAP);
         action.actionType = backdoors.get(command.cmd);
+        Log.d("test", "action.actionType = " + action.actionType);
         action.command = command;
         if (command.cmd.equals(SEND_FRIEND_CIRCLE_CMD)) {
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
@@ -713,9 +733,10 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
-
-                    doSendMessageToServer(topic, msg);
-
+                    //fromFront不用走rabbitMQ
+                    if (!o.optBoolean("fromFront")) {
+                        doSendMessageToServer(topic, msg);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1003,8 +1024,6 @@ public class AutoReplyService extends AccessibilityService {
                     action.content = content;
                     action.intent = intent;
 
-                    int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
-
                     //自动加好友
                     if (content.endsWith("请求添加你为朋友")) {
                         action.actionType = TYPE_REQUEST_FRIEND;
@@ -1268,7 +1287,7 @@ public class AutoReplyService extends AccessibilityService {
     private void doActionCommandByType(final int actionType) {
         try {
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-            Log.d("test", "content = " + content);
+            Log.d("test", "doActionCommandByType content = " + content + " , actionType = " + actionType);
             final JSONObject o = new JSONObject(content);
             content = o.optString("content");
             start = o.optInt("start");
@@ -3241,6 +3260,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private void searchTargetInWxHomePage(final int actionType, final String target, final boolean canRelease) {
         Log.d("test", "searchTargetInWxHomePage target = " + target);
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -3515,19 +3535,11 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "群聊名称", CLICK_PARENT, true);
-                            if (!find) {
-                                execRootCmdSilent("input swipe 360 900 360 300");
-                                try {
-                                    sleep(2000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                            while (!scrollAndFindTarget("群聊名称")) {
+                                if (!actioningFlag) {
+                                    release(false);
+                                    break;
                                 }
-                                find = findTargetNode(NODE_TEXTVIEW, "群聊名称", CLICK_PARENT, true);
-                            }
-                            if (!find) {
-                                release(false);
-                                return;
                             }
                             fixGroupName();
                         }
@@ -3536,19 +3548,11 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "群公告", CLICK_PARENT, true);
-                            if (!find) {
-                                execRootCmdSilent("input swipe 360 900 360 300");
-                                try {
-                                    sleep(2000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                            while (!scrollAndFindTarget("群公告")) {
+                                if (!actioningFlag) {
+                                    release(false);
+                                    break;
                                 }
-                                find = findTargetNode(NODE_TEXTVIEW, "群公告", CLICK_PARENT, true);
-                            }
-                            if (!find) {
-                                release(false);
-                                return;
                             }
                             fixGroupNotice();
                         }
@@ -3583,16 +3587,11 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            execRootCmdSilent("input swipe 360 900 360 300");
-                            try {
-                                sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            findTargetNode(NODE_TEXTVIEW, "保存到通讯录", CLICK_NONE, true);
-                            if (mFindTargetNode == null) {
-                                release(false);
-                                return;
+                            while (!scrollAndFindTarget("保存到通讯录")) {
+                                if (!actioningFlag) {
+                                    release(false);
+                                    break;
+                                }
                             }
                             clickSomeWhere(mFindTargetNode.getParent().getChild(1));
                             if (MainActivity.instance != null) {
@@ -3610,19 +3609,11 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "群二维码", CLICK_PARENT, true);
-                            if (!find) {
-                                execRootCmdSilent("input swipe 360 900 360 300");
-                                try {
-                                    sleep(2000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                            while (!scrollAndFindTarget("群二维码")) {
+                                if (!actioningFlag) {
+                                    release(false);
+                                    break;
                                 }
-                                find = findTargetNode(NODE_TEXTVIEW, "群二维码", CLICK_PARENT, true);
-                            }
-                            if (!find) {
-                                release(false);
-                                return;
                             }
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -3658,19 +3649,11 @@ public class AutoReplyService extends AccessibilityService {
                     new Thread() {
                         @Override
                         public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "群管理", CLICK_PARENT, true);
-                            if (!find) {
-                                execRootCmdSilent("input swipe 360 900 360 300");
-                                try {
-                                    sleep(2000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                            while (!scrollAndFindTarget("群管理")) {
+                                if (!actioningFlag) {
+                                    release(false);
+                                    break;
                                 }
-                                find = findTargetNode(NODE_TEXTVIEW, "群管理", CLICK_PARENT, true);
-                            }
-                            if (!find) {
-                                release(false);
-                                return;
                             }
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -3688,6 +3671,21 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }, 2000);
+    }
+
+    private boolean scrollAndFindTarget(String text) {
+        boolean find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT, true);
+        if (!find) {
+            execRootCmdSilent("input swipe 360 900 360 300");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            find = findTargetNode(NODE_TEXTVIEW, text, CLICK_PARENT, true);
+        }
+        Log.d("test", "scrollAndFindTarget find = " + find);
+        return find;
     }
 
     private void doTransferMaster() {
@@ -3967,11 +3965,15 @@ public class AutoReplyService extends AccessibilityService {
                             release(false);
                             return;
                         }
-                        final boolean find = findTargetNode(NODE_TEXTVIEW, "设置备注和标签", CLICK_SELF, true);
+                        boolean find = findTargetNode(NODE_TEXTVIEW, "设置备注和标签", CLICK_SELF, true);
+                        if (!find) {
+                            find = findTargetNode(NODE_TEXTVIEW, "标签", CLICK_PARENT, true);
+                        }
+                        final boolean finalFind = find;
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (!find) {
+                                if (!finalFind) {
                                     release(false);
                                     return;
                                 }
@@ -5102,7 +5104,24 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doSendMessageToServer(String topic, String msg) {
+    private void doSendMessageToServer(String topic, final String msg) {
+        if (MainActivity.instance != null) {
+            MainActivity.instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.resultReact(MainActivity.instance, msg, new MyListener() {
+                        @Override
+                        public void onResult(boolean success) {
+
+                        }
+                    });
+                }
+            });
+        }
+        //1019
+        if (true) {
+            return;
+        }
         Channel channel = null;
         try {
             channel = rabbitMQUtils.createChannel(topic, topic);
@@ -5124,6 +5143,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+
     public boolean hasTasks() {
         if (preActionsQueue.size() > 0) {
             return true;
@@ -5133,6 +5153,11 @@ public class AutoReplyService extends AccessibilityService {
         }
         if (renameTasksQueue.size() > 0) {
             return true;
+        }
+        for (FileDownload fd : downloads) {
+            if (fd.status != 4) {
+                return false;
+            }
         }
         return false;
     }

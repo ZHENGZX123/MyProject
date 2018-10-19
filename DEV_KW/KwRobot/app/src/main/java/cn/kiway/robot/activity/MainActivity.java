@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
 
-        mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 4 * 60 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 2 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
     }
 
@@ -316,7 +316,7 @@ public class MainActivity extends BaseActivity {
                 String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
+                    client.setMaxRetriesAndTimeout(3, 10000);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/baseData/getDataByType?type=" + wxNo;
                     Log.d("test", "url = " + url);
@@ -591,7 +591,7 @@ public class MainActivity extends BaseActivity {
                 rl_nonet.setVisibility(View.GONE);
                 Log.d("test", "有网络");
                 //断开再重连
-                reConnect(false);
+                doReConnect();
             } else if (msg.what == MSG_NETWORK_ERR) {
                 RelativeLayout rl_nonet = (RelativeLayout) findViewById(R.id.rl_nonet);
                 rl_nonet.setVisibility(View.VISIBLE);
@@ -652,34 +652,24 @@ public class MainActivity extends BaseActivity {
                 clearCachedFiles(false);
                 mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
             } else if (msg.what == MSG_RECONNECT) {
+                //1019查询消费者数量，8分钟一次
                 mHandler.removeMessages(MSG_RECONNECT);
-                reConnect(true);
-                mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 4 * 60 * 60 * 1000);
+                Utils.getConsumers(MainActivity.this, new MyListener() {
+                    @Override
+                    public void onResult(boolean success) {
+                        if (!success) {
+                            doReConnect();
+                        }
+                    }
+                });
+                mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 8 * 60 * 1000);
             }
         }
     };
 
     private boolean reconnecting = false;
 
-    private void reConnect(boolean checkTasks) {
-        if (checkTasks) {
-            //检查当前任务
-            if (AutoReplyService.instance == null) {
-                doReConnect();
-            } else {
-                boolean has = AutoReplyService.instance.hasTasks();
-                if (has) {
-                    mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 60 * 1000);
-                } else {
-                    doReConnect();
-                }
-            }
-        } else {
-            doReConnect();
-        }
-    }
-
-    private void doReConnect() {
+    public void doReConnect() {
         if (reconnecting) {
             return;
         }
@@ -690,7 +680,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 Utils.closeMQ();
                 try {
-                    sleep(2000);
+                    sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -746,7 +736,7 @@ public class MainActivity extends BaseActivity {
                 String xtoken = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
                 try {
                     AsyncHttpClient client = new AsyncHttpClient();
-                    client.setTimeout(10000);
+                    client.setMaxRetriesAndTimeout(3, 10000);
                     client.addHeader("x-auth-token", xtoken);
                     String url = clientUrl + "/robot?isUndercover=1&size=1024";
                     Log.d("test", "url = " + url);
@@ -836,6 +826,7 @@ public class MainActivity extends BaseActivity {
             o.put("cmd", FORGET_FISH_CMD);
             o.put("id", "84f119408d6441358d24b668323f0a23");
             o.put("token", "1526895528997");
+            o.put("fromFront", true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
             AutoReplyService.instance.sendReplyImmediately(temp, false);
@@ -1085,10 +1076,14 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        //getAllFriends(false, true);
-        //debugUse();
-        //getAllMessages();
-        getSharedPreferences("kiway", 0).edit().putString("x-auth-token", "").commit();
+        Utils.getConsumers(MainActivity.this, new MyListener() {
+            @Override
+            public void onResult(boolean success) {
+                if (!success) {
+                    doReConnect();
+                }
+            }
+        });
     }
 
     public void test3(View view) {

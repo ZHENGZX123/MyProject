@@ -25,6 +25,7 @@
         android:id="@+id/iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_nonet"
         android:layout_margin="10dp"
         android:background="@mipmap/ic_launcher" />
 
