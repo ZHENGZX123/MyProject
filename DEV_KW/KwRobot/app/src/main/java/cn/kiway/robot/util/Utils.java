@@ -487,7 +487,6 @@ public class Utils {
     }
 
     public static boolean hbReply = false;
-    public static int lastMsgId = 0;
 
     private static boolean isHeartBeatReply(String msg) {
         try {
@@ -496,11 +495,9 @@ public class Utils {
                 JSONObject o = returnMessage.getJSONObject(0);
                 String content = o.optString("content");
                 int returnType = o.optInt("returnType");
-                lastMsgId = o.optInt("lastMsgId");
                 if (content.equals("OK") && returnType == 1) {
                     Log.d("test", "心跳回复");
-                    //TODO lastMessage 检查非4状态， 12重新发一遍
-                    compareWithServer();
+                    hbReply = true;
                     return true;
                 }
             }
@@ -1941,7 +1938,7 @@ public class Utils {
                         JSONObject o = new JSONObject(ret);
                         int count = o.optInt("data");
                         Log.d("test", "消费者个数为" + count);
-                        if (count > 1) {
+                        if (count != 1) {
                             myListener.onResult(false);
                         } else {
                             myListener.onResult(true);

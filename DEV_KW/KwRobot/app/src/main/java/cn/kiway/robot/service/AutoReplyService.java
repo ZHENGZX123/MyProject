@@ -299,8 +299,7 @@ public class AutoReplyService extends AccessibilityService {
                 action.content = "heartbeat";
                 sendMsgToServer(action);
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
-                //1019
-                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 2 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 3 * 60 * 1000);
 
                 Calendar c = Calendar.getInstance();
                 int weekday = c.get(Calendar.DAY_OF_WEEK);
@@ -312,9 +311,9 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_CHECK_HEARTBEAT) {
                 mHandler.removeMessages(MSG_CHECK_HEARTBEAT);
-                mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 5 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 8 * 60 * 1000);
                 if (Utils.hbReply) {
-                    //5分钟内收到了心跳回复
+                    //8分钟内收到了心跳回复
                     Utils.hbReply = false;
                 } else {
                     //5分钟内没有收到心跳回复
@@ -735,7 +734,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
                     //fromFront不用走rabbitMQ
                     if (!o.optBoolean("fromFront")) {
-                        doSendMessageToServer(topic, msg);
+                        doSendMessageToServer(topic, msg, true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -833,7 +832,7 @@ public class AutoReplyService extends AccessibilityService {
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
 
-                    doSendMessageToServer(topic, msg);
+                    doSendMessageToServer(topic, msg, false);
 
                     new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
 
@@ -5000,7 +4999,7 @@ public class AutoReplyService extends AccessibilityService {
             return false;
         }
         int count = rootNode.getChildCount();
-        Log.d("test", "count = " + count);
+        Log.d("test", "node child count = " + count);
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
@@ -5104,41 +5103,40 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doSendMessageToServer(String topic, final String msg) {
-        if (MainActivity.instance != null) {
-            MainActivity.instance.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.resultReact(MainActivity.instance, msg, new MyListener() {
-                        @Override
-                        public void onResult(boolean success) {
+    private void doSendMessageToServer(String topic, final String msg, boolean useHTTP) {
+        if (useHTTP) {
+            if (MainActivity.instance != null) {
+                MainActivity.instance.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.resultReact(MainActivity.instance, msg, new MyListener() {
+                            @Override
+                            public void onResult(boolean success) {
 
-                        }
-                    });
-                }
-            });
-        }
-        //1019
-        if (true) {
-            return;
-        }
-        Channel channel = null;
-        try {
-            channel = rabbitMQUtils.createChannel(topic, topic);
-            if (channels == null) {
-                channels = new ArrayList<>();
+                            }
+                        });
+                    }
+                });
             }
-            channels.add(channel);
-            rabbitMQUtils.sendMsgs(msg, channel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+        } else {
+            Channel channel = null;
             try {
-                if (channel != null) {
-                    channel.abort();
+                channel = rabbitMQUtils.createChannel(topic, topic);
+                if (channels == null) {
+                    channels = new ArrayList<>();
                 }
+                channels.add(channel);
+                rabbitMQUtils.sendMsgs(msg, channel);
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    if (channel != null) {
+                        channel.abort();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
