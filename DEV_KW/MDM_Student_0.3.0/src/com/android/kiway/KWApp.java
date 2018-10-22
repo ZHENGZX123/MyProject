@@ -65,6 +65,8 @@ public class KWApp extends Application {
     public static final int MSG_UNMUTE = 21;//解除禁音
     public static final int MSG_ONLINE = 22;//发送消息
     public static final int MSG_SNAOPSHOT = 23;//发送消息
+    public static final int MSG_INITZHUS = 24;//zbus定时重连
+    public static final int MSG_INITZHUS2 = 25;
 
     public static KWApp instance;
     public Activity currentActivity;
@@ -263,8 +265,16 @@ public class KWApp extends Application {
                 ZbusHost.doSendMsg(KWApp.instance, "online");
             } else if (msg.what == MSG_SNAOPSHOT) {
                 //zhengkang add0926   snapshot
-                //ZbusHost.doSendMsg(KWApp.instance, "snapshot_http://www.yyfsb.com/upload/allimg/180903/1-1PZ3213438.jpg");
+                //ZbusHost.doSendMsg(KWApp.instance, "snapshot_http://www.yyfsb
+                // .com/upload/allimg/180903/1-1PZ3213438.jpg");
                 doSnapshot(MainActivity.instance);
+            } else if (msg.what == MSG_INITZHUS) {
+                if (MainActivity.instance != null) {
+                    closeMQ();
+                }
+            } else if (msg.what == MSG_INITZHUS2) {
+                MainActivity.instance.initZbus();
+                mHandler.sendEmptyMessageDelayed(MSG_INITZHUS, 60 * 60 * 4 * 1000);
             }
         }
     };
@@ -285,7 +295,8 @@ public class KWApp extends Application {
                     final String fileName = time + ".png";
                     Utils.saveBitmap(bitmap, fileName, "/mnt/sdcard/kiway_mdm_student/downloads/");
                     String token = getSharedPreferences("kiway", 0).getString("x-auth-token", "");
-                    final String result = UploadUtil.uploadFile("/mnt/sdcard/kiway_mdm_student/downloads/" + fileName, clientUrl + "common/file?x-auth-token=" + token, fileName);
+                    final String result = UploadUtil.uploadFile("/mnt/sdcard/kiway_mdm_student/downloads/" +
+                            fileName, clientUrl + "common/file?x-auth-token=" + token, fileName);
                     String url = new JSONObject(result).getJSONObject("data").getString("url");
                     ZbusHost.doSendMsg(KWApp.instance, "snapshot_" + url);
                 } catch (Exception e) {
@@ -314,6 +325,7 @@ public class KWApp extends Application {
                 closeMQ();
             }
         });
+        mHandler.sendEmptyMessageDelayed(MSG_INITZHUS, 60 * 60 * 4 * 1000);
     }
 
 

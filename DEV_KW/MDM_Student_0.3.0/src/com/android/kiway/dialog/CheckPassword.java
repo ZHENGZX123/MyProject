@@ -121,7 +121,6 @@ public class CheckPassword extends Dialog implements View.OnClickListener, Dialo
                     }
                 break;
         }
-
     }
 
     @Override

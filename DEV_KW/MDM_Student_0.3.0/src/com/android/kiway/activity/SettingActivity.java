@@ -12,6 +12,7 @@ import com.android.kiway.utils.FileACache;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
+import com.android.kiway.zbus.ZbusHost;
 import com.android.launcher3.R;
 
 import org.json.JSONObject;
@@ -136,6 +137,7 @@ public class SettingActivity extends BaseActivity {
                 new MyDBHelper(SettingActivity.this).deleteNotifyMessage();
                 //4.退出登录要解锁。。。
                 unlock();
+                ZbusHost.closeMQ1();
             }
         }.start();
     }

@@ -32,12 +32,9 @@ public class CallActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
-
         lv1 = (ListView) findViewById(R.id.lv);
         adapter1 = new MyAdapter();
         lv1.setAdapter(adapter1);
-
-
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

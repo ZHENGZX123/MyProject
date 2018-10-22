@@ -3,6 +3,8 @@ package com.android.kiway.zbus;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.kiway.KWApp;
+import com.android.kiway.entity.App;
 import com.android.kiway.entity.Teacher;
 import com.android.kiway.utils.Constant;
 import com.android.kiway.utils.MyDBHelper;
@@ -17,9 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
-import cn.kiway.wx.reply.vo.PushMessageVo;
 
+import static com.android.kiway.KWApp.MSG_INITZHUS2;
 import static com.android.kiway.utils.Constant.APPID;
 
 /**
@@ -31,17 +32,52 @@ public class ZbusHost {
     public static List<Channel> channels = new ArrayList<>();
 
     public static void closeMQ() {
-        if (consumeUtil != null) {
-            consumeUtil.close();
-            consumeUtil = null;
-        }
-        for (Channel channel : channels) {
-            try {
-                channel.abort();
-            } catch (IOException e) {
-                e.printStackTrace();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    if (consumeUtil != null) {
+                        consumeUtil.close();
+                        consumeUtil = null;
+                    }
+                    for (Channel channel : channels) {
+                        channel.abort();
+                    }
+                    channels = null;
+                    sleep(5000);
+                    if (KWApp.instance != null)
+                        KWApp.instance.mHandler.sendEmptyMessage(MSG_INITZHUS2);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        }.start();
+    }
+
+    public static void closeMQ1() {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    if (consumeUtil != null) {
+                        consumeUtil.close();
+                        consumeUtil = null;
+                    }
+                    if (channels != null) {
+                        for (Channel channel : channels) {
+                            channel.abort();
+                        }
+                        channels = null;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     public static boolean doSendMsg(Context c, String cmd) {
