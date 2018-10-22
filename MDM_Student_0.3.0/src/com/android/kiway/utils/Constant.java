@@ -11,10 +11,14 @@ public class Constant {
     public static final String APPKEY = "9a9b01f8ab910e12422bcc0e88d95dff2f95f582";
 
     public static final String zbusHost = "mdm.kiway.cn";
-    public static final int zbusPost = 5673;
+
+
     public static String currentTeacher = "";
-
-    public static final String serverUrl = "http://mdm.kiway.cn:8083/";
+    public static final int zbusPost = 5673;//正式
+        public static final String serverUrl = "http://mdm.kiway.cn:8083/";
     public static final String clientUrl = "http://mdm.kiway.cn/";
-
+    //测试
+//    public static final int zbusPost = 5672; //测试
+//    public static final String serverUrl = "http://202.104.136.9:8083/";
+//    public static final String clientUrl = "http://202.104.136.9:8084/";
 }

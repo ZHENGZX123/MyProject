@@ -15,7 +15,6 @@ public class MyViewPagerAdapter extends PagerAdapter {
 
     private List<View> viewList;//View就二十GridView
 
-
     public MyViewPagerAdapter(List<View> viewList) {
         this.viewList = viewList;
     }

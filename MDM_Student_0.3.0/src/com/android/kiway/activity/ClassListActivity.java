@@ -123,9 +123,7 @@ public class ClassListActivity extends BaseActivity {
             if (rowView == null) {
                 rowView = inflater.inflate(R.layout.item_class, null);
                 holder = new ViewHolder();
-
                 holder.name = (TextView) rowView.findViewById(R.id.name);
-
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();

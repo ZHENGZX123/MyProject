@@ -1030,6 +1030,18 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return isInLuancher;
     }
 
+    public boolean checkApps() {
+        if (db == null)
+            db = getWritableDatabase();
+        boolean isInLuancher = false;
+        Cursor cur = db.query(TABLE_LAUNCHER_APP, null, null, null, null, null, null);
+        if (cur.getColumnCount() > 0)
+            isInLuancher = true;
+        cur.close();
+        db.close();
+        return isInLuancher;
+    }
+
     public void deleteAppInLauncher(String packageName) {
         if (db == null)
             db = getWritableDatabase();

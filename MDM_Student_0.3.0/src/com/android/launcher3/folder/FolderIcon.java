@@ -275,7 +275,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
             final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
             float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
-
         // These correspond two the drawable and view that the icon was dropped _onto_
         Drawable animateDrawable = prepareCreate(destView);
 

@@ -3366,8 +3366,8 @@ public class Workspace extends PagedView
             if (finalView != null && updateWidgetSize) {
                 AppWidgetResizeFrame.updateWidgetSizeRanges(finalView, mLauncher, item.spanX,
                         item.spanY);
-            }
 
+            }
             int animationStyle = ANIMATE_INTO_POSITION_AND_DISAPPEAR;
             if (isWidget && ((PendingAddWidgetInfo) pendingInfo).info != null &&
                     ((PendingAddWidgetInfo) pendingInfo).getHandler().needsConfigure()) {
@@ -3665,14 +3665,12 @@ public class Workspace extends PagedView
                 throw new RuntimeException("Invalid state: cellLayout == null in "
                         + "Workspace#onDropCompleted. Please file a bug. ");
             }
-            ;
         }
         if ((d.cancelled || (beingCalledAfterUninstall && !mUninstallSuccessful))
                 && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragInfo = null;
-
         if (!isFlingToDelete) {
             // Fling to delete already exits spring loaded mode after the animation finishes.
             mLauncher.exitSpringLoadedDragModeDelayed(success,

@@ -34,6 +34,7 @@ import com.android.kiway.utils.DESUtil;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.MyDBHelper;
 import com.android.kiway.utils.Utils;
+import com.android.kiway.zbus.RabbitMQUtils;
 import com.android.kiway.zbus.ZbusHost;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -58,7 +59,6 @@ import java.util.Date;
 
 import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdmsdk.cn.kiway.mdmsdk.util.RootCmd;
-import cn.kiway.wx.reply.utils.RabbitMQUtils;
 
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
@@ -68,6 +68,11 @@ import static com.android.kiway.utils.Constant.clientUrl;
 import static com.android.kiway.zbus.ZbusHost.channels;
 import static com.android.kiway.zbus.ZbusHost.closeMQ;
 import static com.android.kiway.zbus.ZbusHost.consumeUtil;
+
+//import com.baidu.location.BDLocation;
+//import com.baidu.location.BDLocationListener;
+//import com.baidu.location.LocationClient;
+//import com.baidu.location.LocationClientOption;
 
 //import com.baidu.location.BDLocation;
 //import com.baidu.location.BDLocationListener;
@@ -137,7 +142,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //17.检查通话功能
         checkTelephoney();
         //18.获取经纬度
-       // getLocation();
+        getLocation();
         //19.检查lock状态
         checkLock();
         //20.鉴权
@@ -159,7 +164,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (!Build.MODEL.equals("ZTE Q5-T") && !Build.MODEL.equals("HM NOTE 1TD")) {
             return;
         }
-
         new Thread() {
             @Override
             public void run() {
@@ -550,9 +554,9 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
-        if (mLocationClient != null) {
-            mLocationClient.stop();
-        }
+//        if (mLocationClient != null) {
+//            mLocationClient.stop();
+//        }
         closeMQ();
     }
 

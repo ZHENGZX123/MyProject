@@ -49,7 +49,8 @@ public class TimeSelectDailog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        getContext().getSharedPreferences("kiway", 0).edit().putString(packageName, leftValue + "-" + rightValue).commit();
+        getContext().getSharedPreferences("kiway", 0).edit().putString(packageName, leftValue + "-" + rightValue)
+                .commit();
         dismiss();
     }
 

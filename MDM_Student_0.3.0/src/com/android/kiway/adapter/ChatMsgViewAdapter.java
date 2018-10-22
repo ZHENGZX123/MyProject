@@ -80,7 +80,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(
                         R.layout.chatting_item_msg_text_right, null);
             }
-
             viewHolder = new ViewHolder();
             viewHolder.tvSendTime = (TextView) convertView
                     .findViewById(R.id.tv_sendtime);
@@ -89,7 +88,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             viewHolder.tvContent = (TextView) convertView
                     .findViewById(R.id.tv_chatcontent);
             viewHolder.isComMsg = isComMsg;
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
