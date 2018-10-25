@@ -56,12 +56,14 @@ import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.Second;
+import cn.kiway.robot.entity.ServerMsg;
 import cn.kiway.robot.moment.SnsInfo;
 import cn.kiway.robot.moment.Task;
 import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.MyListener;
+import cn.kiway.robot.util.MyListener2;
 import cn.kiway.robot.util.RootCmd;
 import cn.kiway.robot.util.Utils;
 import cn.sharesdk.framework.Platform;
@@ -157,6 +159,17 @@ public class MainActivity extends BaseActivity {
 
         mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 2 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
+
+
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        if (sms.size() == 0) {
+            Utils.getLastMsgIndex2(this, new MyListener2() {
+                @Override
+                public void onResult(int ret) {
+                    getSharedPreferences("start", 0).edit().putInt("start", ret).commit();
+                }
+            });
+        }
     }
 
     private void setBrightness() {
@@ -679,11 +692,15 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Utils.closeMQ();
+
+
                 try {
                     sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+
                 if (MainActivity.instance != null) {
                     MainActivity.instance.runOnUiThread(new Runnable() {
                         @Override
@@ -1067,15 +1084,44 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-            }
-        }, 10000);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+//            }
+//        }, 10000);
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        for (ServerMsg sm : sms) {
+            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.STATUS_3);
+        }
+        //getSharedPreferences("start", 0).edit().putInt("start", 0).commit();
+        //new MyDBHelper(this).deleteServerMsg();
     }
 
     public void test2(View v) {
+//        getAllFriends(false, true);
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        Log.d("test", "sms count = " + sms.size());
+        for (ServerMsg sm : sms) {
+            Log.d("test", "sm = " + sm.toString());
+        }
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    Log.d("test", "hasTask = " + AutoReplyService.instance.hasTasks());
+//                    try {
+//                        sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }.start();
+//        getAllGroups(true);
+    }
+
+    public void test3(View view) {
         Utils.getConsumers(MainActivity.this, new MyListener() {
             @Override
             public void onResult(boolean success) {
@@ -1084,10 +1130,10 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
-    }
 
-    public void test3(View view) {
-        resetNickName();
+
+//        Utils.getLastMsgIndex(this, null);
+//        resetNickName();
 //        resetNickName2();
     }
 

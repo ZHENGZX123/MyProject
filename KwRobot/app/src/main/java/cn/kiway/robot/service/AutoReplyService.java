@@ -117,6 +117,9 @@ import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADDING;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.entity.AddFriend.STATUS_NOT_EXISTED;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_0;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_2;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_3;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.AT_PERSONS_CMD;
@@ -193,13 +196,15 @@ public class AutoReplyService extends AccessibilityService {
 
     public static AutoReplyService instance;
 
-    //没有拉起-分配的intents
-    private ArrayList<Action> preActionsQueue = new ArrayList<>();
+
     //事件map
     public LinkedHashMap<Long, Action> actions = new LinkedHashMap<>();
     //当前执行的事件id
     private long currentActionID = -1;
     private boolean actioningFlag;
+
+    //没有拉起-分配的intents
+    private ArrayList<Action> preActionsQueue = new ArrayList<>();
     //zbus接收队列
     public ArrayList<ZbusRecv> zbusRecvsQueue = new ArrayList<>();
     //重命名用队列
@@ -282,12 +287,14 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 //2.事件队列
                 if (zbusRecvsQueue.size() > 0) {
+                    Log.d("test", "zbusRecvsQueue size = " + zbusRecvsQueue.size());
                     unlockScreen();
                     handleZbusMsg(zbusRecvsQueue.remove(0));
                     return;
                 }
                 //3.重命名队列
                 if (renameTasksQueue.size() > 0) {
+                    Log.d("test", "renameTasksQueue size = " + renameTasksQueue.size());
                     unlockScreen();
                     handleZbusMsg(renameTasksQueue.remove(0));
                 }
@@ -313,10 +320,10 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.removeMessages(MSG_CHECK_HEARTBEAT);
                 mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 8 * 60 * 1000);
                 if (Utils.hbReply) {
-                    //8分钟内收到了心跳回复
+                    //3次都收到了心跳回复
                     Utils.hbReply = false;
                 } else {
-                    //5分钟内没有收到心跳回复
+                    //3次都没有收到心跳回复
                     if (MainActivity.instance != null) {
                         MainActivity.instance.doReConnect();
                     }
@@ -663,10 +670,12 @@ public class AutoReplyService extends AccessibilityService {
                         content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                     }
                     JSONObject o = new JSONObject(content);
+                    int index = o.optInt("indexs");
                     o.put("cmd", replies.get(command.cmd));
                     o.put("type", replies.get(command.cmd));
                     o.put("statusCode", statusCode);
                     o.put("robotId", getSharedPreferences("kiway", 0).getString("robotId", ""));
+                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, (statusCode == 200) ? STATUS_2 : STATUS_0);
 
                     if (command.cmd.equals(ADD_FRIEND_CMD)) {
                         sendFriendInfoDelay();
@@ -734,7 +743,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
                     //fromFront不用走rabbitMQ
                     if (!o.optBoolean("fromFront")) {
-                        doSendMessageToServer(topic, msg, true);
+                        doSendMessageToServer(topic, msg, true, index);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -832,7 +841,7 @@ public class AutoReplyService extends AccessibilityService {
                     String msg = o.toString();
                     Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
 
-                    doSendMessageToServer(topic, msg, false);
+                    doSendMessageToServer(topic, msg, false, 0);
 
                     new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
 
@@ -4256,11 +4265,14 @@ public class AutoReplyService extends AccessibilityService {
         return length;
     }
 
+    //FIXME 多人的群，有bug
     private void addOrDeleteGroupPeople(final int type) {
+        Log.d("test", "addOrDeleteGroupPeople = " + type);
         new Thread() {
             @Override
             public void run() {
                 findTargetNode(NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
+
                 if (mFindTargetNode == null) {
                     execRootCmdSilent("input swipe 360 900 360 300");
                     try {
@@ -5103,16 +5115,20 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doSendMessageToServer(String topic, final String msg, boolean useHTTP) {
+    private void doSendMessageToServer(String topic, final String replyMsg, boolean useHTTP, final int index) {
         if (useHTTP) {
             if (MainActivity.instance != null) {
                 MainActivity.instance.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.resultReact(MainActivity.instance, msg, new MyListener() {
+                        Utils.resultReact(MainActivity.instance, replyMsg, new MyListener() {
                             @Override
                             public void onResult(boolean success) {
-
+                                if (success) {
+                                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, STATUS_3);
+                                } else {
+                                    new MyDBHelper(getApplicationContext()).updateServerMsgReplyContentByIndex(index, replyMsg);
+                                }
                             }
                         });
                     }
@@ -5126,7 +5142,7 @@ public class AutoReplyService extends AccessibilityService {
                     channels = new ArrayList<>();
                 }
                 channels.add(channel);
-                rabbitMQUtils.sendMsgs(msg, channel);
+                rabbitMQUtils.sendMsgs(replyMsg, channel);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -5141,20 +5157,17 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-
+    //检查队列里的事件
     public boolean hasTasks() {
-        if (preActionsQueue.size() > 0) {
+        if (actioningFlag && actions.get(currentActionID).actionType != TYPE_FIX_FRIEND_NICKNAME) {
             return true;
         }
         if (zbusRecvsQueue.size() > 0) {
             return true;
         }
-        if (renameTasksQueue.size() > 0) {
-            return true;
-        }
         for (FileDownload fd : downloads) {
             if (fd.status != 4) {
-                return false;
+                return true;
             }
         }
         return false;
