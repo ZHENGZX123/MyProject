@@ -1,130 +1,238 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package cn.kiway.wx.reply.utils;
 
+import cn.kiway.wx.reply.vo.PushMessageVo;
 import com.alibaba.fastjson.JSONObject;
-import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
-import cn.kiway.wx.reply.vo.PushMessageVo;
-
+/**
+ * rabbitMQ 工具类
+ * @author yimin
+ * @date 2018/03/21
+ */
 public class RabbitMQUtils {
+
     private static final String EXCHANGE_NAME = "wx-reply-exchanger";
+
     private String routingKey = "";
+
     private String queueName = "";
-    private Connection connection = null;
+
+    private Connection connection = null ;
+
     private Channel channel = null;
 
-    public RabbitMQUtils(String url, String routingKey, String queueName, Integer port) {
+    private static Logger logger = LoggerFactory.getLogger(RabbitMQUtils.class);
+
+    public RabbitMQUtils(String url ,String routingKey,String queueName,Integer port) {
         this.routingKey = routingKey;
         this.queueName = queueName;
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(url);
-        if (port == null) {
+        if(port == null){
             factory.setPort(5672);
-        } else {
-            factory.setPort(port.intValue());
+        }else{
+            factory.setPort(port);
         }
-
+        //105.196用的
+//        factory.setPort(5672);
+        //robot.kiway.cn用
+//        factory.setPort(5676);
         factory.setUsername("pig");
         factory.setPassword("lengleng");
         factory.setVirtualHost("/");
+
+        //设置网络异常重连
         factory.setAutomaticRecoveryEnabled(true);
-        factory.setTopologyRecoveryEnabled(true);
+        // 设置 每5s ，重试一次
+        factory.setNetworkRecoveryInterval(5000);
+        // 设置不重新声明交换器，队列等信息
+        factory.setTopologyRecoveryEnabled(false);
 
         try {
-            this.connection = factory.newConnection();
-            this.channel = this.connection.createChannel();
-            this.channel.basicQos(1);
-            this.channel.exchangeDeclare("wx-reply-exchanger", "direct", true);
-            this.channel.queueDeclare(queueName, false, false, false, (Map) null);
-            this.channel.queueBind(queueName, "wx-reply-exchanger", routingKey);
-        } catch (Exception var7) {
-            var7.printStackTrace();
+            connection =  factory.newConnection();
+
+            channel = connection.createChannel();
+
+            //每次取1条消息
+            channel.basicQos(1);
+
+            channel.exchangeDeclare(EXCHANGE_NAME,"direct",true);
+            channel.queueDeclare(queueName,false,false,false,null);
+            channel.queueBind(queueName,EXCHANGE_NAME,routingKey);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
-    public RabbitMQUtils(String url, Integer port) {
+    public RabbitMQUtils(String url ,Integer port) {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(url);
-        if (port == null) {
+        if(port == null){
             factory.setPort(5672);
-        } else {
-            factory.setPort(port.intValue());
+        }else{
+            factory.setPort(port);
         }
-
+        //105.196用的
+//        factory.setPort(5672);
+        //robot.kiway.cn用
+//        factory.setPort(5676);
         factory.setUsername("pig");
         factory.setPassword("lengleng");
         factory.setVirtualHost("/");
+
+        //设置网络异常重连
         factory.setAutomaticRecoveryEnabled(true);
-        factory.setTopologyRecoveryEnabled(true);
+        // 设置 每5s ，重试一次
+        factory.setNetworkRecoveryInterval(5000);
+        // 设置不重新声明交换器，队列等信息
+        factory.setTopologyRecoveryEnabled(false);
 
         try {
-            this.connection = factory.newConnection();
-        } catch (Exception var5) {
-            var5.printStackTrace();
+            connection =  factory.newConnection();
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
-    public Channel createChannel(String routingKey, String queueName) {
+    public Channel createChannel(String routingKey,String queueName){
         this.routingKey = routingKey;
         this.queueName = queueName;
         Channel channel = null;
         try {
-            channel = this.connection.createChannel();
+            channel = connection.createChannel();
+            //每次取1条消息
             channel.basicQos(1);
-            channel.exchangeDeclare("wx-reply-exchanger", "direct", true);
-            channel.queueDeclare(queueName, false, false, false, (Map) null);
-            channel.queueBind(queueName, "wx-reply-exchanger", routingKey);
-        } catch (Exception e) {
+
+            channel.exchangeDeclare(EXCHANGE_NAME,"direct",true);
+//            //设置过期时间
+//            Map<String, Object> args = new HashMap<String, Object>();
+//            args.put("x-message-ttl", 60000);
+//
+//            channel.queueDeclare(queueName,false,false,false,args);
+
+            channel.queueDeclare(queueName,false,false,false,null);
+            channel.queueBind(queueName,EXCHANGE_NAME,routingKey);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
         return channel;
     }
 
 
-    public void sendMsg(PushMessageVo vo, Channel channel) throws Exception {
+    /**
+     * 发送消息
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void sendMsg(PushMessageVo vo) throws Exception {
         String msg = JSONObject.toJSONString(vo);
-        channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties) null, msg.getBytes());
+        //发送消息
+        channel.basicPublish(EXCHANGE_NAME,routingKey,null,msg.getBytes());
+    }
+
+    /**
+     * 发送消息
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void sendMsg(PushMessageVo vo,Channel channel) throws Exception {
+        String msg = JSONObject.toJSONString(vo);
+        //发送消息
+        channel.basicPublish(EXCHANGE_NAME,routingKey,null,msg.getBytes());
+    }
+
+    /**
+     * 发送消息
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void sendMsgs(String message) throws Exception {
+        // 获取json文件内容
+        channel.basicPublish(EXCHANGE_NAME,routingKey,null,message.getBytes());
         System.out.println("send message success....");
     }
 
-
-    public void sendMsgs(String message, Channel channel) throws Exception {
-        channel.basicPublish("wx-reply-exchanger", this.routingKey, (BasicProperties) null, message.getBytes());
+    /**
+     * 发送消息
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void sendMsgs(String message,Channel channel) throws Exception {
+        // 获取json文件内容
+        channel.basicPublish(EXCHANGE_NAME,routingKey,null,message.getBytes());
         System.out.println("send message success....");
     }
 
+    /***
+     * 收取消息
+     * @param consumer 消息处理类
+     * @throws IOException
+     */
     public void consumeMsg(Consumer consumer) throws Exception {
-        this.channel.basicConsume(this.queueName, false, "wx-reply-exchanger", consumer);
+//        Consumer consumer = new DefaultConsumer(channel){
+//            @Override
+//            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+//                //消费消费
+//                String msg = new String(body,"utf-8");
+//                System.out.println("consume msg: "+msg);
+//                //处理逻辑
+
+//                //手动消息确认
+//                getChannel().basicAck(envelope.getDeliveryTag(),false);
+//            }
+//        };
+
+        //调用消费消息
+        channel.basicConsume(queueName,false,EXCHANGE_NAME,consumer);
     }
 
-    public void consumeMsg(Consumer consumer, Channel channel) throws Exception {
-        channel.basicConsume(this.queueName, false, "wx-reply-exchanger", consumer);
+    /***
+     * 收取消息
+     * @param consumer 消息处理类
+     * @throws IOException
+     */
+    public void consumeMsg(Consumer consumer,Channel channel) throws Exception {
+        //调用消费消息
+        channel.basicConsume(queueName,false,EXCHANGE_NAME,consumer);
     }
 
-    public void close() {
+
+    /**
+     * 关闭
+     */
+    public void close(){
         try {
-            if (this.connection != null) {
-                this.connection.close();
+            if(connection != null){
+                connection.close();
             }
-        } catch (Exception var2) {
-            var2.printStackTrace();
-        }
 
+//            if(channel != null){
+//                channel.abort();
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 
     public Channel getChannel() {
-        return this.channel;
+        return channel;
     }
 
     public void setChannel(Channel channel) {

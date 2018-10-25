@@ -76,6 +76,7 @@ import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.GroupPeople;
 import cn.kiway.robot.entity.Message;
+import cn.kiway.robot.entity.ServerMsg;
 import cn.kiway.robot.moment.SnsInfo;
 import cn.kiway.robot.service.AutoReplyService;
 import cn.kiway.wx.reply.utils.RabbitMQUtils;
@@ -83,10 +84,17 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import static cn.kiway.robot.KWApplication.DOWNLOAD;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_0;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_1;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_2;
+import static cn.kiway.robot.entity.ServerMsg.STATUS_3;
+import static cn.kiway.robot.entity.ServerMsg.TYPE_HTTP;
+import static cn.kiway.robot.entity.ServerMsg.TYPE_MQ;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
+import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
@@ -103,6 +111,7 @@ public class Utils {
 
     public static RabbitMQUtils rabbitMQUtils;
     public static List<Channel> channels = new ArrayList<>();
+    private static Channel channel;
 
     public static String getIMEI(Context c) {
         TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
@@ -254,7 +263,7 @@ public class Utils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    initZbus(c);
+                    doInstallSuccess(c);
                 }
 
                 @Override
@@ -269,8 +278,14 @@ public class Utils {
     }
 
     //初始化zbus
-    public static void initZbus(Context c) {
-        Log.d("test", "initZbus");
+    public static void doInstallSuccess(Context c) {
+        Log.d("test", "doInstallSuccess");
+        startMQThread(c);
+        startCheckFileDownloadThread();
+        startCheckServerMsgThread(c);
+    }
+
+    private static void startMQThread(final Context c) {
         final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
         final String wxNo = c.getSharedPreferences("kiway", 0).getString("wxNo", "");
         if (TextUtils.isEmpty(robotId)) {
@@ -289,45 +304,107 @@ public class Utils {
                         rabbitMQUtils = new RabbitMQUtils(Constant.host, Constant.port);
                         String topic = "kiway_wx_reply_push_" + robotId + "#" + wxNo;
                         Log.d("test", "topic = " + topic);
-                        doConsume(rabbitMQUtils, topic);
+                        if (channel == null) {
+                            channel = rabbitMQUtils.createChannel(topic, topic);
+                        }
+                        while (!channel.isOpen()) {
+                            channel = rabbitMQUtils.createChannel(topic, topic);
+                            Thread.sleep(5000);
+                        }
+                        if (channels == null) {
+                            channels = new ArrayList<>();
+                        }
+                        channels.add(channel);
+                        rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
+                            @Override
+                            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                                String msg = new String(body, "utf-8");
+                                Log.d("test", "handleDelivery msg = " + msg);
+
+                                boolean existed = getMsgIndexAndSaveDB(c, msg, TYPE_MQ);
+                                if (existed) {
+                                    return;
+                                }
+
+                                //处理逻辑
+                                if (AutoReplyService.instance == null) {
+                                    Log.d("test", "服务没开");
+                                } else {
+                                    if (!isHeartBeatReply(msg) && !needPreDownload(msg)) {
+                                        Log.d("test", "不是心跳");
+                                        boolean imme = isNeedImme(msg);
+                                        Log.d("test", "imme = " + imme);
+                                        AutoReplyService.instance.sendReplyImmediately(msg, imme);
+                                    }
+                                }
+                                //手动消息确认
+                                channel.basicAck(envelope.getDeliveryTag(), false);
+                            }
+                        }, channel);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
-
-        startCheckFileDownloadThread();
     }
 
-    private static void doConsume(RabbitMQUtils util, String topic) throws Exception {
-        final Channel channel = util.createChannel(topic, topic);
-        if (channels == null) {
-            channels = new ArrayList<>();
-        }
-        channels.add(channel);
-        util.consumeMsg(new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                String msg = new String(body, "utf-8");
-                Log.d("test", "handleDelivery msg = " + msg);
-                //TODO 存DB状态1
+    //FIXME 增加其他的cmd，不能把所有的cmd开放，比如，群内踢人有可能必定失败。
+    private static boolean getMsgIndexAndSaveDB(Context c, String msg, int type) {
+        try {
+            JSONObject o = new JSONObject(msg);
+            int index = o.optInt("indexs");
+            if (index == 0) {
+                Log.d("test", "index = 0 , error");//心跳回复的index=0
+                return false;
+            }
 
-                //处理逻辑
-                if (AutoReplyService.instance == null) {
-                    Log.d("test", "服务没开");
-                } else {
-                    if (!isHeartBeatReply(msg) && !needPreDownload(msg)) {
-                        Log.d("test", "不是心跳");
-                        boolean imme = isNeedImme(msg);
-                        Log.d("test", "imme = " + imme);
-                        AutoReplyService.instance.sendReplyImmediately(msg, imme);
+            boolean existed = new MyDBHelper(c).isIndexExisted(index);
+            if (existed) {
+                Log.d("test", "DB已存在该记录");
+                return true;
+            }
+
+            if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
+                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", STATUS_0, System.currentTimeMillis(), type));
+            } else {
+                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", STATUS_3, System.currentTimeMillis(), type));
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static Thread serverMsgThread;
+
+    private static void startCheckServerMsgThread(final Context c) {
+        if (serverMsgThread != null) {
+            return;
+        }
+        serverMsgThread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        sleep(2 * 60 * 1000);
+                        if (AutoReplyService.instance == null) {
+                            continue;
+                        }
+                        if (AutoReplyService.instance.hasTasks()) {
+                            continue;
+                        }
+
+                        getLastMsgIndex(c, null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-                //手动消息确认
-                channel.basicAck(envelope.getDeliveryTag(), false);
             }
-        }, channel);
+        };
+        serverMsgThread.start();
     }
 
     private static Thread fileDownloadThread;
@@ -342,7 +419,7 @@ public class Utils {
             public void run() {
                 while (true) {
                     try {
-                        sleep(10000);
+                        sleep(10 * 1000);
                         for (FileDownload fd : downloads) {
                             if (fd.status == 0) {
                                 fd.status = 1;
@@ -918,6 +995,19 @@ public class Utils {
         }
         if (type.equals("resultReact")) {
             resultReact(c, msg, Utils.listener);
+            return;
+        }
+        if (type.equals("getOmission")) {
+            getOmission(c, Utils.missingInt, Utils.listener);
+            return;
+        }
+        if (type.equals("getLastMsgIndex")) {
+            getLastMsgIndex(c, Utils.listener);
+            return;
+        }
+        if (type.equals("getLastMsgIndex2")) {
+            getLastMsgIndex2(c, Utils.listener2);
+            return;
         }
     }
 
@@ -1573,6 +1663,7 @@ public class Utils {
 
     private static ArrayList<Group> groups;
     private static MyListener listener;
+    private static MyListener2 listener2;
 
     public static void uploadGroup(final MainActivity act, final ArrayList<Group> groups, final MyListener myListener) {
         Utils.groups = groups;
@@ -1906,6 +1997,260 @@ public class Utils {
         }
     }
 
+
+    public static void getLastMsgIndex2(final Context c, final MyListener2 myListener) {
+        if (MainActivity.instance == null) {
+            return;
+        }
+        MainActivity.instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Utils.listener2 = myListener;
+                try {
+                    final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    if (TextUtils.isEmpty(robotId)) {
+                        Log.d("test", "robotId is null");
+                        return;
+                    }
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    Log.d("test", "x-auth-token = " + xtoken);
+                    client.addHeader("x-auth-token", xtoken);
+
+                    client.setMaxRetriesAndTimeout(3, 10000);
+                    String url = clientUrl + "/sendContent/omission/last?robotId=" + robotId;
+                    Log.d("test", "url = " + url);
+                    client.get(c, url, new TextHttpResponseHandler() {
+
+                        @Override
+                        public void onSuccess(int arg0, Header[] arg1, String ret) {
+                            Log.d("test", "getLastMsgIndex2 onSuccess ret = " + ret);
+                            int serverIndex = 0;
+                            try {
+                                serverIndex = new JSONObject(ret).optJSONObject("data").optInt("indexs");
+                                Log.d("test", "serverIndex = " + serverIndex);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            myListener.onResult(serverIndex);
+                        }
+
+                        @Override
+                        public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                            Log.d("test", "getLastMsgIndex2 onFailure ret = " + s);
+                            check301(c, s, "getLastMsgIndex2");
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("test", "getLastMsgIndex2 exception = " + e.toString());
+                }
+            }
+        });
+    }
+
+    public static void getLastMsgIndex(final Context c, final MyListener myListener) {
+        if (MainActivity.instance == null) {
+            return;
+        }
+        MainActivity.instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Utils.listener = myListener;
+                try {
+                    final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    if (TextUtils.isEmpty(robotId)) {
+                        Log.d("test", "robotId is null");
+                        return;
+                    }
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    Log.d("test", "x-auth-token = " + xtoken);
+                    client.addHeader("x-auth-token", xtoken);
+
+                    client.setMaxRetriesAndTimeout(3, 10000);
+                    String url = clientUrl + "/sendContent/omission/last?robotId=" + robotId;
+                    Log.d("test", "url = " + url);
+                    client.get(c, url, new TextHttpResponseHandler() {
+
+                        @Override
+                        public void onSuccess(int arg0, Header[] arg1, String ret) {
+                            Log.d("test", "getLastMsgIndex onSuccess ret = " + ret);
+                            try {
+                                int serverIndex = new JSONObject(ret).optJSONObject("data").optInt("indexs");
+                                Log.d("test", "serverIndex = " + serverIndex);
+                                compareWithLocalDB(c, serverIndex);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                            Log.d("test", "getLastMsgIndex onFailure ret = " + s);
+                            check301(c, s, "getLastMsgIndex");
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("test", "getLastMsgIndex exception = " + e.toString());
+                }
+            }
+        });
+    }
+
+    private static void compareWithLocalDB(Context c, int serverIndex) {
+        if (serverIndex == 0) {
+            return;
+        }
+        ArrayList<ServerMsg> localSms = new MyDBHelper(c).getAllServerMsg(0);
+        int count = localSms.size();
+        int[] temp = new int[localSms.size()];
+        for (int i = 0; i < count; i++) {
+            ServerMsg sm = localSms.get(i);
+            temp[i] = sm.index;
+        }
+
+        int start = c.getSharedPreferences("start", 0).getInt("start", 0);
+        Log.d("test", "get start = " + start);
+
+        ArrayList<Integer> missing = getRemoveNums(temp, serverIndex, start);
+        Log.d("test", "missing = " + missing);
+        int[] missingInt = new int[missing.size()];
+        for (int i = 0; i < missing.size(); i++) {
+            missingInt[i] = missing.get(i);
+        }
+        getOmission(c, missingInt, null);
+    }
+
+    private static ArrayList<Integer> getRemoveNums(int[] src, int fullLength, int start) {
+        String result = "";
+        int[] toolArray = new int[fullLength + 1];
+        toolArray[0] = 1;
+        for (int i = 0; i < src.length; i++) {
+            int num = src[i];
+            toolArray[num] = 1;
+        }
+        for (int i = 0; i < toolArray.length; i++) {
+            int num = toolArray[i];
+            if (num != 1) {
+                result += i + ",";
+            }
+        }
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        if (result.length() > 0) {
+            String[] splits = result.substring(0, result.length() - 1).split(",");
+            for (String s : splits) {
+                int a = Integer.parseInt(s);
+                if (a > start) {
+                    list.add(a);
+                }
+            }
+        }
+        return list;
+    }
+
+    private static int[] missingInt;
+
+    public static void getOmission(final Context c, final int[] missingInt, final MyListener myListener) {
+        if (MainActivity.instance == null) {
+            return;
+        }
+        if (missingInt.length == 0) {
+            //服务器消息已经全拿了，不用继续拿了
+            doCheckServerMsg(c);
+            return;
+        }
+        MainActivity.instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Utils.listener = myListener;
+                Utils.missingInt = missingInt;
+                try {
+                    final String robotId = c.getSharedPreferences("kiway", 0).getString("robotId", "");
+                    if (TextUtils.isEmpty(robotId)) {
+                        Log.d("test", "robotId is null");
+                        return;
+                    }
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    String xtoken = c.getSharedPreferences("kiway", 0).getString("x-auth-token", "");
+                    Log.d("test", "x-auth-token = " + xtoken);
+                    client.addHeader("x-auth-token", xtoken);
+                    client.setMaxRetriesAndTimeout(3, 10000);
+                    String indexString = "";
+                    for (int i = 0; i < missingInt.length; i++) {
+                        indexString += ("&indexs[]=" + missingInt[i]);
+                    }
+                    String url = clientUrl + "/sendContent/omission?robotId=" + robotId + indexString;
+                    Log.d("test", "getOmission url = " + url);
+                    client.get(c, url, new TextHttpResponseHandler() {
+
+                        @Override
+                        public void onSuccess(int arg0, Header[] arg1, String ret) {
+                            Log.d("test", "getOmission onSuccess ret = " + ret);
+                            try {
+                                JSONObject obj = new JSONObject(ret);
+                                JSONArray data = obj.optJSONArray("data");
+                                int count = data.length();
+                                for (int i = 0; i < count; i++) {
+                                    JSONObject o = data.optJSONObject(i);
+                                    int indexs = o.optInt("indexs");
+                                    String content = o.optString("content");
+                                    JSONObject contentObj = new JSONObject(content);
+                                    contentObj.put("indexs", indexs);
+                                    //1.保存漏掉的消息到DB
+                                    getMsgIndexAndSaveDB(c, contentObj.toString(), TYPE_HTTP);
+                                }
+                                //2.遍历DB并重发命令
+                                doCheckServerMsg(c);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
+                            Log.d("test", "getOmission onFailure ret = " + s);
+                            check301(c, s, "getOmission");
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("test", "getOmission exception = " + e.toString());
+                }
+            }
+        });
+    }
+
+    private static void doCheckServerMsg(final Context c) {
+        ArrayList<ServerMsg> sms = new MyDBHelper(c).getAllServerMsg(3);
+        Log.d("test", "doCheckServerMsg 需要补漏做的count = " + sms.size());
+        for (final ServerMsg sm : sms) {
+            Log.d("test", "sm = " + sm.toString());
+            int status = sm.status;
+            if (status == STATUS_0 || status == STATUS_1) {
+                //重复执行
+                if (AutoReplyService.instance != null) {
+                    if (!needPreDownload(sm.content)) {
+                        AutoReplyService.instance.sendReplyImmediately(sm.content, true);
+                    }
+                }
+            } else if (status == STATUS_2) {
+                //只要上报就可以了
+                if (MainActivity.instance != null) {
+                    Utils.resultReact(MainActivity.instance, sm.replyContent, new MyListener() {
+                        @Override
+                        public void onResult(boolean success) {
+                            if (success) {
+                                new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, STATUS_3);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
     public static void getConsumers(final Context c, final MyListener myListener) {
         Utils.listener = myListener;
         try {
@@ -1962,7 +2307,7 @@ public class Utils {
 
     private static String msg;
 
-    public static void resultReact(final Context c, String msg, MyListener myListener) {
+    public static void resultReact(final Context c, String msg, final MyListener myListener) {
         Utils.msg = msg;
         Utils.listener = myListener;
         try {
@@ -1980,17 +2325,20 @@ public class Utils {
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
                     Log.d("test", "resultReact onSuccess ret = " + ret);
+                    myListener.onResult(true);
                 }
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
                     Log.d("test", "resultReact onFailure ret = " + s);
+                    myListener.onResult(false);
                     check301(c, s, "resultReact");
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("test", "resultReact exception = " + e.toString());
+            myListener.onResult(false);
         }
     }
 }

@@ -9,7 +9,6 @@ public class ZbusRecv {
     public String msg;
     public boolean realReply;
 
-
     public ZbusRecv(String msg, boolean realReply) {
         this.msg = msg;
         this.realReply = realReply;

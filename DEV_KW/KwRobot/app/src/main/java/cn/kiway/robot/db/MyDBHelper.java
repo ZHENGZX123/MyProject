@@ -216,6 +216,7 @@ import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.Moment;
+import cn.kiway.robot.entity.ServerMsg;
 import cn.kiway.robot.moment.SnsInfo;
 
 public class MyDBHelper extends SQLiteOpenHelper {
@@ -251,10 +252,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + "   (id integer primary key autoincrement,  type text ,  wxNo text,  name text ) ";
     //type：0转发使者 1卧底
 
+    private static final String TABLE_SERVER_MSG = "servermsg";
+    private static final String CREATE_TABLE_SERVERMSG = " create table IF NOT EXISTS "
+            + TABLE_SERVER_MSG
+            + "   (id integer primary key autoincrement,  indexs text ,  content text , replyContent text ,  status text , time text , type text  ) ";
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 32);
+        super(c, DB_NAME, null, 47);
     }
 
     @Override
@@ -275,9 +281,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
         db.execSQL(CREATE_TABLE_FILTER);
 
-    }
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERVER_MSG);
+        db.execSQL(CREATE_TABLE_SERVERMSG);
 
-    //id , index , content , status:  0默认 1接收 ， 2接收，正在做  3接收到并做完，上传结果中  4，接收到并做完，上传成功
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -287,7 +294,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_WX_MOMENT);
         db.execSQL(CREATE_TABLE_WX_COMMNET);
         db.execSQL(CREATE_TABLE_FILTER);
-
+        db.execSQL(CREATE_TABLE_SERVERMSG);
     }
 
     //-------------------------------AddFriend-----------------------------
@@ -608,4 +615,100 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+
+    //-------------------------servermsg----------------------
+
+    public void addServerMsg(ServerMsg sm) {
+        if (sm.index == 0) {
+            return;
+        }
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("indexs", sm.index);
+        values.put("content", sm.content);
+        values.put("replyContent", sm.replyContent);
+        values.put("status", sm.status);
+        values.put("time", sm.time);
+        values.put("type", sm.type);
+        db.insert(TABLE_SERVER_MSG, null, values);
+        db.close();
+    }
+
+    //获取所有不等于3的消息
+    public ArrayList<ServerMsg> getAllServerMsg(int status) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = null;
+        if (status == 0) {
+            cur = db.query(TABLE_SERVER_MSG, null, null, null, null, null, null);
+        } else {
+            cur = db.query(TABLE_SERVER_MSG, null, "status!=?", new String[]{status + ""}, null, null, null);
+        }
+        ArrayList<ServerMsg> groups = new ArrayList<>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            int index = cur.getInt(cur.getColumnIndex("indexs"));
+            String content = cur.getString(cur.getColumnIndex("content"));
+            String replyContent = cur.getString(cur.getColumnIndex("replyContent"));
+            status = cur.getInt(cur.getColumnIndex("status"));
+            long time = cur.getLong(cur.getColumnIndex("time"));
+            int type = cur.getInt(cur.getColumnIndex("type"));
+            ServerMsg sm = new ServerMsg(id, index, content, replyContent, status, time, type);
+            groups.add(sm);
+        }
+        cur.close();
+        db.close();
+
+        return groups;
+    }
+
+    public void updateServerMsgStatusByIndex(int index, int status) {
+        Log.d("test", "updateServerMsgStatusByIndex index = " + index + " , status = " + status);
+        if (index == 0) {
+            return;
+        }
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("status", status);
+        String[] args = {index + ""};
+        db.update(TABLE_SERVER_MSG, cv, "indexs=?", args);
+        db.close();
+    }
+
+    public void updateServerMsgReplyContentByIndex(int index, String replyContent) {
+        Log.d("test", "updateServerMsgStatusByIndex index = " + index + " , replyContent = " + replyContent);
+        if (index == 0) {
+            return;
+        }
+        if (db == null)
+            db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("replyContent", replyContent);
+        String[] args = {index + ""};
+        db.update(TABLE_SERVER_MSG, cv, "indexs=?", args);
+        db.close();
+    }
+
+    public boolean isIndexExisted(int index) {
+        if (db == null)
+            db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_SERVER_MSG, null, "indexs=?", new String[]{index + ""}, null, null, null);
+        int count = 0;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            count++;
+        }
+        cur.close();
+        db.close();
+        return count > 0;
+    }
+
+
+    public void deleteServerMsg() {
+        if (db == null)
+            db = getWritableDatabase();
+        db.delete(TABLE_SERVER_MSG, null, null);
+        db.close();
+    }
 }
