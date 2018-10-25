@@ -324,8 +324,10 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
                         HttpUtil.deviceRuntime(MainActivity.this, "2", true);
+                    }else {
+                        HttpUtil.deviceRuntime(MainActivity.this, "1", true);
                     }
-                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD_STATUS, 10 * 60 * 1000);
+                    mHandler.sendEmptyMessageDelayed(MSG_UPLOAD_STATUS, 60 * 60 * 1000);
                 }
                 break;
                 case MSG_GET_COMMAND: {
@@ -339,7 +341,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                 break;
                 case MSG_CHECK_NEWVERSION: {
                     checkNewVersion();
-                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_NEWVERSION, 10 * 60 * 1000);
+                    mHandler.sendEmptyMessageDelayed(MSG_CHECK_NEWVERSION, 60 * 60 * 1000);
                 }
                 break;
                 case MSG_CHECK_SHUTDOWN: {
