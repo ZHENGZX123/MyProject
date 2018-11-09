@@ -1,6 +1,7 @@
 package com.android.kiway.activity;
 
 import android.app.AppOpsManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -60,6 +61,7 @@ import java.util.Date;
 import cn.kiway.mdmsdk.MDMHelper;
 import cn.kiway.mdmsdk.cn.kiway.mdmsdk.util.RootCmd;
 
+import static com.android.kiway.KWApp.MSG_INITZHUS;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.SCREEN;
 import static com.android.kiway.dialog.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static com.android.kiway.utils.Constant.APPID;
@@ -107,7 +109,6 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     public static final int MSG_HUAWEI_PUSH = 10;
     public static final int MSG_COLLAPSE = 11;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,12 +153,14 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         //22.获取app的使用时间
         getAppCanUseData();
         //23.zbus
-        initZbus();
+        // initZbus();
         //24.悬浮窗
         checkAlertWindow();
         //25.ZTC演示
         collapse();
         requestRoot();
+        //监听屏幕广播
+        registSreenStatusReceiver();
     }
 
     private void requestRoot() {
@@ -199,7 +202,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     }
 
     public void initZbus() {
-        Log.e("test", "initZbus");
+
         new Thread() {
             @Override
             public void run() {
@@ -208,11 +211,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     if (TextUtils.isEmpty(token)) {
                         return;
                     }
+                    Log.e("test", "initZbus");
                     String topic = "kiway_push_" + token;
                     Log.e("test", "consume topic = " + topic);
                     if (consumeUtil == null)
                         consumeUtil = new RabbitMQUtils(Constant.zbusHost, Constant.zbusPost);
                     Channel channel = consumeUtil.createChannel(topic, topic);
+                    //channel.confirmSelect();
                     channels.add(channel);
                     consumeUtil.consumeMsg(new DefaultConsumer(channel) {
                         @Override
@@ -221,7 +226,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                             //消费消费
                             String msg = new String(body, "utf-8");
                             System.out.println("consume msg: " + msg);
-                            //处理逻辑
+                            //处理逻辑.
                             try {
                                 String message = new JSONObject(msg).optString("message");
                                 CommandUtil.handleCommand(getApplicationContext(), message);
@@ -232,6 +237,13 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                         }
                     }, channel);
                 } catch (Exception e) {
+                    try {
+                        sleep(10000);
+                        ZbusHost.closeMQ1();
+                        initZbus();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                     e.printStackTrace();
                 }
             }
@@ -324,7 +336,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
                     int level = intent.getIntExtra("level", 0);
                     if (level < 5) {
                         HttpUtil.deviceRuntime(MainActivity.this, "2", true);
-                    }else {
+                    } else {
                         HttpUtil.deviceRuntime(MainActivity.this, "1", true);
                     }
                     mHandler.sendEmptyMessageDelayed(MSG_UPLOAD_STATUS, 60 * 60 * 1000);
@@ -396,6 +408,8 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onResume() {
         super.onResume();
+        checkZbus();
+
         //1.检查锁屏
         Utils.checkTemperary(this);
         //2.检查关机
@@ -429,8 +443,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
 
     private void setUsageStats() {
         if ((!Build.MODEL.equals("rk3288") || !Build.MODEL.equals("rk3368-P9")) && Build.VERSION.SDK_INT >= Build
-                .VERSION_CODES.LOLLIPOP && !hasPermission
-                ()) {
+                .VERSION_CODES.LOLLIPOP && !hasPermission()) {
             ShowMessageDailog showMessageDailog = new ShowMessageDailog(this);
             showMessageDailog.setShowMessage("请您到设置页面打开权限：选择开维教育桌面--允许访问使用记录--打开", YUXUNFANWENJLU);
             showMessageDailog.setCancelable(false);
@@ -546,6 +559,7 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mScreenStatusReceiver);
         Log.d("test", "Main onDestroy");
         if (telephonyManager != null) {
             telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
@@ -714,5 +728,60 @@ public class MainActivity extends BaseActivity implements CheckPassword.CheckPas
         }.start();
     }
 
+    //zzx add 屏幕广播
+    public void checkZbus() {
+        if (consumeUtil != null) {
+            Log.i("test", "检查Zbus  consumeUtil==>不为空");
+            if (consumeUtil.connection == null) {
+                Log.i("test", "检查Zbus  connection==>为空");
+                //ZbusHost.closeMQ1();
+                initZbus();
+                return;
+            }
+            if (consumeUtil.connection != null && !consumeUtil.connection.isOpen()) {
+                Log.i("test", "检查Zbus  channel==>已关闭");
+                //ZbusHost.closeMQ1();
+                initZbus();
+            }
+        } else {
+            Log.i("test", "检查Zbus  consumeUtil==为空");
+           // ZbusHost.closeMQ1();
+            initZbus();
+        }
+    }
+
+    private ScreenStatusReceiver mScreenStatusReceiver;
+
+    private void registSreenStatusReceiver() {
+        mScreenStatusReceiver = new ScreenStatusReceiver();
+        IntentFilter screenStatusIF = new IntentFilter();
+        screenStatusIF.addAction(Intent.ACTION_SCREEN_ON);
+        screenStatusIF.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mScreenStatusReceiver, screenStatusIF);
+    }
+
+    class ScreenStatusReceiver extends BroadcastReceiver {
+        String SCREEN_ON = "android.intent.action.SCREEN_ON";
+        String SCREEN_OFF = "android.intent.action.SCREEN_OFF";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (SCREEN_ON.equals(intent.getAction())) {
+                Log.i("test", "ppp-屏幕亮了");
+                long time = context.getSharedPreferences("kiway", 0).getLong("screenOffTime", 0);
+                if (time != 0 && System.currentTimeMillis() - time > 1000 * 60) {
+                    Log.i("test", "锁屏超过时间啦");
+                    if (KWApp.instance != null)
+                        KWApp.instance.mHandler.sendEmptyMessage(MSG_INITZHUS);
+                    return;
+                }
+                checkZbus();
+            } else if (SCREEN_OFF.equals(intent.getAction())) {
+                Log.w("ppp", "ppp-屏幕暗了");
+                context.getSharedPreferences("kiway", 0).edit().putLong("screenOffTime", System.currentTimeMillis())
+                        .commit();
+            }
+        }
+    }
 }
 

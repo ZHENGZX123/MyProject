@@ -61,7 +61,6 @@ public class BaseActivity extends com.android.launcher3.BaseActivity {
         } else {
             this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
-
     }
 
     @Override

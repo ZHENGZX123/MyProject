@@ -15,7 +15,7 @@ public class Constant {
 
     public static String currentTeacher = "";
     public static final int zbusPost = 5673;//正式
-        public static final String serverUrl = "http://mdm.kiway.cn:8083/";
+    public static final String serverUrl = "http://mdm.kiway.cn:8083/";
     public static final String clientUrl = "http://mdm.kiway.cn/";
     //测试
 //    public static final int zbusPost = 5672; //测试
