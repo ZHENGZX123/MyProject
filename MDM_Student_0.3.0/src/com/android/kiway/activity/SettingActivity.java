@@ -48,10 +48,12 @@ public class SettingActivity extends BaseActivity {
         if (getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
             getSharedPreferences("kiway", 0).edit().putBoolean("locked", false).commit();
             mode.setText("当前未锁定");
+           // KWApp.instance.mHandler.sendEmptyMessage(MSG_ONLINE);
             unlock();
         } else {
             getSharedPreferences("kiway", 0).edit().putBoolean("locked", true).commit();
             mode.setText("当前已锁定");
+            //KWApp.instance.mHandler.sendEmptyMessage(MSG_ONLINE);
             lock();
             //锁定的时候调用一次getCommand获取最新命令
             MainActivity.instance.getCommand();

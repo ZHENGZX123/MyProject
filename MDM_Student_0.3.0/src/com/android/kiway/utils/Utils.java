@@ -2,7 +2,9 @@ package com.android.kiway.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1434,5 +1436,13 @@ public class Utils {
             e.printStackTrace();
         }
     }
-
+public static void restartApp(Context context,long time){
+    Intent intent = context.getPackageManager()
+            .getLaunchIntentForPackage(context.getPackageName());
+    PendingIntent restartIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent
+            .FLAG_ONE_SHOT);
+    AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    mgr.set(AlarmManager.RTC, System.currentTimeMillis() +time , restartIntent); // 0.5秒钟后重启应用
+    System.exit(0);
+}
 }

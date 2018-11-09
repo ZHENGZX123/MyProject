@@ -65,9 +65,9 @@ public class AppListActivity3 extends BaseActivity {
                 String action = "";
                 if (a.selected) {
                     new MyDBHelper(AppListActivity3.this).addCustonApp(a.packages);
-                    action= INSTALL_SUCCESS;
+                    action = INSTALL_SUCCESS;
                 } else {
-                    action=REMOVE_SUCCESS;
+                    action = REMOVE_SUCCESS;
                     new MyDBHelper(AppListActivity3.this).deleteAppInCuston(a.packages);
                 }
                 if (MainActivity2.instance != null) {
@@ -76,7 +76,7 @@ public class AppListActivity3 extends BaseActivity {
                     intent.putExtra("boolean", true);
                     intent.setAction(action);
                     sendOrderedBroadcast(intent, null);
-               }
+                }
                 adapter.notifyDataSetChanged();
             }
         });
@@ -100,13 +100,7 @@ public class AppListActivity3 extends BaseActivity {
     public void reStart(View view) {
 //   ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 //        manager.restartPackage("cn.kiway.mdm");
-        Intent intent = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage(getBaseContext().getPackageName());
-        PendingIntent restartIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent
-                .FLAG_ONE_SHOT);
-        AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, restartIntent); // 0.5秒钟后重启应用
-        System.exit(0);
+        Utils.restartApp(getBaseContext(),500);
     }
 
     private class MyAdapter extends BaseAdapter {

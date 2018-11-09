@@ -2533,7 +2533,7 @@ public class Launcher extends MainActivity
             }
             return;
         }
-        if (packageName.contains("com.android.camera2")) {
+        if (packageName.contains("com.android.camera2") || packageName.contains("com.huawei.camera")) {
             HttpUtil.childOperation(this, "useApp", "使用了相机APP");
             int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
             if (flag_camera == 0) {
@@ -2628,7 +2628,6 @@ public class Launcher extends MainActivity
                 return;
             }
         }
-
         // Start activities
         startAppShortcutOrInfoActivity(v);
     }
@@ -2669,7 +2668,6 @@ public class Launcher extends MainActivity
             startActivity(new Intent(this, SystemSetupActivity.class));
             return;
         }
-
         if (intent.getComponent().getPackageName().contains("com.android.browser") || intent.getComponent()
                 .getPackageName().contains("cn.kiway.browser")) {
             if (AppListUtils.isAppInstalled(this, "cn.kiway.browser")) {
@@ -2684,7 +2682,8 @@ public class Launcher extends MainActivity
             }
             return;
         }
-        if (intent.getComponent().getPackageName().contains("com.android.camera2")) {
+        if (intent.getComponent().getPackageName().contains("com.android.camera2") || intent.getComponent()
+                .getPackageName().contains("com.huawei.camera")) {
             int flag_camera = getSharedPreferences("kiway", 0).getInt("flag_camera", 1);
             if (flag_camera == 0) {
                 toast("相机功能当前不能使用");

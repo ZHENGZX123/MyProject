@@ -468,9 +468,10 @@ public class HttpUtil {
                 @Override
                 public void onSuccess(int code, Header[] headers, String ret) {
                     Log.d("test", "installationPush onSuccess = " + ret);
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.initZbus();
-                    }
+                    //zzx  add
+//                    if (MainActivity.instance != null) {
+//                        MainActivity.instance.initZbus();
+//                    }
                 }
 
                 @Override

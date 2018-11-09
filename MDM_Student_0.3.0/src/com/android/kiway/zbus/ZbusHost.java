@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.kiway.KWApp;
-import com.android.kiway.entity.App;
 import com.android.kiway.entity.Teacher;
 import com.android.kiway.utils.Constant;
 import com.android.kiway.utils.MyDBHelper;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 
 import static com.android.kiway.KWApp.MSG_INITZHUS2;
 import static com.android.kiway.utils.Constant.APPID;
@@ -38,13 +36,18 @@ public class ZbusHost {
                 super.run();
                 try {
                     if (consumeUtil != null) {
+//                        if (consumeUtil.channel != null && consumeUtil.channel.isOpen())
+//                            consumeUtil.channel.close();
                         consumeUtil.close();
                         consumeUtil = null;
                     }
-                    for (Channel channel : channels) {
-                        channel.abort();
+
+                    if (channels != null && channels.size() > 0) {
+                        for (Channel channel : channels) {
+                            if (channel != null)
+                                channel.abort();
+                        }
                     }
-                    channels = null;
                     sleep(5000);
                     if (KWApp.instance != null)
                         KWApp.instance.mHandler.sendEmptyMessage(MSG_INITZHUS2);
@@ -53,6 +56,9 @@ public class ZbusHost {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+//                 catch (TimeoutException e) {
+//                    e.printStackTrace();
+//                }
             }
         }.start();
     }
@@ -69,7 +75,8 @@ public class ZbusHost {
                     }
                     if (channels != null) {
                         for (Channel channel : channels) {
-                            channel.abort();
+                            if (channel != null)
+                                channel.abort();
                         }
                         channels = null;
                     }
@@ -85,6 +92,7 @@ public class ZbusHost {
             JSONObject obj = new JSONObject();
             obj.put("studentIMEI", Utils.getIMEI(c));
             obj.put("command", cmd);
+            obj.put("lock", c.getSharedPreferences("kiway", 0).getBoolean("locked", false));
 
             String title = "标题";
             String desc = "描述";
@@ -105,18 +113,20 @@ public class ZbusHost {
             pushMessageVo.setSenderId(token);//学生的token
             pushMessageVo.setPushType("zbus");
 
-            Log.d("test", "sendMSG " + msg.toString());
+            Log.e("test", "sendMSG " + msg.toString());
             new Thread() {
                 @Override
                 public void run() {
-                    Channel channel = consumeUtil.createChannel(topic, topic);
-                    try {
-                        consumeUtil.sendMsg(pushMessageVo, channel);
-                        channel.abort();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (consumeUtil != null) {
+                        Channel channel = consumeUtil.createChannel(topic, topic);
+                        try {
+                            consumeUtil.sendMsg(pushMessageVo, channel);
+                            channel.abort();
+//                        channel.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-
                 }
             }.start();
             return true;
@@ -132,7 +142,7 @@ public class ZbusHost {
             JSONObject obj = new JSONObject();
             obj.put("studentIMEI", Utils.getIMEI(c));
             obj.put("command", cmd);
-
+            obj.put("lock", c.getSharedPreferences("kiway", 0).getBoolean("locked", false));
             String title = "标题";
             String desc = "描述";
             final String msg = obj.toString();

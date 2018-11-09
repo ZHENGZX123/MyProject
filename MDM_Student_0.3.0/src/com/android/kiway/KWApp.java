@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.android.kiway.activity.BaseActivity;
 import com.android.kiway.activity.MainActivity;
 import com.android.kiway.aidlservice.RemoteAidlService;
+import com.android.kiway.utils.CrashHandler;
 import com.android.kiway.utils.HttpUtil;
 import com.android.kiway.utils.UploadUtil;
 import com.android.kiway.utils.Utils;
@@ -89,6 +90,12 @@ public class KWApp extends Application {
                 HttpUtil.installationPush(instance, token, imei);
             } else if (msg.what == MSG_LOCK) {
                 //zzx add
+                //如果没有登录，不接收推送
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("huawei", "未锁定，不给锁屏");
+                    return;
+                }
+                keyguard();
                 lockscreen = true;
                 Intent intent = new Intent(KWApp.this, LockSreenService.class);
                 startService(intent);
@@ -106,9 +113,19 @@ public class KWApp extends Application {
                 MDMHelper.getAdapter().setBackButtonDisabled(false);
                 MDMHelper.getAdapter().setHomeButtonDisabled(false);
             } else if (msg.what == MSG_MUTE) {
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("huawei", "未锁定，不给锁屏");
+                    return;
+                }
+                keyguard();
                 muted = true;
                 mute();
             } else if (msg.what == MSG_UNMUTE) {
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("huawei", "未锁定，不给锁屏");
+                    return;
+                }
+                keyguard();
                 muted = false;
                 unMute();
             } else if (msg.what == MSG_LAUNCH_APP) {
@@ -117,6 +134,7 @@ public class KWApp extends Application {
                     return;
                 }
                 //打开APP
+                keyguard();
                 temporary_app = true;
                 Utils.launchApp(getApplicationContext(), (JSONObject) msg.obj);
             } else if (msg.what == MSG_LAUNCH_MDM) {
@@ -124,6 +142,7 @@ public class KWApp extends Application {
                     Log.d("test", "bug#1598解锁状态下，不接收管控命令");
                     return;
                 }
+                keyguard();
                 temporary_app = false;
                 if (isAttendClass) {
                     sendEmptyMessage(MSG_ATTEND_CALSS);
@@ -136,8 +155,16 @@ public class KWApp extends Application {
                 //执行flag命令
                 excuteFlagCommand();
             } else if (msg.what == MSG_REBOOT) {
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("huawei", "未锁定，不给重启");
+                    return;
+                }
                 MDMHelper.getAdapter().rebootDevice();
             } else if (msg.what == MSG_SHUTDOWN) {
+                if (!getSharedPreferences("kiway", 0).getBoolean("locked", false)) {
+                    Log.d("huawei", "未锁定，不给关机");
+                    return;
+                }
                 MDMHelper.getAdapter().shutdownDevice();
             } else if (msg.what == MSG_PORTRAIT) {
                 if (Build.MODEL.equals("BZK-W00") && currentActivity != null && currentActivity instanceof
@@ -186,31 +213,14 @@ public class KWApp extends Application {
                     Utils.showSMSDialog(KWApp.instance.currentActivity, (SmsMessage) msg.obj);
                 }
             } else if (msg.what == MSG_ATTEND_CALSS) {
+                keyguard();
                 if (KWApp.instance != null) {
                     if (!isAppInstalled(KWApp.instance, ZHIHUIKETANGPG)) {
                         Toast.makeText(KWApp.instance, "请安装课堂互动", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     isAttendClass = true;
-                    //3.唤醒屏幕
-                    // 获取电源管理器对象
-                    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    boolean screenOn = pm.isScreenOn();
-                    if (!screenOn) {
-                        // 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
-                        PowerManager.WakeLock wl = pm.newWakeLock(
-                                PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
-                        wl.acquire(10000); // 点亮屏幕
-                        wl.release(); // 释放
-                    }
-                    // 屏幕解锁
-                    KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-                    KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
-                    // 屏幕锁定
-                    keyguardLock.reenableKeyguard();
-                    keyguardLock.disableKeyguard(); // 解锁
-
+                    keyguard();
                     MDMHelper.getAdapter().setTaskButtonDisabled(true);
                     MDMHelper.getAdapter().setHomeButtonDisabled(true);
 
@@ -243,7 +253,6 @@ public class KWApp extends Application {
                         RemoteAidlService.attendClass(msg.obj.toString());
                         startActivity(in);
                     }
-
                     //2.发送zbus命令
                     //返回shagnke给教师端，当作online
                     ZbusHost.doSendMsg(KWApp.instance, "shangke");
@@ -258,7 +267,6 @@ public class KWApp extends Application {
                 }
             } else if (msg.what == MSG_MESSAGE) {
                 RemoteAidlService.accpterMessage(currentActivity, msg.obj.toString());
-
             } else if (msg.what == MSG_PUSH_FILE_I) {
             } else if (msg.what == MSG_ONLINE) {
                 //zhengkang add0926 online
@@ -270,11 +278,14 @@ public class KWApp extends Application {
                 doSnapshot(MainActivity.instance);
             } else if (msg.what == MSG_INITZHUS) {
                 if (MainActivity.instance != null) {
-                    closeMQ();
+                    //Utils.restartApp(getBaseContext(),0);
+                    MainActivity.instance.checkZbus();
+                    mHandler.sendEmptyMessageDelayed(MSG_INITZHUS, 30 * 60 * 1000);
                 }
             } else if (msg.what == MSG_INITZHUS2) {
-                MainActivity.instance.initZbus();
-                mHandler.sendEmptyMessageDelayed(MSG_INITZHUS, 60 * 60 * 4 * 1000);
+                if (MainActivity.instance != null) {
+                    MainActivity.instance.initZbus();
+                }
             }
         }
     };
@@ -285,12 +296,12 @@ public class KWApp extends Application {
             public void run() {
                 //保存截图到本地
                 try {
+                    MDMHelper.getAdapter().setScreenCaptureDisabled(false);
                     Bitmap bitmap = MDMHelper.getAdapter().captureScreen();
                     if (bitmap == null) {
                         main.getWindow().getDecorView().setDrawingCacheEnabled(true);
                         bitmap = main.getWindow().getDecorView().getDrawingCache();
                     }
-
                     String time = System.currentTimeMillis() + "";
                     final String fileName = time + ".png";
                     Utils.saveBitmap(bitmap, fileName, "/mnt/sdcard/kiway_mdm_student/downloads/");
@@ -313,7 +324,7 @@ public class KWApp extends Application {
         super.onCreate();
         instance = this;
         //crash
-        //CrashHandler.getInstance().init(this);
+        CrashHandler.getInstance().init(this);
         //huawei
         huaweiPush(this);
         //xutils
@@ -325,7 +336,7 @@ public class KWApp extends Application {
                 closeMQ();
             }
         });
-        mHandler.sendEmptyMessageDelayed(MSG_INITZHUS, 60 * 60 * 4 * 1000);
+        //mHandler.sendEmptyMessageDelayed(MSG_INITZHUS, 60 * 30 * 1000);
     }
 
 
@@ -384,5 +395,26 @@ public class KWApp extends Application {
         Log.d("test", "RINGING 取消静音");
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, lastVolume, 0);
+    }
+
+    public void keyguard() {
+        //3.唤醒屏幕
+        // 获取电源管理器对象
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean screenOn = pm.isScreenOn();
+        if (!screenOn) {
+            // 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
+            PowerManager.WakeLock wl = pm.newWakeLock(
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                            PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
+            wl.acquire(10000); // 点亮屏幕
+            wl.release(); // 释放
+        }
+        // 屏幕解锁
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
+        // 屏幕锁定
+        keyguardLock.reenableKeyguard();
+        keyguardLock.disableKeyguard(); // 解锁
     }
 }
