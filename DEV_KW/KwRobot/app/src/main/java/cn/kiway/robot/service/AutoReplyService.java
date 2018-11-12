@@ -162,6 +162,7 @@ import static cn.kiway.robot.util.Constant.ROLE_KEFU;
 import static cn.kiway.robot.util.Constant.ROLE_WODI;
 import static cn.kiway.robot.util.Constant.SAVE_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
+import static cn.kiway.robot.util.Constant.SEND_WECHATMOMENTS_COUNT;
 import static cn.kiway.robot.util.Constant.SET_WODI_CMD;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.TRANSFER_MASTER_CMD;
@@ -189,10 +190,10 @@ public class AutoReplyService extends AccessibilityService {
 
     public static int MSG_ACTION_TIMEOUT = 1;
     public static int MSG_INSERT_QUEUE = 2;
-    public static int MSG_INSERT_RENAME_QUEUE = 5;
-    public static int MSG_TRAVERSAL_QUEUE = 3;
-    public static int MSG_SEND_HEARTBEAT = 4;
-    public static int MSG_CHECK_HEARTBEAT = 5;
+    public static int MSG_INSERT_RENAME_QUEUE = 3;
+    public static int MSG_TRAVERSAL_QUEUE = 4;
+    public static int MSG_SEND_HEARTBEAT = 5;
+    public static int MSG_CHECK_HEARTBEAT = 6;
 
     public static AutoReplyService instance;
 
@@ -306,7 +307,7 @@ public class AutoReplyService extends AccessibilityService {
                 action.content = "heartbeat";
                 sendMsgToServer(action);
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
-                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 3 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 60 * 1000);
 
                 Calendar c = Calendar.getInstance();
                 int weekday = c.get(Calendar.DAY_OF_WEEK);
@@ -318,7 +319,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_CHECK_HEARTBEAT) {
                 mHandler.removeMessages(MSG_CHECK_HEARTBEAT);
-                mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 8 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_CHECK_HEARTBEAT, 25 * 60 * 1000);
                 if (Utils.hbReply) {
                     //3次都收到了心跳回复
                     Utils.hbReply = false;
@@ -438,6 +439,7 @@ public class AutoReplyService extends AccessibilityService {
                         action.content = o.optString("content");
                         action.actionType = TYPE_TEXT;
                         action.command = null;
+                        action.indexs = o.optInt("indexs");
                         actions.put(key, action);
                     }
 
@@ -654,6 +656,14 @@ public class AutoReplyService extends AccessibilityService {
     public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
         if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD)
                 || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD) || command.cmd.equals(NOTIFY_RESULT_CMD)) {
+            try {
+                String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
+                JSONObject o = new JSONObject(content);
+                int indexs = o.optInt("indexs");
+                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, STATUS_3);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return;
         }
 
@@ -819,8 +829,8 @@ public class AutoReplyService extends AccessibilityService {
         return g;
     }
 
-    //群里发来的消息
-    public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message) {
+    //群里发来的消息   zzx add  type类型 增加链接和小程序  wxMessage  因为链接跟小程序上报的内容和本地数据库不一致，所以需要传过来然后保存本地的
+    public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message, final int type, final String wxMessage) {
         new Thread() {
             @Override
             public void run() {
@@ -833,7 +843,8 @@ public class AutoReplyService extends AccessibilityService {
                     JSONObject o = new JSONObject();
                     o.put("clientGroupId", clientGroupId);
                     o.put("name", sender);
-                    o.put("type", TYPE_TEXT);
+                    // o.put("type", TYPE_TEXT);
+                    o.put("type", type);
                     o.put("message", message);
                     o.put("robotId", robotId);
                     o.put("userId", wxNo);
@@ -842,9 +853,9 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
 
                     doSendMessageToServer(topic, msg, false, 0);
-
-                    new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
-
+                    //zzx  add
+                    //new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
+                    new MyDBHelper(getApplication()).addMessage(sender, wxMessage, System.currentTimeMillis() + "");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -906,6 +917,9 @@ public class AutoReplyService extends AccessibilityService {
             Command command = action.command;
             if (command != null) {
                 sendMsgToServer2(success ? 200 : 500, command);
+            } else {
+                int indexs = action.indexs;
+                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, STATUS_3);
             }
         }
 
@@ -1201,7 +1215,7 @@ public class AutoReplyService extends AccessibilityService {
                 sendReply20sLater(action);
             } else if (!TextUtils.isEmpty(action.clientGroupId)) {
                 Log.d("test", "群组消息");
-                sendMsgToServer3(action.clientGroupId, action.sender, action.content);
+                sendMsgToServer3(action.clientGroupId, action.sender, action.content, TYPE_TEXT, action.content);
             } else {
                 Log.d("test", "既不是好友也不是群组，不处理这个消息");
             }
@@ -1406,7 +1420,7 @@ public class AutoReplyService extends AccessibilityService {
                         String target = o.optString("oldName");
                         searchTargetInWxHomePage(actionType, target, true);
                     } else if (actionType == TYPE_CHECK_MOMENT) {
-                        //发现-朋友圈
+                        //发现-朋友圈，改为：我-相册
                         checkMoment();
                     } else if (actionType == TYPE_INTERACT_MOMENT) {
                         //我-相册
@@ -1800,42 +1814,58 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void checkMoment() {
-        faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                findTargetNode(NODE_TEXTVIEW, "朋友圈", CLICK_PARENT, true);
+                boolean find = findTargetNode(NODE_TEXTVIEW, "相册", CLICK_PARENT, true);
+                if (!find) {
+                    release(false);
+                    return;
+                }
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("test", "双击");
-                        findTargetNode(NODE_TEXTVIEW, "朋友圈", CLICK_PARENT, true);
-                        findTargetNode(NODE_TEXTVIEW, "朋友圈", CLICK_PARENT, true);
-                        new Thread() {
+                        findTargetNode(NODE_IMAGEBUTTON, 1);
+                        if (mFindTargetNode == null) {
+                            release(false);
+                            return;
+                        }
+                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    sleep(4000);
-                                    //先双击一下
-                                    int count = 10;
-                                    for (int i = 0; i < count; i++) {
-                                        execRootCmdSilent("input swipe 360 900 360 300");
-                                        try {
-                                            sleep(3000);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    int count = 5;
+                                                    for (int i = 0; i < count; i++) {
+                                                        execRootCmdSilent("input swipe 360 900 360 300");
+                                                        try {
+                                                            sleep(3000);
+                                                        } catch (InterruptedException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                    release(false);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }.start();
                                     }
-                                    release(false);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                }, 3000);
                             }
-                        }.start();
+                        }, 2000);
                     }
-                }, 3000);
+                }, 2000);
             }
-        }, 2000);
+        }, 1000);
     }
 
     //用分享去做
@@ -4556,7 +4586,8 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendTextOnly(String reply, boolean release) {
-        reply = reply.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n").replace("<div>", "").replace("</div>", "").replace("&nbsp;", " ");
+        //reply = reply.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n").replace("<div>", "").replace("</div>", "").replace("&nbsp;", " ").replace("<span>", "").replace("</span>", "");
+        reply = Utils.replaceReply(reply);
         final String finalReply = reply;
         Log.d("test", "sendTextOnly finalReply = " + finalReply);
         mHandler.postDelayed(new Runnable() {
@@ -4824,7 +4855,7 @@ public class AutoReplyService extends AccessibilityService {
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-
+                SEND_WECHATMOMENTS_COUNT = 1;
                 doShareToWechatMoments(id, description);
             } else {
                 //网文
@@ -4846,7 +4877,7 @@ public class AutoReplyService extends AccessibilityService {
                 sp.setShareType(Platform.SHARE_WEBPAGE);
                 Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
                 wx.share(sp);
-
+                SEND_WECHATMOMENTS_COUNT = 1;
                 doShareToWechatMoments(id, description);
             }
         } catch (Exception e) {
@@ -4855,6 +4886,25 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
+    public boolean isPasteContent(String remark) {
+        if (TextUtils.isEmpty(remark)) {
+            return true;
+        }
+        boolean s = false;
+        //1.查找备注文本框并粘贴remark
+        findTargetNode(NODE_EDITTEXT, "");
+        if (mFindTargetNode != null) {
+            String content = mFindTargetNode.getText().toString();
+            if (content.equals("") || content.equals("这一刻的想法...")) {
+                s = false;
+            } else {
+                s = true;
+            }
+        }
+        return s;
+    }
+
+    //zzx add  判断分享文字是否粘贴成功，没有则循坏判断
     private void doShareToWechatMoments(final String id, final String remark) {
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -4862,41 +4912,80 @@ public class AutoReplyService extends AccessibilityService {
                 int delay = 0;
                 if (!TextUtils.isEmpty(remark)) {
                     //1.查找备注文本框并粘贴remark
-                    findTargetNode(NODE_EDITTEXT, "");
-                    if (mFindTargetNode != null) {
-                        String content = mFindTargetNode.getText().toString();
-                        if (content.equals("") || content.equals("这一刻的想法...")) {
-                            findTargetNode(NODE_EDITTEXT, remark);
-                        }
+                    if (!isPasteContent(remark)) {
+                        findTargetNode(NODE_EDITTEXT, remark);
+                        delay = 2000;
                     }
-                    delay = 2000;
                 }
                 //2.查找发送按钮并点击
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
-                        if (find) {
-                            new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
-                        }
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release(find);
+                        if (isPasteContent(remark) || SEND_WECHATMOMENTS_COUNT == 4) {
+                            final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
+                            if (find) {
+                                new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
                             }
-                        }, 3000);
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    release(find);
+                                }
+                            }, 3000);
+                        } else {
+                            SEND_WECHATMOMENTS_COUNT++;
+                            doShareToWechatMoments(id, remark);
+                        }
                     }
                 }, delay);
             }
         }, 10000);
     }
 
+
+    //
+//    private void doShareToWechatMoments(final String id, final String remark) {
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                int delay = 0;
+//                if (!TextUtils.isEmpty(remark)) {
+//                    //1.查找备注文本框并粘贴remark
+//                    findTargetNode(NODE_EDITTEXT, "");
+//                    if (mFindTargetNode != null) {
+//                        String content = mFindTargetNode.getText().toString();
+//                        if (content.equals("") || content.equals("这一刻的想法...")) {
+//                            findTargetNode(NODE_EDITTEXT, remark);
+//                        }
+//                    }
+//                    delay = 2000;
+//                }
+//                //2.查找发送按钮并点击
+//                mHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
+//                        if (find) {
+//                            new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
+//                        }
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                release(find);
+//                            }
+//                        }, 3000);
+//                    }
+//                }, delay);
+//            }
+//        }, 10000);
+//    }
     private void doShareToWechatFriend() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 final String sender = actions.get(currentActionID).sender;
                 //找文本框
+
                 findTargetNode(NODE_EDITTEXT, sender);
                 mHandler.postDelayed(new Runnable() {
                     @Override

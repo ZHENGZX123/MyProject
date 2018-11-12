@@ -41,7 +41,7 @@ public class SnsInfo {
         }
     }
 
-    public SnsInfo clone() {
+        public SnsInfo clone() {
         SnsInfo newSns = new SnsInfo();
         newSns.id = this.id;
         newSns.authorName = this.authorName;

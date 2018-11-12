@@ -53,11 +53,11 @@ public class ServerMsg {
         return "ServerMsg{" +
                 "id=" + id +
                 ", index=" + index +
+                ", status=" + status +
+                ", type=" + type +
+                ", time=" + time +
                 ", content='" + content + '\'' +
                 ", replyContent='" + replyContent + '\'' +
-                ", status=" + status +
-                ", time=" + time +
-                ", type=" + type +
                 '}';
     }
 }
