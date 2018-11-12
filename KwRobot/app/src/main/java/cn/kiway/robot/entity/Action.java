@@ -69,6 +69,7 @@ public class Action {
     public boolean replied;
     public Command command;
     public String clientGroupId;
+    public int indexs;
 
     @Override
     public String toString() {

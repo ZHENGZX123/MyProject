@@ -320,25 +320,23 @@ public class Utils {
                             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                                 String msg = new String(body, "utf-8");
                                 Log.d("test", "handleDelivery msg = " + msg);
-
-                                boolean existed = getMsgIndexAndSaveDB(c, msg, TYPE_MQ);
-                                if (existed) {
-                                    return;
-                                }
-
-                                //处理逻辑
-                                if (AutoReplyService.instance == null) {
-                                    Log.d("test", "服务没开");
-                                } else {
-                                    if (!isHeartBeatReply(msg) && !needPreDownload(msg)) {
-                                        Log.d("test", "不是心跳");
-                                        boolean imme = isNeedImme(msg);
-                                        Log.d("test", "imme = " + imme);
-                                        AutoReplyService.instance.sendReplyImmediately(msg, imme);
-                                    }
-                                }
                                 //手动消息确认
                                 channel.basicAck(envelope.getDeliveryTag(), false);
+
+                                boolean existed = getMsgIndexAndSaveDB(c, msg, TYPE_MQ);
+                                if (!existed) {
+                                    //处理逻辑
+                                    if (AutoReplyService.instance == null) {
+                                        Log.d("test", "服务没开");
+                                    } else {
+                                        if (!isHeartBeatReply(msg) && !needPreDownload(msg)) {
+                                            Log.d("test", "不是心跳");
+                                            boolean imme = isNeedImme(msg);
+                                            Log.d("test", "imme = " + imme);
+                                            AutoReplyService.instance.sendReplyImmediately(msg, imme);
+                                        }
+                                    }
+                                }
                             }
                         }, channel);
                     }
@@ -349,7 +347,6 @@ public class Utils {
         }.start();
     }
 
-    //FIXME 增加其他的cmd，不能把所有的cmd开放，比如，群内踢人有可能必定失败。
     private static boolean getMsgIndexAndSaveDB(Context c, String msg, int type) {
         try {
             JSONObject o = new JSONObject(msg);
@@ -358,19 +355,17 @@ public class Utils {
                 Log.d("test", "index = 0 , error");//心跳回复的index=0
                 return false;
             }
-
             boolean existed = new MyDBHelper(c).isIndexExisted(index);
             if (existed) {
                 Log.d("test", "DB已存在该记录");
                 return true;
             }
-
+            //TODO 这里还未开放，需要大量测试
             if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
                 new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", STATUS_0, System.currentTimeMillis(), type));
             } else {
                 new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", STATUS_3, System.currentTimeMillis(), type));
             }
-
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1096,6 +1091,7 @@ public class Utils {
     }
 
     public static File getWxDBFile(String dbName, String saveDbName) {
+
         long latestModified = 0;
         ArrayList<File> dbs = findDBFile(dbName);
         File latestFile = null;
@@ -1113,11 +1109,10 @@ public class Utils {
             new File(copyFilePath).delete();
         }
         copyFile(latestFile.getAbsolutePath(), copyFilePath);
-
         return new File(copyFilePath);
     }
 
-    public static ArrayList<File> findDBFile(String dbName) {
+    private static ArrayList<File> findDBFile(String dbName) {
         ArrayList<File> dbs = new ArrayList<>();
         File wxDataDir = new File(WX_DB_DIR_PATH);
         doFindDBFile(wxDataDir, dbName, dbs);
@@ -1285,6 +1280,7 @@ public class Utils {
 
     public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password, String sql) {
         Log.d("test", "doGetMessages");
+
         ArrayList<Message> messages = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -1293,7 +1289,7 @@ public class Utils {
             long current = System.currentTimeMillis();
             long before1hour = current - 60 * 60 * 1000;
             if (sql == null) {
-                sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and message.createTime > " + before1hour;
+                sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and (message.type = 1 or message.type = 49) and message.createTime > " + before1hour;
             }
             Log.d("test", "sql = " + sql);
             cursor = db.rawQuery(sql, null);
@@ -1317,7 +1313,8 @@ public class Utils {
                     m.remark = remark;
                 }
                 m.content = content;
-                messages.add(m);
+                if (!talker.endsWith("@chatroom") && type != 49)  //zzx add 个人消息只添加文字
+                    messages.add(m);
             }
             Log.d("test", "messages = " + messages);
             cursor.close();
@@ -1736,6 +1733,7 @@ public class Utils {
                     JSONArray param = new JSONArray();
                     for (Group g : groups) {
                         JSONObject o = new JSONObject();
+
                         o.put("clientGroupId", g.clientGroupId);
                         JSONArray members = new JSONArray();
                         for (GroupPeople gp : g.peoples) {
@@ -2325,7 +2323,19 @@ public class Utils {
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
                     Log.d("test", "resultReact onSuccess ret = " + ret);
-                    myListener.onResult(true);
+                    //zzx add
+                    try {
+                        JSONObject data = new JSONObject(ret);
+                        if (data.optInt("statusCode") == 200) {
+                            myListener.onResult(true);
+                        } else {
+                            myListener.onResult(false);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        myListener.onResult(false);
+                    }
+
                 }
 
                 @Override
@@ -2340,5 +2350,50 @@ public class Utils {
             Log.d("test", "resultReact exception = " + e.toString());
             myListener.onResult(false);
         }
+    }
+
+    public static String replaceReply(String content) {
+        String s = "";
+        s = content.replace("<br/>", "\n").replace("<br />", "\n").replace("<br>", "\n").replace("&nbsp;", " ").replace("&nbsp", " ");
+        return delHTMLTag(s);
+    }
+
+
+    /**
+     * 定义script的正则表达式
+     */
+    private static final String REGEX_SCRIPT = "<script[^>]*?>[\\s\\S]*?<\\/script>";
+    /**
+     * 定义style的正则表达式
+     */
+    private static final String REGEX_STYLE = "<style[^>]*?>[\\s\\S]*?<\\/style>";
+    /**
+     * 定义HTML标签的正则表达式
+     */
+    private static final String REGEX_HTML = "<[^>]+>";
+    /**
+     * 定义空格回车换行符
+     */
+    private static final String REGEX_SPACE = "\\s*|\t|\r|\n";
+
+    private static final String BR_STYLE = "<br[^>]*?>[\\s\\S]*?<\\/br>";
+
+    public static String delHTMLTag(String htmlStr) {
+
+        // 过滤script标签
+        Pattern p_script = Pattern.compile(REGEX_SCRIPT, Pattern.CASE_INSENSITIVE);
+        Matcher m_script = p_script.matcher(htmlStr);
+        htmlStr = m_script.replaceAll("");
+        // 过滤style标签
+        Pattern p_style = Pattern.compile(REGEX_STYLE, Pattern.CASE_INSENSITIVE);
+        Matcher m_style = p_style.matcher(htmlStr);
+        htmlStr = m_style.replaceAll("");
+        // 过滤html标签
+        Pattern p_html = Pattern.compile(REGEX_HTML, Pattern.CASE_INSENSITIVE);
+        Matcher m_html = p_html.matcher(htmlStr);
+        htmlStr = m_html.replaceAll("\n");
+
+
+        return htmlStr.trim(); // 返回文本字符串
     }
 }

@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.xiaoleilu.hutool.json.XML;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -552,15 +553,29 @@ public class MainActivity extends BaseActivity {
                         } else {
                             Log.d("test", "需要补发该消息");
                             if (m1.talker.endsWith("@chatroom")) {
+                                //群里的消息
                                 String wxId = m1.content.substring(0, m1.content.indexOf(":"));
                                 String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
                                 if (!TextUtils.isEmpty(sender)) {
-                                    String message = m1.content.substring(m1.content.indexOf(":") + 2);
-                                    AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message);
+                                    String message = "";
+                                    if (m1.type == 49) {//zzx add 解析连接数据，小程序xml转json
+                                        com.xiaoleilu.hutool.json.JSONObject xmlJSONObj = XML.toJSONObject(m1.content.substring(m1.content.indexOf(":") + 2));
+                                        JSONObject data = new JSONObject();
+                                        com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg").getJSONObject("appmsg");
+                                        data.put("type", appmsg.get("type"));
+                                        data.put("url", appmsg.get("url"));
+                                        data.put("title", appmsg.get("title"));
+                                        message = data.toString();
+                                        AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_LINK, m1.content);
+                                    } else  {
+                                        message = m1.content.substring(m1.content.indexOf(":") + 2);
+                                        AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_TEXT, message);
+                                    }
                                 } else {
                                     Log.d("test", "sender is null");
                                 }
                             } else {
+                                //家长个人消息，zzx暂时没做type49
                                 Action action = new Action();
                                 action.sender = m1.remark;
                                 action.content = m1.content;
@@ -624,7 +639,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
                 getAllMomentComments(true);
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 8 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 2 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_GROUPS) {
                 mHandler.removeMessages(MSG_GET_ALL_GROUPS);
                 getAllGroups(true);
@@ -692,14 +707,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 Utils.closeMQ();
-
-
                 try {
                     sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
 
                 if (MainActivity.instance != null) {
                     MainActivity.instance.runOnUiThread(new Runnable() {
@@ -716,7 +728,8 @@ public class MainActivity extends BaseActivity {
 
     public long lastUpdateTime;
     public int currentGrade = 5;
-    public static final int[] intervalGrades = new int[]{2, 3, 5, 10, 20, 30, 60};
+    //public static final int[] intervalGrades = new int[]{2, 3, 5, 10, 20, 30, 60};
+    public static final int[] intervalGrades = new int[]{10, 10, 10, 10, 10, 10, 10};//zzx add
 
     public void updateCheckMsgInterval() {
         long current = System.currentTimeMillis();
@@ -963,6 +976,7 @@ public class MainActivity extends BaseActivity {
                     final String password = initDbPassword(getApplicationContext());
                     final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
                     final ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
+
                     if (groups != null && groups.size() > 0) {
                         Utils.uploadGroup(MainActivity.this, groups, new MyListener() {
                             @Override
@@ -1084,27 +1098,34 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test(View v) {
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
-//            }
-//        }, 10000);
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        for (ServerMsg sm : sms) {
-            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.STATUS_3);
-        }
-        //getSharedPreferences("start", 0).edit().putInt("start", 0).commit();
-        //new MyDBHelper(this).deleteServerMsg();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+            }
+        }, 10000);
+
+        //应急，设置所有状态3
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        for (ServerMsg sm : sms) {
+//            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.STATUS_3);
+//        }
+
+//        new MyDBHelper(this).deleteServerMsg();
     }
 
     public void test2(View v) {
-//        getAllFriends(false, true);
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        Log.d("test", "sms count = " + sms.size());
-        for (ServerMsg sm : sms) {
-            Log.d("test", "sm = " + sm.toString());
+        try {
+            checkMomemt();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+//        getAllFriends(false, true);
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        Log.d("test", "sms count = " + sms.size());
+//        for (ServerMsg sm : sms) {
+//            Log.d("test", "sm = " + sm.toString());
+//        }
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -1119,21 +1140,20 @@ public class MainActivity extends BaseActivity {
 //            }
 //        }.start();
 //        getAllGroups(true);
+//        getAllMessages();
     }
 
     public void test3(View view) {
-        Utils.getConsumers(MainActivity.this, new MyListener() {
-            @Override
-            public void onResult(boolean success) {
-                if (!success) {
-                    doReConnect();
-                }
-            }
-        });
-
-
-//        Utils.getLastMsgIndex(this, null);
-//        resetNickName();
+//        Utils.getConsumers(MainActivity.this, new MyListener() {
+//            @Override
+//            public void onResult(boolean success) {
+//                if (!success) {
+//                    doReConnect();
+//                }
+//            }
+//        });
+        //  Utils.getLastMsgIndex(this, null);
+        resetNickName();
 //        resetNickName2();
     }
 

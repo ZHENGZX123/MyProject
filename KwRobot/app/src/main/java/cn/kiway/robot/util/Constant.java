@@ -28,7 +28,7 @@ public class Constant {
         port = 5676;
         clientUrl = "http://robot.kiway.cn";
 
-        //测试
+        // 测试
 //        host = "rbtest.kiway.cn";
 //        port = 5672;
 //        clientUrl = "http://rbtest.kiway.cn";
@@ -234,5 +234,10 @@ public class Constant {
     //机器人角色
     public static final int ROLE_KEFU = 0;
     public static final int ROLE_WODI = 1;
+
+
+    //zzx add 朋友圈文字成功判断
+
+    public static int SEND_WECHATMOMENTS_COUNT = 1;
 
 }
