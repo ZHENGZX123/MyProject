@@ -1122,7 +1122,7 @@ public class MainActivity extends BaseActivity {
         //应急，设置所有状态3
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        for (ServerMsg sm : sms) {
-//            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.STATUS_3);
+//            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
 //        }
 
 //        new MyDBHelper(this).deleteServerMsg();
