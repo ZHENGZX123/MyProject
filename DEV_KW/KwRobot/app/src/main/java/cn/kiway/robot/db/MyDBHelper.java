@@ -80,7 +80,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
         db.execSQL(CREATE_TABLE_FILTER);
 
-
+        //数据库升级，不要重置该表
 //        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERVER_MSG);
 //        db.execSQL(CREATE_TABLE_SERVERMSG);
 
