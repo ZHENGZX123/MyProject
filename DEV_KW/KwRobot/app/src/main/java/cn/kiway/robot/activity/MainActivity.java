@@ -130,6 +130,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("test", "main onCreate");
         setContentView(R.layout.activity_main);
         instance = this;
         newLogin = getIntent().getBooleanExtra("newLogin", false);
@@ -567,7 +568,7 @@ public class MainActivity extends BaseActivity {
                                         data.put("title", appmsg.get("title"));
                                         message = data.toString();
                                         AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_LINK, m1.content);
-                                    } else  {
+                                    } else {
                                         message = m1.content.substring(m1.content.indexOf(":") + 2);
                                         AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_TEXT, message);
                                     }
@@ -575,11 +576,24 @@ public class MainActivity extends BaseActivity {
                                     Log.d("test", "sender is null");
                                 }
                             } else {
-                                //家长个人消息，zzx暂时没做type49
-                                Action action = new Action();
-                                action.sender = m1.remark;
-                                action.content = m1.content;
-                                AutoReplyService.instance.sendMsgToServer(action);
+                                if (m1.type == 49) {//zzx add 解析连接数据，小程序xml转json
+                                    com.xiaoleilu.hutool.json.JSONObject xmlJSONObj = XML.toJSONObject(m1.content);
+                                    JSONObject data = new JSONObject();
+                                    com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg").getJSONObject("appmsg");
+                                    data.put("type", appmsg.get("type"));
+                                    data.put("url", appmsg.get("url"));
+                                    data.put("title", appmsg.get("title"));
+
+                                    Action action = new Action();
+                                    action.sender = m1.remark;
+                                    action.content = data.toString();
+                                    AutoReplyService.instance.sendMsgToServer(action, m1.content, Action.TYPE_LINK);
+                                } else {
+                                    Action action = new Action();
+                                    action.sender = m1.remark;
+                                    action.content = m1.content;
+                                    AutoReplyService.instance.sendMsgToServer(action, m1.content, Action.TYPE_TEXT);
+                                }
                             }
                         }
                     }
@@ -1115,32 +1129,18 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        try {
-            checkMomemt();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        getAllMessages();
+
 //        getAllFriends(false, true);
+//        getAllGroups(true);
+
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        Log.d("test", "sms count = " + sms.size());
 //        for (ServerMsg sm : sms) {
 //            Log.d("test", "sm = " + sm.toString());
 //        }
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    Log.d("test", "hasTask = " + AutoReplyService.instance.hasTasks());
-//                    try {
-//                        sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }.start();
-//        getAllGroups(true);
-//        getAllMessages();
+//        Utils.getLastMsgIndex(this, null);
     }
 
     public void test3(View view) {
@@ -1152,7 +1152,6 @@ public class MainActivity extends BaseActivity {
 //                }
 //            }
 //        });
-        //  Utils.getLastMsgIndex(this, null);
         resetNickName();
 //        resetNickName2();
     }
@@ -1311,9 +1310,15 @@ public class MainActivity extends BaseActivity {
         if (files == null || files.length == 0) {
             return;
         }
+        long current = System.currentTimeMillis();
+        long before1day = current - 24 * 60 * 60 * 1000;
         for (File f : files) {
             Log.d("test", "f = " + f.getAbsolutePath());
-            if (!f.isDirectory() && (f.getName().contains("db") || f.getName().endsWith("jpg"))) {
+            if (!f.isDirectory() && (f.getName().contains("db"))) {
+                Log.d("test", "delete file = " + f.getName());
+                f.delete();
+            }
+            if (!f.isDirectory() && f.getName().endsWith("jpg") && f.lastModified() < before1day) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();
             }
