@@ -391,7 +391,6 @@ public class Utils {
                         if (AutoReplyService.instance.hasTasks()) {
                             continue;
                         }
-
                         getLastMsgIndex(c, null);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -424,6 +423,7 @@ public class Utils {
                                 //重发
                                 AutoReplyService.instance.sendReplyImmediately(fd.original, false);
                             }
+                            sleep(3000);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -441,7 +441,11 @@ public class Utils {
         for (int i = 0; i < count; i++) {
             String url = urls.get(i);
             Log.d("test", "doDownloadFile url = " + url);
-            String savedFilePath = filepaths.get(i);
+            String savedFilePath = filepaths.get(i) + ".tmp";
+            if (new File(savedFilePath).exists()) {
+                //防止同时下载同样的图片
+                continue;
+            }
             org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
             params.setSaveFilePath(savedFilePath);
             params.setAutoRename(false);
@@ -450,6 +454,7 @@ public class Utils {
             x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
                 @Override
                 public void onSuccess(File result) {
+                    result.renameTo(new File(result.getAbsolutePath().replace(".tmp", "")));
                     fd.successUrl++;
                     Log.d("test", "onSuccess");
                     if (fd.successUrl == fd.urls.size()) {
@@ -510,15 +515,12 @@ public class Utils {
                 downloads.add(fd);
                 return true;
             }
-            //预先下载朋友圈的图文
+            //预先下载朋友圈的图文、网文
             if (msg.contains("sendFriendCircleCmd")) {
                 JSONObject msgO = new JSONObject(msg);
                 JSONObject contentO = msgO.optJSONObject("content");
                 String imageUrl = contentO.optString("imgUrl");
-                int type = contentO.optInt("type");
-                if (type == 1) {
-                    return false;
-                }
+
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 if (imageArray.length == 0) {
                     return false;
@@ -527,7 +529,7 @@ public class Utils {
                 for (String anImageArray : imageArray) {
                     String image = anImageArray.replace("\"", "");
                     fd.urls.add(image);
-                    fd.filepaths.add(KWApplication.DCIM + Utils.getMD5(image) + ".jpg");
+                    fd.filepaths.add(KWApplication.DOWNLOAD + Utils.getMD5(image) + ".jpg");//url做md5
                     fd.original = msg;
                 }
                 downloads.add(fd);
@@ -545,11 +547,16 @@ public class Utils {
             if (msg.contains(TICK_PERSON_GROUP_CMD)) {
                 return true;
             }
+            //定时发朋友圈
             JSONObject o = new JSONObject(msg);
             if (o.optBoolean("schedule")) {
                 return true;
             }
+            //定时修改群公告
             if (msg.contains(UPDATE_GROUP_NOTICE_CMD) && !TextUtils.isEmpty(o.optString("sendTime"))) {
+                return true;
+            }
+            if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
                 return true;
             }
         } catch (Exception e) {
@@ -1313,7 +1320,7 @@ public class Utils {
                     m.remark = remark;
                 }
                 m.content = content;
-                if (!talker.endsWith("@chatroom") && type != 49)  //zzx add 个人消息只添加文字
+                if (!talker.endsWith("@chatroom") && type != 49)  //TODO zzx add 个人消息上报链接，把这行去掉
                     messages.add(m);
             }
             Log.d("test", "messages = " + messages);

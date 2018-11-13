@@ -235,9 +235,4 @@ public class Constant {
     public static final int ROLE_KEFU = 0;
     public static final int ROLE_WODI = 1;
 
-
-    //zzx add 朋友圈文字成功判断
-
-    public static int SEND_WECHATMOMENTS_COUNT = 1;
-
 }
