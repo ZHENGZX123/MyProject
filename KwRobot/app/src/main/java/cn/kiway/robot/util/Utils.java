@@ -441,7 +441,7 @@ public class Utils {
         for (int i = 0; i < count; i++) {
             String url = urls.get(i);
             Log.d("test", "doDownloadFile url = " + url);
-            String savedFilePath = filepaths.get(i) + ".tmp";
+            final String savedFilePath = filepaths.get(i) + ".tmp";
             if (new File(savedFilePath).exists()) {
                 //防止同时下载同样的图片
                 continue;
@@ -466,12 +466,14 @@ public class Utils {
                 public void onError(Throwable ex, boolean isOnCallback) {
                     Log.d("test", "onError");
                     fd.status = 0;
+                    new File(savedFilePath).delete();
                 }
 
                 @Override
                 public void onCancelled(CancelledException cex) {
                     Log.d("test", "onCancelled");
                     fd.status = 0;
+                    new File(savedFilePath).delete();
                 }
 
                 @Override

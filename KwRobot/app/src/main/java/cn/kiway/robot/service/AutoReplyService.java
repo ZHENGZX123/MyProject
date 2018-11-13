@@ -3800,9 +3800,8 @@ public class AutoReplyService extends AccessibilityService {
                 latestFile = f;
             }
         }
-        final String ret = UploadUtil.uploadFile(latestFile, clientUrl + "/common/file?origin=true", latestFile
-                .getName());
         try {
+            final String ret = UploadUtil.uploadFile(latestFile, clientUrl + "/common/file?origin=true", latestFile.getName());
             JSONObject o = new JSONObject(ret);
             qrCodeUrl = o.optJSONObject("data").optString("url");
         } catch (Exception e) {
@@ -3817,7 +3816,6 @@ public class AutoReplyService extends AccessibilityService {
         //{"cmd":"scriptCmd","scripts":[{"member":"kangkangbaba" , "time":"5" , "content":"我给小孩买了一个玩具"},{"member":"zskf_18" , "time":"15" , "content":"什么玩具呀"}],"clientGroupId":"4352489286@chatroom"}
         try {
             String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
             JSONObject o = new JSONObject(content);
             JSONArray scripts = o.getJSONArray("scripContent");
@@ -4315,28 +4313,66 @@ public class AutoReplyService extends AccessibilityService {
         return length;
     }
 
-    //FIXME 多人的群，有bug
+    private ArrayList<AccessibilityNodeInfo> imageViewNodes = new ArrayList<>();
+
     private void addOrDeleteGroupPeople(final int type) {
         Log.d("test", "addOrDeleteGroupPeople = " + type);
         new Thread() {
             @Override
             public void run() {
-                findTargetNode(NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
-
-                if (mFindTargetNode == null) {
+                //查找imageview，直到发现“群聊名称”
+                imageViewNodes.clear();
+                while (true) {
+                    findImageViewNode(getRootInActiveWindow());
+                    boolean findGroupName = findTargetNode(NODE_TEXTVIEW, "查看全部群成员|群聊名称", CLICK_NONE, true);
+                    if (findGroupName) {
+                        break;
+                    }
                     execRootCmdSilent("input swipe 360 900 360 300");
                     try {
                         sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    findTargetNode(NODE_IMAGEVIEW, (type == TYPE_ADD_GROUP_PEOPLE) ? 2 : 3);
                 }
-                if (mFindTargetNode == null) {
+                int count = imageViewNodes.size();
+                Log.d("test", "imageviews个数：" + count);
+                if (count < 2) {
                     release(false);
                     return;
                 }
-                mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                //加人：是群主倒数第2个，不是群主，倒数第一个；踢人肯定是倒数第一个。
+                AccessibilityNodeInfo targetNode = null;
+                if (type == TYPE_DELETE_GROUP_PEOPLE) {
+                    targetNode = imageViewNodes.get(count - 1);
+                } else if (type == TYPE_ADD_GROUP_PEOPLE) {
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        JSONObject o = new JSONObject(content);
+                        String clientGroupId = o.optString("clientGroupId");
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, true);
+                        if (g == null) {
+                            release(false);
+                            return;
+                        }
+                        String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                        if (g.masterWxNo.equals(wxNo)) {
+                            targetNode = imageViewNodes.get(count - 2);
+                        } else {
+                            targetNode = imageViewNodes.get(count - 1);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        release(false);
+                        return;
+                    }
+                }
+
+                if (targetNode == null) {
+                    release(false);
+                    return;
+                }
+                targetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -4346,6 +4382,27 @@ public class AutoReplyService extends AccessibilityService {
             }
         }.start();
     }
+
+    private boolean findImageViewNode(AccessibilityNodeInfo rootNode) {
+        if (rootNode == null) {
+            return false;
+        }
+        int count = rootNode.getChildCount();
+        for (int i = 0; i < count; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            if (nodeInfo.getClassName().equals("android.widget.ImageView")) {
+                imageViewNodes.add(nodeInfo);
+            }
+            if (findImageViewNode(nodeInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private void doLongClickLastMsg(final String clientGroupId) {
         mHandler.postDelayed(new Runnable() {
