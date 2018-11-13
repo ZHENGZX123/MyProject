@@ -84,10 +84,10 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import static cn.kiway.robot.KWApplication.DOWNLOAD;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_0;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_1;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_2;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_3;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_1;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_2;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_3;
 import static cn.kiway.robot.entity.ServerMsg.TYPE_HTTP;
 import static cn.kiway.robot.entity.ServerMsg.TYPE_MQ;
 import static cn.kiway.robot.util.Constant.APPID;
@@ -99,6 +99,10 @@ import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_0;
+import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_1;
+import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_2;
+import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_4;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static com.mob.tools.utils.ResHelper.copyFile;
 import static net.sqlcipher.database.SQLiteDatabase.OPEN_READONLY;
@@ -362,9 +366,9 @@ public class Utils {
             }
             //TODO 这里还未开放，需要大量测试
             if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
-                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", STATUS_0, System.currentTimeMillis(), type));
+                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", ACTION_STATUS_0, System.currentTimeMillis(), type));
             } else {
-                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", STATUS_3, System.currentTimeMillis(), type));
+                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", ACTION_STATUS_3, System.currentTimeMillis(), type));
             }
             return false;
         } catch (Exception e) {
@@ -415,11 +419,11 @@ public class Utils {
                     try {
                         sleep(10 * 1000);
                         for (FileDownload fd : downloads) {
-                            if (fd.status == 0) {
-                                fd.status = 1;
+                            if (fd.status == DOWNLOAD_STATUS_0) {
+                                fd.status = DOWNLOAD_STATUS_1;
                                 doDownloadFile(fd);
-                            } else if (fd.status == 2) {
-                                fd.status = 4;
+                            } else if (fd.status == DOWNLOAD_STATUS_2) {
+                                fd.status = DOWNLOAD_STATUS_4;
                                 //重发
                                 AutoReplyService.instance.sendReplyImmediately(fd.original, false);
                             }
@@ -458,21 +462,21 @@ public class Utils {
                     fd.successUrl++;
                     Log.d("test", "onSuccess");
                     if (fd.successUrl == fd.urls.size()) {
-                        fd.status = 2;
+                        fd.status = DOWNLOAD_STATUS_2;
                     }
                 }
 
                 @Override
                 public void onError(Throwable ex, boolean isOnCallback) {
                     Log.d("test", "onError");
-                    fd.status = 0;
+                    fd.status = DOWNLOAD_STATUS_0;
                     new File(savedFilePath).delete();
                 }
 
                 @Override
                 public void onCancelled(CancelledException cex) {
                     Log.d("test", "onCancelled");
-                    fd.status = 0;
+                    fd.status = DOWNLOAD_STATUS_0;
                     new File(savedFilePath).delete();
                 }
 
@@ -2235,21 +2239,21 @@ public class Utils {
         for (final ServerMsg sm : sms) {
             Log.d("test", "sm = " + sm.toString());
             int status = sm.status;
-            if (status == STATUS_0 || status == STATUS_1) {
+            if (status == ACTION_STATUS_0 || status == ACTION_STATUS_1) {
                 //重复执行
                 if (AutoReplyService.instance != null) {
                     if (!needPreDownload(sm.content)) {
                         AutoReplyService.instance.sendReplyImmediately(sm.content, true);
                     }
                 }
-            } else if (status == STATUS_2) {
+            } else if (status == ACTION_STATUS_2) {
                 //只要上报就可以了
                 if (MainActivity.instance != null) {
                     Utils.resultReact(MainActivity.instance, sm.replyContent, new MyListener() {
                         @Override
                         public void onResult(boolean success) {
                             if (success) {
-                                new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, STATUS_3);
+                                new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_3);
                             }
                         }
                     });

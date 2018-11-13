@@ -117,9 +117,9 @@ import static cn.kiway.robot.entity.Action.TYPE_VIDEO;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADDING;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.entity.AddFriend.STATUS_NOT_EXISTED;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_0;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_2;
-import static cn.kiway.robot.entity.ServerMsg.STATUS_3;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_2;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_3;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.AT_PERSONS_CMD;
@@ -175,6 +175,7 @@ import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
+import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_4;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.channels;
 import static cn.kiway.robot.util.Utils.doGetFriends;
@@ -659,7 +660,7 @@ public class AutoReplyService extends AccessibilityService {
                 String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                 JSONObject o = new JSONObject(content);
                 int indexs = o.optInt("indexs");
-                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, STATUS_3);
+                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, ACTION_STATUS_3);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -684,7 +685,7 @@ public class AutoReplyService extends AccessibilityService {
                     o.put("type", replies.get(command.cmd));
                     o.put("statusCode", statusCode);
                     o.put("robotId", getSharedPreferences("kiway", 0).getString("robotId", ""));
-                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, (statusCode == 200) ? STATUS_2 : STATUS_0);
+                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, (statusCode == 200) ? ACTION_STATUS_2 : ACTION_STATUS_0);
 
                     if (command.cmd.equals(ADD_FRIEND_CMD)) {
                         sendFriendInfoDelay();
@@ -922,8 +923,9 @@ public class AutoReplyService extends AccessibilityService {
             if (command != null) {
                 sendMsgToServer2(success ? 200 : 500, command);
             } else {
+                //command为空，直接修改状态即可
                 int indexs = action.indexs;
-                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, STATUS_3);
+                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, ACTION_STATUS_3);
             }
         }
 
@@ -5286,7 +5288,7 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void onResult(boolean success) {
                                 if (success) {
-                                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, STATUS_3);
+                                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, ACTION_STATUS_3);
                                 } else {
                                     new MyDBHelper(getApplicationContext()).updateServerMsgReplyContentByIndex(index, replyMsg);
                                 }
@@ -5328,7 +5330,7 @@ public class AutoReplyService extends AccessibilityService {
             return true;
         }
         for (FileDownload fd : downloads) {
-            if (fd.status != 4) {
+            if (fd.status != DOWNLOAD_STATUS_4) {
                 return true;
             }
         }

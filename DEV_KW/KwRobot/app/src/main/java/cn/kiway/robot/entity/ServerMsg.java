@@ -6,10 +6,10 @@ package cn.kiway.robot.entity;
 
 public class ServerMsg {
 
-    public static final int STATUS_0 = 0;
-    public static final int STATUS_1 = 1;
-    public static final int STATUS_2 = 2;
-    public static final int STATUS_3 = 3;
+    public static final int ACTION_STATUS_0 = 0;
+    public static final int ACTION_STATUS_1 = 1;
+    public static final int ACTION_STATUS_2 = 2;
+    public static final int ACTION_STATUS_3 = 3;
 
     public static final int TYPE_MQ = 1;
     public static final int TYPE_HTTP = 2;
