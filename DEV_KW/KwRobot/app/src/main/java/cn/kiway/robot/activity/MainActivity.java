@@ -1129,12 +1129,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+        getAllGroups(true);
 
-        getAllMessages();
-
+//        getAllMessages();
 //        getAllFriends(false, true);
-//        getAllGroups(true);
-
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        Log.d("test", "sms count = " + sms.size());
 //        for (ServerMsg sm : sms) {
@@ -1314,7 +1312,7 @@ public class MainActivity extends BaseActivity {
         long before1day = current - 24 * 60 * 60 * 1000;
         for (File f : files) {
             Log.d("test", "f = " + f.getAbsolutePath());
-            if (!f.isDirectory() && (f.getName().contains("db"))) {
+            if (!f.isDirectory() && f.getName().contains("db")) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();
             }
