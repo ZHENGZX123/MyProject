@@ -402,7 +402,7 @@ public class Utils {
                             } else if (fd.status == DOWNLOAD_STATUS_2) {
                                 fd.status = DOWNLOAD_STATUS_4;
                                 //重发
-                                AutoReplyService.instance.sendReplyImmediately(fd.original, false);
+                                AutoReplyService.instance.sendReplyImmediately(fd.original, true);
                             }
                             sleep(3000);
                         }

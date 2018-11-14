@@ -2940,7 +2940,23 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 2000);
                         } else if (type == TYPE_ADD_GROUP_PEOPLE) {
-                            release(true);
+                            boolean find = findTargetNode(NODE_BUTTON, "邀请", CLICK_SELF, true);
+                            if (find) {
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
+                                        mHandler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                release(true);
+                                            }
+                                        }, 2000);
+                                    }
+                                }, 2000);
+                            } else {
+                                release(true);
+                            }
                         } else if (type == TYPE_DELETE_GROUP_PEOPLE) {
                             findTargetNode(NODE_BUTTON, "确定", CLICK_SELF, true);
                             mHandler.postDelayed(new Runnable() {
@@ -5056,7 +5072,6 @@ public class AutoReplyService extends AccessibilityService {
                                             } else {
                                                 release(false, type != 1, true);
                                             }
-                                            //shareToWechatMoments(id, content, original);
                                         }
                                     }
                                 }, 3000);

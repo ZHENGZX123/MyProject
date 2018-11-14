@@ -521,6 +521,7 @@ public class MainActivity extends BaseActivity {
     private void checkMomemt() throws JSONException {
         JSONObject o = new JSONObject();
         o.put("cmd", CHECK_MOMENT_CMD);
+        o.put("fromFront", true);
         String temp = o.toString();
         Log.d("test", "temp = " + temp);
         AutoReplyService.instance.sendReplyImmediately(temp, false);
@@ -658,7 +659,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_GROUPS) {
                 mHandler.removeMessages(MSG_GET_ALL_GROUPS);
                 getAllGroups(true);
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 8 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 4 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_CELLPHONES) {
                 mHandler.removeMessages(MSG_GET_CELLPHONES);
                 getCellPhones();
@@ -761,6 +762,7 @@ public class MainActivity extends BaseActivity {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", CLEAR_CHAT_HISTORY_CMD);
+            o.put("fromFront", true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
             AutoReplyService.instance.sendReplyImmediately(temp, false);
@@ -885,6 +887,7 @@ public class MainActivity extends BaseActivity {
             JSONObject o = new JSONObject();
             o.put("cmd", PERSION_NEARBY_CMD);
             o.put("content", DEFAULT_VALIDATION);
+            o.put("fromFront",true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
             AutoReplyService.instance.sendReplyImmediately(temp, false);
@@ -1081,7 +1084,7 @@ public class MainActivity extends BaseActivity {
             o.put("members", members);
             o.put("message", validation);
             o.put("token", "1526895528997");
-
+            o.put("fromFront", true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
             AutoReplyService.instance.sendReplyImmediately(temp, false);
@@ -1130,17 +1133,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllGroups(false);
+//        getAllGroups(false);
 
 //        getAllMessages();
 //        getAllFriends(false, true);
 //        Utils.getLastMsgIndex(this, null);
 
-//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-//        Log.d("test", "sms count = " + sms.size());
-//        for (ServerMsg sm : sms) {
-//            Log.d("test", "sm = " + sm.toString());
-//        }
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        Log.d("test", "sms count = " + sms.size());
+        for (ServerMsg sm : sms) {
+            Log.d("test", "sm = " + sm.toString());
+        }
 
 //        Utils.getConsumers(MainActivity.this, new MyListener() {
 //            @Override
