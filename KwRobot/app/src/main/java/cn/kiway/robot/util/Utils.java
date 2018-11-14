@@ -2380,13 +2380,11 @@ public class Utils {
         Pattern p_html = Pattern.compile(REGEX_HTML, Pattern.CASE_INSENSITIVE);
         Matcher m_html = p_html.matcher(htmlStr);
         htmlStr = m_html.replaceAll("\n");
-
-
         return htmlStr.trim(); // 返回文本字符串
     }
 
-    public static void keepLog(String content, String type) {
-        String fileName = "Log_" + Utils.longToDate(System.currentTimeMillis()) + "_" + type + ".txt";
+    public static void keepLog(String content, String actionName, int index) {
+        String fileName = "Log_" + Utils.longToDate(System.currentTimeMillis()) + "_" + actionName + "_" + index + ".txt";
         FileUtils.saveFile2(content, fileName);
     }
 }
