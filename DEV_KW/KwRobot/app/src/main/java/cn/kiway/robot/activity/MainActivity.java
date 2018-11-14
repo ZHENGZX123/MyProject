@@ -1130,7 +1130,8 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-//        getAllGroups(true);
+        getAllGroups(false);
+
 //        getAllMessages();
 //        getAllFriends(false, true);
 //        Utils.getLastMsgIndex(this, null);

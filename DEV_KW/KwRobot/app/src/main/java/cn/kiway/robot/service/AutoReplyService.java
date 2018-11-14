@@ -504,7 +504,6 @@ public class AutoReplyService extends AccessibilityService {
             currentActionID = key;
             actioningFlag = true;
             String original = new String(Base64.decode(command.original.getBytes(), NO_WRAP));
-            Utils.keepLog(original, "SEND_FRIEND_CIRCLE_CMD");
             shareToWechatMoments(command.id, command.content, original);
             return;
         }
@@ -903,31 +902,40 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.sendMessage(msg);
     }
 
-    private synchronized void release(boolean success) {
-        //backToRobot
-        Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
-        startActivity(intent);
-
-        doRelease(success);
+    private void release(boolean success, boolean jump, boolean upload) {
+        doRelease(success, jump, upload);
     }
 
-    private void doRelease(boolean success) {
-        Log.d("test", "release is called");
-        mHandler.removeMessages(MSG_ACTION_TIMEOUT);
+    private void release(boolean success) {
+        doRelease(success, true, true);
+    }
 
-        //上报状态
-        Action action = actions.get(currentActionID);
-        if (action != null) {
-            Command command = action.command;
-            if (command != null) {
-                sendMsgToServer2(success ? 200 : 500, command);
-            } else {
-                //command为空，直接修改状态即可
-                int indexs = action.indexs;
-                new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, ACTION_STATUS_3);
+    private void doRelease(boolean success, boolean jump, boolean upload) {
+        Log.d("test", "release is called");
+
+        //1.跳转
+        if (jump) {
+            Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+            startActivity(intent);
+        }
+
+        //2.上报状态
+        if (upload) {
+            Action action = actions.get(currentActionID);
+            if (action != null) {
+                Command command = action.command;
+                if (command != null) {
+                    sendMsgToServer2(success ? 200 : 500, command);
+                } else {
+                    //command为空，直接修改状态即可
+                    int indexs = action.indexs;
+                    new MyDBHelper(this).updateServerMsgStatusByIndex(indexs, ACTION_STATUS_3);
+                }
             }
         }
 
+        //3.清除状态
+        mHandler.removeMessages(MSG_ACTION_TIMEOUT);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -4916,6 +4924,8 @@ public class AutoReplyService extends AccessibilityService {
             String imageUrl = contentO.optString("imgUrl");
             String url = contentO.optString("url");
             int type = contentO.optInt("type");
+            int index = new JSONObject(original).optInt("indexs");
+
             if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
@@ -4937,7 +4947,7 @@ public class AutoReplyService extends AccessibilityService {
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                doShareToWechatMoments(id, description, type, content, original);
+                doShareToWechatMoments(id, description, type, original, index);
             } else if (type == 1) {
                 //网文
                 String localPath = null;
@@ -4954,7 +4964,7 @@ public class AutoReplyService extends AccessibilityService {
                 sp.setShareType(Platform.SHARE_WEBPAGE);
                 Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
                 wx.share(sp);
-                doShareToWechatMoments(id, description, type, content, original);
+                doShareToWechatMoments(id, description, type, original, index);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -4985,7 +4995,8 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void doShareToWechatMoments(final String id, final String remark, final int type, final String content, final String original) {
+    private void doShareToWechatMoments(final String id, final String remark, final int type, final String original, final int index) {
+        Utils.keepLog(original, "SEND_FRIEND_CIRCLE_CMD", index);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -5027,27 +5038,25 @@ public class AutoReplyService extends AccessibilityService {
                                         if (find) {
                                             new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
                                             //成功，直接上报
-                                            if (type == 1) {
-                                                doRelease(true);
-                                            } else if (type == 2) {
-                                                release(true);
-                                            }
-                                            Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS");
+                                            Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS", index);
+                                            release(true, type != 1, true);
                                         } else {
-                                            //失败，尝试3次
-                                            if (actions.get(currentActionID).tryCount < 3) {
-                                                Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE");
-                                                Utils.keepLog(original, "RESEND_FRIEND_CIRCLE_CMD");
-                                                actions.get(currentActionID).tryCount++;
-                                                resetMaxReleaseTime(DEFAULT_RELEASE_TIME);
-                                                shareToWechatMoments(id, content, original);
+                                            //失败
+                                            Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
+                                            actions.get(currentActionID).tryCount++;
+                                            if (actions.get(currentActionID).tryCount < 9) {
+                                                release(false, type != 1, false);
+                                                //N分钟后重试
+                                                mHandler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, ACTION_STATUS_0);
+                                                    }
+                                                }, actions.get(currentActionID).tryCount * 60 * 1000);//1 2 3 4 5 6 7 8
                                             } else {
-                                                if (type == 1) {
-                                                    doRelease(true);
-                                                } else if (type == 2) {
-                                                    release(true);
-                                                }
+                                                release(false, type != 1, true);
                                             }
+                                            //shareToWechatMoments(id, content, original);
                                         }
                                     }
                                 }, 3000);
@@ -5073,7 +5082,13 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        boolean find = findTargetNode(NODE_TEXTVIEW, sender, CLICK_PARENT, false);
+                        String temp = sender;
+                        boolean equal = true;
+                        if (sender.length() > 10) {
+                            temp = sender.substring(0, 10);
+                            equal = false;
+                        }
+                        boolean find = findTargetNode(NODE_TEXTVIEW, temp, CLICK_PARENT, equal);
                         if (!find) {
                             release(false);
                             return;
