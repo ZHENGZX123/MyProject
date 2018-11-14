@@ -18,10 +18,15 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.xutils.x;
 
+import java.util.ArrayList;
+
+import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.entity.ServerMsg;
 import cn.kiway.robot.util.CrashHandler;
 import cn.kiway.robot.util.Utils;
 
 import static cn.kiway.robot.R.mipmap.file;
+import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
 import static cn.kiway.robot.util.Utils.saveDefaultFile;
 
 
@@ -71,6 +76,12 @@ public class KWApplication extends Application {
                 Utils.closeMQ();
             }
         });
+
+        //设置所有状态1==>状态0
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(1);
+        for (ServerMsg sm : sms) {
+            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_0);
+        }
     }
 
     private void initImageCache() {

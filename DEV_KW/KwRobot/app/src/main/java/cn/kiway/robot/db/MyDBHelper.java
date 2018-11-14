@@ -434,15 +434,16 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<ServerMsg> getAllServerMsg(int status) {
+    public ArrayList<ServerMsg> getAllServerMsg(int getType) {
         if (db == null)
             db = getWritableDatabase();
         Cursor cur = null;
-        if (status == 0) {
+        if (getType == 0) {
             cur = db.query(TABLE_SERVER_MSG, null, null, null, null, null, null);
-        } else {
-            //获取所有不等于1和3的消息
+        } else if (getType == 3) {
             cur = db.query(TABLE_SERVER_MSG, null, "status!=? and status!=?", new String[]{"1", "3"}, null, null, null);
+        } else if (getType == 1) {
+            cur = db.query(TABLE_SERVER_MSG, null, "status=?", new String[]{"1"}, null, null, null);
         }
         ArrayList<ServerMsg> groups = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
@@ -450,7 +451,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             int index = cur.getInt(cur.getColumnIndex("indexs"));
             String content = cur.getString(cur.getColumnIndex("content"));
             String replyContent = cur.getString(cur.getColumnIndex("replyContent"));
-            status = cur.getInt(cur.getColumnIndex("status"));
+            int status = cur.getInt(cur.getColumnIndex("status"));
             long time = cur.getLong(cur.getColumnIndex("time"));
             int type = cur.getInt(cur.getColumnIndex("type"));
             ServerMsg sm = new ServerMsg(id, index, content, replyContent, status, time, type);
