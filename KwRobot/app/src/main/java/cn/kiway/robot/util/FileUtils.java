@@ -250,6 +250,23 @@ public class FileUtils {
         }
     }
 
+    public static void saveFile2(String content, String fileName) {
+        String filePath = KWApplication.LOG + fileName;
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                File dir = new File(file.getParent());
+                dir.mkdirs();
+                file.createNewFile();
+            }
+            FileOutputStream outStream = new FileOutputStream(file);
+            outStream.write(content.getBytes());
+            outStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String GetFileSize(File file) {
         String size = "";
         if (file.exists() && file.isFile()) {

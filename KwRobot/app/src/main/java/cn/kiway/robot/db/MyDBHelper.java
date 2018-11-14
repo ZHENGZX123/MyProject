@@ -57,7 +57,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-    //不要更新db的version
     public MyDBHelper(Context c) {
         super(c, DB_NAME, null, 47);
     }
@@ -435,7 +434,6 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    //获取所有不等于3的消息
     public ArrayList<ServerMsg> getAllServerMsg(int status) {
         if (db == null)
             db = getWritableDatabase();
@@ -443,7 +441,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
         if (status == 0) {
             cur = db.query(TABLE_SERVER_MSG, null, null, null, null, null, null);
         } else {
-            cur = db.query(TABLE_SERVER_MSG, null, "status!=?", new String[]{status + ""}, null, null, null);
+            //获取所有不等于1和3的消息
+            cur = db.query(TABLE_SERVER_MSG, null, "status!=? and status!=?", new String[]{"1", "3"}, null, null, null);
         }
         ArrayList<ServerMsg> groups = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {

@@ -282,11 +282,11 @@ public class Utils {
     }
 
     //初始化zbus
-    public static void doInstallSuccess(Context c) {
+    private static void doInstallSuccess(Context c) {
         Log.d("test", "doInstallSuccess");
         startMQThread(c);
-        startCheckFileDownloadThread();
-        startCheckServerMsgThread(c);
+        startCheckFileDownloadThread(c);
+        startGetServerMsgThread(c);
     }
 
     private static void startMQThread(final Context c) {
@@ -326,21 +326,9 @@ public class Utils {
                                 Log.d("test", "handleDelivery msg = " + msg);
                                 //手动消息确认
                                 channel.basicAck(envelope.getDeliveryTag(), false);
+                                getMsgIndexAndSaveDB(c, msg, TYPE_MQ);
 
-                                boolean existed = getMsgIndexAndSaveDB(c, msg, TYPE_MQ);
-                                if (!existed) {
-                                    //处理逻辑
-                                    if (AutoReplyService.instance == null) {
-                                        Log.d("test", "服务没开");
-                                    } else {
-                                        if (!isHeartBeatReply(msg) && !needPreDownload(msg)) {
-                                            Log.d("test", "不是心跳");
-                                            boolean imme = isNeedImme(msg);
-                                            Log.d("test", "imme = " + imme);
-                                            AutoReplyService.instance.sendReplyImmediately(msg, imme);
-                                        }
-                                    }
-                                }
+                                handleMsgInDB(c);
                             }
                         }, channel);
                     }
@@ -364,12 +352,7 @@ public class Utils {
                 Log.d("test", "DB已存在该记录");
                 return true;
             }
-            //TODO 这里还未开放，需要大量测试
-            if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
-                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", ACTION_STATUS_0, System.currentTimeMillis(), type));
-            } else {
-                new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", ACTION_STATUS_3, System.currentTimeMillis(), type));
-            }
+            new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", ACTION_STATUS_0, System.currentTimeMillis(), type));
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -377,24 +360,18 @@ public class Utils {
         return false;
     }
 
-    private static Thread serverMsgThread;
+    private static Thread getServerMsgThread;
 
-    private static void startCheckServerMsgThread(final Context c) {
-        if (serverMsgThread != null) {
+    private static void startGetServerMsgThread(final Context c) {
+        if (getServerMsgThread != null) {
             return;
         }
-        serverMsgThread = new Thread() {
+        getServerMsgThread = new Thread() {
             @Override
             public void run() {
                 while (true) {
                     try {
                         sleep(2 * 60 * 1000);
-                        if (AutoReplyService.instance == null) {
-                            continue;
-                        }
-                        if (AutoReplyService.instance.hasTasks()) {
-                            continue;
-                        }
                         getLastMsgIndex(c, null);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -402,13 +379,13 @@ public class Utils {
                 }
             }
         };
-        serverMsgThread.start();
+        getServerMsgThread.start();
     }
 
     private static Thread fileDownloadThread;
     public static ArrayList<FileDownload> downloads = new ArrayList<>();
 
-    private static void startCheckFileDownloadThread() {
+    private static void startCheckFileDownloadThread(Context c) {
         if (fileDownloadThread != null) {
             return;
         }
@@ -486,7 +463,6 @@ public class Utils {
                 }
             });
         }
-
     }
 
     private static boolean needPreDownload(String msg) {
@@ -835,14 +811,14 @@ public class Utils {
 
 
     public static long dateToLong(String currentTime) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         Date dt = sdf.parse(currentTime);
         long lTime = dt.getTime();
         return lTime;
     }
 
     public static String longToDate(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
         java.util.Date date = new Date(time);
         String str = sdf.format(date);
         return str;
@@ -1005,8 +981,8 @@ public class Utils {
             resultReact(c, msg, Utils.listener);
             return;
         }
-        if (type.equals("getOmission")) {
-            getOmission(c, Utils.missingInt, Utils.listener);
+        if (type.equals("getOmissionMsg")) {
+            getOmissionMsg(c, Utils.missingInt, Utils.listener);
             return;
         }
         if (type.equals("getLastMsgIndex")) {
@@ -2131,7 +2107,7 @@ public class Utils {
         for (int i = 0; i < missing.size(); i++) {
             missingInt[i] = missing.get(i);
         }
-        getOmission(c, missingInt, null);
+        getOmissionMsg(c, missingInt, null);
     }
 
     private static ArrayList<Integer> getRemoveNums(int[] src, int fullLength, int start) {
@@ -2163,13 +2139,12 @@ public class Utils {
 
     private static int[] missingInt;
 
-    public static void getOmission(final Context c, final int[] missingInt, final MyListener myListener) {
+    public static void getOmissionMsg(final Context c, final int[] missingInt, final MyListener myListener) {
         if (MainActivity.instance == null) {
             return;
         }
         if (missingInt.length == 0) {
-            //服务器消息已经全拿了，不用继续拿了
-            doCheckServerMsg(c);
+            handleMsgInDB(c);
             return;
         }
         MainActivity.instance.runOnUiThread(new Runnable() {
@@ -2193,12 +2168,12 @@ public class Utils {
                         indexString += ("&indexs[]=" + missingInt[i]);
                     }
                     String url = clientUrl + "/sendContent/omission?robotId=" + robotId + indexString;
-                    Log.d("test", "getOmission url = " + url);
+                    Log.d("test", "getOmissionMsg url = " + url);
                     client.get(c, url, new TextHttpResponseHandler() {
 
                         @Override
                         public void onSuccess(int arg0, Header[] arg1, String ret) {
-                            Log.d("test", "getOmission onSuccess ret = " + ret);
+                            Log.d("test", "getOmissionMsg onSuccess ret = " + ret);
                             try {
                                 JSONObject obj = new JSONObject(ret);
                                 JSONArray data = obj.optJSONArray("data");
@@ -2211,9 +2186,8 @@ public class Utils {
                                     contentObj.put("indexs", indexs);
                                     //1.保存漏掉的消息到DB
                                     getMsgIndexAndSaveDB(c, contentObj.toString(), TYPE_HTTP);
+                                    handleMsgInDB(c);
                                 }
-                                //2.遍历DB并重发命令
-                                doCheckServerMsg(c);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -2221,43 +2195,46 @@ public class Utils {
 
                         @Override
                         public void onFailure(int arg0, Header[] arg1, String s, Throwable arg3) {
-                            Log.d("test", "getOmission onFailure ret = " + s);
-                            check301(c, s, "getOmission");
+                            Log.d("test", "getOmissionMsg onFailure ret = " + s);
+                            check301(c, s, "getOmissionMsg");
                         }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("test", "getOmission exception = " + e.toString());
+                    Log.d("test", "getOmissionMsg exception = " + e.toString());
                 }
             }
         });
     }
 
-    private static void doCheckServerMsg(final Context c) {
+    private synchronized static void handleMsgInDB(final Context c) {
         ArrayList<ServerMsg> sms = new MyDBHelper(c).getAllServerMsg(3);
-        Log.d("test", "doCheckServerMsg 需要补漏做的count = " + sms.size());
+        Log.d("test", "handleMsgInDB 需要补漏做的count = " + sms.size());
         for (final ServerMsg sm : sms) {
             Log.d("test", "sm = " + sm.toString());
             int status = sm.status;
-            if (status == ACTION_STATUS_0 || status == ACTION_STATUS_1) {
-                //重复执行
-                if (AutoReplyService.instance != null) {
-                    if (!needPreDownload(sm.content)) {
-                        AutoReplyService.instance.sendReplyImmediately(sm.content, true);
-                    }
+            if (status == ACTION_STATUS_0) {
+                //未执行的命令
+                if (!needPreDownload(sm.content)) {
+                    AutoReplyService.instance.sendReplyImmediately(sm.content, false);
                 }
+                //不管是否需要预下载，状态都设置为1
+                new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_1);
             } else if (status == ACTION_STATUS_2) {
                 //只要上报就可以了
-                if (MainActivity.instance != null) {
-                    Utils.resultReact(MainActivity.instance, sm.replyContent, new MyListener() {
-                        @Override
-                        public void onResult(boolean success) {
-                            if (success) {
-                                new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_3);
+                MainActivity.instance.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.resultReact(MainActivity.instance, sm.replyContent, new MyListener() {
+                            @Override
+                            public void onResult(boolean success) {
+                                if (success) {
+                                    new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_3);
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             }
         }
     }
@@ -2348,7 +2325,6 @@ public class Utils {
                         e.printStackTrace();
                         myListener.onResult(false);
                     }
-
                 }
 
                 @Override
@@ -2367,10 +2343,9 @@ public class Utils {
 
     public static String replaceReply(String content) {
         String s = "";
-        s = content.replace("<br/>", "\n").replace("<br />", "\n").replace("<br>", "\n").replace("&nbsp;", " ").replace("&nbsp", " ");
+        s = content.replace("<br/>", "\n").replace("<br />", "\n").replace("<br>", "\n").replace("&nbsp;", " ").replace("&nbsp", " ");//.replace("<div>", "").replace("</div>", "")
         return delHTMLTag(s);
     }
-
 
     /**
      * 定义script的正则表达式
@@ -2391,7 +2366,7 @@ public class Utils {
 
     private static final String BR_STYLE = "<br[^>]*?>[\\s\\S]*?<\\/br>";
 
-    public static String delHTMLTag(String htmlStr) {
+    private static String delHTMLTag(String htmlStr) {
 
         // 过滤script标签
         Pattern p_script = Pattern.compile(REGEX_SCRIPT, Pattern.CASE_INSENSITIVE);
@@ -2408,5 +2383,10 @@ public class Utils {
 
 
         return htmlStr.trim(); // 返回文本字符串
+    }
+
+    public static void keepLog(String content, String type) {
+        String fileName = "Log_" + Utils.longToDate(System.currentTimeMillis()) + "_" + type + ".txt";
+        FileUtils.saveFile2(content, fileName);
     }
 }
