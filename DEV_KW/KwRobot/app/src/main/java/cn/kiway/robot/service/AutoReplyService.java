@@ -59,7 +59,6 @@ import cn.kiway.robot.entity.Script;
 import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.util.Constant;
-import cn.kiway.robot.util.FileDownload;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.MyListener;
 import cn.kiway.robot.util.UploadUtil;
@@ -175,11 +174,9 @@ import static cn.kiway.robot.util.Constant.clientUrl;
 import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
-import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_4;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.channels;
 import static cn.kiway.robot.util.Utils.doGetFriends;
-import static cn.kiway.robot.util.Utils.downloads;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -506,7 +503,9 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.sendEmptyMessageDelayed(MSG_ACTION_TIMEOUT, DEFAULT_RELEASE_TIME);
             currentActionID = key;
             actioningFlag = true;
-            shareToWechatMoments(command.id, command.content);
+            String original = new String(Base64.decode(command.original.getBytes(), NO_WRAP));
+            Utils.keepLog(original, "SEND_FRIEND_CIRCLE_CMD");
+            shareToWechatMoments(command.id, command.content, original);
             return;
         }
         doHandleZbusMsg(key, action, new JSONArray(), false);
@@ -947,6 +946,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void lockScreen() {
+        if (true) {
+            return;
+        }
         boolean weekend = Utils.isWeekend();
         boolean in = Utils.isEffectiveDate("08:30:00", "20:00:00");
         //周一到周五的白天时间不锁屏；
@@ -967,6 +969,9 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void unlockScreen() {
+        if (true) {
+            return;
+        }
         Log.d("test", "unlockScreen");
         //判断当前是锁屏状态
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -1900,7 +1905,7 @@ public class AutoReplyService extends AccessibilityService {
             int type = o.getInt("type");
             if (type == 1) {//文本
                 Platform.ShareParams sp = new Platform.ShareParams();
-                sp.setText(message);
+                sp.setText(Utils.replaceReply(message));
                 sp.setShareType(Platform.SHARE_TEXT);
                 Platform wx = ShareSDK.getPlatform(Wechat.NAME);
                 wx.share(sp);
@@ -4665,7 +4670,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendTextOnly(String reply, boolean release) {
-        //reply = reply.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n").replace("<div>", "").replace("</div>", "").replace("&nbsp;", " ").replace("<span>", "").replace("</span>", "");
         reply = Utils.replaceReply(reply);
         final String finalReply = reply;
         Log.d("test", "sendTextOnly finalReply = " + finalReply);
@@ -4904,8 +4908,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void shareToWechatMoments(final String id, final String content) {
-
+    private void shareToWechatMoments(final String id, final String content, final String original) {
         try {
             JSONObject contentO = new JSONObject(content);
             String title = contentO.optString("title");
@@ -4934,7 +4937,7 @@ public class AutoReplyService extends AccessibilityService {
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
                 intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                doShareToWechatMoments(id, description, type, content);
+                doShareToWechatMoments(id, description, type, content, original);
             } else if (type == 1) {
                 //网文
                 String localPath = null;
@@ -4951,7 +4954,7 @@ public class AutoReplyService extends AccessibilityService {
                 sp.setShareType(Platform.SHARE_WEBPAGE);
                 Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
                 wx.share(sp);
-                doShareToWechatMoments(id, description, type, content);
+                doShareToWechatMoments(id, description, type, content, original);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -4982,7 +4985,7 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void doShareToWechatMoments(final String id, final String remark, final int type, final String content) {
+    private void doShareToWechatMoments(final String id, final String remark, final int type, final String content, final String original) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -5014,31 +5017,35 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 //2.查找发送按钮并点击
+                                logs.clear();
+                                test(getRootInActiveWindow(), true);
                                 final boolean find = findTargetNode(NODE_TEXTVIEW, "发布|发表|发送", CLICK_SELF, true);
                                 Log.d("test", "发布|发表|发送 find = " + find);
-                                //图文不用shareSDK，只能这样上报
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         if (find) {
                                             new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
                                             //成功，直接上报
-                                            if (type == 2) {
-                                                release(true);
-                                            } else if (type == 1) {
+                                            if (type == 1) {
                                                 doRelease(true);
+                                            } else if (type == 2) {
+                                                release(true);
                                             }
+                                            Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS");
                                         } else {
                                             //失败，尝试3次
                                             if (actions.get(currentActionID).tryCount < 3) {
+                                                Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE");
+                                                Utils.keepLog(original, "RESEND_FRIEND_CIRCLE_CMD");
                                                 actions.get(currentActionID).tryCount++;
                                                 resetMaxReleaseTime(DEFAULT_RELEASE_TIME);
-                                                shareToWechatMoments(id, content);
+                                                shareToWechatMoments(id, content, original);
                                             } else {
-                                                if (type == 2) {
-                                                    release(false);
-                                                } else if (type == 1) {
-                                                    doRelease(false);
+                                                if (type == 1) {
+                                                    doRelease(true);
+                                                } else if (type == 2) {
+                                                    release(true);
                                                 }
                                             }
                                         }
@@ -5050,8 +5057,10 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }.start();
             }
-        }, 10000);
+        }, 15000);
     }
+
+    private ArrayList<String> logs = new ArrayList<>();
 
     private void doShareToWechatFriend() {
         mHandler.postDelayed(new Runnable() {
@@ -5169,21 +5178,29 @@ public class AutoReplyService extends AccessibilityService {
         return o.toString();
     }
 
-    public boolean test(AccessibilityNodeInfo rootNode) {
+    public boolean test(AccessibilityNodeInfo rootNode, boolean keepLog) {
         if (rootNode == null) {
             return false;
         }
         int count = rootNode.getChildCount();
         Log.d("test", "node child count = " + count);
+        if (keepLog) {
+            logs.add("node child count = " + count);
+        }
         for (int i = 0; i < count; i++) {
             AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
             if (nodeInfo == null) {
                 continue;
             }
             Log.d("test", "nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            if (keepLog) {
+                logs.add("nodeInfo.getClassName() = " + nodeInfo.getClassName());
+            }
             Log.d("test", "nodeInfo.getText() = |" + nodeInfo.getText() + "|");
-            //Log.d("test", "nodeInfo.isChecked() = " + nodeInfo.isChecked());
-            if (test(nodeInfo)) {
+            if (keepLog) {
+                logs.add("nodeInfo.getText() = |" + nodeInfo.getText() + "|");
+            }
+            if (test(nodeInfo, keepLog)) {
                 return true;
             }
         }
@@ -5318,22 +5335,5 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }
-    }
-
-    //检查队列里的事件
-    public boolean hasTasks() {
-
-        if (actioningFlag && actions.get(currentActionID).actionType != TYPE_FIX_FRIEND_NICKNAME) {
-            return true;
-        }
-        if (zbusRecvsQueue.size() > 0) {
-            return true;
-        }
-        for (FileDownload fd : downloads) {
-            if (fd.status != DOWNLOAD_STATUS_4) {
-                return true;
-            }
-        }
-        return false;
     }
 }

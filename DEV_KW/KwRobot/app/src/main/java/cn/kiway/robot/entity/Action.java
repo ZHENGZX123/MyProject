@@ -34,7 +34,7 @@ public class Action {
     public static final int TYPE_CHAT_IN_GROUP = 118;//群内聊天
     public static final int TYPE_AT_GROUP_PEOPLE = 119;//艾特某人
     public static final int TYPE_DELETE_MOMENT = 120;//删除朋友圈
-    public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友
+    public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友n
     public static final int TYPE_MISSING_FISH = 122;//漏网之鱼
     public static final int TYPE_FIX_NICKNAME = 123;//修改昵称
     public static final int TYPE_FIX_ICON = 124;//修改头像

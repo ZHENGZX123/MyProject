@@ -18,16 +18,10 @@ public class ServerMsg {
     public int index;
     public String content;
     public String replyContent;
-    public int status; //0默认  1.执行失败  , 2执行成功，上传失败  3，执行成功，上传成功
+    public int status; //0默认   1.执行中  ,  2执行完，上传失败  3，执行完，上传成功
+
     public long time;
     public int type;//1MQ  2HTTP
-
-    public ServerMsg(int index, String content, String replyContent, int status) {
-        this.index = index;
-        this.content = content;
-        this.replyContent = replyContent;
-        this.status = status;
-    }
 
     public ServerMsg(int index, String content, String replyContent, int status, long time, int type) {
         this.index = index;

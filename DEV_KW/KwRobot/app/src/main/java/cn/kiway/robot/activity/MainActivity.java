@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity {
     public static final int MSG_NETWORK_ERR = 102;
     private static final int MSG_UPGRADE = 103;
     private static final int MSG_GET_BASEDATA = 104;
-    private static final int MSG_GET_CELLPHONES = 106;
+    private static final int MSG_GET_CELLPHONES = 106;//主动加人
     private static final int MSG_ADD_NEARBY = 109;    //主动加附近的人
     private static final int MSG_MISSING_FISH = 110;    //漏网之鱼
     private static final int MSG_GET_ALL_FRIENDS = 111;//上报所有好友
@@ -345,7 +345,7 @@ public class MainActivity extends BaseActivity {
                                 Log.d("test", "seconds = " + seconds);
 
                                 for (Second s : seconds) {
-                                    if (TextUtils.isEmpty(s.description)) {
+                                    if (s.description == null) {
                                         continue;
                                     }
                                     if (s.description.equals("null")) {
@@ -434,6 +434,7 @@ public class MainActivity extends BaseActivity {
                     //1.先去朋友圈浏览一下
                     if (scan) {
                         checkMomemt();
+                        //如果当前有别的事件，100秒不够。
                         sleep(100 * 1000);
                     }
                     //2.破解数据库
@@ -669,7 +670,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 doMissingFish();
-                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 30 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 60 * 60 * 1000);
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
@@ -1115,7 +1116,7 @@ public class MainActivity extends BaseActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow());
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow() , false);
             }
         }, 10000);
 
@@ -1129,19 +1130,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-        getAllGroups(true);
-
+//        getAllGroups(true);
 //        getAllMessages();
 //        getAllFriends(false, true);
+//        Utils.getLastMsgIndex(this, null);
+
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        Log.d("test", "sms count = " + sms.size());
 //        for (ServerMsg sm : sms) {
 //            Log.d("test", "sm = " + sm.toString());
 //        }
-//        Utils.getLastMsgIndex(this, null);
-    }
 
-    public void test3(View view) {
 //        Utils.getConsumers(MainActivity.this, new MyListener() {
 //            @Override
 //            public void onResult(boolean success) {
@@ -1150,6 +1149,11 @@ public class MainActivity extends BaseActivity {
 //                }
 //            }
 //        });
+
+//        getBaseData();
+    }
+
+    public void test3(View view) {
         resetNickName();
 //        resetNickName2();
     }

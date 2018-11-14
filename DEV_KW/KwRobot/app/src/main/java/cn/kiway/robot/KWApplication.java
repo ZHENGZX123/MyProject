@@ -32,6 +32,7 @@ import static cn.kiway.robot.util.Utils.saveDefaultFile;
 public class KWApplication extends Application {
 
     public static String ROOT = "/mnt/sdcard/kiway_robot/";
+    public static String LOG = "/mnt/sdcard/kiway_robot/log/";
     public static String DOWNLOAD = "/mnt/sdcard/kiway_robot/downloads/";
     public static String DCIM = "/mnt/sdcard/DCIM/Camera/";
 
