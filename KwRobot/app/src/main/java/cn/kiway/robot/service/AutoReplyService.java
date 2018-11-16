@@ -934,7 +934,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doRelease(boolean success, boolean jump, boolean upload) {
-        Log.d("test", "release is called");
+        Log.d("test", "release is called ");
         //1.跳转
         if (jump) {
             Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
@@ -1444,28 +1444,13 @@ public class AutoReplyService extends AccessibilityService {
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
                         }
                     } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                String[] groups = finalClientGroupId.split(",");
-                                
-                                resetMaxReleaseTime(50 * 1000 * groups.length);
-                                for (String clientGroupId : groups) {
-                                    Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, false);
-                                    if (g == null) {
-                                        continue;
-                                    }
-                                    goBacktoWechatHomepage(true);
-                                    searchTargetInWxHomePage(actionType, g.groupName, false);//有些群没有保存，但是是群主。。。
-                                    try {
-                                        sleep(45 * 1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                release(true);
-                            }
-                        }.start();
+                        String clientGroupId = finalClientGroupId.replace("[", "").replace("]", "");
+                        Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, false);
+                        if (g == null) {
+                            release(false);
+                            return;
+                        }
+                        searchTargetInWxGroupPage(actionType, g.groupName, true);
                     } else if (actionType == TYPE_DELETE_FRIEND) {
                         startDeleteFriend(members);
                     } else if (actionType == TYPE_SEND_BATCH) {
@@ -3590,7 +3575,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_SAVE_GROUP
                         || actionType == TYPE_GROUP_QRCODE
                         || actionType == TYPE_TRANSFER_MASTER) {
-                    groupRelative(actionType, !(actionType == TYPE_FIX_GROUP_NOTICE));
+                    groupRelative(actionType, true);
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
@@ -4020,9 +4005,10 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            int length = getTextLengthInEditText(1, finalText);
+                            resetMaxReleaseTime(length * 2 * 1000 + 20000);
                             //1.先执行删除键
                             clearAndPasteEditText(1, finalText);
-
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -4033,7 +4019,13 @@ public class AutoReplyService extends AccessibilityService {
                                             if (!find) {
                                                 return;
                                             }
-                                            findTargetNode(NODE_BUTTON, "发布", CLICK_SELF, true);
+                                            final boolean find = findTargetNode(NODE_BUTTON, "发布", CLICK_SELF, true);
+                                            mHandler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    release(find);
+                                                }
+                                            }, 2000);
                                         }
                                     }, 5000);
                                 }
