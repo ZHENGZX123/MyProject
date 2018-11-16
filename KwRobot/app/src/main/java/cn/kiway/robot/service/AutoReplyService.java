@@ -1,10 +1,8 @@
 package cn.kiway.robot.service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.admin.DevicePolicyManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -16,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -36,7 +33,6 @@ import org.xutils.common.util.DensityUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -57,7 +53,6 @@ import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.ReturnMessage;
 import cn.kiway.robot.entity.Script;
 import cn.kiway.robot.entity.ZbusRecv;
-import cn.kiway.robot.receiver.AdminReceiver;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.MyListener;
@@ -279,21 +274,18 @@ public class AutoReplyService extends AccessibilityService {
                 //1.消息分发预处理队列
                 if (preActionsQueue.size() > 0) {
                     Log.d("test", "preActionsQueue size = " + preActionsQueue.size());
-                    unlockScreen();
                     previewAction(preActionsQueue.remove(0));
                     return;
                 }
                 //2.事件队列
                 if (zbusRecvsQueue.size() > 0) {
                     Log.d("test", "zbusRecvsQueue size = " + zbusRecvsQueue.size());
-                    unlockScreen();
                     handleZbusMsg(zbusRecvsQueue.remove(0));
                     return;
                 }
                 //3.重命名队列
                 if (renameTasksQueue.size() > 0) {
                     Log.d("test", "renameTasksQueue size = " + renameTasksQueue.size());
-                    unlockScreen();
                     handleZbusMsg(renameTasksQueue.remove(0));
                 }
                 return;
@@ -305,13 +297,6 @@ public class AutoReplyService extends AccessibilityService {
                 sendMsgToServer(action, null, TYPE_TEXT);
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
                 mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 60 * 1000);
-
-                Calendar c = Calendar.getInstance();
-                int weekday = c.get(Calendar.DAY_OF_WEEK);
-                int hour = c.get(Calendar.HOUR);
-                if (weekday > 1 && weekday < 7 && hour == 8) {
-                    unlockScreen();
-                }
                 return;
             }
             if (msg.what == MSG_CHECK_HEARTBEAT) {
@@ -963,61 +948,8 @@ public class AutoReplyService extends AccessibilityService {
                 currentActionID = -1;
                 actioningFlag = false;
                 FileUtils.saveFile("false", "actioningFlag.txt");
-                //release完成之后，判断当前队伍还有多少个要处理事件，如果事件为0则锁屏
-                if (preActionsQueue.size() == 0 && zbusRecvsQueue.size() == 0) {
-                    //调用锁屏
-                    lockScreen();
-                } else {
-                    Log.d("test", "还有事件，不需要lockScreen");
-                }
             }
         }, 2000);
-    }
-
-    private void lockScreen() {
-        if (true) {
-            return;
-        }
-        boolean weekend = Utils.isWeekend();
-        boolean in = Utils.isEffectiveDate("08:30:00", "20:00:00");
-        //周一到周五的白天时间不锁屏；
-        if (!weekend && in) {
-            return;
-        }
-        //其他时间锁屏
-        Log.d("test", "lockScreen");
-        DevicePolicyManager mDevicePolicyManager = (DevicePolicyManager) getSystemService(Context
-                .DEVICE_POLICY_SERVICE);
-        ComponentName componentName = new ComponentName(this, AdminReceiver.class);
-        if (mDevicePolicyManager.isAdminActive(componentName)) {
-            mDevicePolicyManager.lockNow();
-        } else {
-            Log.d("test", "lockscreen no permissiom");
-        }
-        Log.d("test", "lockScreen Done");
-    }
-
-    private void unlockScreen() {
-        if (true) {
-            return;
-        }
-        Log.d("test", "unlockScreen");
-        //判断当前是锁屏状态
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (!pm.isScreenOn()) {
-            Log.d("test", "screenon = false");
-            // 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag
-            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
-            wl.acquire(10000); // 点亮屏幕
-            wl.release(); // 释放
-        }
-        // 屏幕解锁
-        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
-        // 屏幕锁定
-        keyguardLock.reenableKeyguard();
-        keyguardLock.disableKeyguard(); // 解锁
-        Log.d("test", "unlockScreen Done");
     }
 
     @Override
@@ -1272,7 +1204,6 @@ public class AutoReplyService extends AccessibilityService {
             } else {
                 Log.d("test", "既不是好友也不是群组，不处理这个消息");
             }
-            lockScreen();
         } else if (action.actionType == TYPE_AUTO_MATCH) {
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"" + action.returnMessages.get(0).content + "\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, false);
