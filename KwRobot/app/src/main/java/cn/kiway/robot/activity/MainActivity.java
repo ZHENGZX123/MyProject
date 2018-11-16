@@ -524,7 +524,7 @@ public class MainActivity extends BaseActivity {
         o.put("fromFront", true);
         String temp = o.toString();
         Log.d("test", "temp = " + temp);
-        AutoReplyService.instance.sendReplyImmediately(temp, false);
+        AutoReplyService.instance.sendReplyImmediately(temp, true);
     }
 
     private void getAllMessages() {
@@ -887,7 +887,7 @@ public class MainActivity extends BaseActivity {
             JSONObject o = new JSONObject();
             o.put("cmd", PERSION_NEARBY_CMD);
             o.put("content", DEFAULT_VALIDATION);
-            o.put("fromFront",true);
+            o.put("fromFront", true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
             AutoReplyService.instance.sendReplyImmediately(temp, false);
@@ -1119,7 +1119,7 @@ public class MainActivity extends BaseActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow() , false);
+                AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow(), false);
             }
         }, 10000);
 
@@ -1133,17 +1133,20 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
-//        getAllGroups(false);
+//        getAllGroups(true);
 
 //        getAllMessages();
 //        getAllFriends(false, true);
-//        Utils.getLastMsgIndex(this, null);
 
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        Log.d("test", "sms count = " + sms.size());
-        for (ServerMsg sm : sms) {
-            Log.d("test", "sm = " + sm.toString());
-        }
+        Utils.getLastMsgIndex(this, null);
+//
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        Log.d("test", "sms count = " + sms.size());
+//        for (ServerMsg sm : sms) {
+//            Log.d("test", "sm = " + sm.toString());
+//        }
+
+//        getAllGroups(false);
 
 //        Utils.getConsumers(MainActivity.this, new MyListener() {
 //            @Override
@@ -1155,10 +1158,24 @@ public class MainActivity extends BaseActivity {
 //        });
 
 //        getBaseData();
+
+//        Platform.ShareParams sp = new Platform.ShareParams();
+//        sp.setImagePath(imagePath);
+//        sp.setShareType(Platform.SHARE_FILE);
+//        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+//        wx.share(sp);
+
+//        getAllMomentComments(true);
+
+//        getAllMessages();
     }
 
     public void test3(View view) {
-        resetNickName();
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        for (ServerMsg sm : sms) {
+            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
+        }
+//        resetNickName();
 //        resetNickName2();
     }
 

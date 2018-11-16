@@ -64,7 +64,8 @@ public class Action {
     public ArrayList<ReturnMessage> returnMessages = new ArrayList<>();
     public int actionType; //事件类型
     public boolean replied;
-    public Command command;
+
+    public Command command;//后台事件
     public String clientGroupId;
     public int indexs;
     public int tryCount;//尝试次数

@@ -328,7 +328,9 @@ public class Utils {
                                 channel.basicAck(envelope.getDeliveryTag(), false);
                                 getMsgIndexAndSaveDB(c, msg, TYPE_MQ);
 
-                                handleMsgInDB(c);
+                                if (!isHeartBeatReply(msg)) {
+                                    handleMsgInDB(c);
+                                }
                             }
                         }, channel);
                     }
@@ -395,7 +397,9 @@ public class Utils {
                 while (true) {
                     try {
                         sleep(10 * 1000);
-                        for (FileDownload fd : downloads) {
+                        int count = downloads.size();
+                        for (int i = 0; i < count; i++) {
+                            FileDownload fd = downloads.get(i);
                             if (fd.status == DOWNLOAD_STATUS_0) {
                                 fd.status = DOWNLOAD_STATUS_1;
                                 doDownloadFile(fd);
@@ -1302,8 +1306,8 @@ public class Utils {
                     m.remark = remark;
                 }
                 m.content = content;
-                if (!talker.endsWith("@chatroom") && type != 49)  //TODO zzx add 个人消息上报链接，把这行去掉
-                    messages.add(m);
+                //if (!talker.endsWith("@chatroom") && type != 49)  //TODO zzx add 个人消息上报链接，把这行去掉
+                messages.add(m);
             }
             Log.d("test", "messages = " + messages);
             cursor.close();
@@ -2207,7 +2211,13 @@ public class Utils {
         });
     }
 
-    private synchronized static void handleMsgInDB(final Context c) {
+    public synchronized static void handleMsgInDB(final Context c) {
+        if (AutoReplyService.instance == null) {
+            return;
+        }
+        if (MainActivity.instance == null) {
+            return;
+        }
         ArrayList<ServerMsg> sms = new MyDBHelper(c).getAllServerMsg(3);
         Log.d("test", "handleMsgInDB 需要补漏做的count = " + sms.size());
         for (final ServerMsg sm : sms) {
@@ -2216,12 +2226,12 @@ public class Utils {
             if (status == ACTION_STATUS_0) {
                 //未执行的命令
                 if (!needPreDownload(sm.content)) {
-                    AutoReplyService.instance.sendReplyImmediately(sm.content, false);
+                    AutoReplyService.instance.sendReplyImmediately(sm.content, isNeedImme(sm.content));
                 }
                 //不管是否需要预下载，状态都设置为1
                 new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_1);
             } else if (status == ACTION_STATUS_2) {
-                //只要上报就可以了
+                //补报状态3
                 MainActivity.instance.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -2313,7 +2323,6 @@ public class Utils {
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, String ret) {
                     Log.d("test", "resultReact onSuccess ret = " + ret);
-                    //zzx add
                     try {
                         JSONObject data = new JSONObject(ret);
                         if (data.optInt("statusCode") == 200) {
@@ -2321,7 +2330,7 @@ public class Utils {
                         } else {
                             myListener.onResult(false);
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         myListener.onResult(false);
                     }

@@ -1,17 +1,17 @@
 package cn.kiway.wx.reply.utils;
 
-import cn.kiway.wx.reply.vo.PushMessageVo;
 import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import cn.kiway.wx.reply.vo.PushMessageVo;
 
 /**
  * rabbitMQ 工具类
@@ -148,6 +148,7 @@ public class RabbitMQUtils {
         String msg = JSONObject.toJSONString(vo);
         //发送消息
         channel.basicPublish(EXCHANGE_NAME,routingKey,null,msg.getBytes());
+        System.out.println("sendMsg success....");
     }
 
     /**
@@ -169,7 +170,7 @@ public class RabbitMQUtils {
     public void sendMsgs(String message,Channel channel) throws Exception {
         // 获取json文件内容
         channel.basicPublish(EXCHANGE_NAME,routingKey,null,message.getBytes());
-        System.out.println("send message success....");
+        System.out.println("sendMsgs success....");
     }
 
     /***
