@@ -64,22 +64,22 @@ public class MyDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
-        db.execSQL(CREATE_TABLE_ADDFRIEND);
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
-        db.execSQL(CREATE_TABLE_MESSAGE);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
+//        db.execSQL(CREATE_TABLE_ADDFRIEND);
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_MOMENT);
-        db.execSQL(CREATE_TABLE_WX_MOMENT);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
+//        db.execSQL(CREATE_TABLE_MESSAGE);
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_COMMENT);
-        db.execSQL(CREATE_TABLE_WX_COMMNET);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
+//        db.execSQL(CREATE_TABLE_FILTER);
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
-        db.execSQL(CREATE_TABLE_FILTER);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_MOMENT);
+//        db.execSQL(CREATE_TABLE_WX_MOMENT);
 
-        //数据库升级，不要重置该表
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WX_COMMENT);
+//        db.execSQL(CREATE_TABLE_WX_COMMNET);
+
 //        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERVER_MSG);
 //        db.execSQL(CREATE_TABLE_SERVERMSG);
 
@@ -444,6 +444,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
             cur = db.query(TABLE_SERVER_MSG, null, "status!=? and status!=?", new String[]{"1", "3"}, null, null, null);
         } else if (getType == 1) {
             cur = db.query(TABLE_SERVER_MSG, null, "status=?", new String[]{"1"}, null, null, null);
+        } else if (getType == 2) {
+            cur = db.query(TABLE_SERVER_MSG, null, "status=?", new String[]{"2"}, null, null, null);
         }
         ArrayList<ServerMsg> groups = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {

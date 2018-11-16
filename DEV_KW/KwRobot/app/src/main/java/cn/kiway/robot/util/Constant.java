@@ -22,6 +22,10 @@ public class Constant {
     public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
     public static final String PASSWORD = "kiwayedukiway123";
 
+    public static final int FLAG_PREACTION = 999;
+    public static final int FLAG_ACTION = 9999;
+
+
     static {
         //正式
         host = "robot.kiway.cn";
@@ -124,7 +128,7 @@ public class Constant {
     public static final String AT_PERSONS_CMD = "atPersonsCmd";
     public static final String AT_PERSONS_REPLY_CMD = "atPersonsReplyCmd";
     public static final String UPGRADE_CMD = "upgradeCmd";
-    public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";
+    public static final String AUTO_REPLY_CONTENT_CMD = "autoReplyContentCmd";//网页已经没有了
     public static final String AUTO_REPLY_CONTENT_REPLY_CMD = "autoReplyContentReplyCmd";
     public static final String CHECK_MOMENT_CMD = "checkMomentCmd";//目前后台没有
     public static final String CLEAR_CHAT_HISTORY_CMD = "clearChatHistoryCmd";
