@@ -1168,6 +1168,8 @@ public class MainActivity extends BaseActivity {
 //        getAllMomentComments(true);
 
 //        getAllMessages();
+
+//        doMissingFish();
     }
 
     public void test3(View view) {
