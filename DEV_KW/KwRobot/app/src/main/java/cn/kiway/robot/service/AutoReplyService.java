@@ -1368,6 +1368,7 @@ public class AutoReplyService extends AccessibilityService {
             start = o.optInt("start");
             end = o.optInt("end");
             String clientGroupId = null;
+            final int type = o.optInt("type");
             if (o.has("clientGroupId")) {
                 clientGroupId = o.optString("clientGroupId");
             } else if (o.has("clientGroupIds")) {
@@ -1431,7 +1432,11 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
                         if (actionType == TYPE_CHAT_IN_GROUP) {
-                            chatInGroup(g.groupName);
+                            if (type == 1) {//文本
+                                searchTargetInWxGroupPage(actionType, g.groupName, true);
+                            } else {//其他用分享做
+                                chatInGroup(g.groupName);
+                            }
                         } else if ((actionType == TYPE_SCRIPT && role == ROLE_WODI) || (actionType == TYPE_SAVE_GROUP) || actionType == TYPE_DELETE_GROUP_CHAT) {
                             //从首页找到群
                             searchTargetInWxHomePage(actionType, g.groupName, true);
@@ -1443,6 +1448,7 @@ public class AutoReplyService extends AccessibilityService {
                             @Override
                             public void run() {
                                 String[] groups = finalClientGroupId.split(",");
+                                
                                 resetMaxReleaseTime(50 * 1000 * groups.length);
                                 for (String clientGroupId : groups) {
                                     Group g = getOneGroupFromWechatDB_ClientGroupId(clientGroupId, false);
@@ -2310,19 +2316,11 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         try {
                             while (!checkIsTongxunluTop()) {
-                                execRootCmdSilent("input swipe 360 300 360 900");
                                 sleep(1000);
-                                if (!actioningFlag) {
-                                    break;
-                                }
-                                sleep(1000);
-                                if (!actioningFlag) {
-                                    break;
-                                }
-                                sleep(1000);
-                                if (!actioningFlag) {
-                                    break;
-                                }
+                                //双击到顶部
+                                tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                sleep(5000);
                             }
                             //新的朋友
                             clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
@@ -3420,19 +3418,11 @@ public class AutoReplyService extends AccessibilityService {
                             public void run() {
                                 try {
                                     while (!checkIsTongxunluTop()) {
-                                        execRootCmdSilent("input swipe 360 300 360 900");
                                         sleep(1000);
-                                        if (!actioningFlag) {
-                                            break;
-                                        }
-                                        sleep(1000);
-                                        if (!actioningFlag) {
-                                            break;
-                                        }
-                                        sleep(1000);
-                                        if (!actioningFlag) {
-                                            break;
-                                        }
+                                        //双击到顶部
+                                        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                        sleep(5000);
                                     }
                                     //群聊
                                     clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
@@ -3612,6 +3602,15 @@ public class AutoReplyService extends AccessibilityService {
                 } else if (actionType == TYPE_SCRIPT) {
                     //根据脚本，完成要发送的命令
                     doScript();
+                } else if (actionType == TYPE_CHAT_IN_GROUP) {
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        String message = new JSONObject(content).optString("message");
+                        sendTextOnly(message, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        release(false);
+                    }
                 }
             }
         }, 3000);
@@ -4023,6 +4022,7 @@ public class AutoReplyService extends AccessibilityService {
                         public void run() {
                             //1.先执行删除键
                             clearAndPasteEditText(1, finalText);
+
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
