@@ -46,10 +46,10 @@ public class MainActivity extends Activity {
                     , null, c.getClass().getClassLoader());
             Class<?> classToCall = cl.loadClass(className);
             if (params == null) {
-                Method methodToExecute = classToCall.getDeclaredMethod(methodName, null);
+                Method methodToExecute = classToCall.getMethod(methodName, null);
                 ret = (String) methodToExecute.invoke(classToCall.newInstance());
             } else {
-                Method methodToExecute = classToCall.getDeclaredMethod(methodName, String[].class);
+                Method methodToExecute = classToCall.getMethod(methodName, String[].class);
                 ret = (String) methodToExecute.invoke(classToCall.newInstance(), new Object[]{params});
             }
         } catch (Exception e) {
