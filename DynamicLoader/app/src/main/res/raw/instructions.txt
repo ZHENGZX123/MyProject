@@ -3,7 +3,8 @@
 一、开发及使用步骤：
 1.编写jar的代码，可以使用eclipse，也可以使用Android Studio；
 2.导出jar包：如果是eclipse，在package右键Export-java-JAR file；
-            如果是Android Studio，代码如示例所示，Gradle-library-Tasks-other-transformClassesAndResourcesWithSyncLibjarsForRelease
+            如果是Android Studio，代码如示例所示，
+            打包方法1：Gradle-library-Tasks-other-transformClassesAndResourcesWithSyncLibjarsForRelease，生成物在build-intermediates-bundles-release-classes.jar
 2.使用dx工具，将jar包转为Android虚拟机可以认识的字节码；
 3.把jar包放在sdcard下；
 4.运行Android项目DynamicLoader，进行测试。
@@ -17,7 +18,7 @@
 3.动态调用jar相关
 （1）输入参数：为简便，输入参数的类型统一为String[]，如果没有则传null；
 （2）返回值：为简便，返回值的类型统一是String；如果是图片，返回图片的路径String，而不是Bitmap；
-
+（3）不支持异步回调返回值：广播，callback
 
 三、参考网页
 https://blog.csdn.net/shiyuzhengfeng/article/details/47070459
@@ -28,3 +29,5 @@ https://blog.csdn.net/qq_35581716/article/details/53518369
 svn://120.24.84.206/DEV_KW/DynamicLoader
 
 
+
+测试
