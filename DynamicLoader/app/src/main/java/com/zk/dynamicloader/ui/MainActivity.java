@@ -1,20 +1,17 @@
 package com.zk.dynamicloader.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.zk.dynamicloader.R;
+import com.zk.dynamicloader.utils.Constant;
 import com.zk.dynamicloader.utils.HttpDownload;
-import com.zk.dynamicloader.utils.IContant;
+import com.zk.dynamicloader.utils.InvokeUtil;
 import com.zk.dynamicloader.utils.Utils;
 
 import java.io.File;
-import java.lang.reflect.Method;
-
-import dalvik.system.DexClassLoader;
 
 
 public class MainActivity extends Activity {
@@ -23,40 +20,22 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        degrade(null);
     }
 
     public void test1(View view) {
-        String ret = callMethod(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "isStatusBarExpandPanelDisabled", null);
+        InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "isStatusBarExpandPanelDisabled");
+        util.getMethod();
+        String ret = util.invokeMethod();
         toast(ret);
     }
 
     public void test2(View view) {
-        String ret = callMethod(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "setStatusBarExpandPanelDisabled", new String[]{"true"});
+        InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "setStatusBarExpandPanelDisabled");
+        util.getMethod(boolean.class);
+        String ret = util.invokeMethod(true);
         toast(ret);
-    }
-
-    String callMethod(Context c, String jarFilePath, String className, String methodName, String[] params) {
-        String ret = null;
-        if (!new File(jarFilePath).exists()) {
-            return "jar不存在";
-        }
-        try {
-            String tmpPath = c.getApplicationContext().getDir("Jar", 0).getAbsolutePath();
-            DexClassLoader cl = new DexClassLoader(jarFilePath, tmpPath
-                    , null, c.getClass().getClassLoader());
-            Class<?> classToCall = cl.loadClass(className);
-            if (params == null) {
-                Method methodToExecute = classToCall.getMethod(methodName, null);
-                ret = (String) methodToExecute.invoke(classToCall.newInstance());
-            } else {
-                Method methodToExecute = classToCall.getMethod(methodName, String[].class);
-                ret = (String) methodToExecute.invoke(classToCall.newInstance(), new Object[]{params});
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "jar异常" + e.toString();
-        }
-        return ret;
     }
 
     public void upgrade(View view) {
@@ -67,7 +46,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 super.run();
-                int i = new HttpDownload().downFile(IContant.downloadUrl, "/mnt/sdcard/", "test.jar");
+                int i = new HttpDownload().downFile(Constant.downloadUrl, "/mnt/sdcard/", "test.jar");
                 if (i == 0) {
                     toast("升级成功");
                 } else {
