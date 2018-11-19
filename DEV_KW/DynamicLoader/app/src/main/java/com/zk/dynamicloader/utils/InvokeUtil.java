@@ -25,7 +25,9 @@ public class InvokeUtil {
         this.methodName = methodName;
     }
 
-    private Class<?> classToCall;
+
+    private Object constructor;
+    private Class<?> aClass;
     private Method method;
 
     public void getMethod(Class<?>... paramTypes) {
@@ -33,8 +35,8 @@ public class InvokeUtil {
             String tmpPath = c.getApplicationContext().getDir("Jar", 0).getAbsolutePath();
             DexClassLoader cl = new DexClassLoader(jarFilePath, tmpPath
                     , null, c.getClass().getClassLoader());
-            classToCall = cl.loadClass(className);
-            method = classToCall.getMethod(methodName, paramTypes);
+            aClass = cl.loadClass(className);
+            method = aClass.getMethod(methodName, paramTypes);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,7 +46,7 @@ public class InvokeUtil {
     public String invokeMethod(Object... params) {
         String ret = null;
         try {
-            ret = (String) method.invoke(classToCall.newInstance(), params);
+            ret = (String) method.invoke(aClass.newInstance(), params);
         } catch (Exception e) {
             e.printStackTrace();
             return "jar异常" + e.toString();
@@ -56,7 +58,7 @@ public class InvokeUtil {
     public String invokeMethod(Context c, Object... params) {
         String ret = null;
         try {
-            Constructor constructor = classToCall.getDeclaredConstructor(Context.class);
+            Constructor constructor = aClass.getDeclaredConstructor(Context.class);
             Object obj = constructor.newInstance(c);
             ret = (String) method.invoke(obj, params);
         } catch (Exception e) {
