@@ -1,4 +1,4 @@
-package com.zk.dynamicloader;
+package com.zk.dynamicloader.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.zk.dynamicloader.R;
 import com.zk.dynamicloader.utils.HttpDownload;
 import com.zk.dynamicloader.utils.IContant;
 import com.zk.dynamicloader.utils.Utils;
