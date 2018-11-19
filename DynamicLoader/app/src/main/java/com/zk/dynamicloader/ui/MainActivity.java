@@ -25,13 +25,27 @@ public class MainActivity extends Activity {
     }
 
     public void test1(View view) {
-        InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "isStatusBarExpandPanelDisabled");
+        //test
+//        InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "isStatusBarExpandPanelDisabled");
+//        util.getMethod();
+//        String ret = util.invokeMethod();
+//        toast(ret);
+
+        //lenovo
+//        InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "android.app.mia.MiaMdmPolicyManager", "shutDown");
+//        util.getMethod();
+//        String ret = util.invokeMethod(this);
+//        toast(ret);
+
+        //jichengshixun
+        InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "com.android.mdm.MdmPolicyManager", "reboot");//shutDown
         util.getMethod();
-        String ret = util.invokeMethod();
+        String ret = util.invokeMethod(this);
         toast(ret);
     }
 
     public void test2(View view) {
+        //test
         InvokeUtil util = new InvokeUtil(this, "/mnt/sdcard/test.jar", "cn.kiway.dynamic.MDMUtil", "setStatusBarExpandPanelDisabled");
         util.getMethod(boolean.class);
         String ret = util.invokeMethod(true);
