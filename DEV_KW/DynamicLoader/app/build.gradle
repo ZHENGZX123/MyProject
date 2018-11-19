@@ -20,6 +20,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile files('libs/test1.jar')
-//    compile files('libs/test2.jar')
+    compile 'org.xutils:xutils:3.5.0'
+    compile files('libs/android-async-http-1.4.5.jar')
 }

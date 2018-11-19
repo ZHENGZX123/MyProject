@@ -1,0 +1,13 @@
+后台地址：
+http://192.168.8.12:8686
+
+管理员帐号密码 admin  admin
+测试厂商      test   test
+
+swagger
+http://192.168.8.51:8088/swagger-ui.html#/
+
+
+
+
+
