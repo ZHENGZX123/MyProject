@@ -2,6 +2,7 @@ package com.zk.dynamicloader.utils;
 
 import android.content.Context;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import dalvik.system.DexClassLoader;
@@ -39,6 +40,7 @@ public class InvokeUtil {
         }
     }
 
+    //构造函数无参
     public String invokeMethod(Object... params) {
         String ret = null;
         try {
@@ -49,5 +51,20 @@ public class InvokeUtil {
         }
         return ret;
     }
+
+    //构造函数有一个参数context
+    public String invokeMethod(Context c, Object... params) {
+        String ret = null;
+        try {
+            Constructor constructor = classToCall.getDeclaredConstructor(Context.class);
+            Object obj = constructor.newInstance(c);
+            ret = (String) method.invoke(obj, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "jar异常" + e.toString();
+        }
+        return ret;
+    }
+
 
 }
