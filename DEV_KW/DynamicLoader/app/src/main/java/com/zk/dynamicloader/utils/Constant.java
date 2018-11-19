@@ -12,6 +12,6 @@ public class Constant {
 
 
     public final static String HOST = "http://192.168.8.51:8088/";
-    public final static String URL_JAR_UPGRADE = HOST + "model/getJarUrl?modelName=1&businessMen=2";
+    public final static String URL_JAR_UPGRADE = HOST + "model/getJarUrl";
 
 }
