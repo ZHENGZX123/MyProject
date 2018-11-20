@@ -263,7 +263,7 @@ public class AutoReplyService extends AccessibilityService {
             }
             if (msg.what == MSG_TRAVERSAL_QUEUE) {
                 mHandler.removeMessages(MSG_TRAVERSAL_QUEUE);
-                mHandler.sendEmptyMessageDelayed(MSG_TRAVERSAL_QUEUE, 2000);
+                mHandler.sendEmptyMessageDelayed(MSG_TRAVERSAL_QUEUE, 3000);
                 if (!getSharedPreferences("kiway", 0).getBoolean("login", false)) {
                     return;
                 }
@@ -691,7 +691,6 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (command.cmd.equals(UPDATE_FRIEND_NICKNAME_CMD)) {
                         if (o.optBoolean("fromFront")) {
                             Friend f = new Friend(o.optString("nickname"), o.optString("newName"), o.optString("wxId"), o.optString("wxNo"));
-                            Log.d("test", "fromFront f = " + f.toString());
                             ArrayList<Friend> updateFriends = new ArrayList<>();
                             updateFriends.add(f);
                             Utils.updateFriendRemark(MainActivity.instance, updateFriends);
@@ -752,7 +751,7 @@ public class AutoReplyService extends AccessibilityService {
                     Log.d("test", "sendMsgToServer2 topic = " + topic + " , msg = " + msg);
 
                     //修改DB状态
-                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, (statusCode == 200) ? ACTION_STATUS_2 : ACTION_STATUS_0);
+                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, ACTION_STATUS_2);
                     new MyDBHelper(getApplicationContext()).updateServerMsgReplyContentByIndex(index, msg);
 
                     //fromFront不用走rabbitMQ
@@ -1781,7 +1780,7 @@ public class AutoReplyService extends AccessibilityService {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startCheckMomentList(5, description);
+                        startCheckMomentList(10, description);
                     }
                 }, 2000);
             }
@@ -1845,7 +1844,7 @@ public class AutoReplyService extends AccessibilityService {
             final String message = o.optString("message");
             int type = o.optInt("type");
 
-            if (type == 1) {//文本
+            if (type == 1) {//文本，0.5.9已不走这里
                 Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setText(Utils.replaceReply(message));
                 sp.setShareType(Platform.SHARE_TEXT);
@@ -2453,7 +2452,31 @@ public class AutoReplyService extends AccessibilityService {
                 if (actionType == TYPE_DELETE_MOMENT) {
                     doDeleteMoment();
                 } else if (actionType == TYPE_INTERACT_MOMENT) {
-                    startCheckCommentList(5);
+                    //如果是图文，需要多点一下
+                    int type = 1;
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        JSONObject o = new JSONObject(content);
+                        type = o.optInt("type");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        release(false);
+                    }
+                    if (type == 2) {
+                        findTargetNode(NODE_LINEARLAYOUT, 3);
+                        if (mFindTargetNode == null) {
+                            release(false);
+                        }
+                        mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startCheckCommentList(5);
+                            }
+                        }, 2000);
+                    } else {
+                        startCheckCommentList(5);
+                    }
                 }
             }
         }, 2000);
@@ -3121,7 +3144,17 @@ public class AutoReplyService extends AccessibilityService {
                 if (i - 2 < 0) {
                     continue;
                 }
-                AccessibilityNodeInfo prevNode = rootNode.getChild(i - 2);
+                int index = i - 2;
+                if (index < 0) {
+                    continue;
+                }
+                AccessibilityNodeInfo prevNode = rootNode.getChild(index);
+                if (prevNode == null) {
+                    continue;
+                }
+                if (prevNode.getText() == null) {
+                    continue;
+                }
                 String nickname = prevNode.getText().toString();
                 Log.d("test", "nickname = " + nickname);
                 if (checkedFriends.contains(nickname)) {
@@ -5040,6 +5073,8 @@ public class AutoReplyService extends AccessibilityService {
                             equal = false;
                         }
                         boolean find = findTargetNode(NODE_TEXTVIEW, temp, CLICK_PARENT, equal);
+                        //Log.d("test", "share find = " + find);
+                        //test(getRootInActiveWindow() , false);
                         if (!find) {
                             handleShareFriendFailure();
                             return;
@@ -5076,7 +5111,7 @@ public class AutoReplyService extends AccessibilityService {
         actions.get(currentActionID).tryCount++;
         if (actions.get(currentActionID).tryCount < 9) {
             release(false, false, false);
-            //N分钟后重试
+
             int index = 0;
             try {
                 //获取群聊的indexs
@@ -5094,6 +5129,7 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    //N分钟后重试
                     new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(finalIndex, ACTION_STATUS_0);
                     Utils.handleMsgInDB(getApplicationContext());
                 }

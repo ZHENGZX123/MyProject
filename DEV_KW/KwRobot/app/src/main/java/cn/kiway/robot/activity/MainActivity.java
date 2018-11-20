@@ -434,7 +434,7 @@ public class MainActivity extends BaseActivity {
                     //1.先去朋友圈浏览一下
                     if (scan) {
                         checkMomemt();
-                        //如果当前有别的事件，100秒不够。
+                        //如果当前有别的事件，100秒不够执行checkMomemt。
                         sleep(100 * 1000);
                     }
                     //2.破解数据库
@@ -671,7 +671,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 doMissingFish();
-                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 2 * 60 * 60 * 1000);
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
@@ -745,7 +745,7 @@ public class MainActivity extends BaseActivity {
     public long lastUpdateTime;
     public int currentGrade = 5;
     //public static final int[] intervalGrades = new int[]{2, 3, 5, 10, 20, 30, 60};
-    public static final int[] intervalGrades = new int[]{10, 10, 10, 10, 10, 10, 10};//zzx add
+    public static final int[] intervalGrades = new int[]{4, 4, 4, 4, 4, 4, 4};//zzx add
 
     public void updateCheckMsgInterval() {
         long current = System.currentTimeMillis();
@@ -1139,12 +1139,12 @@ public class MainActivity extends BaseActivity {
 //        getAllFriends(false, true);
 
         Utils.getLastMsgIndex(this, null);
-//
-//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-//        Log.d("test", "sms count = " + sms.size());
-//        for (ServerMsg sm : sms) {
-//            Log.d("test", "sm = " + sm.toString());
-//        }
+
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        Log.d("test", "sms count = " + sms.size());
+        for (ServerMsg sm : sms) {
+            Log.d("test", "sm = " + sm.toString());
+        }
 
 //        getAllGroups(false);
 
@@ -1159,26 +1159,24 @@ public class MainActivity extends BaseActivity {
 
 //        getBaseData();
 
-//        Platform.ShareParams sp = new Platform.ShareParams();
-//        sp.setImagePath(imagePath);
-//        sp.setShareType(Platform.SHARE_FILE);
-//        Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-//        wx.share(sp);
-
 //        getAllMomentComments(true);
 
 //        getAllMessages();
 
 //        doMissingFish();
+
+//        getAllFriends(false , true);
+
+
     }
 
     public void test3(View view) {
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+                ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
         for (ServerMsg sm : sms) {
             new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
         }
-//        resetNickName();
-//        resetNickName2();
+
+        //resetNickName();
     }
 
     private void resetNickName() {
@@ -1193,7 +1191,6 @@ public class MainActivity extends BaseActivity {
                 Friend f = friends.get(i);
                 Log.d("test", "f = " + f.toString());
                 String leftChinese = Utils.leftChinese(f.remark);
-                Log.d("test", "leftChinese = |" + leftChinese + "|");
                 if (TextUtils.isEmpty(leftChinese)) {
                     leftChinese = Utils.leftChinese(f.nickname);
                 }
@@ -1201,13 +1198,15 @@ public class MainActivity extends BaseActivity {
                     leftChinese = Utils.getRandomChineseName();
                 }
                 if (!Utils.isStartWithNumber(leftChinese)) {
-                    //zhengkang fix0920: Utils.getParentRemark(this, 1)
                     leftChinese = i + " " + leftChinese;
                 }
                 //zhengkang add 0925
                 if (leftChinese.length() > 10) {
                     leftChinese = leftChinese.substring(0, 10);
                 }
+                //zhengkang add 1120
+                leftChinese = leftChinese.trim();
+
                 f.newRemark = leftChinese;
                 Log.d("test", "newRemark = " + f.newRemark);
                 if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
@@ -1227,68 +1226,6 @@ public class MainActivity extends BaseActivity {
                 o.put("wxId", f.wxId);
                 o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);
                 o.put("oldName", TextUtils.isEmpty(f.remark) ? f.nickname : f.remark);
-                o.put("newName", f.newRemark);
-                String temp = o.toString();
-                Log.d("test", "temp = " + temp);
-                AutoReplyService.instance.sendRenameTaskQueue(temp);
-            }
-            //2.完成之后再上报一下好友
-            getAllFriends(false, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //替补方法
-    private void resetNickName2() {
-        try {
-            String password = initDbPassword(getApplicationContext());
-            File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
-            final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
-            ArrayList<Friend> needUpdateFriends = new ArrayList<>();
-
-            int count = friends.size();
-            for (int i = 0; i < count; i++) {
-                Friend f = friends.get(i);
-                Log.d("test", "f = " + f.toString());
-                String leftChinese = Utils.leftChinese(f.remark);
-                Log.d("test", "leftChinese = |" + leftChinese + "|");
-                if (TextUtils.isEmpty(leftChinese)) {
-                    leftChinese = Utils.leftChinese(f.nickname);
-                }
-                if (TextUtils.isEmpty(leftChinese)) {
-                    leftChinese = Utils.getRandomChineseName();
-                }
-                if (!Utils.isStartWithNumber(leftChinese)) {
-                    //zhengkang fix0920: Utils.getParentRemark(this, 1)
-                    leftChinese = i + " " + leftChinese;
-                }
-                //zhengkang add 0925
-                if (leftChinese.length() > 10) {
-                    leftChinese = leftChinese.substring(0, 10);
-                }
-                f.newRemark = leftChinese;
-                Log.d("test", "newRemark = " + f.newRemark);
-                if (!f.newRemark.equals(f.remark) && !f.newRemark.equals(f.nickname)) {
-                    //Log.d("test", "该好友要重新备注");
-                    needUpdateFriends.add(f);
-                }
-            }
-            Log.d("test", "needUpdateFriends size = " + needUpdateFriends.size());
-            //1.发送改备注的命令：
-            for (Friend f : needUpdateFriends) {
-                if (TextUtils.isEmpty(f.wxNo)) {
-                    continue;
-                }
-                JSONObject o = new JSONObject();
-                o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
-                o.put("id", "84f119408d6441358d24b668323f0a23");
-                o.put("token", "1526895528997");
-                o.put("fromFront", true);
-                o.put("nickname", f.nickname);
-                o.put("wxId", f.wxId);
-                o.put("wxNo", TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo);
-                o.put("oldName", f.wxNo);
                 o.put("newName", f.newRemark);
                 String temp = o.toString();
                 Log.d("test", "temp = " + temp);

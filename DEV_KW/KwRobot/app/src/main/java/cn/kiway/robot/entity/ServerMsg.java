@@ -18,7 +18,7 @@ public class ServerMsg {
     public int index;
     public String content;
     public String replyContent;
-    public int status; //0默认   1.执行中  ,  2执行完，上传失败  3，执行完，上传成功
+    public int status; //0默认   1.执行中  ,  2执行完，上传失败(未上传)  3，执行完，上传成功
 
     public long time;
     public int type;//1MQ  2HTTP
