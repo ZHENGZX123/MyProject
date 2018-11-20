@@ -354,6 +354,7 @@ public class Utils {
                 Log.d("test", "DB已存在该记录");
                 return true;
             }
+            //插入数据库，初始
             new MyDBHelper(c).addServerMsg(new ServerMsg(index, msg, "", ACTION_STATUS_0, System.currentTimeMillis(), type));
             return false;
         } catch (Exception e) {
@@ -675,6 +676,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "freind onSuccess = " + ret);
+                            Utils.friends.clear();
                         }
 
                         @Override
@@ -721,6 +723,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "updateFriendRemark onSuccess = " + ret);
+                            Utils.friends.clear();
                         }
 
                         @Override
@@ -1693,6 +1696,7 @@ public class Utils {
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "groups/name/change onSuccess = " + ret);
                             myListener.onResult(true);
+                            Utils.groups.clear();
                         }
 
                         @Override
@@ -1747,6 +1751,7 @@ public class Utils {
                         @Override
                         public void onSuccess(int code, Header[] headers, String ret) {
                             Log.d("test", "groupMembersRel onSuccess = " + ret);
+                            Utils.groups.clear();
                         }
 
                         @Override
@@ -1908,6 +1913,13 @@ public class Utils {
         if (!Utils.isStartWithNumber(leftChinese)) {
             leftChinese = Utils.getParentRemark(c, 1) + " " + leftChinese;
         }
+        //zhengkang add 0925
+        if (leftChinese.length() > 10) {
+            leftChinese = leftChinese.substring(0, 10);
+        }
+        //zhengkang add 1120
+        leftChinese = leftChinese.trim();
+
         return leftChinese;
     }
 
