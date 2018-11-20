@@ -6,5 +6,9 @@
     android:orientation="vertical"
     tools:context="com.zk.dynamicloader.ui.MainActivity">
 
-
+    <Button
+        android:onClick="upgrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="检查jar包" />
 </LinearLayout>
