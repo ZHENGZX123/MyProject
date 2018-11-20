@@ -13,7 +13,7 @@ import com.zk.dynamicloader.utils.Utils;
 
 import java.io.File;
 
-
+//mdm jar测试例子
 public class MainActivity extends Activity {
 
     @Override
@@ -50,6 +50,8 @@ public class MainActivity extends Activity {
         util.getMethod(boolean.class);
         String ret = util.invokeMethod(true);
         toast(ret);
+
+
     }
 
     public void upgrade(View view) {

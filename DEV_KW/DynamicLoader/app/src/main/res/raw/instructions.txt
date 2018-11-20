@@ -15,10 +15,10 @@
   (2)dx工具位于Android Sdk下：D:\Android\sdk\build-tools\19.0.0
   (3)dx命令：dx --dex --output=test.jar test_java.jar
 
-3.动态调用jar相关
-（1）输入参数：为简便，输入参数的类型统一为String[]，如果没有则传null；
+3.动态调用jar（翻译器）
+（1）输入参数：是一个可变长度参数；（为简便，可以使用String[]）
 （2）返回值：为简便，返回值的类型统一是String；如果是图片，返回图片的路径String，而不是Bitmap；
-（3）不支持异步回调返回值：广播，callback
+（3）不支持异步回调返回值：广播，callback等
 
 三、参考网页
 https://blog.csdn.net/shiyuzhengfeng/article/details/47070459
