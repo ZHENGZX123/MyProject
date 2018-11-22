@@ -1283,7 +1283,7 @@ public class AutoReplyService extends AccessibilityService {
             final JSONArray members = o.optJSONArray("members");
             final String finalContent = content;
             final String finalClientGroupId = clientGroupId;
-            final String sender = o.optString("sender");
+            final String target = o.optString("target");
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1306,16 +1306,16 @@ public class AutoReplyService extends AccessibilityService {
                         addMissingFish();
                     } else if (actionType == TYPE_BROWSER_MESSAGE) {
                         //浏览，补救图片
-                        if (TextUtils.isEmpty(finalClientGroupId)) {
-                            searchTargetInWxHomePage(actionType, sender, true);
-                        } else {
-                            Group g = getOneGroupFromWechatDB_ClientGroupId(finalClientGroupId, false);
+                        if (target.endsWith("@chatroom")) {
+                            Group g = getOneGroupFromWechatDB_ClientGroupId(target, false);
                             if (g == null) {
                                 release(false);
                                 toast("该群不存在或已经被删除");
                                 return;
                             }
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
+                        } else {
+                            searchTargetInWxHomePage(actionType, target, true);
                         }
                     } else if (actionType == TYPE_FIX_NICKNAME
                             || actionType == TYPE_FIX_ICON) {
@@ -3541,8 +3541,8 @@ public class AutoReplyService extends AccessibilityService {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                         Log.d("test", "content = " + content);
                         JSONObject o = new JSONObject(content);
-                        String clientGroupId = o.optString("clientGroupId");
-                        int count = TextUtils.isEmpty(clientGroupId) ? 3 : 5;
+                        String target = o.optString("target");
+                        int count = target.endsWith("@chatroom") ? 5 : 3;
                         for (int i = 0; i < count; i++) {
                             execRootCmdSilent("input swipe 360 300 360 900");
                         }

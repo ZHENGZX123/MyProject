@@ -2510,7 +2510,6 @@ public class Utils {
         return false;
     }
 
-
     public static void setScreenBrightness(MainActivity c) {
         //先关闭系统的亮度自动调节
         try {
