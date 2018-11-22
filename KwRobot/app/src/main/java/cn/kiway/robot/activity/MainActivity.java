@@ -8,11 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -142,9 +140,7 @@ public class MainActivity extends BaseActivity {
         checkRoot(null);
         Utils.blackfile(getApplication());
         installationPush(getApplication());
-        Utils.updateRobotStatus(this, AutoReplyService.instance == null ? 2 : 1);
         Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
-        setBrightness();
 
         mHandler.sendEmptyMessageDelayed(MSG_UPGRADE, 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_BASEDATA, 60 * 1000);
@@ -154,7 +150,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 120 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
+        //mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
 
         Calendar curDate = Calendar.getInstance();
@@ -162,7 +158,6 @@ public class MainActivity extends BaseActivity {
         long between = nextDayDate.getTimeInMillis() - curDate.getTimeInMillis();
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, between);
 
-        clearCachedFiles(true);
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 4 * 60 * 1000);
 
@@ -178,25 +173,10 @@ public class MainActivity extends BaseActivity {
                 }
             });
         }
-    }
 
-    private void setBrightness() {
-        //先关闭系统的亮度自动调节
-        try {
-            if (android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE) == android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-                android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE, android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
-        //不让屏幕全暗
-        int brightness = 1;
-        //设置当前activity的屏幕亮度
-        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-        //0到1,调整亮度暗到全亮
-        lp.screenBrightness = brightness / 255.0f;
-        this.getWindow().setAttributes(lp);
-        android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
+        clearCachedFiles(true);
+        updateServiceCount();
+        Utils.setScreenBrightness(this);
     }
 
     private void initView() {
@@ -251,7 +231,6 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         updateServiceStatus();
         updateAdminStatus();
-        updateServiceCount();
     }
 
     private void updateAdminStatus() {
