@@ -29,7 +29,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_MESSAGE = "message";
     private static final String CREATE_TABLE_MESSAGE = " create table IF NOT EXISTS "
             + TABLE_MESSAGE
-            + "   (id integer primary key autoincrement,  talker text , remark text , content text , createTime text  ) ";
+            + "   (id integer primary key autoincrement,  talker text , remark text , content text ,  imgPath text , createTime text  ) ";
 
     //朋友圈
     private static final String TABLE_WX_MOMENT = "WX_MOMENT";
@@ -55,21 +55,22 @@ public class MyDBHelper extends SQLiteOpenHelper {
             + TABLE_SERVER_MSG
             + "   (id integer primary key autoincrement,  indexs text ,  content text , replyContent text ,  status text , time text , type text  ) ";
 
+
+
     private SQLiteDatabase db;
 
     public MyDBHelper(Context c) {
-        super(c, DB_NAME, null, 47);
+        super(c, DB_NAME, null, 48);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 //        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDFRIEND);
 //        db.execSQL(CREATE_TABLE_ADDFRIEND);
 
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
-//        db.execSQL(CREATE_TABLE_MESSAGE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
+        db.execSQL(CREATE_TABLE_MESSAGE);
 
 //        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILTER);
 //        db.execSQL(CREATE_TABLE_FILTER);
@@ -221,11 +222,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<Message> getMessagesIn1Hour() {
+    public ArrayList<Message> getMessagesIn2Hour() {
         if (db == null)
             db = getWritableDatabase();
         long current = System.currentTimeMillis();
-        long before1hour = current - 60 * 60 * 1000;
+        long before1hour = current - 2 * 60 * 60 * 1000;
         Cursor cur = db.query(TABLE_MESSAGE, null, "createTime>?", new String[]{before1hour + ""}, null, null, null);
         ArrayList<Message> messages = new ArrayList<>();
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
