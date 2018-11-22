@@ -34,14 +34,14 @@ public class Action {
     public static final int TYPE_CHAT_IN_GROUP = 118;//群内聊天
     public static final int TYPE_AT_GROUP_PEOPLE = 119;//艾特某人
     public static final int TYPE_DELETE_MOMENT = 120;//删除朋友圈
-    public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友n
+    public static final int TYPE_ADD_FRIEND = 121;//主动搜索并添加好友
     public static final int TYPE_MISSING_FISH = 122;//漏网之鱼
     public static final int TYPE_FIX_NICKNAME = 123;//修改昵称
     public static final int TYPE_FIX_ICON = 124;//修改头像
     public static final int TYPE_CHECK_NEW_VERSION = 125;//检查新版本
     public static final int TYPE_NEARBY_PEOPLE = 126;//附近的人
     public static final int TYPE_DELETE_GROUP_CHAT = 127;//解散群聊
-    public static final int TYPE_DELETE_FRIEND = 128;//
+    public static final int TYPE_DELETE_FRIEND = 128;//删除好友
     public static final int TYPE_SEND_MOMENT = 129;
     public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
     public static final int TYPE_SEND_BATCH = 132;
@@ -56,6 +56,7 @@ public class Action {
     public static final int TYPE_UPDATE_BASEDATA = 141;
     public static final int TYPE_GROUP_QRCODE = 142;
     public static final int TYPE_TRANSFER_MASTER = 143;
+    public static final int TYPE_BROWSER_MESSAGE = 144;
 
     public long id;
     public PendingIntent intent;

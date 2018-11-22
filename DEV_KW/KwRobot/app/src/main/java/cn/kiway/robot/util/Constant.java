@@ -153,6 +153,7 @@ public class Constant {
     public static final String TRANSFER_MASTER_REPLY_CMD = "exchangeGroupMasterReplyCmd";
     public static final String TEST_CMD = "testCmd";
     public static final String TEST_REPLY_CMD = "testReplyCmd";
+    public static final String BROWSE_MESSAGE_CMD = "browseMessageCmd";//这个后台没有
 
     public static final String UPDATE_BASEDATA_CMD = "updateBaseDate";
     public static final String INSERT_BASEDATA_CMD = "insertBaseDate";
@@ -232,6 +233,7 @@ public class Constant {
         backdoors.put(UPDATE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
         backdoors.put(INSERT_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
         backdoors.put(DELETE_BASEDATA_CMD, Action.TYPE_UPDATE_BASEDATA);
+        backdoors.put(BROWSE_MESSAGE_CMD, Action.TYPE_BROWSER_MESSAGE);
 
     }
 

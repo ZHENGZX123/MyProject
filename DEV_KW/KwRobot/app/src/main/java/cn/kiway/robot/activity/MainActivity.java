@@ -78,6 +78,7 @@ import static cn.kiway.robot.KWApplication.DCIM;
 import static cn.kiway.robot.KWApplication.DOWNLOAD;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
+import static cn.kiway.robot.util.Constant.BROWSE_MESSAGE_CMD;
 import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.CLEAR_CHAT_HISTORY_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
@@ -163,7 +164,7 @@ public class MainActivity extends BaseActivity {
 
         clearCachedFiles(true);
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 4 * 60 * 1000);
 
         mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 2 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
@@ -683,10 +684,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_MESSAGES) {
                 mHandler.removeMessages(MSG_GET_ALL_MESSAGES);
                 getAllMessages();
-                if (currentGrade < (intervalGrades.length - 1)) {
-                    currentGrade++;
-                }
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 4 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_WODIS) {
                 mHandler.removeMessages(MSG_GET_ALL_WODIS);
                 getAllWodis();
@@ -767,22 +765,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }.start();
-    }
-
-    public long lastUpdateTime;
-    public int currentGrade = 5;
-    //public static final int[] intervalGrades = new int[]{2, 3, 5, 10, 20, 30, 60};
-    public static final int[] intervalGrades = new int[]{4, 4, 4, 4, 4, 4, 4};//zzx add
-
-    public void updateCheckMsgInterval() {
-        long current = System.currentTimeMillis();
-        if ((current - lastUpdateTime) < 2 * 60 * 1000) {
-            return;
-        }
-        lastUpdateTime = current;
-        currentGrade = 0;
-        mHandler.removeMessages(MSG_GET_ALL_MESSAGES);
-        mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
     }
 
     private void clearChatHistory() {
@@ -1215,7 +1197,17 @@ public class MainActivity extends BaseActivity {
 //        for (Message m : wxMessages) {
 //            Log.d("test", "m = " + m.toString());
 //        }
-        resetTransferNickName();
+        try {
+            JSONObject o = new JSONObject();
+            o.put("cmd", BROWSE_MESSAGE_CMD);
+            o.put("fromFront", true);
+            o.put("target", "12176038998@chatroom");//群：12176038998@chatroom 家长：33 执着
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void renameTask(View view) {
@@ -1316,7 +1308,7 @@ public class MainActivity extends BaseActivity {
         long current = System.currentTimeMillis();
         long before1day = current - 24 * 60 * 60 * 1000;
         for (File f : files) {
-            Log.d("test", "f = " + f.getAbsolutePath());
+            //Log.d("test", "f = " + f.getAbsolutePath());
             if (!f.isDirectory() && f.getName().contains("db")) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();

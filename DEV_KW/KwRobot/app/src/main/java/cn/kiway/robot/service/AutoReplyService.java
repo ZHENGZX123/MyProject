@@ -74,6 +74,7 @@ import static cn.kiway.robot.entity.Action.TYPE_ADD_PUBLIC_ACCOUNT;
 import static cn.kiway.robot.entity.Action.TYPE_AT_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_AUTO_MATCH;
 import static cn.kiway.robot.entity.Action.TYPE_BACK_DOOR;
+import static cn.kiway.robot.entity.Action.TYPE_BROWSER_MESSAGE;
 import static cn.kiway.robot.entity.Action.TYPE_CARD;
 import static cn.kiway.robot.entity.Action.TYPE_CHAT_IN_GROUP;
 import static cn.kiway.robot.entity.Action.TYPE_CHECK_MOMENT;
@@ -121,6 +122,7 @@ import static cn.kiway.robot.util.Constant.AT_PERSONS_CMD;
 import static cn.kiway.robot.util.Constant.AUTO_REPLY_CONTENT_CMD;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.BROWSE_MESSAGE_CMD;
 import static cn.kiway.robot.util.Constant.CHAT_IN_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.CLEAR_CHAT_HISTORY_CMD;
@@ -173,7 +175,6 @@ import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static cn.kiway.robot.util.Utils.channels;
-import static cn.kiway.robot.util.Utils.doGetFriends;
 import static cn.kiway.robot.util.Utils.getParentRemark;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -653,7 +654,7 @@ public class AutoReplyService extends AccessibilityService {
     //后台操作命令，执行完后的回复
     public synchronized void sendMsgToServer2(final int statusCode, final Command command) {
         if (command.cmd.equals(CHAT_IN_GROUP_CMD) || command.cmd.equals(CHECK_MOMENT_CMD)
-                || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD) || command.cmd.equals(NOTIFY_RESULT_CMD)) {
+                || command.cmd.equals(CLEAR_CHAT_HISTORY_CMD) || command.cmd.equals(NOTIFY_RESULT_CMD) || command.cmd.equals(BROWSE_MESSAGE_CMD)) {
             try {
                 String content = new String(Base64.decode(command.content.getBytes(), NO_WRAP));
                 JSONObject o = new JSONObject(content);
@@ -694,7 +695,7 @@ public class AutoReplyService extends AccessibilityService {
                             updateFriends.add(f);
                             Utils.updateFriendRemark(MainActivity.instance, updateFriends);
                         } else {
-                            //TODO 后台发来的参数缺少wxId、wxNo
+                            //后台发来的参数缺少wxId、wxNo
                             sendFriendInfoDelay();
                         }
                     } else if (command.cmd.equals(DELETE_FRIEND_CMD)) {
@@ -1038,9 +1039,6 @@ public class AutoReplyService extends AccessibilityService {
                     actions.put(id, action);
                     if (action.actionType == TYPE_TEXT) {
                         preActionsQueue.add(action);
-                        if (MainActivity.instance != null) {
-                            MainActivity.instance.updateCheckMsgInterval();
-                        }
                     } else {
                         dispatchAction(action);
                     }
@@ -1078,49 +1076,28 @@ public class AutoReplyService extends AccessibilityService {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            dododo(actionType);
+                            dispatchAction(actionType);
                         }
                     }, 8000);
                     return;
                 } else {
-                    dododo(actionType);
+                    dispatchAction(actionType);
                 }
                 break;
         }
     }
 
-    private void dododo(final int actionType) {
+    private void dispatchAction(final int actionType) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (actionType == TYPE_CLEAR_ZOMBIE_FAN
-                        || actionType == TYPE_CREATE_GROUP_CHAT
-                        || actionType == TYPE_DELETE_GROUP_CHAT
-                        || actionType == TYPE_ADD_GROUP_PEOPLE
-                        || actionType == TYPE_DELETE_GROUP_PEOPLE
-                        || actionType == TYPE_FIX_GROUP_NOTICE
-                        || actionType == TYPE_FIX_GROUP_NAME
-                        || actionType == TYPE_CHAT_IN_GROUP
-                        || actionType == TYPE_AT_GROUP_PEOPLE
-                        || actionType == TYPE_DELETE_MOMENT
-                        || actionType == TYPE_ADD_FRIEND
-                        || actionType == TYPE_DELETE_FRIEND
-                        || actionType == TYPE_MISSING_FISH
-                        || actionType == TYPE_FIX_NICKNAME
-                        || actionType == TYPE_FIX_FRIEND_NICKNAME
-                        || actionType == TYPE_FIX_ICON
-                        || actionType == TYPE_NEARBY_PEOPLE
-                        || actionType == TYPE_SEND_BATCH
-                        || actionType == TYPE_CHECK_MOMENT
-                        || actionType == TYPE_CLEAR_CHAT_HISTORY
-                        || actionType == TYPE_INTERACT_MOMENT
-                        || actionType == TYPE_NOTIFY_RESULT
-                        || actionType == TYPE_SCRIPT
-                        || actionType == TYPE_ADD_PUBLIC_ACCOUNT
-                        || actionType == TYPE_SEARCH_PUBLIC_ACCOUNT
-                        || actionType == TYPE_SAVE_GROUP
-                        || actionType == TYPE_GROUP_QRCODE
-                        || actionType == TYPE_TRANSFER_MASTER
+                        || actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_DELETE_GROUP_CHAT || actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE || actionType == TYPE_FIX_GROUP_NOTICE
+                        || actionType == TYPE_FIX_GROUP_NAME || actionType == TYPE_CHAT_IN_GROUP || actionType == TYPE_AT_GROUP_PEOPLE || actionType == TYPE_DELETE_MOMENT || actionType == TYPE_ADD_FRIEND || actionType == TYPE_DELETE_FRIEND
+                        || actionType == TYPE_MISSING_FISH || actionType == TYPE_BROWSER_MESSAGE || actionType == TYPE_FIX_NICKNAME || actionType == TYPE_FIX_FRIEND_NICKNAME
+                        || actionType == TYPE_FIX_ICON || actionType == TYPE_NEARBY_PEOPLE || actionType == TYPE_SEND_BATCH || actionType == TYPE_CHECK_MOMENT
+                        || actionType == TYPE_CLEAR_CHAT_HISTORY || actionType == TYPE_INTERACT_MOMENT || actionType == TYPE_NOTIFY_RESULT || actionType == TYPE_SCRIPT
+                        || actionType == TYPE_ADD_PUBLIC_ACCOUNT || actionType == TYPE_SEARCH_PUBLIC_ACCOUNT || actionType == TYPE_SAVE_GROUP || actionType == TYPE_GROUP_QRCODE || actionType == TYPE_TRANSFER_MASTER
                         ) {
                     new Thread() {
                         @Override
@@ -1138,7 +1115,6 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }.start();
                 } else if (actionType == TYPE_COLLECTOR_FORWARDING) {
-                    //FIXME??这里会被篡改吗
                     doChatByActionType();
                 } else {
                     //聊天有关，0810修改，一律退到首页再做处理
@@ -1187,8 +1163,6 @@ public class AutoReplyService extends AccessibilityService {
     //分发事件
     private void dispatchAction(Action action) {
         if (action.actionType == TYPE_TEXT) {
-            //刷新界面
-            refreshUI1();
             //文字的话直接走zbus
             if (action.clientGroupId.equals("-1")) {
                 Log.d("test", "好友消息");
@@ -1240,6 +1214,7 @@ public class AutoReplyService extends AccessibilityService {
                 || action.actionType == TYPE_ADD_FRIEND
                 || action.actionType == TYPE_DELETE_FRIEND
                 || action.actionType == TYPE_MISSING_FISH
+                || action.actionType == TYPE_BROWSER_MESSAGE
                 || action.actionType == TYPE_FIX_NICKNAME
                 || action.actionType == TYPE_FIX_FRIEND_NICKNAME
                 || action.actionType == TYPE_FIX_ICON
@@ -1308,6 +1283,7 @@ public class AutoReplyService extends AccessibilityService {
             final JSONArray members = o.optJSONArray("members");
             final String finalContent = content;
             final String finalClientGroupId = clientGroupId;
+            final String sender = o.optString("sender");
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1328,6 +1304,19 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_MISSING_FISH) {
                         //通讯录-新的朋友
                         addMissingFish();
+                    } else if (actionType == TYPE_BROWSER_MESSAGE) {
+                        //浏览，补救图片
+                        if (TextUtils.isEmpty(finalClientGroupId)) {
+                            searchTargetInWxHomePage(actionType, sender, true);
+                        } else {
+                            Group g = getOneGroupFromWechatDB_ClientGroupId(finalClientGroupId, false);
+                            if (g == null) {
+                                release(false);
+                                toast("该群不存在或已经被删除");
+                                return;
+                            }
+                            searchTargetInWxGroupPage(actionType, g.groupName, true);
+                        }
                     } else if (actionType == TYPE_FIX_NICKNAME
                             || actionType == TYPE_FIX_ICON) {
                         //我-个人信息
@@ -1349,12 +1338,8 @@ public class AutoReplyService extends AccessibilityService {
                         //通讯录-群聊-关于群的操作
                         Group g = getOneGroupFromWechatDB_ClientGroupId(finalClientGroupId, false);
                         if (g == null) {
-                            if (actionType == TYPE_DELETE_GROUP_CHAT) {
-                                release(true);
-                            } else {
-                                release(false);
-                            }
-                            toast("该群不存在或已经被删除2");
+                            release(actionType == TYPE_DELETE_GROUP_CHAT);
+                            toast("该群不存在或已经被删除");
                             return;
                         }
                         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
@@ -1554,7 +1539,7 @@ public class AutoReplyService extends AccessibilityService {
                                             release(false);
                                             return;
                                         }
-                                        //FIXME 这里2秒不够的，要智能判断
+                                        //FIXME 这里60秒时间不一定够，要智能判断
                                         resetMaxReleaseTime(DEFAULT_RELEASE_TIME);
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
@@ -1724,22 +1709,12 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void checkNotifier(final String target) {
-        //TODO 检查是不是绑定人是不是好友。这里优化一下。getFriendByWxNo
         new Thread() {
             @Override
             public void run() {
-                String password = initDbPassword(getApplicationContext());
-                File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
-                final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
-                boolean hasNotifyer = false;
-                for (Friend f : friends) {
-                    String wxNo = TextUtils.isEmpty(f.wxNo) ? f.wxId : f.wxNo;
-                    if (wxNo.equals(target)) {
-                        hasNotifyer = true;
-                    }
-                }
-                Log.d("test", "hasNotifyer = " + hasNotifyer);
-                if (hasNotifyer) {
+                Friend f = getOneFriendFromWechatDB_WxNo(target);
+                Log.d("test", "hasNotifyer = " + f.toString());
+                if (f != null) {
                     searchTargetInWxHomePage(TYPE_NOTIFY_RESULT, target, true);
                 } else {
                     //先加好友，再去做
@@ -3430,7 +3405,6 @@ public class AutoReplyService extends AccessibilityService {
                         sleep(5000);
                     }
                     release(true);
-                    refreshUI2();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -3523,7 +3497,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     // 好友、群的聊天窗口：1聊天 其他：actionType
-    // 注意可能有循环的操作，比如删除好友，不能release
+    // 注意可能有循环的操作，比如删除好友、群发公告，不能release
     private void enterChatView(final int actionType, final String target) {
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -3562,6 +3536,27 @@ public class AutoReplyService extends AccessibilityService {
                         e.printStackTrace();
                         release(false);
                     }
+                } else if (actionType == TYPE_BROWSER_MESSAGE) {
+                    try {
+                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                        Log.d("test", "content = " + content);
+                        JSONObject o = new JSONObject(content);
+                        String clientGroupId = o.optString("clientGroupId");
+                        int count = TextUtils.isEmpty(clientGroupId) ? 3 : 5;
+                        for (int i = 0; i < count; i++) {
+                            execRootCmdSilent("input swipe 360 300 360 900");
+                        }
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                release(true);
+                            }
+                        }, count * 2000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        release(false);
+                    }
+
                 }
             }
         }, 3000);
@@ -4494,22 +4489,6 @@ public class AutoReplyService extends AccessibilityService {
 
     private void longClickSomeWhere(int x, int y) {
         execRootCmdSilent("input touchscreen swipe " + x + " " + y + " " + x + " " + y + " 2000");
-    }
-
-    private void refreshUI1() {
-        int recvCount = getSharedPreferences("kiway", 0).getInt("recvCount", 0) + 1;
-        getSharedPreferences("kiway", 0).edit().putInt("recvCount", recvCount).commit();
-        if (MainActivity.instance != null) {
-            MainActivity.instance.updateServiceCount();
-        }
-    }
-
-    private void refreshUI2() {
-        int replyCount = getSharedPreferences("kiway", 0).getInt("replyCount", 0) + 1;
-        getSharedPreferences("kiway", 0).edit().putInt("replyCount", replyCount).commit();
-        if (MainActivity.instance != null) {
-            MainActivity.instance.updateServiceCount();
-        }
     }
 
     private void toast(String txt) {

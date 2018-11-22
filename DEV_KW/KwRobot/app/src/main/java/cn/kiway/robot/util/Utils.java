@@ -423,6 +423,11 @@ public class Utils {
     }
 
     private static boolean checkIsNeedSaveImg(ImageUpload iu) {
+        //1.补救次数大于3
+        if (iu.saveCount >= 3) {
+            return false;
+        }
+        //2.判断模糊图片、清晰图片是否存在
 
         return false;
     }
