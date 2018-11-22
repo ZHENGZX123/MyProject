@@ -67,6 +67,7 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.util.Base64.NO_WRAP;
 import static cn.kiway.robot.KWApplication.DCIM;
+import static cn.kiway.robot.KWApplication.WEIXIN;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_FRIEND;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_GROUP_PEOPLE;
 import static cn.kiway.robot.entity.Action.TYPE_ADD_PUBLIC_ACCOUNT;
@@ -168,7 +169,6 @@ import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.UPGRADE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
-import static cn.kiway.robot.util.Constant.port;
 import static cn.kiway.robot.util.Constant.qas;
 import static cn.kiway.robot.util.Constant.replies;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
@@ -291,10 +291,7 @@ public class AutoReplyService extends AccessibilityService {
                 return;
             }
             if (msg.what == MSG_SEND_HEARTBEAT) {
-                Action action = new Action();
-                action.sender = "心跳测试使者";
-                action.content = "heartbeat";
-                sendMsgToServer(action, null, TYPE_TEXT);
+                sendMsgToServer("心跳测试使者", "heartbeat", null, TYPE_TEXT);
                 mHandler.removeMessages(MSG_SEND_HEARTBEAT);
                 mHandler.sendEmptyMessageDelayed(MSG_SEND_HEARTBEAT, 10 * 60 * 1000);
                 return;
@@ -595,7 +592,7 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     //家长发来的消息，发给服务器
-    public void sendMsgToServer(final Action action, final String saved, final int type) {
+    public void sendMsgToServer(final String sender, final String content, final String saved, final int type) {
         new Thread() {
             @Override
             public void run() {
@@ -609,8 +606,8 @@ public class AutoReplyService extends AccessibilityService {
 
                     String msg = new JSONObject()
                             .put("id", System.currentTimeMillis())
-                            .put("sender", action.sender)
-                            .put("content", action.content)
+                            .put("sender", sender)
+                            .put("content", content)
                             .put("type", type)
                             .put("me", name)
                             .put("areaCode", areaCode)
@@ -618,7 +615,7 @@ public class AutoReplyService extends AccessibilityService {
 
                     //topic : robotId#wxNo
                     String topic = robotId + "#" + wxNo;
-                    String url = Constant.host + ":" + port;
+                    String url = Constant.host + ":" + Constant.port;
                     PushMessageVo pushMessageVo = new PushMessageVo();
                     pushMessageVo.setDescription("desc");
                     pushMessageVo.setTitle("title");
@@ -635,16 +632,17 @@ public class AutoReplyService extends AccessibilityService {
 
                     Log.d("test", "sendMsgToServer topic = " + topic + " , msg = " + msg + ", url = " + url);
 
-                    doSendMessageToServer(topic, pushMessageVo);
-
-                    if (action.sender.equals("心跳测试使者")) {
-                        Utils.updateRobotStatus(MainActivity.instance, 1);
-                    } else {
-                        new MyDBHelper(getApplication()).addMessage(action.sender, saved, System.currentTimeMillis() + "");//action.content
+                    boolean sendSuccess = doSendMessageToServer(topic, pushMessageVo);
+                    if (sendSuccess) {
+                        if (sender.equals("心跳测试使者")) {
+                            Utils.updateRobotStatus(MainActivity.instance, 1);
+                        } else {
+                            new MyDBHelper(getApplication()).addMessage(sender, saved, System.currentTimeMillis() + "");
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (action.sender.equals("心跳测试使者")) {
+                    if (sender.equals("心跳测试使者")) {
                         Utils.updateRobotStatus(MainActivity.instance, 2);
                     }
                 }
@@ -689,7 +687,8 @@ public class AutoReplyService extends AccessibilityService {
                     if (command.cmd.equals(ADD_FRIEND_CMD)) {
                         sendFriendInfoDelay();
                     } else if (command.cmd.equals(UPDATE_FRIEND_NICKNAME_CMD)) {
-                        if (o.optBoolean("fromFront")) {
+                        if (o.optBoolean("fromFront") && !o.optBoolean("isTransfer")) {
+                            //修改昵称后上报
                             Friend f = new Friend(o.optString("nickname"), o.optString("newName"), o.optString("wxId"), o.optString("wxNo"));
                             ArrayList<Friend> updateFriends = new ArrayList<>();
                             updateFriends.add(f);
@@ -758,8 +757,6 @@ public class AutoReplyService extends AccessibilityService {
                     if (!o.optBoolean("fromFront")) {
                         doSendMessageToServer(topic, msg, true, index);
                     }
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -767,6 +764,39 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
+    //群里发来的消息   zzx add  type类型 增加链接和小程序  wxMessage  因为链接跟小程序上报的内容和本地数据库不一致，所以需要传过来然后保存本地的
+    public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message, final int type, final String saved) {
+        new Thread() {
+            @Override
+            public void run() {
+                Log.d("test", "sendMsgToServer3");
+                try {
+                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
+                    String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
+                    String topic = "kiway-group-message-" + robotId + "#" + wxNo;
+
+                    JSONObject o = new JSONObject();
+                    o.put("clientGroupId", clientGroupId);
+                    o.put("name", sender);
+                    // o.put("type", TYPE_TEXT);
+                    o.put("type", type);
+                    o.put("message", message);
+                    o.put("robotId", robotId);
+                    o.put("userId", wxNo);
+
+                    String msg = o.toString();
+                    Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
+
+                    boolean successed = doSendMessageToServer(topic, msg, false, 0);
+                    if (successed) {
+                        new MyDBHelper(getApplication()).addMessage(sender, saved, System.currentTimeMillis() + "");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 
     private synchronized void sendFriendInfoDelay() {
         new Thread() {
@@ -832,40 +862,6 @@ public class AutoReplyService extends AccessibilityService {
         File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
         Group g = Utils.doGetOneGroupByGroupId(getApplicationContext(), dbFile, password, clientGroupId, needOwer);
         return g;
-    }
-
-    //群里发来的消息   zzx add  type类型 增加链接和小程序  wxMessage  因为链接跟小程序上报的内容和本地数据库不一致，所以需要传过来然后保存本地的
-    public synchronized void sendMsgToServer3(final String clientGroupId, final String sender, final String message, final int type, final String wxMessage) {
-        new Thread() {
-            @Override
-            public void run() {
-                Log.d("test", "sendMsgToServer3");
-                try {
-                    String robotId = getSharedPreferences("kiway", 0).getString("robotId", "");
-                    String wxNo = getSharedPreferences("kiway", 0).getString("wxNo", "");
-                    String topic = "kiway-group-message-" + robotId + "#" + wxNo;
-
-                    JSONObject o = new JSONObject();
-                    o.put("clientGroupId", clientGroupId);
-                    o.put("name", sender);
-                    // o.put("type", TYPE_TEXT);
-                    o.put("type", type);
-                    o.put("message", message);
-                    o.put("robotId", robotId);
-                    o.put("userId", wxNo);
-
-                    String msg = o.toString();
-                    Log.d("test", "sendMsgToServer3 topic = " + topic + " , msg = " + msg);
-
-                    doSendMessageToServer(topic, msg, false, 0);
-                    //zzx  add
-                    //new MyDBHelper(getApplication()).addMessage(sender, message, System.currentTimeMillis() + "");
-                    new MyDBHelper(getApplication()).addMessage(sender, wxMessage, System.currentTimeMillis() + "");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
     private void sendReply20sLater(Action action) {
@@ -993,7 +989,8 @@ public class AutoReplyService extends AccessibilityService {
                             Log.d("test", "该昵称被过滤");
                             continue;
                         }
-                        if (!Utils.isGetPic(getApplication(), content)) {
+                        //zhengkang 1122 不再使用转发使者
+                        if (content.equals("[图片]")) {//!Utils.isGetPic(getApplication(), content)
                             Log.d("test", "图片接收被过滤");
                             continue;
                         }
@@ -1195,7 +1192,7 @@ public class AutoReplyService extends AccessibilityService {
             //文字的话直接走zbus
             if (action.clientGroupId.equals("-1")) {
                 Log.d("test", "好友消息");
-                sendMsgToServer(action, action.content, TYPE_TEXT);
+                sendMsgToServer(action.sender, action.content, action.content, TYPE_TEXT);
                 sendReply20sLater(action);
             } else if (!TextUtils.isEmpty(action.clientGroupId)) {
                 Log.d("test", "群组消息");
@@ -3328,6 +3325,11 @@ public class AutoReplyService extends AccessibilityService {
                             temp = target.substring(0, 13);
                             equal = false;
                         }
+                        //zhengkang add 1122
+                        if (temp.contains("转发使者")) {
+                            equal = false;
+                        }
+
                         findTargetNode(NODE_EDITTEXT, temp);
                         final String finalTemp = temp;
                         final boolean finalEqual = equal;
@@ -3779,7 +3781,7 @@ public class AutoReplyService extends AccessibilityService {
 
     private boolean getQRCodeFromSdcard() {
         qrCodeUrl = "";
-        String path = "/sdcard/tencent/MicroMsg/WeiXin/";
+        String path = WEIXIN;
         File[] files = new File(path).listFiles();
         if (files == null || files.length == 0) {
             return false;
@@ -4403,7 +4405,6 @@ public class AutoReplyService extends AccessibilityService {
         return false;
     }
 
-
     private void doLongClickLastMsg(final String clientGroupId) {
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -4466,7 +4467,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 2000);
             }
-        }, 2000);
+        }, 0);
     }
 
     private void clickSomeWhere(AccessibilityNodeInfo node) {
@@ -5306,7 +5307,7 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void doSendMessageToServer(String topic, PushMessageVo vo) {
+    public boolean doSendMessageToServer(String topic, PushMessageVo vo) {
         Channel channel = null;
         try {
             channel = rabbitMQUtils.createChannel(topic, topic);
@@ -5315,8 +5316,10 @@ public class AutoReplyService extends AccessibilityService {
             }
             channels.add(channel);
             rabbitMQUtils.sendMsg(vo, channel);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
             try {
                 if (channel != null) {
@@ -5328,7 +5331,7 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private void doSendMessageToServer(String topic, final String replyMsg, boolean useHTTP, final int index) {
+    private boolean doSendMessageToServer(String topic, final String replyMsg, boolean useHTTP, final int index) {
         if (useHTTP) {
             if (MainActivity.instance != null) {
                 //上报并修改状态
@@ -5355,8 +5358,10 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 channels.add(channel);
                 rabbitMQUtils.sendMsgs(replyMsg, channel);
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             } finally {
                 try {
                     if (channel != null) {
@@ -5367,5 +5372,6 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }
+        return false;
     }
 }

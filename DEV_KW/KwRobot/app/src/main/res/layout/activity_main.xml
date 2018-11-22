@@ -54,14 +54,6 @@
             android:text="点击开启服务" />
 
         <Button
-            android:id="@+id/admin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="admin"
-            android:text="获取设备管理权限" />
-
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkRoot"
@@ -81,17 +73,16 @@
             android:text="重新登录" />
 
         <Button
-            android:id="@+id/filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="filter"
-            android:text="设置过滤" />
+            android:onClick="uploadInfo"
+            android:text="上报好友、群组" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="upload"
-            android:text="上报好友、群组" />
+            android:onClick="renameTask"
+            android:text="改名脚本" />
 
 
         <Button
@@ -111,6 +102,23 @@
             android:layout_height="wrap_content"
             android:onClick="test3"
             android:text="测试用3" />
+
+
+        <Button
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="filter"
+            android:text="设置过滤"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="admin"
+            android:text="获取设备管理权限"
+            android:visibility="gone" />
 
         <CheckBox
             android:id="@+id/lockscreen"

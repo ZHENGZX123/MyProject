@@ -42,7 +42,6 @@ public class KWApplication extends Application {
     public static String DCIM = "/mnt/sdcard/DCIM/Camera/";
     public static  String WEIXIN = "/sdcard/tencent/MicroMsg/WeiXin/";
 
-
     public static String defaultVideoIcon = DOWNLOAD + "video.png";
     public static String defaultFileIcon = DOWNLOAD + "file.png";
     public static String defaultPPTIcon = DOWNLOAD + "ppt.png";

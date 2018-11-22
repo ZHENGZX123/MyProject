@@ -1,4 +1,4 @@
-package cn.kiway.robot.util;
+package cn.kiway.robot.entity;
 
 import java.util.ArrayList;
 

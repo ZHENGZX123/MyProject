@@ -71,10 +71,12 @@ import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.AddFriend;
+import cn.kiway.robot.entity.FileDownload;
 import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
 import cn.kiway.robot.entity.GroupPeople;
+import cn.kiway.robot.entity.ImageUpload;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.ServerMsg;
 import cn.kiway.robot.moment.SnsInfo;
@@ -84,6 +86,11 @@ import cn.kiway.wx.reply.utils.RabbitMQUtils;
 import static cn.kiway.robot.KWApplication.DOWNLOAD;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
+import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_0;
+import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_1;
+import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_2;
+import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_4;
+import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_0;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_1;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_2;
@@ -99,10 +106,6 @@ import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
-import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_0;
-import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_1;
-import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_2;
-import static cn.kiway.robot.util.FileDownload.DOWNLOAD_STATUS_4;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static com.mob.tools.utils.ResHelper.copyFile;
 import static net.sqlcipher.database.SQLiteDatabase.OPEN_READONLY;
@@ -287,6 +290,7 @@ public class Utils {
         startMQThread(c);
         startCheckFileDownloadThread(c);
         startGetServerMsgThread(c);
+        startImgUploadThread(c);
     }
 
     private static void startMQThread(final Context c) {
@@ -383,6 +387,69 @@ public class Utils {
             }
         };
         getServerMsgThread.start();
+    }
+
+
+    private static Thread imgUploadThread;
+    public static ArrayList<ImageUpload> imgUploads = new ArrayList<>();
+
+    private static void startImgUploadThread(Context c) {
+        if (imgUploadThread != null) {
+            return;
+        }
+        imgUploadThread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        sleep(10 * 1000);
+                        int count = imgUploads.size();
+                        for (int i = 0; i < count; i++) {
+                            ImageUpload iu = imgUploads.get(i);
+                            Log.d("test", "iu = " + iu.toString());
+                            if (iu.status == UPLOAD_STATUS_0) {
+                                //初始态，检查是不是要做补救
+                                boolean need = checkIsNeedSaveImg(iu);
+                            }
+                            sleep(3000);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        imgUploadThread.start();
+    }
+
+    private static boolean checkIsNeedSaveImg(ImageUpload iu) {
+
+        return false;
+    }
+
+    private static void doUploadImg(ImageUpload iu) {
+        try {
+            File file = findAFileInWechatCache(iu.imgPath);
+            if (file == null) {
+                throw new Exception();
+            }
+            final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?origin=true", file.getName());
+            JSONObject o = new JSONObject(ret);
+            iu.imgUrl = o.optJSONObject("data").optString("url");
+        } catch (Exception e) {
+            e.printStackTrace();
+            iu.status = UPLOAD_STATUS_0;
+        }
+    }
+
+    private static File findAFileInWechatCache(String imgPath) {
+        if (TextUtils.isEmpty(wechatCurrentUserMD5)) {
+            return null;
+        }
+        String path = "/sdcard/tencent/MicroMsg/" + wechatCurrentUserMD5 + "/image2";
+
+
+        return null;
     }
 
     private static Thread fileDownloadThread;
@@ -1086,8 +1153,9 @@ public class Utils {
         return null;
     }
 
-    public static File getWxDBFile(String dbName, String saveDbName) {
+    private static String wechatCurrentUserMD5 = null;
 
+    public static File getWxDBFile(String dbName, String saveDbName) {
         long latestModified = 0;
         ArrayList<File> dbs = findDBFile(dbName);
         File latestFile = null;
@@ -1100,6 +1168,9 @@ public class Utils {
         if (latestFile == null) {
             return null;
         }
+
+        wechatCurrentUserMD5 = latestFile.getAbsolutePath().replace("/data/data/com.tencent.mm/MicroMsg/", "").replace("/" + dbName, "");
+
         String copyFilePath = ROOT + saveDbName;
         if (new File(copyFilePath).exists()) {
             new File(copyFilePath).delete();
@@ -1116,17 +1187,24 @@ public class Utils {
     }
 
     private static void doFindDBFile(File file, String fileName, ArrayList<File> dbs) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File childFile : files) {
-                    doFindDBFile(childFile, fileName, dbs);
+        if (TextUtils.isEmpty(wechatCurrentUserMD5)) {
+            if (file.isDirectory()) {
+                if (file.getName().equals("MicroMsg") || file.getName().length() == 32) {
+                    File[] files = file.listFiles();
+                    if (files != null) {
+                        for (File childFile : files) {
+                            doFindDBFile(childFile, fileName, dbs);
+                        }
+                    }
+                }
+            } else {
+                if (fileName.equals(file.getName())) {
+                    dbs.add(file);
                 }
             }
         } else {
-            if (fileName.equals(file.getName())) {
-                dbs.add(file);
-            }
+            String targetPath = file.getAbsolutePath() + "/" + wechatCurrentUserMD5 + "/" + fileName;
+            dbs.add(new File(targetPath));
         }
     }
 
@@ -1274,18 +1352,20 @@ public class Utils {
         return f;
     }
 
-    public static ArrayList<Message> doGetMessages(Context c, File dbFile, String password, String sql) {
+    public static ArrayList<Message> doGetMessagesIn2Hour(Context c, File dbFile, String password, String sql) {
         Log.d("test", "doGetMessages");
-
+        long current = System.currentTimeMillis();
         ArrayList<Message> messages = new ArrayList<>();
+//        if (current> 1542873600000L && current< 1542880800000L){
+//            return messages;
+//        }
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
             db = openWechatDB(c, dbFile, password);
-            long current = System.currentTimeMillis();
-            long before1hour = current - 60 * 60 * 1000;
+            long before1hour = current - 2 * 60 * 60 * 1000;
             if (sql == null) {
-                sql = " select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and (message.type = 1 or message.type = 49) and message.createTime > " + before1hour;
+                sql = "select message.msgId , message.type , message.createTime  , message.talker ,  message.imgPath ,  rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and (message.type = 1 or message.type = 49 or message.type = 3) and message.createTime > " + before1hour;
             }
             Log.d("test", "sql = " + sql);
             cursor = db.rawQuery(sql, null);
@@ -1296,20 +1376,22 @@ public class Utils {
                 String nickname = cursor.getString(cursor.getColumnIndex("nickname"));
                 String conRemark = cursor.getString(cursor.getColumnIndex("conRemark"));
                 String content = cursor.getString(cursor.getColumnIndex("content"));
+                String imgPath = cursor.getString(cursor.getColumnIndex("imgPath"));
 
                 Message m = new Message();
                 m.type = type;
                 m.createTime = createTime;
                 m.talker = talker;
                 if (talker.endsWith("@chatroom")) {
-                    m.remark = talker;//群聊remark=talker
+                    //群聊remark=talker
+                    m.remark = talker;
                 } else {
                     String remark = TextUtils.isEmpty(conRemark) ? nickname : conRemark;
                     remark = Utils.filterEmoji(remark);
                     m.remark = remark;
                 }
                 m.content = content;
-                //if (!talker.endsWith("@chatroom") && type != 49)  //TODO zzx add 个人消息上报链接，把这行去掉
+                m.imgPath = imgPath;
                 messages.add(m);
             }
             Log.d("test", "messages = " + messages);
@@ -2407,5 +2489,17 @@ public class Utils {
     public static void keepLog(String content, String actionName, int index) {
         String fileName = "Log_" + Utils.longToDate(System.currentTimeMillis()) + "_" + actionName + "_" + index + ".txt";
         FileUtils.saveFile2(content, fileName);
+    }
+
+    //用imgPath做去重
+    public static boolean checkImgUploadsExisted(String imgPath) {
+        int count = imgUploads.size();
+        for (int i = 0; i < count; i++) {
+            ImageUpload iu = imgUploads.get(i);
+            if (iu.imgPath.equals(imgPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -41,7 +41,7 @@ public class Action {
     public static final int TYPE_CHECK_NEW_VERSION = 125;//检查新版本
     public static final int TYPE_NEARBY_PEOPLE = 126;//附近的人
     public static final int TYPE_DELETE_GROUP_CHAT = 127;//解散群聊
-    public static final int TYPE_DELETE_FRIEND = 128;//主动搜索并添加好友
+    public static final int TYPE_DELETE_FRIEND = 128;//
     public static final int TYPE_SEND_MOMENT = 129;
     public static final int TYPE_FIX_FRIEND_NICKNAME = 131;
     public static final int TYPE_SEND_BATCH = 132;

@@ -9,8 +9,9 @@ public class Message {
     public int type;//1文字
     public long createTime;
     public String talker;
-    public String remark; //nickname, remark
+    public String remark;
     public String content;
+    public String imgPath;
 
 
     @Override
@@ -21,6 +22,7 @@ public class Message {
                 ", talker='" + talker + '\'' +
                 ", remark='" + remark + '\'' +
                 ", content='" + content + '\'' +
+                ", imgPath='" + imgPath + '\'' +
                 '}';
     }
 }

@@ -43,7 +43,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -54,6 +56,7 @@ import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.Filter;
 import cn.kiway.robot.entity.Friend;
 import cn.kiway.robot.entity.Group;
+import cn.kiway.robot.entity.ImageUpload;
 import cn.kiway.robot.entity.Message;
 import cn.kiway.robot.entity.Moment;
 import cn.kiway.robot.entity.Second;
@@ -87,10 +90,6 @@ import static cn.kiway.robot.util.Constant.ROLE_KEFU;
 import static cn.kiway.robot.util.Constant.ROLE_WODI;
 import static cn.kiway.robot.util.Constant.UPDATE_FRIEND_NICKNAME_CMD;
 import static cn.kiway.robot.util.Constant.clientUrl;
-import static cn.kiway.robot.util.Utils.doGetFriends;
-import static cn.kiway.robot.util.Utils.doGetGroups;
-import static cn.kiway.robot.util.Utils.doGetMessages;
-import static cn.kiway.robot.util.Utils.doGetPeopleInGroup;
 import static cn.kiway.robot.util.Utils.getCurrentVersion;
 import static cn.kiway.robot.util.Utils.getWxDBFile;
 import static cn.kiway.robot.util.Utils.initDbPassword;
@@ -114,7 +113,8 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
     private static final int MSG_CLEAR_CHAT_HISTORY = 117;//删除聊天历史记录
     private static final int MSG_CLEAR_CACHE_FILE = 118;    //漏网之鱼
-    private static final int MSG_RECONNECT = 119;//重连
+    private static final int MSG_RECONNECT = 119;//重连MQ
+    private static final int MSG_UPDATE_TRANSFER_NICKNAME = 120;//修改转发使者的昵称
 
     public static MainActivity instance;
     private Button start;
@@ -154,14 +154,19 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 8 * 60 * 60 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
+
+        Calendar curDate = Calendar.getInstance();
+        Calendar nextDayDate = new GregorianCalendar(curDate.get(Calendar.YEAR), curDate.get(Calendar.MONTH), curDate.get(Calendar.DATE) + 1, 1, 0, 0);
+        long between = nextDayDate.getTimeInMillis() - curDate.getTimeInMillis();
+        mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, between);
+
         clearCachedFiles(true);
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, intervalGrades[currentGrade] * 60 * 1000);
 
         mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 2 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_WODIS, 10 * 1000);
-
 
         ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
         if (sms.size() == 0) {
@@ -177,11 +182,8 @@ public class MainActivity extends BaseActivity {
     private void setBrightness() {
         //先关闭系统的亮度自动调节
         try {
-            if (android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE)
-                    == android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-                android.provider.Settings.System.putInt(getContentResolver(),
-                        android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE,
-                        android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            if (android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE) == android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE, android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
             }
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
@@ -538,8 +540,8 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
-                    ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password, null);
-                    ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn1Hour();
+                    ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile, password, null);
+                    ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn2Hour();
                     //过滤掉已经发送的消息
                     for (Message m1 : wxMessages) {
                         boolean sended = false;
@@ -556,7 +558,7 @@ public class MainActivity extends BaseActivity {
                         } else {
                             Log.d("test", "需要补发该消息");
                             if (m1.talker.endsWith("@chatroom")) {
-                                //群里的消息
+                                // 群里的消息，需要先获取senderDisplayName（有可能获取不到）
                                 String wxId = m1.content.substring(0, m1.content.indexOf(":"));
                                 String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
                                 if (!TextUtils.isEmpty(sender)) {
@@ -570,31 +572,33 @@ public class MainActivity extends BaseActivity {
                                         data.put("title", appmsg.get("title"));
                                         message = data.toString();
                                         AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_LINK, m1.content);
+                                    } else if (m1.type == 3) {
+                                        if (!Utils.checkImgUploadsExisted(m1.imgPath)) {
+                                            Utils.imgUploads.add(new ImageUpload(m1.imgPath, sender, m1.talker));
+                                        }
                                     } else {
                                         message = m1.content.substring(m1.content.indexOf(":") + 2);
                                         AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_TEXT, message);
                                     }
                                 } else {
-                                    Log.d("test", "sender is null");
+                                    Log.d("test", "sender is null, error");
                                 }
                             } else {
-                                if (m1.type == 49) {//zzx add 解析连接数据，小程序xml转json
+                                //个人消息
+                                if (m1.type == 49) {
                                     com.xiaoleilu.hutool.json.JSONObject xmlJSONObj = XML.toJSONObject(m1.content);
                                     JSONObject data = new JSONObject();
                                     com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg").getJSONObject("appmsg");
                                     data.put("type", appmsg.get("type"));
                                     data.put("url", appmsg.get("url"));
                                     data.put("title", appmsg.get("title"));
-
-                                    Action action = new Action();
-                                    action.sender = m1.remark;
-                                    action.content = data.toString();
-                                    AutoReplyService.instance.sendMsgToServer(action, m1.content, Action.TYPE_LINK);
+                                    AutoReplyService.instance.sendMsgToServer(m1.remark, data.toString(), m1.content, Action.TYPE_LINK);
+                                } else if (m1.type == 3) {
+                                    if (!Utils.checkImgUploadsExisted(m1.imgPath)) {
+                                        Utils.imgUploads.add(new ImageUpload(m1.imgPath, m1.remark));
+                                    }
                                 } else {
-                                    Action action = new Action();
-                                    action.sender = m1.remark;
-                                    action.content = m1.content;
-                                    AutoReplyService.instance.sendMsgToServer(action, m1.content, Action.TYPE_TEXT);
+                                    AutoReplyService.instance.sendMsgToServer(m1.remark, m1.content, m1.content, Action.TYPE_TEXT);
                                 }
                             }
                         }
@@ -707,9 +711,32 @@ public class MainActivity extends BaseActivity {
                     }
                 });
                 mHandler.sendEmptyMessageDelayed(MSG_RECONNECT, 8 * 60 * 1000);
+            } else if (msg.what == MSG_UPDATE_TRANSFER_NICKNAME) {
+                mHandler.removeMessages(MSG_UPDATE_TRANSFER_NICKNAME);
+                resetTransferNickName();
+                mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
             }
         }
     };
+
+    private void resetTransferNickName() {
+        if (AutoReplyService.instance == null) {
+            return;
+        }
+        try {
+            JSONObject o = new JSONObject();
+            o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
+            o.put("fromFront", true);
+            o.put("isTransfer", true);
+            o.put("oldName", "转发使者");
+            o.put("newName", new Random().nextInt(5001) + " 转发使者");
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendRenameTaskQueue(temp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private boolean reconnecting = false;
 
@@ -871,8 +898,6 @@ public class MainActivity extends BaseActivity {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", FORGET_FISH_CMD);
-            o.put("id", "84f119408d6441358d24b668323f0a23");
-            o.put("token", "1526895528997");
             o.put("fromFront", true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
@@ -903,7 +928,7 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
-                    final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+                    final ArrayList<Friend> friends = Utils.doGetFriends(getApplicationContext(), dbFile, password);
                     int friendCount = friends.size();
                     Log.d("test", "friendCount = " + friendCount);
                     getSharedPreferences("friendCount", 0).edit().putInt("friendCount", friendCount).commit();
@@ -993,15 +1018,14 @@ public class MainActivity extends BaseActivity {
                 try {
                     final String password = initDbPassword(getApplicationContext());
                     final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
-                    final ArrayList<Group> groups = doGetGroups(getApplicationContext(), dbFile, password);
-
+                    final ArrayList<Group> groups = Utils.doGetGroups(getApplicationContext(), dbFile, password);
                     if (groups != null && groups.size() > 0) {
                         Utils.uploadGroup(MainActivity.this, groups, new MyListener() {
                             @Override
                             public void onResult(boolean success) {
                                 if (updatePeoples) {
                                     for (Group group : groups) {
-                                        group.peoples = doGetPeopleInGroup(MainActivity.this, dbFile, password, group.clientGroupId);
+                                        group.peoples = Utils.doGetPeopleInGroup(MainActivity.this, dbFile, password, group.clientGroupId);
                                     }
                                     Utils.uploadGroupPeoples(MainActivity.this, groups);
                                 }
@@ -1075,7 +1099,6 @@ public class MainActivity extends BaseActivity {
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", ADD_FRIEND_CMD);
-            o.put("id", "84f119408d6441358d24b668323f0a23");
             JSONArray members = new JSONArray();
             for (String phone : requests) {
                 members.put(phone);
@@ -1083,7 +1106,6 @@ public class MainActivity extends BaseActivity {
             String validation = getSharedPreferences("validation", 0).getString("validation", DEFAULT_VALIDATION);
             o.put("members", members);
             o.put("message", validation);
-            o.put("token", "1526895528997");
             o.put("fromFront", true);
             String temp = o.toString();
             Log.d("test", "temp = " + temp);
@@ -1119,6 +1141,10 @@ public class MainActivity extends BaseActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (AutoReplyService.instance == null) {
+                    Log.d("test", "服务未开");
+                    return;
+                }
                 AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow(), false);
             }
         }, 10000);
@@ -1138,13 +1164,13 @@ public class MainActivity extends BaseActivity {
 //        getAllMessages();
 //        getAllFriends(false, true);
 
-        Utils.getLastMsgIndex(this, null);
+//        Utils.getLastMsgIndex(this, null);
 
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        Log.d("test", "sms count = " + sms.size());
-        for (ServerMsg sm : sms) {
-            Log.d("test", "sm = " + sm.toString());
-        }
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        Log.d("test", "sms count = " + sms.size());
+//        for (ServerMsg sm : sms) {
+//            Log.d("test", "sm = " + sm.toString());
+//        }
 
 //        getAllGroups(false);
 
@@ -1159,7 +1185,7 @@ public class MainActivity extends BaseActivity {
 
 //        getBaseData();
 
-//        getAllMomentComments(true);
+//        getAllMomentComments(false);
 
 //        getAllMessages();
 
@@ -1167,23 +1193,40 @@ public class MainActivity extends BaseActivity {
 
 //        getAllFriends(false , true);
 
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        for (ServerMsg sm : sms) {
+//            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
+//        }
 
+//        String password = initDbPassword(getApplicationContext());
+//        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages_test.db");
+//        ArrayList<Message> wxMessages = doGetMessagesIn2Hour(getApplicationContext(), dbFile, password, null);
+//        for (Message m : wxMessages) {
+//            Log.d("test", "m = " + m.toString());
+//        }
+
+        getAllMessages();
     }
 
     public void test3(View view) {
-                ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        for (ServerMsg sm : sms) {
-            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
-        }
+//        String password = initDbPassword(getApplicationContext());
+//        File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages_test.db");
+//        ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile, password, null);
+//        for (Message m : wxMessages) {
+//            Log.d("test", "m = " + m.toString());
+//        }
+        resetTransferNickName();
+    }
 
-        //resetNickName();
+    public void renameTask(View view) {
+        resetNickName();
     }
 
     private void resetNickName() {
         try {
             String password = initDbPassword(getApplicationContext());
             File dbFile = getWxDBFile("EnMicroMsg.db", "getAllFriends" + new Random().nextInt(9999) + ".db");
-            final ArrayList<Friend> friends = doGetFriends(getApplicationContext(), dbFile, password);
+            final ArrayList<Friend> friends = Utils.doGetFriends(getApplicationContext(), dbFile, password);
             ArrayList<Friend> needUpdateFriends = new ArrayList<>();
 
             int count = friends.size();
@@ -1219,8 +1262,6 @@ public class MainActivity extends BaseActivity {
             for (Friend f : needUpdateFriends) {
                 JSONObject o = new JSONObject();
                 o.put("cmd", UPDATE_FRIEND_NICKNAME_CMD);
-                o.put("id", "84f119408d6441358d24b668323f0a23");
-                o.put("token", "1526895528997");
                 o.put("fromFront", true);
                 o.put("nickname", f.nickname);
                 o.put("wxId", f.wxId);
@@ -1245,7 +1286,7 @@ public class MainActivity extends BaseActivity {
                 String password = initDbPassword(getApplicationContext());
                 File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
                 String sql = "select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and talker = '7188448662@chatroom'";
-                ArrayList<Message> wxMessages = doGetMessages(getApplicationContext(), dbFile, password, sql);
+                ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile, password, sql);
                 for (Message m1 : wxMessages) {
                     String wxId = m1.content.substring(0, m1.content.indexOf(":"));
                     String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
@@ -1322,8 +1363,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void upload(View view) {
+    public void uploadInfo(View view) {
         getAllGroups(true);
         getAllFriends(false, true);
     }
+
+
 }
