@@ -7,9 +7,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -2506,5 +2508,25 @@ public class Utils {
             }
         }
         return false;
+    }
+
+
+    public static void setScreenBrightness(MainActivity c) {
+        //先关闭系统的亮度自动调节
+        try {
+            if (android.provider.Settings.System.getInt(c.getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE) == android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                android.provider.Settings.System.putInt(c.getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE, android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        //不让屏幕全暗
+        int brightness = 1;
+        //设置当前activity的屏幕亮度
+        WindowManager.LayoutParams lp = c.getWindow().getAttributes();
+        //0到1,调整亮度暗到全亮
+        lp.screenBrightness = brightness / 255.0f;
+        c.getWindow().setAttributes(lp);
+        android.provider.Settings.System.putInt(c.getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
     }
 }
