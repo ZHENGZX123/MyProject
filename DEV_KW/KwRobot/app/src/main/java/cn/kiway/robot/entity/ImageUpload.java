@@ -8,7 +8,10 @@ public class ImageUpload {
 
     public static final int UPLOAD_STATUS_0 = 0;
     public static final int UPLOAD_STATUS_1 = 1;
-
+    public static final int UPLOAD_STATUS_2 = 2;
+    public static final int UPLOAD_STATUS_3 = 3;
+    public static final int UPLOAD_STATUS_4 = 4;
+    public static final int UPLOAD_STATUS_5 = 5;
 
     public int status; //0初始态   1补救中  2补救成功，准备上传  3上传中 4上传成功 5上报
     public int saveCount;//补救次数

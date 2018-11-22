@@ -1176,6 +1176,7 @@ public class MainActivity extends BaseActivity {
 //        for (Message m : wxMessages) {
 //            Log.d("test", "m = " + m.toString());
 //        }
+        
         try {
             JSONObject o = new JSONObject();
             o.put("cmd", BROWSE_MESSAGE_CMD);
