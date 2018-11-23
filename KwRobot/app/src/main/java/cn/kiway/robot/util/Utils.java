@@ -72,6 +72,7 @@ import java.util.regex.Pattern;
 import cn.kiway.robot.KWApplication;
 import cn.kiway.robot.activity.MainActivity;
 import cn.kiway.robot.db.MyDBHelper;
+import cn.kiway.robot.entity.Action;
 import cn.kiway.robot.entity.AddFriend;
 import cn.kiway.robot.entity.FileDownload;
 import cn.kiway.robot.entity.Filter;
@@ -93,6 +94,11 @@ import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_1;
 import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_2;
 import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_4;
 import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_0;
+import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_1;
+import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_2;
+import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_3;
+import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_4;
+import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_5;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_1;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_2;
@@ -102,6 +108,7 @@ import static cn.kiway.robot.entity.ServerMsg.TYPE_MQ;
 import static cn.kiway.robot.util.Constant.APPID;
 import static cn.kiway.robot.util.Constant.BACK_DOOR1;
 import static cn.kiway.robot.util.Constant.BACK_DOOR2;
+import static cn.kiway.robot.util.Constant.BROWSE_MESSAGE_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
 import static cn.kiway.robot.util.Constant.SEND_FRIEND_CIRCLE_CMD;
 import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
@@ -395,7 +402,7 @@ public class Utils {
     private static Thread imgUploadThread;
     public static ArrayList<ImageUpload> imgUploads = new ArrayList<>();
 
-    private static void startImgUploadThread(Context c) {
+    private static void startImgUploadThread(final Context c) {
         if (imgUploadThread != null) {
             return;
         }
@@ -411,7 +418,28 @@ public class Utils {
                             Log.d("test", "iu = " + iu.toString());
                             if (iu.status == UPLOAD_STATUS_0) {
                                 //初始态，检查是不是要做补救
-                                boolean need = checkIsNeedSaveImg(iu);
+                                boolean needSave = checkIsNeedSaveImg(iu);
+                                if (needSave) {
+                                    //发起补救事件
+                                    iu.status = UPLOAD_STATUS_1;
+                                    sendSaveImgEvent(TextUtils.isEmpty(iu.clientGroupId) ? iu.sender : iu.clientGroupId, iu.imgPath);
+                                } else {
+                                    //直接上传
+                                    iu.status = UPLOAD_STATUS_2;
+                                    doUploadImg(iu, c);
+                                }
+                            } else if (iu.status == UPLOAD_STATUS_1) {
+                                //补救中。。。不做动作
+                            } else if (iu.status == UPLOAD_STATUS_2) {
+                                //上传中。。。不做动作
+                            } else if (iu.status == UPLOAD_STATUS_3) {
+                                //上传失败。。。准备重新上传
+                                iu.status = UPLOAD_STATUS_2;
+                                doUploadImg(iu, c);
+                            } else if (iu.status == UPLOAD_STATUS_4) {
+                                //上报中。。。不做动作
+                            } else if (iu.status == UPLOAD_STATUS_5) {
+                                //上传多次失败。。。不做动作
                             }
                             sleep(3000);
                         }
@@ -424,43 +452,103 @@ public class Utils {
         imgUploadThread.start();
     }
 
-    private static boolean checkIsNeedSaveImg(ImageUpload iu) {
-        //1.补救次数大于3
-        if (iu.saveCount >= 3) {
-            return false;
-        }
-        //2.判断模糊图片、清晰图片是否存在
-
-        return false;
-    }
-
-    private static void doUploadImg(ImageUpload iu) {
+    private static void sendSaveImgEvent(String target, String imgPath) {
         try {
-            File file = findAFileInWechatCache(iu.imgPath);
-            if (file == null) {
-                throw new Exception();
-            }
-            final String ret = UploadUtil.uploadFile(file, clientUrl + "/common/file?origin=true", file.getName());
-            JSONObject o = new JSONObject(ret);
-            iu.imgUrl = o.optJSONObject("data").optString("url");
+            JSONObject o = new JSONObject();
+            o.put("cmd", BROWSE_MESSAGE_CMD);
+            o.put("fromFront", true);
+            o.put("target", target);//群：12176038998@chatroom 家长：33 执着
+            o.put("imgPath", imgPath);
+            String temp = o.toString();
+            Log.d("test", "temp = " + temp);
+            AutoReplyService.instance.sendReplyImmediately(temp, false);
         } catch (Exception e) {
             e.printStackTrace();
-            iu.status = UPLOAD_STATUS_0;
         }
     }
 
-    private static File findAFileInWechatCache(String imgPath) {
-        if (TextUtils.isEmpty(wechatCurrentUserMD5)) {
-            return null;
+    private static boolean checkIsNeedSaveImg(ImageUpload iu) {
+        //判断模糊图片、清晰图片是否存在
+        String clearJpg = getClearJpgByImgPath(iu.imgPath);
+        Log.d("test", "clearJpg existed = " + new File(clearJpg).exists());
+
+        if (new File(clearJpg).exists()) {
+            return false;
         }
-        String path = "/sdcard/tencent/MicroMsg/" + wechatCurrentUserMD5 + "/image2";
 
+        String fuzzyJpg = getFuzzyJpgByImgPath(iu.imgPath);
+        Log.d("test", "fuzzyJpg existed = " + new File(fuzzyJpg).exists());
 
-        return null;
+        //TODO 模糊图片不存在，没有必要进行补救了
+        return true;
+    }
+
+    private static void doUploadImg(final ImageUpload iu, final Context c) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    File targetUploadFile = null;
+                    //优先使用清晰图片
+                    String clearJpg = getClearJpgByImgPath(iu.imgPath);
+                    if (new File(clearJpg).exists()) {
+                        targetUploadFile = new File(clearJpg);
+                    } else {
+                        String fuzzyJpg = getFuzzyJpgByImgPath(iu.imgPath);
+                        if (new File(fuzzyJpg).exists()) {
+                            targetUploadFile = new File(fuzzyJpg);
+                        }
+                    }
+                    if (targetUploadFile == null) {
+                        Log.d("test", "targetUploadFile is null , error");
+                        throw new Exception();
+                    }
+                    final String ret = UploadUtil.uploadFile(targetUploadFile, clientUrl + "/common/file?origin=true", targetUploadFile.getName());
+                    JSONObject o = new JSONObject(ret);
+                    iu.imgUrl = o.optJSONObject("data").optString("url");
+
+                    //上传成功，直接上报
+                    iu.status = UPLOAD_STATUS_4;
+                    if (TextUtils.isEmpty(iu.clientGroupId)) {
+                        AutoReplyService.instance.sendMsgToServer(iu.sender, iu.imgUrl, iu.saved, Action.TYPE_IMAGE);
+                    } else {
+                        String name = c.getSharedPreferences("kiway", 0).getString("name", "");
+                        String areaCode = c.getSharedPreferences("kiway", 0).getString("areaCode", "");
+                        String msg = new JSONObject()
+                                .put("id", System.currentTimeMillis() + "")
+                                .put("sender", iu.sender)
+                                .put("content", iu.imgUrl)
+                                .put("me", name)
+                                .put("areaCode", areaCode)
+                                .put("clientGroupId", iu.clientGroupId).toString();
+                        AutoReplyService.instance.sendMsgToServer3(iu.clientGroupId, iu.sender, msg, Action.TYPE_IMAGE, iu.saved);
+                    }
+                    //TODO 上报不成功，没有做
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (iu.uploadCount < 3) {
+                        iu.uploadCount++;
+                        iu.status = UPLOAD_STATUS_3;
+                    } else {
+                        iu.status = UPLOAD_STATUS_5;
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private static String getClearJpgByImgPath(String imgPath) {
+        String temp = imgPath.replace("THUMBNAIL_DIRPATH://th_", "");
+        return "/sdcard/tencent/MicroMsg/" + wechatCurrentUserMD5 + "/image2/" + temp.substring(0, 2) + "/" + temp.substring(2, 4) + "/" + temp + ".jpg";
+    }
+
+    private static String getFuzzyJpgByImgPath(String imgPath) {
+        String temp2 = imgPath.replace("THUMBNAIL_DIRPATH://", "");
+        return "/sdcard/tencent/MicroMsg/" + wechatCurrentUserMD5 + "/image2/" + temp2.substring(3, 5) + "/" + temp2.substring(5, 7) + "/" + temp2;
     }
 
     private static Thread fileDownloadThread;
-    public static ArrayList<FileDownload> downloads = new ArrayList<>();
+    private static ArrayList<FileDownload> downloads = new ArrayList<>();
 
     private static void startCheckFileDownloadThread(Context c) {
         if (fileDownloadThread != null) {
@@ -1361,15 +1449,13 @@ public class Utils {
 
     public static ArrayList<Message> doGetMessagesIn2Hour(Context c, File dbFile, String password, String sql) {
         Log.d("test", "doGetMessages");
-        long current = System.currentTimeMillis();
+
         ArrayList<Message> messages = new ArrayList<>();
-//        if (current> 1542873600000L && current< 1542880800000L){
-//            return messages;
-//        }
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
             db = openWechatDB(c, dbFile, password);
+            long current = System.currentTimeMillis();
             long before1hour = current - 2 * 60 * 60 * 1000;
             if (sql == null) {
                 sql = "select message.msgId , message.type , message.createTime  , message.talker ,  message.imgPath ,  rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and (message.type = 1 or message.type = 49 or message.type = 3) and message.createTime > " + before1hour;
@@ -2527,5 +2613,17 @@ public class Utils {
         lp.screenBrightness = brightness / 255.0f;
         c.getWindow().setAttributes(lp);
         android.provider.Settings.System.putInt(c.getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
+    }
+
+    public static void saveImgJobDone(String imgPath, Context c) {
+        int count = imgUploads.size();
+        for (int i = 0; i < count; i++) {
+            ImageUpload iu = imgUploads.get(i);
+            if (iu.imgPath.equals(imgPath)) {
+                iu.status = UPLOAD_STATUS_2;
+                doUploadImg(iu, c);
+                break;
+            }
+        }
     }
 }

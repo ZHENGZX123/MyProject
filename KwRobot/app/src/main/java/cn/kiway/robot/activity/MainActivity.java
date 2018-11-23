@@ -76,7 +76,6 @@ import static cn.kiway.robot.KWApplication.DCIM;
 import static cn.kiway.robot.KWApplication.DOWNLOAD;
 import static cn.kiway.robot.KWApplication.ROOT;
 import static cn.kiway.robot.util.Constant.ADD_FRIEND_CMD;
-import static cn.kiway.robot.util.Constant.BROWSE_MESSAGE_CMD;
 import static cn.kiway.robot.util.Constant.CHECK_MOMENT_CMD;
 import static cn.kiway.robot.util.Constant.CLEAR_CHAT_HISTORY_CMD;
 import static cn.kiway.robot.util.Constant.DEFAULT_TRANSFER;
@@ -294,6 +293,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void doRelogin(boolean change) {
+        Utils.updateRobotStatus(MainActivity.instance, 2);
         Utils.closeMQ();
         getSharedPreferences("kiway", 0).edit().putBoolean("login", false).commit();
         if (change) {
@@ -554,7 +554,7 @@ public class MainActivity extends BaseActivity {
                                         AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_LINK, m1.content);
                                     } else if (m1.type == 3) {
                                         if (!Utils.checkImgUploadsExisted(m1.imgPath)) {
-                                            Utils.imgUploads.add(new ImageUpload(m1.imgPath, sender, m1.talker));
+                                            Utils.imgUploads.add(new ImageUpload(m1.imgPath, sender, m1.talker, m1.content));
                                         }
                                     } else {
                                         message = m1.content.substring(m1.content.indexOf(":") + 2);
@@ -575,7 +575,7 @@ public class MainActivity extends BaseActivity {
                                     AutoReplyService.instance.sendMsgToServer(m1.remark, data.toString(), m1.content, Action.TYPE_LINK);
                                 } else if (m1.type == 3) {
                                     if (!Utils.checkImgUploadsExisted(m1.imgPath)) {
-                                        Utils.imgUploads.add(new ImageUpload(m1.imgPath, m1.remark));
+                                        Utils.imgUploads.add(new ImageUpload(m1.imgPath, m1.remark, m1.content));
                                     }
                                 } else {
                                     AutoReplyService.instance.sendMsgToServer(m1.remark, m1.content, m1.content, Action.TYPE_TEXT);
@@ -1166,7 +1166,7 @@ public class MainActivity extends BaseActivity {
 //            Log.d("test", "m = " + m.toString());
 //        }
 
-        getAllMessages();
+//        getAllMessages();
     }
 
     public void test3(View view) {
@@ -1176,18 +1176,6 @@ public class MainActivity extends BaseActivity {
 //        for (Message m : wxMessages) {
 //            Log.d("test", "m = " + m.toString());
 //        }
-        
-        try {
-            JSONObject o = new JSONObject();
-            o.put("cmd", BROWSE_MESSAGE_CMD);
-            o.put("fromFront", true);
-            o.put("target", "12176038998@chatroom");//群：12176038998@chatroom 家长：33 执着
-            String temp = o.toString();
-            Log.d("test", "temp = " + temp);
-            AutoReplyService.instance.sendReplyImmediately(temp, false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void renameTask(View view) {
