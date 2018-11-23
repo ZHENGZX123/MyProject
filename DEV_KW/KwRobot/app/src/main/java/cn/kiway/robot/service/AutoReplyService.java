@@ -343,7 +343,7 @@ public class AutoReplyService extends AccessibilityService {
                         dispatchAction(action);
                         currentActionID = -1;
                     }
-                }, 2000);
+                }, 3000);
             }
         }, 5000);
     }
@@ -945,7 +945,7 @@ public class AutoReplyService extends AccessibilityService {
                 actioningFlag = false;
                 FileUtils.saveFile("false", "actioningFlag.txt");
             }
-        }, 2000);
+        }, 3000);
     }
 
     @Override
@@ -990,12 +990,12 @@ public class AutoReplyService extends AccessibilityService {
                             Log.d("test", "该昵称被过滤");
                             continue;
                         }
-                        //zhengkang 1122 不再使用转发使者
-                        if (content.equals("[图片]")) {//!Utils.isGetPic(getApplication(), content)
+                        if (!Utils.isGetPic(getApplication(), content)) {
                             Log.d("test", "图片接收被过滤");
                             continue;
                         }
                         if (Utils.isUselessContent(getApplicationContext(), sender, content)) {
+                            Log.d("test", "isUselessContent");
                             continue;
                         }
                     } else if (ticker.endsWith("请求添加你为朋友")) {
@@ -1026,7 +1026,8 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     //需要转发到“消息收集群”
                     else if (content.startsWith("[图片]") /*|| content.startsWith("[链接]") || content.startsWith("[视频]") || content.startsWith("[文件]") || content.contains("向你推荐了")*/) {
-                        action.actionType = TYPE_COLLECTOR_FORWARDING;
+                        //1122 图片也做preAction
+                        action.actionType = TYPE_TEXT; //TYPE_COLLECTOR_FORWARDING
                     } else if (!TextUtils.isEmpty(Constant.qas.get(content.trim()))) {
                         action.actionType = TYPE_AUTO_MATCH;
                         action.returnMessages.add(new ReturnMessage(TYPE_TEXT, Constant.qas.get(content.trim())));
@@ -1038,8 +1039,10 @@ public class AutoReplyService extends AccessibilityService {
 
                     actions.put(id, action);
                     if (action.actionType == TYPE_TEXT) {
+                        //需要预处理
                         preActionsQueue.add(action);
                     } else {
+                        //不需要预处理
                         dispatchAction(action);
                     }
                 }
@@ -1128,7 +1131,7 @@ public class AutoReplyService extends AccessibilityService {
                     }.start();
                 }
             }
-        }, 2000);
+        }, 3000);
     }
 
     public boolean goBacktoWechatHomepage(boolean checkActionFlag) {
@@ -1166,11 +1169,17 @@ public class AutoReplyService extends AccessibilityService {
             //文字的话直接走zbus
             if (action.clientGroupId.equals("-1")) {
                 Log.d("test", "好友消息");
-                sendMsgToServer(action.sender, action.content, action.content, TYPE_TEXT);
+                if (action.content.equals("[图片]") || action.content.startsWith("[链接]")) {
+                } else {
+                    sendMsgToServer(action.sender, action.content, action.content, TYPE_TEXT);
+                }
                 sendReply20sLater(action);
             } else if (!TextUtils.isEmpty(action.clientGroupId)) {
                 Log.d("test", "群组消息");
-                sendMsgToServer3(action.clientGroupId, action.sender, action.content, TYPE_TEXT, action.content);
+                if (action.content.equals("[图片]") || action.content.startsWith("[链接]")) {
+                } else {
+                    sendMsgToServer3(action.clientGroupId, action.sender, action.content, TYPE_TEXT, action.content);
+                }
             } else {
                 Log.d("test", "既不是好友也不是群组，不处理这个消息");
             }
@@ -1399,7 +1408,7 @@ public class AutoReplyService extends AccessibilityService {
                         searchTargetInWxHomePage(actionType, target, true);
                     }
                 }
-            }, 2000);
+            }, 3000);
         } catch (Exception e) {
             e.printStackTrace();
             release(false);
@@ -1461,19 +1470,19 @@ public class AutoReplyService extends AccessibilityService {
                                                             public void run() {
                                                                 checkFriendInListView2();
                                                             }
-                                                        }, 2000);
+                                                        }, 3000);
                                                     }
-                                                }, 2000);
+                                                }, 3000);
                                             }
-                                        }, 2000);
+                                        }, 3000);
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
-                        }, 2000);
+                        }, 3000);
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void doRequestFriend() {
@@ -1548,13 +1557,13 @@ public class AutoReplyService extends AccessibilityService {
                                             }
                                         }, 60000);
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
-                        }, 2000);
+                        }, 3000);
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void searchPublicAccount() {
@@ -1620,19 +1629,19 @@ public class AutoReplyService extends AccessibilityService {
                                                         }
                                                     }, 3000);
                                                 }
-                                            }, 1000);
+                                            }, 2000);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                             release(false);
                                         }
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
                         }, 3000);
                     }
                 }.start();
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void addPublicAccount() {
@@ -1699,13 +1708,13 @@ public class AutoReplyService extends AccessibilityService {
                                             release(false);
                                         }
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
                         }, 3000);
                     }
                 }.start();
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void checkNotifier(final String target) {
@@ -1754,9 +1763,9 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         startCheckMomentList(10, description);
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 1000);
+        }, 2000);
     }
 
     private void checkMoment() {
@@ -1800,9 +1809,9 @@ public class AutoReplyService extends AccessibilityService {
                         }.start();
 
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 1000);
+        }, 2000);
     }
 
     //用分享去做
@@ -1954,15 +1963,15 @@ public class AutoReplyService extends AccessibilityService {
                                                     doAddNearByPeople(content);
                                                 }
                                             }
-                                        }, 2000);
+                                        }, 3000);
                                     }
-                                }, 1000);
+                                }, 2000);
                             } else {
                                 doAddNearByPeople(content);
                             }
                         }
                     }
-                }, 2000);
+                }, 3000);
             }
         }, 3000);
     }
@@ -1982,7 +1991,7 @@ public class AutoReplyService extends AccessibilityService {
                             findTargetNode(NODE_TEXTVIEW, "下一步", CLICK_SELF, true);
                             doAddNearByPeople(content);
                         }
-                    }, 2000);
+                    }, 3000);
                 }
             }
         }, 5000);
@@ -2144,7 +2153,7 @@ public class AutoReplyService extends AccessibilityService {
                                                             }
                                                         }, 3000);
                                                     }
-                                                }, 1000);
+                                                }, 2000);
                                             } else if (actionType == TYPE_FIX_ICON) {
                                                 //选图片
 
@@ -2166,7 +2175,7 @@ public class AutoReplyService extends AccessibilityService {
                                                             }
                                                         }, 5000);
                                                     }
-                                                }, 2000);
+                                                }, 3000);
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -2294,9 +2303,9 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         startCheckMomentList(10, content);
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 1000);
+        }, 2000);
     }
 
     private boolean getMoment = false;
@@ -2400,7 +2409,7 @@ public class AutoReplyService extends AccessibilityService {
                 public void run() {
                     sendTextOnly(replyContent, true);
                 }
-            }, 2000);
+            }, 3000);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -2445,13 +2454,13 @@ public class AutoReplyService extends AccessibilityService {
                             public void run() {
                                 startCheckCommentList(5);
                             }
-                        }, 2000);
+                        }, 3000);
                     } else {
                         startCheckCommentList(5);
                     }
                 }
             }
-        }, 2000);
+        }, 3000);
         return true;
     }
 
@@ -2488,9 +2497,9 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 3000);
                         }
-                    }, 2000);
+                    }, 3000);
                 }
-            }, 2000);
+            }, 3000);
         } else {
             //网文
             mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -2503,9 +2512,9 @@ public class AutoReplyService extends AccessibilityService {
                         public void run() {
                             release(true);
                         }
-                    }, 2000);
+                    }, 3000);
                 }
-            }, 2000);
+            }, 3000);
         }
     }
 
@@ -2544,9 +2553,9 @@ public class AutoReplyService extends AccessibilityService {
                             startAddFriend();
                         }
                     }
-                }, 2000);
+                }, 3000);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void startAddFriend() {
@@ -2847,20 +2856,20 @@ public class AutoReplyService extends AccessibilityService {
                                                                             public void run() {
                                                                                 release(true);
                                                                             }
-                                                                        }, 2000);
+                                                                        }, 3000);
                                                                     }
                                                                 }, 3000);
                                                             }
                                                         }, 5000);
                                                     }
-                                                }, 1000);
+                                                }, 2000);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
-                            }, 2000);
+                            }, 3000);
                         } else if (type == TYPE_ADD_GROUP_PEOPLE) {
                             boolean find = findTargetNode(NODE_BUTTON, "邀请", CLICK_SELF, true);
                             if (find) {
@@ -2873,9 +2882,9 @@ public class AutoReplyService extends AccessibilityService {
                                             public void run() {
                                                 release(true);
                                             }
-                                        }, 2000);
+                                        }, 3000);
                                     }
-                                }, 2000);
+                                }, 3000);
                             } else {
                                 release(true);
                             }
@@ -2886,14 +2895,14 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     release(true);
                                 }
-                            }, 2000);
+                            }, 3000);
                         } else if (type == TYPE_SEND_BATCH) {
                             doSendBatchMessage();
                         }
                     }
                 }, 10000);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void doSendBatchMessage() {
@@ -2919,7 +2928,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         }, 3000);
                     }
-                }, 2000);
+                }, 3000);
             } else if (flag == 2) {
                 JSONObject msg = o.optJSONArray("messages").optJSONObject(0);
                 int type = msg.optInt("type");
@@ -2936,9 +2945,9 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     release(find);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
-                    }, 2000);
+                    }, 3000);
                 } else if (type == 2) {
                     new Thread() {
                         @Override
@@ -3001,19 +3010,19 @@ public class AutoReplyService extends AccessibilityService {
                                                                                         }
                                                                                     }, 4000);
                                                                                 }
-                                                                            }, 2000);
+                                                                            }, 3000);
                                                                         }
-                                                                    }, 2000);
+                                                                    }, 3000);
                                                                 }
-                                                            }, 2000);
+                                                            }, 3000);
                                                         }
-                                                    }, 2000);
+                                                    }, 3000);
                                                 }
-                                            }, 2000);
+                                            }, 3000);
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }.start();
                 }
@@ -3046,7 +3055,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 doSequeClearZombies(zombies);
             }
-        }, 2000);
+        }, 3000);
         return true;
     }
 
@@ -3200,7 +3209,7 @@ public class AutoReplyService extends AccessibilityService {
                             String targetSender = actions.get(currentActionID).sender;
                             searchTargetInWxHomePage(1, targetSender, true);
                         }
-                    }, 2000);
+                    }, 3000);
                 }
             }
         } else if (actionType == TYPE_SET_COLLECTOR) {
@@ -3243,14 +3252,14 @@ public class AutoReplyService extends AccessibilityService {
                                     public void run() {
                                         doLongClickLastMsg(clientGroupId);
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
                         }, 5000);
                     } else {
                         doLongClickLastMsg(clientGroupId);
                     }
                 }
-            }, 2000);
+            }, 3000);
         } else {
             Log.d("test", "没有匹配的消息，直接release");
             release(false);
@@ -3515,7 +3524,7 @@ public class AutoReplyService extends AccessibilityService {
                         || actionType == TYPE_SAVE_GROUP
                         || actionType == TYPE_GROUP_QRCODE
                         || actionType == TYPE_TRANSFER_MASTER) {
-                    groupRelative(actionType, true);
+                    groupRelative(actionType);
                 } else if (actionType == TYPE_AT_GROUP_PEOPLE) {
                     //循环开始艾特人
                     startAtPeople();
@@ -3537,38 +3546,42 @@ public class AutoReplyService extends AccessibilityService {
                         release(false);
                     }
                 } else if (actionType == TYPE_BROWSER_MESSAGE) {
-                    try {
-                        String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
-                        Log.d("test", "content = " + content);
-                        JSONObject o = new JSONObject(content);
-                        String target = o.optString("target");
-                        int count = target.endsWith("@chatroom") ? 5 : 3;
-                        for (int i = 0; i < count; i++) {
-                            execRootCmdSilent("input swipe 360 300 360 900");
-                        }
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                release(true);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+                                JSONObject o = new JSONObject(content);
+                                String target = o.optString("target");
+                                final String imgPath = o.optString("imgPath");
+                                int count = target.endsWith("@chatroom") ? 5 : 3;
+                                for (int i = 0; i < count; i++) {
+                                    execRootCmdSilent("input swipe 360 300 360 900");
+                                }
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //补救完成
+                                        Utils.saveImgJobDone(imgPath, getApplicationContext());
+                                        release(true);
+                                    }
+                                }, count * 3000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                release(false);
                             }
-                        }, count * 2000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        release(false);
-                    }
-
+                        }
+                    }, 10000);
                 }
             }
-        }, 3000);
+        }, 5000);
     }
 
-    private void groupRelative(final int actionType, boolean canRelease) {
+    private void groupRelative(final int actionType) {
         //群信息
         findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
         if (mFindTargetNode == null) {
-            if (canRelease) {
-                release(false);
-            }
+            release(false);
             return;
         }
         mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -3625,9 +3638,9 @@ public class AutoReplyService extends AccessibilityService {
                                         public void run() {
                                             release(find1 || find2);
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }, 4000);
                 } else if (actionType == TYPE_SAVE_GROUP) {
@@ -3649,7 +3662,7 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     release(true);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }.start();
                 } else if (actionType == TYPE_GROUP_QRCODE) {
@@ -3687,9 +3700,9 @@ public class AutoReplyService extends AccessibilityService {
                                                 }
                                             }.start();
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }.start();
                 } else if (actionType == TYPE_TRANSFER_MASTER) {
@@ -3712,12 +3725,12 @@ public class AutoReplyService extends AccessibilityService {
                                     }
                                     doTransferMaster();
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }.start();
                 }
             }
-        }, 2000);
+        }, 3000);
     }
 
     private boolean scrollAndFindTarget(String text) {
@@ -3725,7 +3738,7 @@ public class AutoReplyService extends AccessibilityService {
         if (!find) {
             execRootCmdSilent("input swipe 360 900 360 300");
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -3761,16 +3774,16 @@ public class AutoReplyService extends AccessibilityService {
                                         public void run() {
                                             release(find);
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
-                    }, 1000);
+                    }, 2000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 2000);
+        }, 3000);
     }
 
 
@@ -3890,13 +3903,13 @@ public class AutoReplyService extends AccessibilityService {
                                     public void run() {
                                         findTargetNode(NODE_BUTTON, "删除", CLICK_SELF, true);
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
-                        }, 2000);
+                        }, 3000);
                     }
                 }, 3000);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void fixGroupName() {
@@ -3910,7 +3923,7 @@ public class AutoReplyService extends AccessibilityService {
                     boolean has = findTargetNode(NODE_TEXTVIEW, "编辑", CLICK_SELF, true);
                     long sleepTime = 0;
                     if (has) {
-                        sleepTime = 2000;
+                        sleepTime = 3000;
                     }
                     final String finalText = text;
                     mHandler.postDelayed(new Runnable() {
@@ -3935,18 +3948,18 @@ public class AutoReplyService extends AccessibilityService {
                                                 public void run() {
                                                     release(true);
                                                 }
-                                            }, 2000);
+                                            }, 3000);
                                         }
                                     }, 5000);
                                 }
-                            }, 1000);
+                            }, 3000);
                         }
                     }, sleepTime);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void fixGroupNotice() {
@@ -3960,7 +3973,7 @@ public class AutoReplyService extends AccessibilityService {
                     boolean has = findTargetNode(NODE_TEXTVIEW, "编辑", CLICK_SELF, true);
                     long sleepTime = 0;
                     if (has) {
-                        sleepTime = 2000;
+                        sleepTime = 3000;
                     }
                     final String finalText = text;
                     mHandler.postDelayed(new Runnable() {
@@ -3986,18 +3999,18 @@ public class AutoReplyService extends AccessibilityService {
                                                 public void run() {
                                                     release(find);
                                                 }
-                                            }, 2000);
+                                            }, 3000);
                                         }
                                     }, 5000);
                                 }
-                            }, 1000);
+                            }, 3000);
                         }
                     }, sleepTime);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void fixFriendNickname(final String friend) {
@@ -4060,7 +4073,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         public void run() {
                                                             release(true);
                                                         }
-                                                    }, 2000);
+                                                    }, 3000);
                                                 }
                                             }, 5000);
                                         } catch (Exception e) {
@@ -4111,7 +4124,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         public void run() {
                                                             findTargetNode(NODE_BUTTON, "发送", CLICK_SELF, true);
                                                         }
-                                                    }, 2000);
+                                                    }, 3000);
                                                 } else {
                                                     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                     mHandler.postDelayed(new Runnable() {
@@ -4125,12 +4138,12 @@ public class AutoReplyService extends AccessibilityService {
                                                                     //删掉@
                                                                     execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_DEL);
                                                                 }
-                                                            }, 1000);
+                                                            }, 2000);
                                                         }
-                                                    }, 1000);
+                                                    }, 2000);
                                                 }
                                             }
-                                        }, 1000);
+                                        }, 2000);
                                     }
                                 }, 3000);
                             }
@@ -4327,7 +4340,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                     execRootCmdSilent("input swipe 360 900 360 300");
                     try {
-                        sleep(2000);
+                        sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -4375,7 +4388,7 @@ public class AutoReplyService extends AccessibilityService {
                     public void run() {
                         checkFriendInListView2();
                     }
-                }, 2000);
+                }, 3000);
             }
         }.start();
     }
@@ -4452,15 +4465,15 @@ public class AutoReplyService extends AccessibilityService {
                                                             }
                                                         }, 4000);
                                                     }
-                                                }, 2000);
+                                                }, 3000);
                                             }
-                                        }, 2000);
+                                        }, 3000);
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
                         }, 3000);
                     }
-                }, 2000);
+                }, 3000);
             }
         }, 0);
     }
@@ -4549,13 +4562,13 @@ public class AutoReplyService extends AccessibilityService {
                                                 public void run() {
                                                     release(true);
                                                 }
-                                            }, 2000);
+                                            }, 3000);
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
-                    }, 2000);
+                    }, 3000);
                 } else {
                     mFindTargetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     mHandler.postDelayed(new Runnable() {
@@ -4633,7 +4646,7 @@ public class AutoReplyService extends AccessibilityService {
                                         }
                                     }
                                 }
-                            }, 2000);
+                            }, 3000);
                         }
                     }, 3000);
                 }
@@ -4660,7 +4673,7 @@ public class AutoReplyService extends AccessibilityService {
                     }
                 }, 1000);
             }
-        }, 2000);
+        }, 3000);
 
         if (release) {
             mHandler.postDelayed(new Runnable() {
@@ -4772,7 +4785,7 @@ public class AutoReplyService extends AccessibilityService {
                                             findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, false);
                                         }
                                     }
-                                }, 2000);
+                                }, 3000);
                             } else {
                                 boolean find2 = findTargetNode(NODE_TEXTVIEW, "你可能要发送的照片：", CLICK_PARENT, true);
                                 if (find2) {
@@ -4781,11 +4794,11 @@ public class AutoReplyService extends AccessibilityService {
                                         public void run() {
                                             findTargetNode(NODE_TEXTVIEW, "发送", CLICK_SELF, true);
                                         }
-                                    }, 2000);
+                                    }, 3000);
                                 }
                             }
                         }
-                    }, 2000);
+                    }, 3000);
                 }
             }
         });
@@ -5078,11 +5091,11 @@ public class AutoReplyService extends AccessibilityService {
                                             }
                                         }, 3000);
                                     }
-                                }, 2000);
+                                }, 3000);
                             }
-                        }, 2000);
+                        }, 3000);
                     }
-                }, 1000);
+                }, 2000);
             }
         }, 10000);
     }
@@ -5271,7 +5284,7 @@ public class AutoReplyService extends AccessibilityService {
                                 myListener.onResult(true);
                                 backToRobot();
                             }
-                        }, 2000);
+                        }, 3000);
                     }
 
                     private void backToRobot() {
@@ -5281,7 +5294,7 @@ public class AutoReplyService extends AccessibilityService {
                         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
-                }, 2000);
+                }, 3000);
             }
         }.start();
     }
