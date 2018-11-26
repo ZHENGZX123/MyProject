@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.ServerMsg;
 import cn.kiway.robot.util.CrashHandler;
-import cn.kiway.robot.util.Utils;
 
 import static cn.kiway.robot.R.mipmap.file;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
@@ -69,13 +68,13 @@ public class KWApplication extends Application {
         saveDefaultFile(this, "zip.png", R.mipmap.zip);
         saveDefaultFile(this, "wechat.apk", "http://robot.kiway.cn/static/download/version/wechat.apk");
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        /*Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 Log.d("test", "addShutdownHook");
                 Utils.closeMQ();
             }
-        });
+        });*/
 
         //设置所有状态1==>状态0
         ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(1);
