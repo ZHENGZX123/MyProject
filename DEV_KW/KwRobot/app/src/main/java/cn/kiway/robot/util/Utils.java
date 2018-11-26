@@ -1905,8 +1905,6 @@ public class Utils {
                     JSONArray param = new JSONArray();
                     for (Group g : groups) {
                         JSONObject o = new JSONObject();
-
-                        o.put("clientGroupId", g.clientGroupId);
                         JSONArray members = new JSONArray();
                         for (GroupPeople gp : g.peoples) {
                             JSONObject temp = new JSONObject();
@@ -1916,8 +1914,15 @@ public class Utils {
                             temp.put("wxId", gp.wxId);
                             members.put(temp);
                         }
+                        if (members.length() == 0) {
+                            continue;
+                        }
                         o.put("members", members);
+                        o.put("clientGroupId", g.clientGroupId);
                         param.put(o);
+                    }
+                    if (param.length() == 0) {
+                        return;
                     }
                     FileUtils.saveFile(param.toString(), "groupMembersRel.txt");
                     Log.d("test", "groupMembersRel param = " + param.toString());

@@ -1,6 +1,9 @@
 package cn.kiway.robot.util;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
@@ -78,10 +81,22 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            restartApp(mContext, 3000);
             //退出程序
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(1);
+            //android.os.Process.killProcess(android.os.Process.myPid());
+            //System.exit(1);
         }
+    }
+
+    public void restartApp(Context context, long time) {
+        Log.d("test", "restartApp");
+        Intent intent = context.getPackageManager()
+                .getLaunchIntentForPackage(context.getPackageName());
+        PendingIntent restartIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent
+                .FLAG_ONE_SHOT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + time, restartIntent);
+        System.exit(0);
     }
 
     /**

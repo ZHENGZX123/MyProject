@@ -635,7 +635,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_GET_ALL_FRIENDS) {
                 mHandler.removeMessages(MSG_GET_ALL_FRIENDS);
                 getAllFriends(true, true);
-                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 8 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_FRIENDS, 4 * 60 * 60 * 1000);
             } else if (msg.what == MSG_GET_ALL_MOMENTS) {
                 mHandler.removeMessages(MSG_GET_ALL_MOMENTS);
                 getAllMomentComments(true);
@@ -1120,12 +1120,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void test2(View v) {
+
+        //String a = null;
+        //Log.d("test", "" + a.equals("aaa"));
+
+
 //        getAllGroups(true);
 
 //        getAllMessages();
 //        getAllFriends(false, true);
 
-//        Utils.getLastMsgIndex(this, null);
+        Utils.getLastMsgIndex(this, null);
 
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        Log.d("test", "sms count = " + sms.size());
@@ -1176,6 +1181,10 @@ public class MainActivity extends BaseActivity {
 //        for (Message m : wxMessages) {
 //            Log.d("test", "m = " + m.toString());
 //        }
+
+//        getAllFriends(false, true);
+
+        getAllGroups(true);
     }
 
     public void renameTask(View view) {

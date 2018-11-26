@@ -80,7 +80,6 @@ import static cn.kiway.robot.entity.Action.TYPE_CHAT_IN_GROUP;
 import static cn.kiway.robot.entity.Action.TYPE_CHECK_MOMENT;
 import static cn.kiway.robot.entity.Action.TYPE_CHECK_NEW_VERSION;
 import static cn.kiway.robot.entity.Action.TYPE_CLEAR_CHAT_HISTORY;
-import static cn.kiway.robot.entity.Action.TYPE_CLEAR_ZOMBIE_FAN;
 import static cn.kiway.robot.entity.Action.TYPE_COLLECTOR_FORWARDING;
 import static cn.kiway.robot.entity.Action.TYPE_CREATE_GROUP_CHAT;
 import static cn.kiway.robot.entity.Action.TYPE_DELETE_FRIEND;
@@ -1094,8 +1093,7 @@ public class AutoReplyService extends AccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (actionType == TYPE_CLEAR_ZOMBIE_FAN
-                        || actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_DELETE_GROUP_CHAT || actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE || actionType == TYPE_FIX_GROUP_NOTICE
+                if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_DELETE_GROUP_CHAT || actionType == TYPE_ADD_GROUP_PEOPLE || actionType == TYPE_DELETE_GROUP_PEOPLE || actionType == TYPE_FIX_GROUP_NOTICE
                         || actionType == TYPE_FIX_GROUP_NAME || actionType == TYPE_CHAT_IN_GROUP || actionType == TYPE_AT_GROUP_PEOPLE || actionType == TYPE_DELETE_MOMENT || actionType == TYPE_ADD_FRIEND || actionType == TYPE_DELETE_FRIEND
                         || actionType == TYPE_MISSING_FISH || actionType == TYPE_BROWSER_MESSAGE || actionType == TYPE_FIX_NICKNAME || actionType == TYPE_FIX_FRIEND_NICKNAME
                         || actionType == TYPE_FIX_ICON || actionType == TYPE_NEARBY_PEOPLE || actionType == TYPE_SEND_BATCH || actionType == TYPE_CHECK_MOMENT
@@ -1207,8 +1205,7 @@ public class AutoReplyService extends AccessibilityService {
         } else if (action.actionType == TYPE_REQUEST_FRIEND) {
             String fakeRecv = "{\"areaCode\":\"440305\",\"sender\":\"" + action.sender + "\",\"me\":\"客服888\",\"returnMessage\":[{\"content\":\"content\",\"returnType\":1}],\"id\":" + action.id + ",\"time\":" + action.id + ",\"content\":\"" + action.content + "\"}";
             sendReplyImmediately(fakeRecv, true);
-        } else if (action.actionType == TYPE_CLEAR_ZOMBIE_FAN
-                || action.actionType == TYPE_CREATE_GROUP_CHAT
+        } else if (action.actionType == TYPE_CREATE_GROUP_CHAT
                 || action.actionType == TYPE_DELETE_GROUP_CHAT
                 || action.actionType == TYPE_ADD_GROUP_PEOPLE
                 || action.actionType == TYPE_DELETE_GROUP_PEOPLE
@@ -1297,7 +1294,6 @@ public class AutoReplyService extends AccessibilityService {
                 @Override
                 public void run() {
                     if (actionType == TYPE_CREATE_GROUP_CHAT
-                            || actionType == TYPE_CLEAR_ZOMBIE_FAN
                             || actionType == TYPE_ADD_FRIEND) {
                         //首页-右上角工具栏
                         findTargetNode(NODE_RELATIVELAYOUT, Integer.MAX_VALUE);
@@ -1322,6 +1318,7 @@ public class AutoReplyService extends AccessibilityService {
                                 toast("该群不存在或已经被删除");
                                 return;
                             }
+                            goBacktoWechatHomepage(true);
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
                         } else {
                             searchTargetInWxHomePage(actionType, target, true);
@@ -1353,7 +1350,8 @@ public class AutoReplyService extends AccessibilityService {
                         }
                         int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
                         if (actionType == TYPE_CHAT_IN_GROUP) {
-                            if (type == 1) {//文本
+                            if (type == 1) {//文本用搜索做
+                                goBacktoWechatHomepage(true);
                                 searchTargetInWxGroupPage(actionType, g.groupName, true);
                             } else {//其他用分享做
                                 chatInGroup(g.groupName);
@@ -1362,6 +1360,7 @@ public class AutoReplyService extends AccessibilityService {
                             //从首页找到群
                             searchTargetInWxHomePage(actionType, g.groupName, true);
                         } else {
+                            goBacktoWechatHomepage(true);
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
                         }
                     } else if (actionType == TYPE_FIX_GROUP_NOTICE) {
@@ -1371,6 +1370,7 @@ public class AutoReplyService extends AccessibilityService {
                             release(false);
                             return;
                         }
+                        goBacktoWechatHomepage(true);
                         searchTargetInWxGroupPage(actionType, g.groupName, true);
                     } else if (actionType == TYPE_DELETE_FRIEND) {
                         startDeleteFriend(members);
@@ -1416,6 +1416,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void sendBatchMessage2() {
+        if (woTextView == null) {
+            release(false);
+            return;
+        }
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1515,6 +1519,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void clearChatHistory() {
+        if (woTextView == null) {
+            release(false);
+            return;
+        }
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1749,6 +1757,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void interactMoment(final String description) {
+        if (woTextView == null) {
+            release(false);
+            return;
+        }
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1769,6 +1781,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void checkMoment() {
+        if (woTextView == null) {
+            release(false);
+            return;
+        }
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -1917,7 +1933,7 @@ public class AutoReplyService extends AccessibilityService {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN, currentZombie, false);//TYPE_DELETE_FRIEND
+                                searchTargetInWxHomePage(TYPE_DELETE_FRIEND, currentZombie, false);
                             }
                         });
                         sleep(30000);
@@ -1931,6 +1947,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void addNearbyPeople(final String content) {
+        if (faxianView == null) {
+            release(false);
+            return;
+        }
         faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -2080,6 +2100,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void fixMyNicknameOrIcon(final int actionType, final String url) {
+        if (woTextView == null) {
+            release(false);
+            return;
+        }
         Log.d("test", "fixMyNicknameOrIcon , url = " + url);
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
@@ -2289,6 +2313,10 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void deleteMoment(final String content) {
+        if (woTextView == null) {
+            release(false);
+            return;
+        }
         woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -2525,7 +2553,7 @@ public class AutoReplyService extends AccessibilityService {
             public void run() {
                 int actionType = actions.get(currentActionID).actionType;
                 String target = "";
-                if (actionType == TYPE_CREATE_GROUP_CHAT || actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                if (actionType == TYPE_CREATE_GROUP_CHAT) {
                     target = "发起群聊";
                 } else if (actionType == TYPE_ADD_FRIEND) {
                     target = "添加朋友";
@@ -2539,9 +2567,7 @@ public class AutoReplyService extends AccessibilityService {
                             return;
                         }
                         int actionType = actions.get(currentActionID).actionType;
-                        if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
-                            checkFriendInListView1();
-                        } else if (actionType == TYPE_CREATE_GROUP_CHAT) {
+                        if (actionType == TYPE_CREATE_GROUP_CHAT) {
                             checkFriendInListView2();
                         } else if (actionType == TYPE_ADD_FRIEND) {
                             boolean find = findTargetNode(NODE_TEXTVIEW, "微信号/QQ号/手机号", CLICK_NONE, true);
@@ -2691,38 +2717,6 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void checkFriendInListView1() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    //这里要滚动到预置好的位子。
-                    int preScollCount = start / 8;
-                    Log.d("test", "preScollCount = " + preScollCount);
-                    for (int i = 0; i < preScollCount; i++) {
-                        Log.d("test", "预滚第" + (i + 1) + "次");
-                        execRootCmdSilent("input swipe 360 900 360 300");
-                        sleep(3000);
-                    }
-
-                    int scrollCount = (end - start) / 8 + 1;
-                    Log.d("test", "scrollCount = " + scrollCount);
-                    checkedFriends.clear();
-                    for (int i = 0; i < scrollCount; i++) {
-                        doCheckFriend1(getRootInActiveWindow());
-                        sleep(3000);
-                        execRootCmdSilent("input swipe 360 900 360 300");
-                        sleep(3000);
-                        doCheckFriend1(getRootInActiveWindow());
-                    }
-                    clickSureButton();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
     private void checkFriendInListView2() {
         new Thread() {
             @Override
@@ -2797,14 +2791,7 @@ public class AutoReplyService extends AccessibilityService {
                     @Override
                     public void run() {
                         int type = actions.get(currentActionID).actionType;
-
-                        if (type == TYPE_CLEAR_ZOMBIE_FAN) {
-                            boolean find = hasZombieFans();
-                            if (!find) {
-                                Log.d("test", "创建失败或者没有僵尸粉");
-                                release(true);//还可以再区分一下
-                            }
-                        } else if (type == TYPE_CREATE_GROUP_CHAT) {
+                        if (type == TYPE_CREATE_GROUP_CHAT) {
                             findTargetNode(NODE_IMAGEBUTTON, Integer.MAX_VALUE);
                             if (mFindTargetNode == null) {
                                 release(false);
@@ -3033,57 +3020,6 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 
-    private boolean hasZombieFans() {
-        boolean has = findTargetNode(NODE_TEXTVIEW, "你无法邀请未添加你为好友的用户进去群聊，请先向", CLICK_NONE, false);
-        if (!has) {
-            return false;
-        }
-        String text = mFindTargetNode.getText().toString().replace("你无法邀请未添加你为好友的用户进去群聊，请先向", "").replace("发送朋友验证申请。对方通过验证后，才能加入群聊。", "");
-        final String[] zombies = text.split("、");
-        Log.d("test", "僵尸粉的数量：" + zombies.length);
-        //返回，通过搜索好友名字，去逐个删除。
-        if (zombies.length == 0) {
-            toast("僵尸粉数量为0");
-            release(true);
-        }
-
-        resetMaxReleaseTime(60000 * zombies.length);
-
-        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doSequeClearZombies(zombies);
-            }
-        }, 3000);
-        return true;
-    }
-
-    private void doSequeClearZombies(final String[] zombies) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    int count = zombies.length;
-                    for (int i = 0; i < count; i++) {
-                        final String currentZombie = zombies[i];
-                        Log.d("test", "currentZombie = " + currentZombie);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                searchTargetInWxHomePage(TYPE_CLEAR_ZOMBIE_FAN, currentZombie, false);
-                            }
-                        });
-                        sleep(20000);
-                    }
-                    release(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
     private void doCheckFriend1(final AccessibilityNodeInfo rootNode) {
         mHandler.post(new Runnable() {
             @Override
@@ -3287,10 +3223,8 @@ public class AutoReplyService extends AccessibilityService {
         return g.clientGroupId;
     }
 
-
     private void searchTargetInWxHomePage(final int actionType, final String target, final boolean canRelease) {
         Log.d("test", "searchTargetInWxHomePage target = " + target);
-
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -3339,6 +3273,10 @@ public class AutoReplyService extends AccessibilityService {
     private void searchTargetInWxGroupPage(final int actionType, String groupName, final boolean canRelease) {
         if (groupName.length() > 13) {
             groupName = groupName.substring(0, 13);
+        }
+        if (tongxunluTextView == null) {
+            release(false);
+            return;
         }
         final String finalGroupName = groupName;
         mHandler.post(new Runnable() {
@@ -3454,6 +3392,7 @@ public class AutoReplyService extends AccessibilityService {
         return isWxHomePage;
     }
 
+
     private AccessibilityNodeInfo tongxunluTextView;
     private AccessibilityNodeInfo woTextView;
     private AccessibilityNodeInfo faxianView;
@@ -3514,7 +3453,7 @@ public class AutoReplyService extends AccessibilityService {
                 if (actionType == 1) {
                     //开始聊天
                     doChatByActionType();
-                } else if (actionType == TYPE_CLEAR_ZOMBIE_FAN) {
+                } else if (actionType == TYPE_DELETE_FRIEND) {
                     deleteFriend(target);
                 } else if (actionType == TYPE_ADD_GROUP_PEOPLE
                         || actionType == TYPE_DELETE_GROUP_PEOPLE
@@ -4354,7 +4293,7 @@ public class AutoReplyService extends AccessibilityService {
                 //加人：是群主倒数第2个，不是群主，倒数第一个；踢人肯定是倒数第一个。
                 AccessibilityNodeInfo targetNode = null;
                 if (type == TYPE_DELETE_GROUP_PEOPLE) {
-                    targetNode = imageViewNodes.get(count - 1);
+                    targetNode = imageViewNodes.get(count - 1);//返回键
                 } else if (type == TYPE_ADD_GROUP_PEOPLE) {
                     try {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -4377,7 +4316,6 @@ public class AutoReplyService extends AccessibilityService {
                         return;
                     }
                 }
-
                 if (targetNode == null) {
                     release(false);
                     return;
@@ -4403,7 +4341,7 @@ public class AutoReplyService extends AccessibilityService {
             if (nodeInfo == null) {
                 continue;
             }
-            if (nodeInfo.getClassName().equals("android.widget.ImageView")) {
+            if (nodeInfo.getClassName().equals("android.widget.ImageView") && nodeInfo.getParent().getClassName().equals("android.widget.RelativeLayout")) {
                 imageViewNodes.add(nodeInfo);
             }
             if (findImageViewNode(nodeInfo)) {
