@@ -45,8 +45,7 @@ public class ServerMsg {
     @Override
     public String toString() {
         return "ServerMsg{" +
-                "id=" + id +
-                ", index=" + index +
+                "index=" + index +
                 ", status=" + status +
                 ", type=" + type +
                 ", time=" + time +

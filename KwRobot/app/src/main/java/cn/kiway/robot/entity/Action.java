@@ -68,7 +68,6 @@ public class Action {
     public Command command;//后台事件
     public String clientGroupId;
     public int indexs;
-    public int tryCount;//尝试次数
 
     @Override
     public String toString() {

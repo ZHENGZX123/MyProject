@@ -17,8 +17,8 @@ android {
         applicationId "cn.kiway.robot"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 63
-        versionName "0.6.3"
+        versionCode 68
+        versionName "0.6.8"
     }
     lintOptions {
         disable 'MissingTranslation'
@@ -64,6 +64,8 @@ MobSDK {
             WechatMoments {
                 appId "wx52e610d1e20806b0"
                 appSecret ""
+                bypassApproval false
+                enable true
             }
         }
     }

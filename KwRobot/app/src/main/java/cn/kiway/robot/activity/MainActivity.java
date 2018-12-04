@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity {
         initView();
         initListener();
         checkRoot(null);
-        Utils.blackfile(getApplication());
+        //Utils.blackfile(getApplication());
         installationPush(getApplication());
         Utils.addFilter(this, new Filter("转发使者", "", Filter.TYPE_TRANSFER));
 
@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
+//        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
 
         Calendar curDate = Calendar.getInstance();
         Calendar nextDayDate = new GregorianCalendar(curDate.get(Calendar.YEAR), curDate.get(Calendar.MONTH), curDate.get(Calendar.DATE) + 1, 1, 0, 0);
@@ -675,7 +675,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_CLEAR_CACHE_FILE) {
                 mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
                 clearCachedFiles(false);
-                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 5 * 60 * 1000);
             } else if (msg.what == MSG_RECONNECT) {
                 //1019查询消费者数量，8分钟一次
                 mHandler.removeMessages(MSG_RECONNECT);
@@ -911,9 +911,10 @@ public class MainActivity extends BaseActivity {
                     if (upload) {
                         Utils.uploadFriend(MainActivity.instance, friends);
                     }
-                    //2.检查有没有转发使者
+                    //2.doCheck
                     if (doCheck) {
-                        checkTransfer(friends);
+                        //1127不再检查转发使者
+                        //checkTransfer(friends);
                         checkWodis(friends);
                     }
                 } catch (Exception e) {
@@ -979,15 +980,13 @@ public class MainActivity extends BaseActivity {
                 try {
                     final String password = initDbPassword(getApplicationContext());
                     final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
-                    final ArrayList<Group> groups = Utils.doGetGroups(getApplicationContext(), dbFile, password);
+                    final ArrayList<Group> groups = Utils.doGetGroups(getApplicationContext(), dbFile, password, true);
                     if (groups != null && groups.size() > 0) {
                         Utils.uploadGroup(MainActivity.this, groups, new MyListener() {
                             @Override
                             public void onResult(boolean success) {
-                                if (updatePeoples) {
-                                    for (Group group : groups) {
-                                        group.peoples = Utils.doGetPeopleInGroup(MainActivity.this, dbFile, password, group.clientGroupId);
-                                    }
+                                if (success && updatePeoples) {
+                                    Utils.doGetPeopleInGroups(MainActivity.this, dbFile, password, groups);
                                     Utils.uploadGroupPeoples(MainActivity.this, groups);
                                 }
                             }
@@ -1109,20 +1108,9 @@ public class MainActivity extends BaseActivity {
                 AutoReplyService.instance.test(AutoReplyService.instance.getRootInActiveWindow(), false);
             }
         }, 10000);
-
-        //应急，设置所有状态3
-//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-//        for (ServerMsg sm : sms) {
-//            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
-//        }
-
-//        new MyDBHelper(this).deleteServerMsg();
     }
 
     public void test2(View v) {
-
-        //String a = null;
-        //Log.d("test", "" + a.equals("aaa"));
 
 
 //        getAllGroups(true);
@@ -1130,7 +1118,7 @@ public class MainActivity extends BaseActivity {
 //        getAllMessages();
 //        getAllFriends(false, true);
 
-        Utils.getLastMsgIndex(this, null);
+//        Utils.getLastMsgIndex(this, null);
 
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        Log.d("test", "sms count = " + sms.size());
@@ -1155,6 +1143,8 @@ public class MainActivity extends BaseActivity {
 
 //        getAllMessages();
 
+//        getAllFriends(false , true);
+
 //        doMissingFish();
 
 //        getAllFriends(false , true);
@@ -1172,6 +1162,14 @@ public class MainActivity extends BaseActivity {
 //        }
 
 //        getAllMessages();
+
+//        getAllGroups(true);
+
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        Log.d("test", "sms count = " + sms.size());
+        for (ServerMsg sm : sms) {
+            Log.d("test", "sm = " + sm.toString());
+        }
     }
 
     public void test3(View view) {
@@ -1184,7 +1182,11 @@ public class MainActivity extends BaseActivity {
 
 //        getAllFriends(false, true);
 
-        getAllGroups(true);
+        //应急，设置所有状态3
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        for (ServerMsg sm : sms) {
+            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
+        }
     }
 
     public void renameTask(View view) {
