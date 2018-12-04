@@ -33,6 +33,7 @@ import org.xutils.common.util.DensityUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -60,6 +61,7 @@ import cn.kiway.robot.util.UploadUtil;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
@@ -220,6 +222,9 @@ public class AutoReplyService extends AccessibilityService {
     private String qrCodeUrl;
 
     private final Object object = new Object();
+
+    //trycount
+    private HashMap<Integer, Integer> tryCounts = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -853,7 +858,7 @@ public class AutoReplyService extends AccessibilityService {
     private Group getOneGroupFromWechatDB_ClientGroupName(String groupName) {
         final String password = initDbPassword(getApplicationContext());
         final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
-        Group g = Utils.doGetOneGroupByGroupName(getApplicationContext(), dbFile, password, groupName);
+        Group g = Utils.doGetOneGroupByGroupName(getApplicationContext(), dbFile, password, groupName, false);
         return g;
     }
 
@@ -1148,7 +1153,7 @@ public class AutoReplyService extends AccessibilityService {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    findTargetNode(NODE_BUTTON, "不保留", CLICK_SELF, true);
+                    findTargetNode(NODE_BUTTON, "不保留|不保存|退出", CLICK_SELF, true);
                 }
             });
 
@@ -1167,14 +1172,14 @@ public class AutoReplyService extends AccessibilityService {
             //文字的话直接走zbus
             if (action.clientGroupId.equals("-1")) {
                 Log.d("test", "好友消息");
-                if (action.content.equals("[图片]") || action.content.startsWith("[链接]")) {
+                if (action.content.equals("[图片]") || action.content.startsWith("[链接]") || action.content.startsWith("[文件]") || action.content.startsWith("[小程序]")) {
                 } else {
                     sendMsgToServer(action.sender, action.content, action.content, TYPE_TEXT);
                 }
                 sendReply20sLater(action);
             } else if (!TextUtils.isEmpty(action.clientGroupId)) {
                 Log.d("test", "群组消息");
-                if (action.content.equals("[图片]") || action.content.startsWith("[链接]")) {
+                if (action.content.equals("[图片]") || action.content.startsWith("[链接]") || action.content.startsWith("[文件]") || action.content.startsWith("[小程序]")) {
                 } else {
                     sendMsgToServer3(action.clientGroupId, action.sender, action.content, TYPE_TEXT, action.content);
                 }
@@ -1305,9 +1310,11 @@ public class AutoReplyService extends AccessibilityService {
                         selectToolbar();
                     } else if (actionType == TYPE_DELETE_MOMENT) {
                         //我-相册
+                        goBacktoWechatHomepage(true);
                         deleteMoment(finalContent);
                     } else if (actionType == TYPE_MISSING_FISH) {
                         //通讯录-新的朋友
+                        goBacktoWechatHomepage(true);
                         addMissingFish();
                     } else if (actionType == TYPE_BROWSER_MESSAGE) {
                         //浏览，补救图片
@@ -1326,9 +1333,11 @@ public class AutoReplyService extends AccessibilityService {
                     } else if (actionType == TYPE_FIX_NICKNAME
                             || actionType == TYPE_FIX_ICON) {
                         //我-个人信息
+                        goBacktoWechatHomepage(true);
                         fixMyNicknameOrIcon(actionType, url);
                     } else if (actionType == TYPE_NEARBY_PEOPLE) {
                         //发现-附近的人
+                        goBacktoWechatHomepage(true);
                         addNearbyPeople(finalContent);
                     } else if (actionType == TYPE_CHAT_IN_GROUP
                             || actionType == TYPE_ADD_GROUP_PEOPLE
@@ -1360,6 +1369,7 @@ public class AutoReplyService extends AccessibilityService {
                             //从首页找到群
                             searchTargetInWxHomePage(actionType, g.groupName, true);
                         } else {
+                            //从通讯录-群
                             goBacktoWechatHomepage(true);
                             searchTargetInWxGroupPage(actionType, g.groupName, true);
                         }
@@ -1386,21 +1396,26 @@ public class AutoReplyService extends AccessibilityService {
                         searchTargetInWxHomePage(actionType, target, true);
                     } else if (actionType == TYPE_CHECK_MOMENT) {
                         //发现-朋友圈，改为：我-相册
+                        goBacktoWechatHomepage(true);
                         checkMoment();
                     } else if (actionType == TYPE_INTERACT_MOMENT) {
+                        goBacktoWechatHomepage(true);
                         //我-相册
                         String description = o.optString("description");
                         interactMoment(description);
                     } else if (actionType == TYPE_ADD_PUBLIC_ACCOUNT) {
+                        goBacktoWechatHomepage(true);
                         //通讯录-公众号
                         addPublicAccount();
                     } else if (actionType == TYPE_SEARCH_PUBLIC_ACCOUNT) {
+                        goBacktoWechatHomepage(true);
                         //通讯录-公众号
                         searchPublicAccount();
                     } else if (actionType == TYPE_NOTIFY_RESULT) {
                         String target = o.optString("wxNo");
                         checkNotifier(target);
                     } else if (actionType == TYPE_CLEAR_CHAT_HISTORY) {
+                        goBacktoWechatHomepage(true);
                         //发现-朋友圈
                         clearChatHistory();
                     } else {
@@ -2168,7 +2183,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         final boolean find = findTargetNode(NODE_TEXTVIEW, "保存", CLICK_SELF, true);
                                                         if (find) {
                                                             getSharedPreferences("kiway", 0).edit().putString("name", newName).commit();
-                                                            Utils.blackfile(getApplication());
+                                                            //Utils.blackfile(getApplication());
                                                         }
                                                         mHandler.postDelayed(new Runnable() {
                                                             @Override
@@ -2180,8 +2195,6 @@ public class AutoReplyService extends AccessibilityService {
                                                 }, 2000);
                                             } else if (actionType == TYPE_FIX_ICON) {
                                                 //选图片
-
-
                                                 findTargetNode(NODE_RELATIVELAYOUT, 2);
                                                 if (mFindTargetNode == null) {
                                                     release(false);
@@ -2814,9 +2827,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                                                 JSONObject o = new JSONObject(content);
                                                 String name = o.optString("name");
-
                                                 findTargetNode(NODE_EDITTEXT, name);
-
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -3278,6 +3289,8 @@ public class AutoReplyService extends AccessibilityService {
             release(false);
             return;
         }
+
+
         final String finalGroupName = groupName;
         mHandler.post(new Runnable() {
             @Override
@@ -3557,15 +3570,14 @@ public class AutoReplyService extends AccessibilityService {
                         }
                     }.start();
                 } else if (actionType == TYPE_DELETE_GROUP_CHAT) {
-                    execRootCmdSilent("input swipe 360 900 360 300");
-                    execRootCmdSilent("input swipe 360 900 360 300");
-                    mHandler.postDelayed(new Runnable() {
+                    new Thread() {
                         @Override
                         public void run() {
-                            boolean find = findTargetNode(NODE_TEXTVIEW, "删除并退出", CLICK_PARENT, true);
-                            if (!find) {
-                                release(false);
-                                return;
+                            while (!scrollAndFindTarget("删除并退出")) {
+                                if (!actioningFlag) {
+                                    release(false);
+                                    break;
+                                }
                             }
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -3581,7 +3593,7 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 3000);
                         }
-                    }, 4000);
+                    }.start();
                 } else if (actionType == TYPE_SAVE_GROUP) {
                     new Thread() {
                         @Override
@@ -3919,7 +3931,7 @@ public class AutoReplyService extends AccessibilityService {
                         @Override
                         public void run() {
                             int length = getTextLengthInEditText(1, finalText);
-                            resetMaxReleaseTime(length * 2 * 1000 + 20000);
+                            resetMaxReleaseTime(length * 2 * 1000 + 30000);
                             //1.先执行删除键
                             clearAndPasteEditText(1, finalText);
                             mHandler.postDelayed(new Runnable() {
@@ -4265,7 +4277,18 @@ public class AutoReplyService extends AccessibilityService {
     private ArrayList<AccessibilityNodeInfo> imageViewNodes = new ArrayList<>();
 
     private void addOrDeleteGroupPeople(final int type) {
-        Log.d("test", "addOrDeleteGroupPeople = " + type);
+        int index = 0;
+        try {
+            String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
+            JSONObject o = new JSONObject(content);
+            index = o.optInt("indexs");
+        } catch (Exception e) {
+            e.printStackTrace();
+            release(false);
+            return;
+        }
+
+        final int finalIndex = index;
         new Thread() {
             @Override
             public void run() {
@@ -4286,14 +4309,14 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 int count = imageViewNodes.size();
                 Log.d("test", "imageviews个数：" + count);
-                if (count < 2) {
-                    release(false);
+                if (count == 0) {
+                    retryAction(finalIndex, true);
                     return;
                 }
                 //加人：是群主倒数第2个，不是群主，倒数第一个；踢人肯定是倒数第一个。
                 AccessibilityNodeInfo targetNode = null;
                 if (type == TYPE_DELETE_GROUP_PEOPLE) {
-                    targetNode = imageViewNodes.get(count - 1);//返回键
+                    targetNode = imageViewNodes.get(count - 1);
                 } else if (type == TYPE_ADD_GROUP_PEOPLE) {
                     try {
                         String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
@@ -4840,37 +4863,35 @@ public class AutoReplyService extends AccessibilityService {
             String imageUrl = contentO.optString("imgUrl");
             String url = contentO.optString("url");
             int type = contentO.optInt("type");
-            int index = new JSONObject(original).optInt("indexs");
+            final int index = new JSONObject(original).optInt("indexs");
 
+
+            Platform.ShareParams sp = new Platform.ShareParams();
+            Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
             if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
-                ArrayList<Uri> imageUris = new ArrayList<>();
+                ArrayList<String> imageUris = new ArrayList<>();
                 for (String anImageArray : imageArray) {
                     String image = anImageArray.replace("\"", "");
                     File f = new File(KWApplication.DOWNLOAD + Utils.getMD5(image) + ".jpg");
                     if (f.exists()) {
-                        imageUris.add(Uri.fromFile(f));
+                        imageUris.add(f.getAbsolutePath());//Uri.fromFile(f)
                     }
                 }
                 Log.d("test", "imageUris count = " + imageUris.size());
-                Intent intent = new Intent();
-                ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
-                intent.setComponent(comp);
-                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                intent.setType("image/*");
-                intent.putExtra("Kdescription", description);
-                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                doShareToWechatMoments(id, description, type, original, index);
+                int size = imageUris.size();
+                String[] array = imageUris.toArray(new String[size]);
+
+                sp.setText(description);
+                sp.setImagePath(array[0]);
+                sp.setShareType(Platform.SHARE_IMAGE);
             } else if (type == 1) {
                 //网文
                 String localPath = null;
                 if (!TextUtils.isEmpty(imageUrl)) {
                     localPath = KWApplication.DOWNLOAD + Utils.getMD5(imageUrl) + ".jpg";
                 }
-                Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setTitle(title);
                 sp.setText(description);
                 sp.setUrl(url);
@@ -4878,10 +4899,35 @@ public class AutoReplyService extends AccessibilityService {
                     sp.setImagePath(localPath);
                 }
                 sp.setShareType(Platform.SHARE_WEBPAGE);
-                Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
-                wx.share(sp);
-                doShareToWechatMoments(id, description, type, original, index);
             }
+            wx.setPlatformActionListener(new PlatformActionListener() {
+                @Override
+                public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+                    Log.d("test", "wx onComplete");
+                    new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
+                    //成功，直接上报
+                    Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS", index);
+                    release(true, false, true);
+                }
+
+                @Override
+                public void onError(Platform platform, int i, Throwable throwable) {
+                    Log.d("test", "wx onError");
+                    Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
+                    retryAction(index, false);
+                }
+
+                @Override
+                public void onCancel(Platform platform, int i) {
+                    Log.d("test", "wx onCancel");
+                    Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
+                    retryAction(index, false);
+                }
+            });
+            wx.share(sp);
+
+
+            doShareToWechatMoments(description, original, index);
         } catch (Exception e) {
             e.printStackTrace();
             release(false);
@@ -4911,7 +4957,7 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void doShareToWechatMoments(final String id, final String remark, final int type, final String original, final int index) {
+    private void doShareToWechatMoments(final String remark, final String original, final int index) {
         Utils.keepLog(original, "SEND_FRIEND_CIRCLE_CMD", index);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -4951,28 +4997,10 @@ public class AutoReplyService extends AccessibilityService {
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (find) {
-                                            new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
-                                            //成功，直接上报
-                                            Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS", index);
-                                            release(true, type != 1, true);
-                                        } else {
-                                            //失败
+                                        if (!find) {
                                             Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
-                                            actions.get(currentActionID).tryCount++;
-                                            if (actions.get(currentActionID).tryCount < 9) {
-                                                release(false, type != 1, false);
-                                                //N分钟后重试
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, ACTION_STATUS_0);
-                                                        Utils.handleMsgInDB(getApplicationContext());
-                                                    }
-                                                }, actions.get(currentActionID).tryCount * 60 * 1000);//1 2 3 4 5 6 7 8
-                                            } else {
-                                                release(false, type != 1, true);
-                                            }
+                                            retryAction(index, false);
+                                            return;
                                         }
                                     }
                                 }, 3000);
@@ -5039,34 +5067,43 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void handleShareFriendFailure() {
-        actions.get(currentActionID).tryCount++;
-        if (actions.get(currentActionID).tryCount < 9) {
-            release(false, false, false);
+        int index = 0;
+        try {
+            //获取群聊的indexs
+            JSONObject o = new JSONObject(new String(Base64.decode(actions.get(currentActionID).content, NO_WRAP)));
+            index = o.optInt("indexs");
+        } catch (Exception e) {
+            //获取单聊的indexs
+            index = actions.get(currentActionID).indexs;
+        }
+        if (index == 0) {
+            Log.d("test", "error!!!");
+            return;
+        }
+        retryAction(index, false);
+    }
 
-            int index = 0;
-            try {
-                //获取群聊的indexs
-                JSONObject o = new JSONObject(new String(Base64.decode(actions.get(currentActionID).content, NO_WRAP)));
-                index = o.optInt("indexs");
-            } catch (Exception e) {
-                //获取单聊的indexs
-                index = actions.get(currentActionID).indexs;
-            }
-            if (index == 0) {
-                Log.d("test", "error!!!");
-                return;
-            }
-            final int finalIndex = index;
+    private void retryAction(final int index, boolean jump) {
+        Log.d("test", "retryAction, index = " + index);
+        if (tryCounts.containsKey(index)) {
+            int temp = tryCounts.get(index) + 1;
+            tryCounts.put(index, temp);
+        } else {
+            tryCounts.put(index, 1);
+        }
+        int tryCount = tryCounts.get(index);
+        if (tryCount < 9) {
+            release(false, jump, false);
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     //N分钟后重试
-                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(finalIndex, ACTION_STATUS_0);
+                    new MyDBHelper(getApplicationContext()).updateServerMsgStatusByIndex(index, ACTION_STATUS_0);
                     Utils.handleMsgInDB(getApplicationContext());
                 }
-            }, actions.get(currentActionID).tryCount * 60 * 1000);//1+2+3+4+5+6+7+8=36
+            }, tryCount * 60 * 1000);//1+2+3+4+5+6+7+8=36
         } else {
-            release(false, false, true);
+            release(false, jump, true);
         }
     }
 

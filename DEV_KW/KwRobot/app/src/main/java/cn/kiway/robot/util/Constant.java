@@ -19,7 +19,7 @@ public class Constant {
     public static Integer port = 0;
     public static String clientUrl = "";
 
-    public static final int DEFAULT_RELEASE_TIME = 100 * 1000;
+    public static final int DEFAULT_RELEASE_TIME = 200 * 1000;
     public static final String PASSWORD = "kiwayedukiway123";
 
     public static final int FLAG_PREACTION = 999;
