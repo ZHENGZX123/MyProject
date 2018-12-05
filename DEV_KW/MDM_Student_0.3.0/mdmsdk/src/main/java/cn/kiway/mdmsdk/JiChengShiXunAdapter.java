@@ -259,7 +259,9 @@ public class JiChengShiXunAdapter implements IMDMAdapter {
     @Override
     public void setBluetoothDisabled(boolean disabled) {
         try {
+            mManager.setBluetoothDisabled(disabled);
             mManager.setBluetoothDataDisabled(disabled);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
