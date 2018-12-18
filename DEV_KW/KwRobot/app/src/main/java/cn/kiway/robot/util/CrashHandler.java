@@ -81,6 +81,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            //SuUtil.kill("cn.kiway.robot");
+
             restartApp(mContext, 3000);
             //退出程序
             //android.os.Process.killProcess(android.os.Process.myPid());
@@ -96,6 +99,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 .FLAG_ONE_SHOT);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + time, restartIntent);
+
+
         System.exit(0);
     }
 

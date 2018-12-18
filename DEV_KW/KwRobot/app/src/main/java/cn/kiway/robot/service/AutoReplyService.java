@@ -57,11 +57,11 @@ import cn.kiway.robot.entity.ZbusRecv;
 import cn.kiway.robot.util.Constant;
 import cn.kiway.robot.util.FileUtils;
 import cn.kiway.robot.util.MyListener;
+import cn.kiway.robot.util.SuUtil;
 import cn.kiway.robot.util.UploadUtil;
 import cn.kiway.robot.util.Utils;
 import cn.kiway.wx.reply.vo.PushMessageVo;
 import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
@@ -331,10 +331,16 @@ public class AutoReplyService extends AccessibilityService {
             @Override
             public void run() {
                 //判断是来自个人还是群组
+                String clientGroupId = "";
                 findTargetNode(NODE_TEXTVIEW, 1);
-                String title = mFindTargetNode.getText().toString();
+                if (mFindTargetNode != null) {
+                    CharSequence cs = mFindTargetNode.getText();
+                    if (cs != null) {
+                        String title = cs.toString();
+                        clientGroupId = isFromPrivateOrGroup(title);
+                    }
+                }
 
-                String clientGroupId = isFromPrivateOrGroup(title);
                 Log.d("test", "isFromPrivateOrGroup clientGroupId = " + clientGroupId);
                 action.clientGroupId = clientGroupId;
 
@@ -965,6 +971,7 @@ public class AutoReplyService extends AccessibilityService {
                 }
                 List<CharSequence> texts = event.getText();
                 if (texts.isEmpty()) {
+                    Log.d("test", "texts isEmpty");
                     return;
                 }
                 for (CharSequence text : texts) {
@@ -1577,6 +1584,8 @@ public class AutoReplyService extends AccessibilityService {
                                             @Override
                                             public void run() {
                                                 release(true);
+
+                                                restartWechat();
                                             }
                                         }, 60000);
                                     }
@@ -3218,6 +3227,9 @@ public class AutoReplyService extends AccessibilityService {
     //string:group
     private String isFromPrivateOrGroup(String name) {
         Log.d("test", "isFromPrivateOrGroup title = " + name);
+        if (TextUtils.isEmpty(name)){
+            return "";
+        }
         int lastLeft = name.lastIndexOf("(");
         int lastRight = name.lastIndexOf(")");
         if (lastRight != -1 && lastLeft != -1 && (lastRight - lastLeft > 1)) {
@@ -3498,10 +3510,11 @@ public class AutoReplyService extends AccessibilityService {
                         release(false);
                     }
                 } else if (actionType == TYPE_BROWSER_MESSAGE) {
-                    mHandler.postDelayed(new Runnable() {
+                    new Thread() {
                         @Override
                         public void run() {
                             try {
+                                sleep(10000);
                                 String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
                                 JSONObject o = new JSONObject(content);
                                 String target = o.optString("target");
@@ -3509,21 +3522,22 @@ public class AutoReplyService extends AccessibilityService {
                                 int count = target.endsWith("@chatroom") ? 5 : 3;
                                 for (int i = 0; i < count; i++) {
                                     execRootCmdSilent("input swipe 360 300 360 900");
+                                    sleep(3000);
                                 }
-                                mHandler.postDelayed(new Runnable() {
+                                mHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         //补救完成
                                         Utils.saveImgJobDone(imgPath, getApplicationContext());
                                         release(true);
                                     }
-                                }, count * 3000);
+                                });
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 release(false);
                             }
                         }
-                    }, 10000);
+                    }.start();
                 }
             }
         }, 5000);
@@ -4863,35 +4877,37 @@ public class AutoReplyService extends AccessibilityService {
             String imageUrl = contentO.optString("imgUrl");
             String url = contentO.optString("url");
             int type = contentO.optInt("type");
-            final int index = new JSONObject(original).optInt("indexs");
+            int index = new JSONObject(original).optInt("indexs");
 
-
-            Platform.ShareParams sp = new Platform.ShareParams();
-            Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
             if (type == 2) {
                 String[] imageArray = imageUrl.replace("[", "").replace("]", "").split(",");
                 //图文
-                ArrayList<String> imageUris = new ArrayList<>();
+                ArrayList<Uri> imageUris = new ArrayList<>();
                 for (String anImageArray : imageArray) {
                     String image = anImageArray.replace("\"", "");
                     File f = new File(KWApplication.DOWNLOAD + Utils.getMD5(image) + ".jpg");
                     if (f.exists()) {
-                        imageUris.add(f.getAbsolutePath());//Uri.fromFile(f)
+                        imageUris.add(Uri.fromFile(f));
                     }
                 }
                 Log.d("test", "imageUris count = " + imageUris.size());
-                int size = imageUris.size();
-                String[] array = imageUris.toArray(new String[size]);
-
-                sp.setText(description);
-                sp.setImagePath(array[0]);
-                sp.setShareType(Platform.SHARE_IMAGE);
+                Intent intent = new Intent();
+                ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
+                intent.setComponent(comp);
+                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType("image/*");
+                intent.putExtra("Kdescription", description);
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                doShareToWechatMoments(id, description, type, original, index);
             } else if (type == 1) {
                 //网文
                 String localPath = null;
                 if (!TextUtils.isEmpty(imageUrl)) {
                     localPath = KWApplication.DOWNLOAD + Utils.getMD5(imageUrl) + ".jpg";
                 }
+                Platform.ShareParams sp = new Platform.ShareParams();
                 sp.setTitle(title);
                 sp.setText(description);
                 sp.setUrl(url);
@@ -4899,39 +4915,15 @@ public class AutoReplyService extends AccessibilityService {
                     sp.setImagePath(localPath);
                 }
                 sp.setShareType(Platform.SHARE_WEBPAGE);
+                Platform wx = ShareSDK.getPlatform(WechatMoments.NAME);
+                wx.share(sp);
+                doShareToWechatMoments(id, description, type, original, index);
             }
-            wx.setPlatformActionListener(new PlatformActionListener() {
-                @Override
-                public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-                    Log.d("test", "wx onComplete");
-                    new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
-                    //成功，直接上报
-                    Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS", index);
-                    release(true, false, true);
-                }
-
-                @Override
-                public void onError(Platform platform, int i, Throwable throwable) {
-                    Log.d("test", "wx onError");
-                    Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
-                    retryAction(index, false);
-                }
-
-                @Override
-                public void onCancel(Platform platform, int i) {
-                    Log.d("test", "wx onCancel");
-                    Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
-                    retryAction(index, false);
-                }
-            });
-            wx.share(sp);
-
-
-            doShareToWechatMoments(description, original, index);
         } catch (Exception e) {
             e.printStackTrace();
             release(false);
         }
+
     }
 
     public boolean isPasteContent(String remark) {
@@ -4957,7 +4949,7 @@ public class AutoReplyService extends AccessibilityService {
         return true;
     }
 
-    private void doShareToWechatMoments(final String remark, final String original, final int index) {
+    private void doShareToWechatMoments(final String id, final String remark, final int type, final String original, final int index) {
         Utils.keepLog(original, "SEND_FRIEND_CIRCLE_CMD", index);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -4997,10 +4989,15 @@ public class AutoReplyService extends AccessibilityService {
                                 mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (!find) {
+                                        if (find) {
+                                            new MyDBHelper(getApplicationContext()).addMoment(new Moment(id, remark));
+                                            //成功，直接上报
+                                            Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_SUCCESS", index);
+                                            release(true, type == 2, true);
+                                        } else {
+                                            //失败
                                             Utils.keepLog(logs.toString(), "RESEND_FRIEND_CIRCLE_CMD_FAILURE", index);
-                                            retryAction(index, false);
-                                            return;
+                                            retryAction(index, type == 2);
                                         }
                                     }
                                 }, 3000);
@@ -5340,5 +5337,38 @@ public class AutoReplyService extends AccessibilityService {
             }
         }
         return false;
+    }
+
+    public void restartWechat() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(10000);
+
+                    Log.d("test", "restartWechat start...");
+                    SuUtil.kill("com.tencent.mm");
+                    sleep(5000);
+                    Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                    startActivity(i);
+                    sleep(10000);
+                    while (!checkIsWxHomePage()) {
+                        sleep(5000);
+                    }
+                    tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    sleep(5000);
+                    faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    sleep(5000);
+                    woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    sleep(5000);
+                    Log.d("test", "restartWechat finish...");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
+                    startActivity(intent);
+                }
+            }
+        }.start();
     }
 }

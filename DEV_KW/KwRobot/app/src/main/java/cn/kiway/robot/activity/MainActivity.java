@@ -157,6 +157,7 @@ public class MainActivity extends BaseActivity {
         long between = nextDayDate.getTimeInMillis() - curDate.getTimeInMillis();
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, between);
 
+
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MESSAGES, 4 * 60 * 1000);
 
@@ -1187,6 +1188,8 @@ public class MainActivity extends BaseActivity {
         for (ServerMsg sm : sms) {
             new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
         }
+
+//        AutoReplyService.instance.restartWechat();
     }
 
     public void renameTask(View view) {
@@ -1304,7 +1307,7 @@ public class MainActivity extends BaseActivity {
         if (files == null || files.length == 0) {
             return;
         }
-        int max = 100;
+        int max = 50;
         int count = files.length;
         Log.d("test", "count = " + count);
         if (count < max) {
@@ -1316,6 +1319,12 @@ public class MainActivity extends BaseActivity {
         Arrays.sort(files, new Comparator<File>() {
             @Override
             public int compare(File o1, File o2) {
+                if (o1 == null) {
+                    return 0;
+                }
+                if (o2 == null) {
+                    return 0;
+                }
                 return (int) (o1.lastModified() - o2.lastModified());
             }
         });
