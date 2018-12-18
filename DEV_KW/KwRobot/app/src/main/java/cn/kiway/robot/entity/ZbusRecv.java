@@ -13,4 +13,11 @@ public class ZbusRecv {
         this.msg = msg;
         this.realReply = realReply;
     }
+
+    @Override
+    public String toString() {
+        return "ZbusRecv{" +
+                "msg='" + msg + '\'' +
+                '}';
+    }
 }
