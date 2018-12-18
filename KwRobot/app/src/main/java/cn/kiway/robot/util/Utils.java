@@ -412,14 +412,14 @@ public class Utils {
             public void run() {
                 while (true) {
                     try {
-                        sleep(10 * 1000);
+                        sleep(60 * 1000);
                         int count = imgUploads.size();
                         for (int i = 0; i < count; i++) {
                             ImageUpload iu = imgUploads.get(i);
                             Log.d("test", "iu = " + iu.toString());
                             if (iu.status == UPLOAD_STATUS_0) {
                                 //初始态，检查是不是要做补救
-                                boolean needSave = checkIsNeedSaveImg(iu);
+                                boolean needSave = false;//checkIsNeedSaveImg(iu);
                                 if (needSave) {
                                     //发起补救事件
                                     iu.status = UPLOAD_STATUS_1;
@@ -694,18 +694,23 @@ public class Utils {
     //需要插队的命令
     private static boolean isNeedImme(String msg) {
         try {
+            //踢人
             if (msg.contains(TICK_PERSON_GROUP_CMD)) {
                 return true;
             }
+
             //定时发朋友圈
             JSONObject o = new JSONObject(msg);
             if (o.optBoolean("schedule")) {
                 return true;
             }
+
             //定时修改群公告
             if (msg.contains(UPDATE_GROUP_NOTICE_CMD) && !TextUtils.isEmpty(o.optString("sendTime"))) {
                 return true;
             }
+
+            //所有朋友圈
             if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
                 return true;
             }
@@ -2499,6 +2504,7 @@ public class Utils {
         Log.d("test", "handleMsgInDB 需要补漏做的count = " + sms.size());
         for (final ServerMsg sm : sms) {
             Log.d("test", "sm = " + sm.toString());
+            //boolean out = checkIsOutofDate(sm); //zzx提议
             int status = sm.status;
             if (status == ACTION_STATUS_0) {
                 //未执行的命令
@@ -2524,6 +2530,14 @@ public class Utils {
                 });
             }
         }
+    }
+
+    private static boolean checkIsOutofDate(ServerMsg sm) {
+        if (sm.content.contains(SEND_FRIEND_CIRCLE_CMD)) {
+            long savedTime = sm.time;
+            long currentTime = System.currentTimeMillis();
+        }
+        return false;
     }
 
     public static void getConsumers(final Context c, final MyListener myListener) {

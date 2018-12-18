@@ -68,14 +68,6 @@ public class KWApplication extends Application {
         saveDefaultFile(this, "zip.png", R.mipmap.zip);
         saveDefaultFile(this, "wechat.apk", "http://robot.kiway.cn/static/download/version/wechat.apk");
 
-        /*Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                Log.d("test", "addShutdownHook");
-                Utils.closeMQ();
-            }
-        });*/
-
         //设置所有状态1==>状态0
         ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(1);
         for (ServerMsg sm : sms) {
