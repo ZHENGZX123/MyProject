@@ -416,7 +416,6 @@ public class Utils {
                         int count = imgUploads.size();
                         for (int i = 0; i < count; i++) {
                             ImageUpload iu = imgUploads.get(i);
-                            Log.d("test", "iu = " + iu.toString());
                             if (iu.status == UPLOAD_STATUS_0) {
                                 //初始态，检查是不是要做补救
                                 boolean needSave = false;//checkIsNeedSaveImg(iu);
@@ -560,7 +559,7 @@ public class Utils {
             public void run() {
                 while (true) {
                     try {
-                        sleep(10 * 1000);
+                        sleep(60 * 1000);
                         int count = downloads.size();
                         for (int i = 0; i < count; i++) {
                             FileDownload fd = downloads.get(i);
@@ -737,19 +736,6 @@ public class Utils {
             }
         } catch (Exception e) {
             return false;
-        }
-        return false;
-    }
-
-    private static void compareWithServer() {
-        //get post
-    }
-
-    public static boolean isWeekend() {
-        Calendar c = Calendar.getInstance();
-        int weekday = c.get(Calendar.DAY_OF_WEEK);
-        if (weekday == 1 || weekday == 7) {
-            return true;
         }
         return false;
     }
@@ -2504,7 +2490,15 @@ public class Utils {
         Log.d("test", "handleMsgInDB 需要补漏做的count = " + sms.size());
         for (final ServerMsg sm : sms) {
             Log.d("test", "sm = " + sm.toString());
-            //boolean out = checkIsOutofDate(sm); //zzx提议
+            //zzx提议
+            boolean out = checkIsOutofDate(sm);
+            if (out) {
+                Log.d("test", "outofdate");
+                new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_3);
+                continue;
+            }
+
+
             int status = sm.status;
             if (status == ACTION_STATUS_0) {
                 //未执行的命令
@@ -2536,6 +2530,10 @@ public class Utils {
         if (sm.content.contains(SEND_FRIEND_CIRCLE_CMD)) {
             long savedTime = sm.time;
             long currentTime = System.currentTimeMillis();
+            long between = 12 * 60 * 60 * 1000;
+            if (currentTime - savedTime > between) {
+                return true;
+            }
         }
         return false;
     }

@@ -285,7 +285,10 @@ public class AutoReplyService extends AccessibilityService {
                 //2.事件队列
                 if (zbusRecvsQueue.size() > 0) {
                     Log.d("test", "zbusRecvsQueue size = " + zbusRecvsQueue.size());
-                    handleZbusMsg(zbusRecvsQueue.remove(0));
+                    ZbusRecv ze = zbusRecvsQueue.remove(0);
+                    Utils.keepLog(ze.toString(), "LAST_EVENT", 0);
+                    handleZbusMsg(ze);
+
                     return;
                 }
                 //3.重命名队列
@@ -1532,6 +1535,7 @@ public class AutoReplyService extends AccessibilityService {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            release(false);
                         }
                     }
                 }.start();
@@ -1835,15 +1839,12 @@ public class AutoReplyService extends AccessibilityService {
                                     int count = 5;
                                     for (int i = 0; i < count; i++) {
                                         execRootCmdSilent("input swipe 360 900 360 300");
-                                        try {
-                                            sleep(3000);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                                        sleep(3000);
                                     }
                                     release(false);
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    release(false);
                                 }
                             }
                         }.start();
@@ -1965,6 +1966,7 @@ public class AutoReplyService extends AccessibilityService {
                     release(true);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }.start();
@@ -2225,6 +2227,7 @@ public class AutoReplyService extends AccessibilityService {
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            release(false);
                                         }
                                     }
                                 }, sleepTime);
@@ -2263,6 +2266,9 @@ public class AutoReplyService extends AccessibilityService {
                                 tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                 tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                 sleep(5000);
+                                if (!actioningFlag) {
+                                    break;
+                                }
                             }
                             //新的朋友
                             clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
@@ -2291,6 +2297,7 @@ public class AutoReplyService extends AccessibilityService {
                             release(true);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            release(false);
                         }
                     }
                 }.start();
@@ -2463,6 +2470,7 @@ public class AutoReplyService extends AccessibilityService {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            release(false);
         }
         return false;
     }
@@ -2629,6 +2637,7 @@ public class AutoReplyService extends AccessibilityService {
                     release(true);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
 
             }
@@ -2698,6 +2707,7 @@ public class AutoReplyService extends AccessibilityService {
                                                     }, 5000);
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
+                                                    release(false);
                                                 }
                                             }
                                         }, 3000);
@@ -2789,6 +2799,7 @@ public class AutoReplyService extends AccessibilityService {
                     clickSureButton();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }.start();
@@ -2872,6 +2883,7 @@ public class AutoReplyService extends AccessibilityService {
                                                 }, 2000);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
+                                                release(false);
                                             }
                                         }
                                     }, 3000);
@@ -3227,7 +3239,7 @@ public class AutoReplyService extends AccessibilityService {
     //string:group
     private String isFromPrivateOrGroup(String name) {
         Log.d("test", "isFromPrivateOrGroup title = " + name);
-        if (TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             return "";
         }
         int lastLeft = name.lastIndexOf("(");
@@ -3301,8 +3313,6 @@ public class AutoReplyService extends AccessibilityService {
             release(false);
             return;
         }
-
-
         final String finalGroupName = groupName;
         mHandler.post(new Runnable() {
             @Override
@@ -3321,6 +3331,9 @@ public class AutoReplyService extends AccessibilityService {
                                         tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                         tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                         sleep(5000);
+                                        if (!actioningFlag) {
+                                            break;
+                                        }
                                     }
                                     //群聊
                                     clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 180 / 762);
@@ -3355,6 +3368,7 @@ public class AutoReplyService extends AccessibilityService {
                                     }, 3000);
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    release(false);
                                 }
                             }
                         }.start();
@@ -3379,6 +3393,7 @@ public class AutoReplyService extends AccessibilityService {
                     release(true);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }.start();
@@ -3746,6 +3761,7 @@ public class AutoReplyService extends AccessibilityService {
                     }, 2000);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }, 3000);
@@ -3822,8 +3838,9 @@ public class AutoReplyService extends AccessibilityService {
                                 sleep(10000);
                             }
                             i++;
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            release(false);
                         }
                     }
                     release(true);
@@ -3922,6 +3939,7 @@ public class AutoReplyService extends AccessibilityService {
                     }, sleepTime);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }, 3000);
@@ -3973,6 +3991,7 @@ public class AutoReplyService extends AccessibilityService {
                     }, sleepTime);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }, 3000);
@@ -4043,6 +4062,7 @@ public class AutoReplyService extends AccessibilityService {
                                             }, 5000);
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            release(false);
                                         }
                                     }
                                 }, 3000);
@@ -4129,6 +4149,7 @@ public class AutoReplyService extends AccessibilityService {
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
+                    release(false);
                 }
             }
         }.start();
@@ -4312,6 +4333,9 @@ public class AutoReplyService extends AccessibilityService {
                     findImageViewNode(getRootInActiveWindow());
                     boolean findGroupName = findTargetNode(NODE_TEXTVIEW, "查看全部群成员|群聊名称", CLICK_NONE, true);
                     if (findGroupName) {
+                        break;
+                    }
+                    if (!actioningFlag) {
                         break;
                     }
                     execRootCmdSilent("input swipe 360 900 360 300");
@@ -4866,6 +4890,7 @@ public class AutoReplyService extends AccessibilityService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            release(false);
         }
     }
 
@@ -5351,15 +5376,21 @@ public class AutoReplyService extends AccessibilityService {
                     sleep(5000);
                     Intent i = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
                     startActivity(i);
-                    sleep(10000);
-                    while (!checkIsWxHomePage()) {
-                        sleep(5000);
+                    sleep(30000);
+
+                    checkIsWxHomePage();
+
+                    if (tongxunluTextView != null) {
+                        tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     }
-                    tongxunluTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     sleep(5000);
-                    faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    if (faxianView != null) {
+                        faxianView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    }
                     sleep(5000);
-                    woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    if (woTextView != null) {
+                        woTextView.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    }
                     sleep(5000);
                     Log.d("test", "restartWechat finish...");
                 } catch (Exception e) {

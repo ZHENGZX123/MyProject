@@ -676,7 +676,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_CLEAR_CACHE_FILE) {
                 mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
                 clearCachedFiles(false);
-                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 5 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
             } else if (msg.what == MSG_RECONNECT) {
                 //1019查询消费者数量，8分钟一次
                 mHandler.removeMessages(MSG_RECONNECT);
