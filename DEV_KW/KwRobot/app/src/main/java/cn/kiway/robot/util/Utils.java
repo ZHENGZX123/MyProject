@@ -92,7 +92,7 @@ import static cn.kiway.robot.entity.AddFriend.STATUS_ADD_SUCCESS;
 import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_0;
 import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_1;
 import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_2;
-import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_4;
+import static cn.kiway.robot.entity.FileDownload.DOWNLOAD_STATUS_3;
 import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_0;
 import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_1;
 import static cn.kiway.robot.entity.ImageUpload.UPLOAD_STATUS_2;
@@ -549,6 +549,7 @@ public class Utils {
 
     private static Thread fileDownloadThread;
     private static ArrayList<FileDownload> downloads = new ArrayList<>();
+    private static ArrayList<String> downloadingUrls = new ArrayList<>();
 
     private static void startCheckFileDownloadThread(Context c) {
         if (fileDownloadThread != null) {
@@ -564,10 +565,12 @@ public class Utils {
                         for (int i = 0; i < count; i++) {
                             FileDownload fd = downloads.get(i);
                             if (fd.status == DOWNLOAD_STATUS_0) {
-                                fd.status = DOWNLOAD_STATUS_1;
-                                doDownloadFile(fd);
+                                if (!downloadingUrls.contains(fd.urls.get(0))) {
+                                    fd.status = DOWNLOAD_STATUS_1;
+                                    doDownloadFile(fd);
+                                }
                             } else if (fd.status == DOWNLOAD_STATUS_2) {
-                                fd.status = DOWNLOAD_STATUS_4;
+                                fd.status = DOWNLOAD_STATUS_3;
                                 //重发
                                 AutoReplyService.instance.sendReplyImmediately(fd.original, true);
                             }
@@ -589,25 +592,24 @@ public class Utils {
         for (int i = 0; i < count; i++) {
             String url = urls.get(i);
             Log.d("test", "doDownloadFile url = " + url);
-            final String savedFilePath = filepaths.get(i) + ".tmp";
-            if (new File(savedFilePath).exists()) {
-                //防止同时下载同样的图片
-                continue;
-            }
+            downloadingUrls.add(url);
+            final String savedFilePath = filepaths.get(i);
             org.xutils.http.RequestParams params = new org.xutils.http.RequestParams(url);
             params.setSaveFilePath(savedFilePath);
             params.setAutoRename(false);
+            params.setReadTimeout(60000);
+            params.setConnectTimeout(60000);
             params.setMaxRetryCount(5);
             params.setAutoResume(true);
             x.http().get(params, new org.xutils.common.Callback.CommonCallback<File>() {
                 @Override
                 public void onSuccess(File result) {
-                    result.renameTo(new File(result.getAbsolutePath().replace(".tmp", "")));
                     fd.successUrl++;
                     Log.d("test", "onSuccess");
                     if (fd.successUrl == fd.urls.size()) {
                         fd.status = DOWNLOAD_STATUS_2;
                     }
+                    downloadingUrls.remove(fd.urls.get(0));
                 }
 
                 @Override
@@ -615,6 +617,7 @@ public class Utils {
                     Log.d("test", "onError");
                     fd.status = DOWNLOAD_STATUS_0;
                     new File(savedFilePath).delete();
+                    downloadingUrls.remove(fd.urls.get(0));
                 }
 
                 @Override
@@ -622,6 +625,7 @@ public class Utils {
                     Log.d("test", "onCancelled");
                     fd.status = DOWNLOAD_STATUS_0;
                     new File(savedFilePath).delete();
+                    downloadingUrls.remove(fd.urls.get(0));
                 }
 
                 @Override

@@ -12,7 +12,6 @@ public class FileDownload {
     public static final int DOWNLOAD_STATUS_1 = 1;
     public static final int DOWNLOAD_STATUS_2 = 2;
     public static final int DOWNLOAD_STATUS_3 = 3;
-    public static final int DOWNLOAD_STATUS_4 = 4;
 
     public ArrayList<String> urls = new ArrayList<>();
     public ArrayList<String> filepaths = new ArrayList<>();
