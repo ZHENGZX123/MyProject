@@ -897,14 +897,14 @@ public class MainActivity extends BaseActivity {
                     //0.校验
                     boolean validate = true;
                     for (Friend f : friends) {
-                        if (TextUtils.isEmpty(f.nickname.trim()) && TextUtils.isEmpty(f.remark.trim())) {
+                        if (TextUtils.isEmpty(f.nickname.trim())) {
                             Log.d("test", "校验不通过的f = " + f.toString());
                             validate = false;
                             break;
                         }
                     }
                     if (!validate) {
-                        toast("校验不通过，有空的昵称或备注名");
+                        toast("校验不通过，有空的昵称");
                         return;
                     }
 

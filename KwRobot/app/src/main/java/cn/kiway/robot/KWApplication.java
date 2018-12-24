@@ -83,7 +83,7 @@ public class KWApplication extends Application {
         DisplayImageOptions.Builder displayImageOptionsBuilder = new DisplayImageOptions.Builder();
         // displayImageOptionsBuilder.showImageForEmptyUri(R.drawable.loading);
         // // 空uri的情况
-        displayImageOptionsBuilder.cacheInMemory(false); // 缓存在内存
+        displayImageOptionsBuilder.cacheInMemory(false); // 缓存在内存\
         displayImageOptionsBuilder.cacheOnDisc(true); // 缓存在磁盘
         displayImageOptionsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
         displayImageOptionsBuilder
