@@ -4536,6 +4536,11 @@ public class AutoReplyService extends AccessibilityService {
                 int friendCount = getSharedPreferences("friendCount", 0).getInt("friendCount", 0);
                 Log.d("test", "friendCount = " + friendCount);
                 if (friendCount > MAX_FRIENDS) {
+                    final String backup = getSharedPreferences("backup", 0).getString("backup", DEFAULT_BACKUP);
+                    if (backup.equals("") || backup.equals("null")) {
+                        release(true);
+                        return;
+                    }
                     mFindTargetNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -4544,13 +4549,7 @@ public class AutoReplyService extends AccessibilityService {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    String response = DEFAULT_BACKUP;
-                                    String backup = getSharedPreferences("backup", 0).getString("backup", DEFAULT_BACKUP);
-                                    if (backup.equals("") || backup.equals("null")) {
-                                        response = DEFAULT_BACKUP;
-                                    } else {
-                                        response = DEFAULT_BACKUP + "，请加备用微信号：" + backup;
-                                    }
+                                    String response = DEFAULT_BACKUP + "，请加备用微信号：" + backup;
                                     findTargetNode(NODE_EDITTEXT, response);
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
