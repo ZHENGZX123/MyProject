@@ -39,7 +39,7 @@ public class KWApplication extends Application {
     public static String LOG = "/mnt/sdcard/kiway_robot/log/";
     public static String DOWNLOAD = "/mnt/sdcard/kiway_robot/downloads/";
     public static String DCIM = "/mnt/sdcard/DCIM/Camera/";
-    public static  String WEIXIN = "/sdcard/tencent/MicroMsg/WeiXin/";
+    public static String WEIXIN = "/sdcard/tencent/MicroMsg/WeiXin/";
 
     public static String defaultVideoIcon = DOWNLOAD + "video.png";
     public static String defaultFileIcon = DOWNLOAD + "file.png";
@@ -113,8 +113,7 @@ public class KWApplication extends Application {
                 .denyCacheImageMultipleSizesInMemory()
                 // .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
                 .defaultDisplayImageOptions(displayImageOptionsBuilder.build())
-                .imageDownloader(
-                        new BaseImageDownloader(this, 5 * 1000, 30 * 1000)) // connectTimeout
+                .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000)) // connectTimeout
                 /* .writeDebugLogs() */.build(); // Remove for release app
         ImageLoader.getInstance().init(config);
     }

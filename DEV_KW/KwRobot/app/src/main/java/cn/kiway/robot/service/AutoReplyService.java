@@ -2925,7 +2925,6 @@ public class AutoReplyService extends AccessibilityService {
     }
 
     private void doSendBatchMessage() {
-
         try {
             String content = new String(Base64.decode(actions.get(currentActionID).content.getBytes(), NO_WRAP));
             JSONObject o = new JSONObject(content);
