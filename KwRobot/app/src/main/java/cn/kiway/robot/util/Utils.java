@@ -572,7 +572,7 @@ public class Utils {
                             } else if (fd.status == DOWNLOAD_STATUS_2) {
                                 fd.status = DOWNLOAD_STATUS_3;
                                 //重发
-                                AutoReplyService.instance.sendReplyImmediately(fd.original, true);
+                                AutoReplyService.instance.sendReplyImmediately(fd.original, isNeedImme(fd.original));
                             }
                             sleep(3000);
                         }
@@ -669,7 +669,7 @@ public class Utils {
                 return true;
             }
             //预先下载朋友圈的图文、网文
-            if (msg.contains("sendFriendCircleCmd")) {
+            if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
                 JSONObject msgO = new JSONObject(msg);
                 JSONObject contentO = msgO.optJSONObject("content");
                 String imageUrl = contentO.optString("imgUrl");
@@ -696,31 +696,30 @@ public class Utils {
 
     //需要插队的命令
     private static boolean isNeedImme(String msg) {
+        boolean imme = false;
         try {
             //踢人
             if (msg.contains(TICK_PERSON_GROUP_CMD)) {
-                return true;
+                imme = true;
             }
-
+            //所有朋友圈
+            if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
+                imme = true;
+            }
             //定时发朋友圈
             JSONObject o = new JSONObject(msg);
             if (o.optBoolean("schedule")) {
-                return true;
+                imme = true;
             }
-
             //定时修改群公告
             if (msg.contains(UPDATE_GROUP_NOTICE_CMD) && !TextUtils.isEmpty(o.optString("sendTime"))) {
-                return true;
-            }
-
-            //所有朋友圈
-            if (msg.contains(SEND_FRIEND_CIRCLE_CMD)) {
-                return true;
+                imme = true;
             }
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
-        return false;
+        Log.d("test", "isNeedImme = " + imme);
+        return imme;
     }
 
     public static boolean hbReply = false;
@@ -2497,12 +2496,10 @@ public class Utils {
             //zzx提议
             boolean out = checkIsOutofDate(sm);
             if (out) {
-                Log.d("test", "outofdate");
+                Log.d("test", "cmd is outofdate");
                 new MyDBHelper(c).updateServerMsgStatusByIndex(sm.index, ACTION_STATUS_3);
                 continue;
             }
-
-
             int status = sm.status;
             if (status == ACTION_STATUS_0) {
                 //未执行的命令
@@ -2530,15 +2527,28 @@ public class Utils {
         }
     }
 
+    //注意：手机时间必须和服务器一致
     private static boolean checkIsOutofDate(ServerMsg sm) {
-        if (sm.content.contains(SEND_FRIEND_CIRCLE_CMD)) {
-            long savedTime = sm.time;
-            long currentTime = System.currentTimeMillis();
-            long between = 12 * 60 * 60 * 1000;
-            if (currentTime - savedTime > between) {
-                return true;
+        try {
+            if (sm.content.contains(SEND_FRIEND_CIRCLE_CMD)) {
+                JSONObject o = new JSONObject(sm.content);
+                long cmdTime = 0;
+                if (o.has("scheduleTime")) {
+                    cmdTime = o.optLong("scheduleTime");
+                } else {
+                    cmdTime = o.optLong("token");
+                }
+                Log.d("test", "cmdTime = " + cmdTime);
+                long currentTime = System.currentTimeMillis();
+                long between = 2 * 60 * 60 * 1000;
+                if ((currentTime - cmdTime) > between) {
+                    return true;
+                }
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
         return false;
     }
 

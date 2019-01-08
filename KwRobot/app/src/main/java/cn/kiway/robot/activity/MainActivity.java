@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xiaoleilu.hutool.json.XML;
 
 import org.apache.http.Header;
@@ -174,7 +173,7 @@ public class MainActivity extends BaseActivity {
             });
         }
 
-        clearCachedFiles(true);
+        clearCachedFiles();
         updateServiceCount();
         Utils.setScreenBrightness(this);
     }
@@ -675,7 +674,7 @@ public class MainActivity extends BaseActivity {
                 mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_CLEAR_CACHE_FILE) {
                 mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
-                clearCachedFiles(false);
+                clearCachedFiles();
                 mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
             } else if (msg.what == MSG_RECONNECT) {
                 //1019查询消费者数量，8分钟一次
@@ -1270,16 +1269,11 @@ public class MainActivity extends BaseActivity {
         }.start();
     }
 
-    private void clearCachedFiles(boolean force) {
-        if (force) {
-            deleteAllCachedFiles(ROOT);
-            deleteAllCachedFiles(DOWNLOAD);
-            deleteAllCachedFiles(DCIM);
-            ImageLoader.getInstance().clearDiskCache();
-        } else {
-            //删除部分db
-            deleteUselessDBFiles(ROOT);
-        }
+    private void clearCachedFiles() {
+        deleteAllCachedFiles(ROOT);
+        deleteAllCachedFiles(DOWNLOAD);
+        deleteAllCachedFiles(DCIM);
+        deleteUselessDBFiles(ROOT);
     }
 
     private void deleteAllCachedFiles(String folder) {
@@ -1290,12 +1284,9 @@ public class MainActivity extends BaseActivity {
         long current = System.currentTimeMillis();
         long before1day = current - 24 * 60 * 60 * 1000;
         for (File f : files) {
-            //Log.d("test", "f = " + f.getAbsolutePath());
-            if (!f.isDirectory() && f.getName().contains("db")) {
-                Log.d("test", "delete file = " + f.getName());
-                f.delete();
-            }
-            if (!f.isDirectory() && f.getName().endsWith("jpg") && f.lastModified() < before1day) {
+            if (!f.isDirectory()
+                    && (f.getName().endsWith("jpg") || f.getName().endsWith("doc") || f.getName().endsWith("docx") || f.getName().endsWith("xls") || f.getName().endsWith("xlsx") || f.getName().endsWith("ppt") || f.getName().endsWith("pptx") || f.getName().endsWith("pdf"))
+                    && f.lastModified() < before1day) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();
             }
@@ -1336,7 +1327,7 @@ public class MainActivity extends BaseActivity {
         for (int i = 0; i < delete; i++) {
             File f = files[i];
             Log.d("test", "f = " + f.getAbsolutePath());
-            if (!f.isDirectory() && f.getName().contains("db")) {
+            if (!f.isDirectory() && (f.getName().endsWith("db") || f.getName().endsWith("db-shm") || f.getName().endsWith("db-wal"))) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();
             }
