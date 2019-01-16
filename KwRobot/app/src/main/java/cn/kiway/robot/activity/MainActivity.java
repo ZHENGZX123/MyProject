@@ -113,6 +113,8 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_RECONNECT = 119;//重连MQ
     private static final int MSG_UPDATE_TRANSFER_NICKNAME = 120;//修改转发使者的昵称
 
+    private static final int MSG_REBOOT_CELLPHONE = 121;//删除聊天历史记录
+
     public static MainActivity instance;
     private Button start;
     private TextView nameTV;
@@ -149,12 +151,18 @@ public class MainActivity extends BaseActivity {
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_MOMENTS, 140 * 60 * 1000);
         mHandler.sendEmptyMessageDelayed(MSG_GET_ALL_GROUPS, 100 * 60 * 1000);
         //mHandler.sendEmptyMessageDelayed(MSG_CHECK_APPKEY, 10 * 1000);
-//        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
+        //mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
 
-        Calendar curDate = Calendar.getInstance();
-        Calendar nextDayDate = new GregorianCalendar(curDate.get(Calendar.YEAR), curDate.get(Calendar.MONTH), curDate.get(Calendar.DATE) + 1, 1, 0, 0);
-        long between = nextDayDate.getTimeInMillis() - curDate.getTimeInMillis();
+        Calendar curDate1 = Calendar.getInstance();
+        Calendar nextDayDate1 = new GregorianCalendar(curDate1.get(Calendar.YEAR), curDate1.get(Calendar.MONTH), curDate1.get(Calendar.DATE) + 1, 1, 0, 0);
+        long between = nextDayDate1.getTimeInMillis() - curDate1.getTimeInMillis();
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, between);
+
+        Calendar curDate2 = Calendar.getInstance();
+        Calendar nextDayDate2 = new GregorianCalendar(curDate2.get(Calendar.YEAR), curDate2.get(Calendar.MONTH), curDate2.get(Calendar.DATE) + 1, 8, 0, 0);
+        long between2 = nextDayDate2.getTimeInMillis() - curDate2.getTimeInMillis();
+        Log.d("test", "between2 = " + between2);
+        mHandler.sendEmptyMessageDelayed(MSG_REBOOT_CELLPHONE, between2);
 
 
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CACHE_FILE, 10 * 60 * 1000);
@@ -176,6 +184,21 @@ public class MainActivity extends BaseActivity {
         clearCachedFiles();
         updateServiceCount();
         Utils.setScreenBrightness(this);
+
+        //模拟点击一下，取消“手机没有SIM卡”
+        clickSomePlace();
+    }
+
+    private void clickSomePlace() {
+        new Thread() {
+            @Override
+            public void run() {
+                boolean reboot = getSharedPreferences("kiway", 0).getBoolean("reboot", false);
+                if (reboot) {
+                    RootCmd.execRootCmdSilent("input tap 360 1000");
+                }
+            }
+        }.start();
     }
 
     private void initView() {
@@ -672,6 +695,10 @@ public class MainActivity extends BaseActivity {
                 mHandler.removeMessages(MSG_CLEAR_CHAT_HISTORY);
                 clearChatHistory();
                 mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, 24 * 60 * 60 * 1000);
+            } else if (msg.what == MSG_REBOOT_CELLPHONE) {
+                mHandler.removeMessages(MSG_REBOOT_CELLPHONE);
+                reboot();
+                mHandler.sendEmptyMessageDelayed(MSG_REBOOT_CELLPHONE, 24 * 60 * 60 * 1000);
             } else if (msg.what == MSG_CLEAR_CACHE_FILE) {
                 mHandler.removeMessages(MSG_CLEAR_CACHE_FILE);
                 clearCachedFiles();
@@ -695,6 +722,14 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    private void reboot() {
+        if (Utils.isWeekend()) {
+            return;
+        }
+        getSharedPreferences("kiway", 0).edit().putBoolean("reboot", true).commit();
+        RootCmd.execRootCmdSilent("reboot");
+    }
 
     private void resetTransferNickName() {
         if (AutoReplyService.instance == null) {
@@ -1274,6 +1309,7 @@ public class MainActivity extends BaseActivity {
         deleteAllCachedFiles(DOWNLOAD);
         deleteAllCachedFiles(DCIM);
         deleteUselessDBFiles(ROOT);
+
     }
 
     private void deleteAllCachedFiles(String folder) {
@@ -1285,7 +1321,17 @@ public class MainActivity extends BaseActivity {
         long before1day = current - 24 * 60 * 60 * 1000;
         for (File f : files) {
             if (!f.isDirectory()
-                    && (f.getName().endsWith("jpg") || f.getName().endsWith("doc") || f.getName().endsWith("docx") || f.getName().endsWith("xls") || f.getName().endsWith("xlsx") || f.getName().endsWith("ppt") || f.getName().endsWith("pptx") || f.getName().endsWith("pdf"))
+                    && (f.getName().toLowerCase().endsWith("jpg")
+                    || f.getName().toLowerCase().endsWith("doc")
+                    || f.getName().toLowerCase().endsWith("docx")
+                    || f.getName().toLowerCase().endsWith("xls")
+                    || f.getName().toLowerCase().endsWith("xlsx")
+                    || f.getName().toLowerCase().endsWith("ppt")
+                    || f.getName().toLowerCase().endsWith("pptx")
+                    || f.getName().toLowerCase().endsWith("pdf")
+                    || f.getName().toLowerCase().endsWith("rar")
+                    || f.getName().toLowerCase().endsWith("zip")
+            )
                     && f.lastModified() < before1day) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();
@@ -1298,6 +1344,7 @@ public class MainActivity extends BaseActivity {
         if (files == null || files.length == 0) {
             return;
         }
+
         int max = 50;
         int count = files.length;
         Log.d("test", "count = " + count);
@@ -1323,11 +1370,11 @@ public class MainActivity extends BaseActivity {
         for (File f : files) {
             Log.d("test", "f = " + f.getAbsolutePath());
         }
-        int delete = max / 2;
+        int delete = count / 2;
         for (int i = 0; i < delete; i++) {
             File f = files[i];
             Log.d("test", "f = " + f.getAbsolutePath());
-            if (!f.isDirectory() && (f.getName().endsWith("db") || f.getName().endsWith("db-shm") || f.getName().endsWith("db-wal"))) {
+            if (!f.isDirectory() && (f.getName().contains("db"))) {
                 Log.d("test", "delete file = " + f.getName());
                 f.delete();
             }

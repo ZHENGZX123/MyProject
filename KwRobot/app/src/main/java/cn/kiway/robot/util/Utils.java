@@ -2742,4 +2742,14 @@ public class Utils {
             }
         }
     }
+
+
+    public static boolean isWeekend() {
+        Calendar c = Calendar.getInstance();
+        int weekday = c.get(Calendar.DAY_OF_WEEK);
+        if (weekday == 1 || weekday == 7) {
+            return true;
+        }
+        return false;
+    }
 }
