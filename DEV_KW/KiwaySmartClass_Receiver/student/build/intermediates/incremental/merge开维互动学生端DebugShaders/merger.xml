@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="F:\kiway_xm\KiwaySmartClass_New\student\src\main\shaders"/></dataSet><dataSet config="开维互动学生端"><source path="F:\kiway_xm\KiwaySmartClass_New\student\src\开维互动学生端\shaders"/></dataSet><dataSet config="debug"><source path="F:\kiway_xm\KiwaySmartClass_New\student\src\debug\shaders"/></dataSet><dataSet config="开维互动学生端Debug"><source path="F:\kiway_xm\KiwaySmartClass_New\student\src\开维互动学生端Debug\shaders"/></dataSet></merger>
