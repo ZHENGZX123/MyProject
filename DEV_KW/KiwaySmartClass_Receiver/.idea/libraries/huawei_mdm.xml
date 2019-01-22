@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="huawei_mdm">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/student/libs/huawei_mdm.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
