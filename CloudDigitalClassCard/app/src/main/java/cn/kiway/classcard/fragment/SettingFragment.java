@@ -13,6 +13,7 @@ import cn.kiway.classcard.R;
  */
 
 public class SettingFragment extends BaseFragment {
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
@@ -20,4 +21,5 @@ public class SettingFragment extends BaseFragment {
         view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_settings, null);
         return view;
     }
+
 }
