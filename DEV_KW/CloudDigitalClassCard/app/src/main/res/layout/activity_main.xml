@@ -1,27 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/_f7f7f7"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/_f7f7f7"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/titleRL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00A7FF">
+
+        <TextView
+            android:id="@+id/classTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="一年级（1）班"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/teacherTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/classTV"
+            android:text="班主任：王耀国老师"
+            android:textColor="#ffffff" />
+
+
+        <TextView
+            android:id="@+id/schoolTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/cityTV"
+            android:text="南山小学"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/cityTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/weatherTV"
+            android:text="深圳市"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/weatherTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/dateTV"
+            android:text="17℃ 良好"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/dateTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/timeTV"
+            android:text="1月26日 星期五"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/timeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/wifiBtn"
+            android:text="17:16"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/wifiBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/ic_launcher" />
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/_e5e5e5"/>
+        android:background="@color/_e5e5e5" />
 
     <RadioGroup
         android:id="@+id/rg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rb1"
@@ -36,7 +128,7 @@
             android:padding="5dp"
             android:text="首页"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb2"
@@ -45,12 +137,12 @@
             android:layout_weight="1"
             android:background="@drawable/main_button_selector"
             android:button="@null"
+            android:drawableTop="@drawable/school"
             android:gravity="center"
             android:padding="10dp"
-            android:drawableTop="@drawable/school"
             android:text="学校动态"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb3"
@@ -59,12 +151,12 @@
             android:layout_weight="1"
             android:background="@drawable/main_button_selector"
             android:button="@null"
+            android:drawableTop="@drawable/circle"
             android:gravity="center"
             android:padding="10dp"
-            android:drawableTop="@drawable/circle"
             android:text="班级圈"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb4"
@@ -73,12 +165,12 @@
             android:layout_weight="1"
             android:background="@drawable/main_button_selector"
             android:button="@null"
+            android:drawableTop="@drawable/attendance"
             android:gravity="center"
             android:padding="10dp"
-            android:drawableTop="@drawable/attendance"
             android:text="考勤"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb5"
@@ -92,7 +184,7 @@
             android:padding="10dp"
             android:text="家校通"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb6"
@@ -105,7 +197,7 @@
             android:padding="10dp"
             android:text="走班"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb7"
@@ -114,12 +206,12 @@
             android:layout_weight="1"
             android:background="@drawable/main_button_selector"
             android:button="@null"
+            android:drawableTop="@drawable/setting"
             android:gravity="center"
             android:padding="10dp"
             android:text="设置"
-            android:drawableTop="@drawable/setting"
             android:textColor="@color/main_button_selector"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
     </RadioGroup>
 
 </LinearLayout>

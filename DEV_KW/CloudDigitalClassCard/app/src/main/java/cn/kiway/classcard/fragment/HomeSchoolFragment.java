@@ -12,7 +12,8 @@ import cn.kiway.classcard.R;
  * Created by Administrator on 2019/3/5.
  */
 
-public class HomeSchoolFragment extends  BaseFragment{
+public class HomeSchoolFragment extends BaseFragment {
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
