@@ -4,106 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DCDEDD"
-    tools:context="cn.kiway.exam.MainActivity">
+    android:background="#DCDEDD">
 
-    <RelativeLayout
-        android:id="@+id/titleRL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#00A7FF">
-
-        <TextView
-            android:id="@+id/classTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:text="一年级（1）班"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/teacherTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/classTV"
-            android:text="班主任：王耀国老师"
-            android:textColor="#ffffff" />
-
-
-        <TextView
-            android:id="@+id/schoolTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/cityTV"
-            android:text="南山小学"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-
-
-        <TextView
-            android:id="@+id/cityTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/weatherTV"
-            android:text="深圳市"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/weatherTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/dateTV"
-            android:text="17℃ 良好"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/dateTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/timeTV"
-            android:text="1月26日 星期五"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/timeTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/wifiBtn"
-            android:text="17:16"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-
-        <ImageButton
-            android:id="@+id/wifiBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher" />
-    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/titleRL"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -336,7 +242,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="150dp"
                 android:background="#ffffff"
                 android:gravity="center"
                 android:padding="10dp"
