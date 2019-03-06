@@ -2,10 +2,504 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="走班"/>
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/left"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
+
+        <RadioButton
+            android:id="@+id/rb1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:checked="true"
+            android:drawableLeft="@drawable/circle_button_selector"
+            android:drawablePadding="50dp"
+            android:text="今日课程"
+            android:textColor="@color/circle_button_selector"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rb2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableLeft="@drawable/circle_button_selector"
+            android:drawablePadding="50dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="本周课程"
+            android:textColor="@color/circle_button_selector"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rb3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableLeft="@drawable/circle_button_selector"
+            android:drawablePadding="50dp"
+            android:text="走班排课"
+            android:textColor="@color/circle_button_selector"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/rb4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableLeft="@drawable/circle_button_selector"
+            android:drawablePadding="50dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="考勤签到"
+            android:textColor="@color/circle_button_selector"
+            android:textSize="20sp"/>
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/todaysession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="@color/_e5e5e5">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="课次"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="时间"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="科目"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="任课老师"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="@color/_e5e5e5"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="课次"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="星期一"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="星期二"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="星期三"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="星期四"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="星期五"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <RadioGroup
+                android:id="@+id/rg2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/kuang3"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <RadioButton
+                    android:id="@+id/r2b1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="星期一"
+                    android:textColor="@color/main_button_selector"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/r2b2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="星期二"
+                    android:textColor="@color/main_button_selector"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/r2b3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="星期三"
+                    android:textColor="@color/main_button_selector"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/r2b4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="星期四"
+                    android:textColor="@color/main_button_selector"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/r2b5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="星期五"
+                    android:textColor="@color/main_button_selector"
+                    android:textSize="18sp"/>
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/kuang3"
+                android:drawableRight="@drawable/seacrch2"
+                android:hint="输入学号、姓名"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/_333333"
+                android:textColorHint="@color/_666666"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shift2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/_a9dffb"
+            android:padding="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="学生/学号"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第一节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第二节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第三节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第四节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第五节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第六节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第七节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="第八节"
+                android:textColor="@color/_ffffff"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/attendce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/_4D1E90FF"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="7dp"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/bule"
+                android:drawablePadding="7dp"
+                android:text="应到:"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/yingdao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="18人"
+                android:textColor="@color/_666666"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/green"
+                android:drawablePadding="7dp"
+                android:text="已到:"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/yidao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0人"
+                android:textColor="@color/_666666"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/yellow"
+                android:drawablePadding="7dp"
+                android:text="迟到:"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/cidao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="80人"
+                android:textColor="@color/_666666"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/red"
+                android:drawablePadding="7dp"
+                android:text="缺席:"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/quexi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0人"
+                android:textColor="@color/_666666"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="7dp"
+                android:text="当前课程:"
+                android:textColor="@color/_333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/shijian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="无"
+                android:textColor="@color/_666666"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/_e5e5e5"
+            android:dividerHeight="1px"
+            android:scrollbars="none"></ListView>
+    </LinearLayout>
+
+
 </LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:text="作业类型   "
+        android:textColor="@color/_333333"
+        android:textSize="18sp"/>
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@color/_ffffff"
+        android:padding="10dp"
+        android:popupBackground="@color/_ffffff"></Spinner>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:text="发布时间   "
+        android:textColor="@color/_333333"
+        android:textSize="18sp"/>
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@color/_ffffff"
+        android:padding="10dp"
+        android:popupBackground="@color/_ffffff"></Spinner>
+
+    <Button
+        android:id="@+id/seacrh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/kuang2"
+        android:drawableLeft="@drawable/seacher"
+        android:paddingRight="10dp"
+        android:text="搜索"
+        android:textColor="@color/_ffffff"/>
+</LinearLayout>
