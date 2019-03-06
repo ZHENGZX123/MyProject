@@ -5,10 +5,13 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cn.kiway.classcard.R;
 
@@ -55,4 +58,31 @@ public class Utils {
                 .SPAN_EXCLUSIVE_EXCLUSIVE);
         tx.setText(spannable);
     }
+    public static String getMimeType(File file){
+        String suffix = getSuffix(file);
+        if (suffix == null) {
+            return "file/*";
+        }
+        String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
+        if (type != null || !type.isEmpty()) {
+            return type;
+        }
+        return "file/*";
+    }
+    private static String getSuffix(File file) {
+        if (file == null || !file.exists() || file.isDirectory()) {
+            return null;
+        }
+        String fileName = file.getName();
+        if (fileName.equals("") || fileName.endsWith(".")) {
+            return null;
+        }
+        int index = fileName.lastIndexOf(".");
+        if (index != -1) {
+            return fileName.substring(index + 1).toLowerCase(Locale.US);
+        } else {
+            return null;
+        }
+    }
+
 }
