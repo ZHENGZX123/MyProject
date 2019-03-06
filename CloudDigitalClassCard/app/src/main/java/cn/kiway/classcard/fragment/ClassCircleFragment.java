@@ -53,7 +53,7 @@ public class ClassCircleFragment extends BaseFragment implements RadioGroup.OnCh
         gridView.setAdapter(new SessionAdapter(getContext()));
         viewPager = view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
-        viewPager.setPageMargin(-100);
+        viewPager.setPageMargin(-10);
         viewPager.setPageTransformer(false, new ZoomOutPageTransformer());
         viewPager.setAdapter(new ViewPageAdapter(getContext()));
         horizontalListView = view.findViewById(R.id.listview_h);
@@ -131,21 +131,23 @@ public class ClassCircleFragment extends BaseFragment implements RadioGroup.OnCh
         view.findViewById(R.id.listview).setVisibility(View.VISIBLE);
         view.findViewById(R.id.session).setVisibility(View.GONE);
         view.findViewById(R.id.mien).setVisibility(View.GONE);
-        headView = LayoutInflater.from(getContext()).inflate(R.layout.head_circle_listview, null);
-        spinner1 = headView.findViewById(R.id.spinner1);
-        spinner2 = headView.findViewById(R.id.spinner2);
-        if (adapter1 == null) {
-            adapter1 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,
-                    Utils.getSpinner1List());
-            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        if (listView.getHeaderViewsCount() <= 0) {
+            headView = LayoutInflater.from(getContext()).inflate(R.layout.head_circle_listview, null);
+            spinner1 = headView.findViewById(R.id.spinner1);
+            spinner2 = headView.findViewById(R.id.spinner2);
+            if (adapter1 == null) {
+                adapter1 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,
+                        Utils.getSpinner1List());
+                adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            }
+            if (adapter2 == null) {
+                adapter2 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,
+                        Utils.getSpinner1List2());
+                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            }
+            spinner1.setAdapter(adapter1);
+            spinner2.setAdapter(adapter2);
+            listView.addHeaderView(headView);
         }
-        if (adapter2 == null) {
-            adapter2 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,
-                    Utils.getSpinner1List2());
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        }
-        spinner1.setAdapter(adapter1);
-        spinner2.setAdapter(adapter2);
-        listView.addHeaderView(headView);
     }
 }
