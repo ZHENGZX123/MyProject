@@ -1,61 +1,69 @@
 package cn.kiway.classcard.view;
 
-import android.support.v4.view.ViewCompat;
+import android.annotation.SuppressLint;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 /**
  * Created by Administrator on 2019/3/5.
  */
 
-//设置切换动画
-public class ZoomOutPageTransformer extends BasePageTransformer {
-    private float mMinScale = 0.85f;
-    private float mMinAlpha = 0.95f;
+public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
+    private static final float MIN_SCALE = 0.85f;
+    private static final float MIN_ALPHA = 0.5f;
 
-    public ZoomOutPageTransformer() {
-    }
+    @SuppressLint("NewApi")
+    public void transformPage(View view, float position) {
 
-    public ZoomOutPageTransformer(float minAlpha, float minScale) {
-        setMinAlpha(minAlpha);
-        setMinScale(minScale);
-    }
+        int pageWidth = view.getWidth();
+        int pageHeight = view.getHeight();
 
-    @Override
-    public void handleInvisiblePage(View view, float position) {
-        ViewCompat.setAlpha(view, 0);
-    }
+        Log.e("TAG", view + " , " + position + "");
 
-    @Override
-    public void handleLeftPage(View view, float position) {
-        float scale = Math.max(mMinScale, 1 + position);
-        float vertMargin = view.getHeight() * (1 - scale) / 2;
-        float horzMargin = view.getWidth() * (1 - scale) / 2;
-        ViewCompat.setTranslationX(view, horzMargin - vertMargin / 2);
-        ViewCompat.setScaleX(view, scale);
-        ViewCompat.setScaleY(view, scale);
-        ViewCompat.setAlpha(view, mMinAlpha + (scale - mMinScale) / (1 - mMinScale) * (1 - mMinAlpha));
-    }
+        if (position < -1) { // [-Infinity,-1)
 
-    @Override
-    public void handleRightPage(View view, float position) {
-        float scale = Math.max(mMinScale, 1 - position);
-        float vertMargin = view.getHeight() * (1 - scale) / 2;
-        float horzMargin = view.getWidth() * (1 - scale) / 2;
-        ViewCompat.setTranslationX(view, -horzMargin + vertMargin / 2);
-        ViewCompat.setScaleX(view, scale);
-        ViewCompat.setScaleY(view, scale);
-        ViewCompat.setAlpha(view, mMinAlpha + (scale - mMinScale) / (1 - mMinScale) * (1 - mMinAlpha));
-    }
+            float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+            float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+            float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+            if (position < 0) {
+                view.setTranslationX(horzMargin - vertMargin / 2);
+            } else {
+                view.setTranslationX(-horzMargin + vertMargin / 2);
+            }
 
-    public void setMinAlpha(float minAlpha) {
-        if (minAlpha >= 0.6f && minAlpha <= 1.0f) {
-            mMinAlpha = minAlpha;
-        }
-    }
-
-    public void setMinScale(float minScale) {
-        if (minScale >= 0.6f && minScale <= 1.0f) {
-            mMinScale = minScale;
+            // Scale the page down (between MIN_SCALE and 1)
+            view.setScaleX(scaleFactor);
+            view.setScaleY(scaleFactor);
+            view.setAlpha(MIN_ALPHA + (scaleFactor - MIN_SCALE)
+                    / (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+        } else if (position <= 1) //a页滑动至b页 ； a页从 0.0 -1 ；b页从1 ~ 0.0
+        {
+            float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+            float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+            float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+            if (position < 0) {
+                view.setTranslationX(horzMargin - vertMargin / 2);
+            } else {
+                view.setTranslationX(-horzMargin + vertMargin / 2);
+            }
+            view.setScaleX(scaleFactor);
+            view.setScaleY(scaleFactor);
+            view.setAlpha(MIN_ALPHA + (scaleFactor - MIN_SCALE)
+                    / (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+        } else {
+            float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+            float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+            float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+            if (position < 0) {
+                view.setTranslationX(horzMargin - vertMargin / 2);
+            } else {
+                view.setTranslationX(-horzMargin + vertMargin / 2);
+            }
+            view.setScaleX(scaleFactor);
+            view.setScaleY(scaleFactor);
+            view.setAlpha(MIN_ALPHA + (scaleFactor - MIN_SCALE)
+                    / (1 - MIN_SCALE) * (1 - MIN_ALPHA));
         }
     }
 }

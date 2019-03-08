@@ -52,9 +52,10 @@ public class ClassCircleFragment extends BaseFragment implements RadioGroup.OnCh
         gridView = view.findViewById(R.id.gridView);
         gridView.setAdapter(new SessionAdapter(getContext()));
         viewPager = view.findViewById(R.id.viewpager);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setPageMargin(-10);
-        viewPager.setPageTransformer(false, new ZoomOutPageTransformer());
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+       // viewPager.setPageTransformer(false, new ZoomOutPageTransformer());
         viewPager.setAdapter(new ViewPageAdapter(getContext()));
         horizontalListView = view.findViewById(R.id.listview_h);
         horizontalListView.setAdapter(new ClassMienListAdapter(getContext()));
