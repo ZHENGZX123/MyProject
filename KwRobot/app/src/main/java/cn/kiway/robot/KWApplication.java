@@ -61,7 +61,7 @@ public class KWApplication extends Application {
 
         saveDefaultFile(this, "file.png", file);
         saveDefaultFile(this, "video.png", R.mipmap.video);
-        saveDefaultFile(this, "ppt.png", R.mipmap.ppt);
+        saveDefaultFile(this, "ppt.png", R.mipmap.ppt) ;
         saveDefaultFile(this, "pdf.png", R.mipmap.pdf);
         saveDefaultFile(this, "word.png", R.mipmap.word);
         saveDefaultFile(this, "xls.png", R.mipmap.xls);
