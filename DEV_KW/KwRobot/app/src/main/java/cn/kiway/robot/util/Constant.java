@@ -27,11 +27,14 @@ public class Constant {
 
 
     static {
-        //正式
-        host = "robot.kiway.cn";
-        port = 5676;
-        clientUrl = "http://robot.kiway.cn";
-
+        //正式1
+//        host = "robot.kiway.cn";
+//        port = 5676;
+//        clientUrl = "http://robot.kiway.cn";
+//正式2
+        host = "zsrobot.kiway.cn";
+        port = 25672;
+        clientUrl = "http://zsrobot.kiway.cn";
         // 测试
 //        host = "rbtest.kiway.cn";
 //        port = 5672;

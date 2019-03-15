@@ -20,13 +20,11 @@ public class APPkeyActivity extends BaseActivity {
 
     private EditText appkeyET;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appkey);
         appkeyET = (EditText) findViewById(R.id.appkeyET);
-
         String appkey = getSharedPreferences("appkey", 0).getString("appkey", "");
         if (!TextUtils.isEmpty(appkey)) {
             appkeyET.setText(AESUtil.decrypt(appkey, PASSWORD));

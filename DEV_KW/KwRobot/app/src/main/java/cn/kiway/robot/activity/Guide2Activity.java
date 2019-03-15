@@ -32,7 +32,6 @@ public class Guide2Activity extends BaseActivity {
                     finish();
                 } else {
                     toast("尚未拥有Root权限");
-
                 }
             }
         }.start();

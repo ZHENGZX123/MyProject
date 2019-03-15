@@ -28,6 +28,4 @@ public class WelcomeActivity extends BaseActivity {
         startActivity(new Intent(this, Guide1Activity.class));
         finish();
     }
-
-
 }

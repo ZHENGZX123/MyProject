@@ -154,12 +154,14 @@ public class MainActivity extends BaseActivity {
         //mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TRANSFER_NICKNAME, 10 * 60 * 1000);
 
         Calendar curDate1 = Calendar.getInstance();
-        Calendar nextDayDate1 = new GregorianCalendar(curDate1.get(Calendar.YEAR), curDate1.get(Calendar.MONTH), curDate1.get(Calendar.DATE) + 1, 1, 0, 0);
+        Calendar nextDayDate1 = new GregorianCalendar(curDate1.get(Calendar.YEAR), curDate1.get(Calendar.MONTH),
+                curDate1.get(Calendar.DATE) + 1, 1, 0, 0);
         long between = nextDayDate1.getTimeInMillis() - curDate1.getTimeInMillis();
         mHandler.sendEmptyMessageDelayed(MSG_CLEAR_CHAT_HISTORY, between);
 
         Calendar curDate2 = Calendar.getInstance();
-        Calendar nextDayDate2 = new GregorianCalendar(curDate2.get(Calendar.YEAR), curDate2.get(Calendar.MONTH), curDate2.get(Calendar.DATE) + 1, 8, 0, 0);
+        Calendar nextDayDate2 = new GregorianCalendar(curDate2.get(Calendar.YEAR), curDate2.get(Calendar.MONTH),
+                curDate2.get(Calendar.DATE) + 1, 8, 0, 0);
         long between2 = nextDayDate2.getTimeInMillis() - curDate2.getTimeInMillis();
         Log.d("test", "between2 = " + between2);
         mHandler.sendEmptyMessageDelayed(MSG_REBOOT_CELLPHONE, between2);
@@ -214,6 +216,16 @@ public class MainActivity extends BaseActivity {
 
         roleTV = (TextView) findViewById(R.id.role);
 
+    }
+
+    public void test4(View view) {
+        new MyDBHelper(this).deleteServerMsg();
+        Utils.getLastMsgIndex2(this, new MyListener2() {
+            @Override
+            public void onResult(int ret) {
+                getSharedPreferences("start", 0).edit().putInt("start", ret).commit();
+            }
+        });
     }
 
     private void initListener() {
@@ -348,7 +360,6 @@ public class MainActivity extends BaseActivity {
                                 JSONArray data = new JSONObject(ret).getJSONArray("data");
                                 List<Second> seconds = JSON.parseArray(data.toString(), Second.class);
                                 Log.d("test", "seconds = " + seconds);
-
                                 for (Second s : seconds) {
                                     if (s.description == null) {
                                         continue;
@@ -358,25 +369,32 @@ public class MainActivity extends BaseActivity {
                                     }
                                     switch (s.name) {
                                         case "被动加好友，欢迎语句":
-                                            getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle", s.description).commit();
+                                            getSharedPreferences("welcomeTitle", 0).edit().putString("welcomeTitle",
+                                                    s.description).commit();
                                             break;
                                         case "微信好友满之后备用微信号":
-                                            getSharedPreferences("backup", 0).edit().putString("backup", s.description).commit();
+                                            getSharedPreferences("backup", 0).edit().putString("backup", s
+                                                    .description).commit();
                                             break;
                                         case "客服正忙提示语":
-                                            getSharedPreferences("busy", 0).edit().putString("busy", s.description).commit();
+                                            getSharedPreferences("busy", 0).edit().putString("busy", s.description)
+                                                    .commit();
                                             break;
                                         case "客服已下线提示语":
-                                            getSharedPreferences("offline", 0).edit().putString("offline", s.description).commit();
+                                            getSharedPreferences("offline", 0).edit().putString("offline", s
+                                                    .description).commit();
                                             break;
                                         case "主动加好友，请求语句":
-                                            getSharedPreferences("validation", 0).edit().putString("validation", s.description).commit();
+                                            getSharedPreferences("validation", 0).edit().putString("validation", s
+                                                    .description).commit();
                                             break;
                                         case "转发使者的微信":
-                                            getSharedPreferences("transfer", 0).edit().putString("transfer", s.description).commit();
+                                            getSharedPreferences("transfer", 0).edit().putString("transfer", s
+                                                    .description).commit();
                                             break;
                                         case "卧底好友的微信":
-                                            getSharedPreferences("wodis", 0).edit().putString("wodis", s.description).commit();
+                                            getSharedPreferences("wodis", 0).edit().putString("wodis", s.description)
+                                                    .commit();
                                             break;
                                     }
                                 }
@@ -409,8 +427,10 @@ public class MainActivity extends BaseActivity {
                         toast("areaCode为空");
                         return;
                     }
-                    String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle", DEFAULT_WELCOME_TITLE);
-                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle, "utf-8") +
+                    String welcomeTitle = getSharedPreferences("welcomeTitle", 0).getString("welcomeTitle",
+                            DEFAULT_WELCOME_TITLE);
+                    String url = clientUrl + "/replyContent/keyWords?title=" + URLEncoder.encode(welcomeTitle,
+                            "utf-8") +
                             "&origin=mp&areaCode=" + areaCode;
                     HttpGet httpRequest = new HttpGet(url);
                     DefaultHttpClient client = new DefaultHttpClient();
@@ -482,7 +502,8 @@ public class MainActivity extends BaseActivity {
                 Log.d("test", "ret = " + ret);
                 int statusCode = new JSONObject(ret).optInt("statusCode");
                 if (statusCode == 200) {
-                    new MyDBHelper(getApplicationContext()).setCommentUploaded(c.momentID, c.authorName, c.content, c.time, 1);
+                    new MyDBHelper(getApplicationContext()).setCommentUploaded(c.momentID, c.authorName, c.content, c
+                            .time, 1);
                 }
             }
         }
@@ -512,7 +533,8 @@ public class MainActivity extends BaseActivity {
                     //3.判断是否存在
                     for (SnsInfo.Comment c : info.comments) {
                         c.momentID = m.momentID;
-                        boolean existed = new MyDBHelper(getApplicationContext()).checkCommentExisted(m.momentID, c.authorName, c.content, c.time);
+                        boolean existed = new MyDBHelper(getApplicationContext()).checkCommentExisted(m.momentID, c
+                                .authorName, c.content, c.time);
                         Log.d("test", "checkCommentExisted existed = " + existed);
                         if (!existed) {
                             new MyDBHelper(getApplicationContext()).addComment(c);
@@ -543,15 +565,18 @@ public class MainActivity extends BaseActivity {
                 try {
                     String password = initDbPassword(getApplicationContext());
                     File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
-                    ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile, password, null);
+                    ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile,
+                            password, null);
                     ArrayList<Message> sendMessages = new MyDBHelper(getApplication()).getMessagesIn2Hour();
                     //过滤掉已经发送的消息
                     for (Message m1 : wxMessages) {
                         boolean sended = false;
                         for (Message m2 : sendMessages) {
-                            if (!m1.talker.endsWith("@chatroom") && m1.remark.equals(m2.remark) && m1.content.equals(m2.content)) {
+                            if (!m1.talker.endsWith("@chatroom") && m1.remark.equals(m2.remark) && m1.content.equals
+                                    (m2.content)) {
                                 sended = true;
-                            } else if (m1.talker.endsWith("@chatroom") && m1.content.endsWith(m2.content)) {//displayName sender暂时不比较
+                            } else if (m1.talker.endsWith("@chatroom") && m1.content.endsWith(m2.content))
+                            {//displayName sender暂时不比较
                                 sended = true;
                             }
                         }
@@ -567,21 +592,26 @@ public class MainActivity extends BaseActivity {
                                 if (!TextUtils.isEmpty(sender)) {
                                     String message = "";
                                     if (m1.type == 49) {//zzx add 解析连接数据，小程序xml转json
-                                        com.xiaoleilu.hutool.json.JSONObject xmlJSONObj = XML.toJSONObject(m1.content.substring(m1.content.indexOf(":") + 2));
+                                        com.xiaoleilu.hutool.json.JSONObject xmlJSONObj = XML.toJSONObject(m1.content
+                                                .substring(m1.content.indexOf(":") + 2));
                                         JSONObject data = new JSONObject();
-                                        com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg").getJSONObject("appmsg");
+                                        com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg")
+                                                .getJSONObject("appmsg");
                                         data.put("type", appmsg.get("type"));
                                         data.put("url", appmsg.get("url"));
                                         data.put("title", appmsg.get("title"));
                                         message = data.toString();
-                                        AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_LINK, m1.content);
+                                        AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action
+                                                .TYPE_LINK, m1.content);
                                     } else if (m1.type == 3) {
                                         if (!Utils.checkImgUploadsExisted(m1.imgPath)) {
-                                            Utils.imgUploads.add(new ImageUpload(m1.imgPath, sender, m1.talker, m1.content));
+                                            Utils.imgUploads.add(new ImageUpload(m1.imgPath, sender, m1.talker,
+                                                    m1.content));
                                         }
                                     } else {
                                         message = m1.content.substring(m1.content.indexOf(":") + 2);
-                                        AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action.TYPE_TEXT, message);
+                                        AutoReplyService.instance.sendMsgToServer3(m1.talker, sender, message, Action
+                                                .TYPE_TEXT, message);
                                     }
                                 } else {
                                     Log.d("test", "sender is null, error");
@@ -591,17 +621,20 @@ public class MainActivity extends BaseActivity {
                                 if (m1.type == 49) {
                                     com.xiaoleilu.hutool.json.JSONObject xmlJSONObj = XML.toJSONObject(m1.content);
                                     JSONObject data = new JSONObject();
-                                    com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg").getJSONObject("appmsg");
+                                    com.xiaoleilu.hutool.json.JSONObject appmsg = xmlJSONObj.getJSONObject("msg")
+                                            .getJSONObject("appmsg");
                                     data.put("type", appmsg.get("type"));
                                     data.put("url", appmsg.get("url"));
                                     data.put("title", appmsg.get("title"));
-                                    AutoReplyService.instance.sendMsgToServer(m1.remark, data.toString(), m1.content, Action.TYPE_LINK);
+                                    AutoReplyService.instance.sendMsgToServer(m1.remark, data.toString(), m1.content,
+                                            Action.TYPE_LINK);
                                 } else if (m1.type == 3) {
                                     if (!Utils.checkImgUploadsExisted(m1.imgPath)) {
                                         Utils.imgUploads.add(new ImageUpload(m1.imgPath, m1.remark, m1.content));
                                     }
                                 } else {
-                                    AutoReplyService.instance.sendMsgToServer(m1.remark, m1.content, m1.content, Action.TYPE_TEXT);
+                                    AutoReplyService.instance.sendMsgToServer(m1.remark, m1.content, m1.content,
+                                            Action.TYPE_TEXT);
                                 }
                             }
                         }
@@ -1014,7 +1047,8 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 try {
                     final String password = initDbPassword(getApplicationContext());
-                    final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + ".db");
+                    final File dbFile = getWxDBFile("EnMicroMsg.db", "getAllGroups" + new Random().nextInt(9999) + "" +
+                            ".db");
                     final ArrayList<Group> groups = Utils.doGetGroups(getApplicationContext(), dbFile, password, true);
                     if (groups != null && groups.size() > 0) {
                         Utils.uploadGroup(MainActivity.this, groups, new MyListener() {
@@ -1293,8 +1327,12 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 String password = initDbPassword(getApplicationContext());
                 File dbFile = getWxDBFile("EnMicroMsg.db", "getAllMessages" + new Random().nextInt(9999) + ".db");
-                String sql = "select message.msgId , message.type , message.createTime  , message.talker , rcontact.nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message.talker = rcontact.username where message.isSend = 0 and message.type = 1 and talker = '7188448662@chatroom'";
-                ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile, password, sql);
+                String sql = "select message.msgId , message.type , message.createTime  , message.talker , rcontact" +
+                        ".nickname ,  rcontact.conRemark, message.content from message left JOIN rcontact on message" +
+                        ".talker = rcontact.username where message.isSend = 0 and message.type = 1 and talker = " +
+                        "'7188448662@chatroom'";
+                ArrayList<Message> wxMessages = Utils.doGetMessagesIn2Hour(getApplicationContext(), dbFile, password,
+                        sql);
                 for (Message m1 : wxMessages) {
                     String wxId = m1.content.substring(0, m1.content.indexOf(":"));
                     String sender = Utils.getDisplayNameFromGroup(getApplicationContext(), m1.talker, wxId);
