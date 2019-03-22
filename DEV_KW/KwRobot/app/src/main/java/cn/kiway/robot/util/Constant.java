@@ -33,15 +33,14 @@ public class Constant {
 //        clientUrl = "http://robot.kiway.cn";
 
         //2019招生版
-//        host = "zsrobot.kiway.cn";
-//        port = 25672;
-//        clientUrl = "http://zsrobot.kiway.cn";
-
+        host = "zsrobot.kiway.cn";
+        port = 25672;
+        clientUrl = "http://zsrobot.kiway.cn";
 
         // 测试
-        host = "rbtest.kiway.cn";
-        port = 5672;
-        clientUrl = "http://rbtest.kiway.cn";
+//        host = "rbtest.kiway.cn";
+//        port = 5672;
+//        clientUrl = "http://rbtest.kiway.cn";
     }
 
     //NODE类型
