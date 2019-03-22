@@ -4577,7 +4577,7 @@ public class AutoReplyService extends AccessibilityService {
 
                             //2.过滤特殊字符，使用newRemark
                             String current = getTextInEditText(1);
-                            String newRemark = Utils.getNewRemark(getApplicationContext(), current);
+                            final String newRemark = Utils.getNewRemark(getApplicationContext(), current);
                             if (!current.equals(newRemark)) {
                                 int length = getTextLengthInEditText(1, "");
                                 execRootCmdSilent("input keyevent  " + KeyEvent.KEYCODE_MOVE_END);
@@ -4592,6 +4592,7 @@ public class AutoReplyService extends AccessibilityService {
                                 public void run() {
                                     boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF, true);
                                     sendFriendInfoDelay();
+
                                     if (find) {
                                         mHandler.postDelayed(new Runnable() {
                                             @Override
@@ -4601,8 +4602,30 @@ public class AutoReplyService extends AccessibilityService {
                                                     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                 } else {
                                                     //zhengkang 20180921
-                                                    String content = "";
-                                                    sendLinkOnly(content , false);
+                                                    new Thread() {
+                                                        @Override
+                                                        public void run() {
+                                                            try {
+                                                                sleep(5000);
+                                                                String links = getSharedPreferences("links", 0).getString("links", "");
+                                                                if (TextUtils.isEmpty(links)) {
+                                                                    release(true);
+                                                                    return;
+                                                                }
+                                                                final JSONArray array = new JSONArray(links);
+                                                                int count = array.length();
+                                                                for (int i = 0; i < count; i++) {
+                                                                    JSONObject o = array.getJSONObject(i);
+                                                                    sendLink20190322(o.toString(), newRemark);
+                                                                    sleep(30000);
+                                                                }
+                                                                release(true);
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
+                                                                release(false);
+                                                            }
+                                                        }
+                                                    }.start();
                                                     if (true) {
                                                         return;
                                                     }
@@ -5400,5 +5423,70 @@ public class AutoReplyService extends AccessibilityService {
                 }
             }
         }.start();
+    }
+
+    private void sendLink20190322(String content, final String target) {
+        try {
+            JSONObject contentO = new JSONObject(content);
+            String title = contentO.optString("title");
+            String describe = contentO.optString("description");
+            if (TextUtils.isEmpty(describe)) {
+                describe = contentO.optString("content");
+            }
+            String imageUrl = contentO.optString("imgUrl");
+            String url = contentO.optString("url");
+
+            //1.下载图片
+            String localPath = null;
+            if (!TextUtils.isEmpty(imageUrl)) {
+                Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl);
+                if (bmp != null) {
+                    //2.保存图片
+                    localPath = saveImage(getApplication(), bmp, false);
+                }
+            }
+            Platform.ShareParams sp = new Platform.ShareParams();
+            sp.setTitle(title);
+            sp.setText(describe);
+            sp.setUrl(url);
+            if (!TextUtils.isEmpty(localPath)) {
+                sp.setImagePath(localPath);
+            }
+            sp.setShareType(Platform.SHARE_WEBPAGE);
+            Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+            wx.share(sp);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    final String sender = target;
+                    //找文本框
+                    findTargetNode(NODE_EDITTEXT, sender);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            String temp = sender;
+                            boolean equal = true;
+                            if (sender.length() > 13) {
+                                temp = sender.substring(0, 13);
+                                equal = false;
+                            }
+                            boolean find = findTargetNode(NODE_TEXTVIEW, temp, CLICK_PARENT, equal);
+                            if (!find) {
+                                return;
+                            }
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
+
+                                }
+                            }, 3000);
+                        }
+                    }, 2000);
+                }
+            }, 10000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

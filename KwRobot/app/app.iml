@@ -78,28 +78,18 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/builds" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-verifier" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-resources" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/reload-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/restart-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/split-apk" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <content url="file://$MODULE_DIR$/../build/intermediates/Mob/assets">
@@ -107,29 +97,29 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.4.1" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-3.4.1" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.4.1" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.5.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-3.5.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="dom4j-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="logback-classic-1.1.11" level="project" />
-    <orderEntry type="library" exported="" name="OneKeyShare-3.4.1" level="project" />
+    <orderEntry type="library" exported="" name="OneKeyShare-3.5.0" level="project" />
     <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.25" level="project" />
     <orderEntry type="library" exported="" name="SDKWrapper-2018.0801.1824" level="project" />
-    <orderEntry type="library" exported="" name="MobGUI-2019.0109.1416" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="MobGUI-2019.0306.1850" level="project" />
     <orderEntry type="library" exported="" name="android-database-sqlcipher-3.5.4" level="project" />
-    <orderEntry type="library" exported="" name="MobCommons-2019.0114.1454" level="project" />
     <orderEntry type="library" exported="" name="logback-core-1.1.11" level="project" />
+    <orderEntry type="library" exported="" name="MobTools-2019.0306.1850" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.47" level="project" />
-    <orderEntry type="library" exported="" name="MobTools-2019.0109.1416" level="project" />
     <orderEntry type="library" exported="" name="hutool-all-3.2.3" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.4.1" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.5.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
     <orderEntry type="library" exported="" name="support-v4-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-media-compat-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="MobCommons-2019.0306.1851" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="amqp-client-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />

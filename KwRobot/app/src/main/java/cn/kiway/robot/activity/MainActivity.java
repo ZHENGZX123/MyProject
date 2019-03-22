@@ -395,6 +395,9 @@ public class MainActivity extends BaseActivity {
                                         case "卧底好友的微信":
                                             getSharedPreferences("wodis", 0).edit().putString("wodis", s.description)
                                                     .commit();
+                                        case "欢迎家长链接格式":
+                                            getSharedPreferences("links", 0).edit().putString("links", s.description)
+                                                    .commit();
                                             break;
                                     }
                                 }
@@ -575,8 +578,7 @@ public class MainActivity extends BaseActivity {
                             if (!m1.talker.endsWith("@chatroom") && m1.remark.equals(m2.remark) && m1.content.equals
                                     (m2.content)) {
                                 sended = true;
-                            } else if (m1.talker.endsWith("@chatroom") && m1.content.endsWith(m2.content))
-                            {//displayName sender暂时不比较
+                            } else if (m1.talker.endsWith("@chatroom") && m1.content.endsWith(m2.content)) {//displayName sender暂时不比较
                                 sended = true;
                             }
                         }
@@ -1187,7 +1189,7 @@ public class MainActivity extends BaseActivity {
 //        getAllMessages();
 //        getAllFriends(false, true);
 
-//        Utils.getLastMsgIndex(this, null);
+        Utils.getLastMsgIndex(this, null);
 
 //        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
 //        Log.d("test", "sms count = " + sms.size());
@@ -1234,11 +1236,11 @@ public class MainActivity extends BaseActivity {
 
 //        getAllGroups(true);
 
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        Log.d("test", "sms count = " + sms.size());
-        for (ServerMsg sm : sms) {
-            Log.d("test", "sm = " + sm.toString());
-        }
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        Log.d("test", "sms count = " + sms.size());
+//        for (ServerMsg sm : sms) {
+//            Log.d("test", "sm = " + sm.toString());
+//        }
     }
 
     public void test3(View view) {
