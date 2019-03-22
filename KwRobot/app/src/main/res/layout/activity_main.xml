@@ -102,11 +102,7 @@
             android:onClick="test3"
             android:text="测试用3" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="test4"
-            android:text="清indexs" />
+
         <Button
             android:id="@+id/filter"
             android:layout_width="wrap_content"
