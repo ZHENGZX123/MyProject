@@ -4601,8 +4601,9 @@ public class AutoReplyService extends AccessibilityService {
                                                     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                                                 } else {
                                                     //zhengkang 20180921
+                                                    String content = "";
+                                                    sendLinkOnly(content , false);
                                                     if (true) {
-                                                        release(true);
                                                         return;
                                                     }
                                                     int role = getSharedPreferences("role", 0).getInt("role", ROLE_KEFU);
