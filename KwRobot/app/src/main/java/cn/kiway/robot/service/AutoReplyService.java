@@ -4591,6 +4591,7 @@ public class AutoReplyService extends AccessibilityService {
                                 @Override
                                 public void run() {
                                     boolean find = findTargetNode(NODE_TEXTVIEW, "完成", CLICK_SELF, true);
+                                    Log.d("test", "完成find = " + find);
                                     sendFriendInfoDelay();
 
                                     if (find) {
@@ -4606,7 +4607,7 @@ public class AutoReplyService extends AccessibilityService {
                                                         @Override
                                                         public void run() {
                                                             try {
-                                                                sleep(5000);
+                                                                sleep(1000);
                                                                 String links = getSharedPreferences("links", 0).getString("links", "");
                                                                 if (TextUtils.isEmpty(links)) {
                                                                     release(true);
@@ -5460,7 +5461,7 @@ public class AutoReplyService extends AccessibilityService {
                 public void run() {
                     final String sender = target;
                     //找文本框
-                    findTargetNode(NODE_EDITTEXT, sender);
+                    //findTargetNode(NODE_EDITTEXT, sender);
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -5482,7 +5483,7 @@ public class AutoReplyService extends AccessibilityService {
                                 }
                             }, 3000);
                         }
-                    }, 2000);
+                    }, 0);
                 }
             }, 10000);
         } catch (Exception e) {

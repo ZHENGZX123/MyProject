@@ -1236,11 +1236,13 @@ public class MainActivity extends BaseActivity {
 
 //        getAllGroups(true);
 
-//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-//        Log.d("test", "sms count = " + sms.size());
-//        for (ServerMsg sm : sms) {
-//            Log.d("test", "sm = " + sm.toString());
-//        }
+        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+        Log.d("test", "sms count = " + sms.size());
+        for (ServerMsg sm : sms) {
+            Log.d("test", "sm = " + sm.toString());
+        }
+
+
     }
 
     public void test3(View view) {
@@ -1258,6 +1260,8 @@ public class MainActivity extends BaseActivity {
         for (ServerMsg sm : sms) {
             new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
         }
+
+//        new MyDBHelper(this).deleteServerMsg();
 
 //        AutoReplyService.instance.restartWechat();
     }
