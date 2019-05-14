@@ -2274,13 +2274,13 @@ public class AutoReplyService extends AccessibilityService {
                             clickSomeWhere(DensityUtil.getScreenWidth() / 2, DensityUtil.getScreenHeight() * 120 / 762);
                             sleep(3000);
                             adding_missing_fish = true;
-                            resetMaxReleaseTime(30000 * 10 + 5000);
+                            resetMaxReleaseTime(30000 * 30 + 5000);
                             int tryCount = 0;
                             while (adding_missing_fish) {
                                 if (!actioningFlag) {
                                     break;
                                 }
-                                if (tryCount == 10) {
+                                if (tryCount == 30) {
                                     break;
                                 }
                                 int ret = hasAcceptButtonOrAddedTextView();
@@ -5426,36 +5426,46 @@ public class AutoReplyService extends AccessibilityService {
         }.start();
     }
 
-    private void sendLink20190322(String content, final String target) {
+    private void sendLink20190322(final String content, final String target) {
         try {
             JSONObject contentO = new JSONObject(content);
-            String title = contentO.optString("title");
-            String describe = contentO.optString("description");
-            if (TextUtils.isEmpty(describe)) {
-                describe = contentO.optString("content");
-            }
-            String imageUrl = contentO.optString("imgUrl");
-            String url = contentO.optString("url");
-
-            //1.下载图片
-            String localPath = null;
-            if (!TextUtils.isEmpty(imageUrl)) {
-                Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl);
-                if (bmp != null) {
-                    //2.保存图片
-                    localPath = saveImage(getApplication(), bmp, false);
+            int type = contentO.optInt("type");
+            if (type == TYPE_LINK) {
+                String title = contentO.optString("title");
+                String describe = contentO.optString("description");
+                if (TextUtils.isEmpty(describe)) {
+                    describe = contentO.optString("content");
                 }
+                String imageUrl = contentO.optString("imgUrl");
+                String url = contentO.optString("url");
+
+                //1.下载图片
+                String localPath = null;
+                if (!TextUtils.isEmpty(imageUrl)) {
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(imageUrl);
+                    if (bmp != null) {
+                        //2.保存图片
+                        localPath = saveImage(getApplication(), bmp, false);
+                    }
+                }
+                Platform.ShareParams sp = new Platform.ShareParams();
+                sp.setTitle(title);
+                sp.setText(describe);
+                sp.setUrl(url);
+                if (!TextUtils.isEmpty(localPath)) {
+                    sp.setImagePath(localPath);
+                }
+                sp.setShareType(Platform.SHARE_WEBPAGE);
+                Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+                wx.share(sp);
+            } else if (type == TYPE_TEXT) {
+                String newContent = contentO.optString("content");
+                Platform.ShareParams sp = new Platform.ShareParams();
+                sp.setText(Utils.replaceReply(newContent));
+                sp.setShareType(Platform.SHARE_TEXT);
+                Platform wx = ShareSDK.getPlatform(Wechat.NAME);
+                wx.share(sp);
             }
-            Platform.ShareParams sp = new Platform.ShareParams();
-            sp.setTitle(title);
-            sp.setText(describe);
-            sp.setUrl(url);
-            if (!TextUtils.isEmpty(localPath)) {
-                sp.setImagePath(localPath);
-            }
-            sp.setShareType(Platform.SHARE_WEBPAGE);
-            Platform wx = ShareSDK.getPlatform(Wechat.NAME);
-            wx.share(sp);
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -5479,7 +5489,15 @@ public class AutoReplyService extends AccessibilityService {
                                 @Override
                                 public void run() {
                                     final boolean find = findTargetNode(NODE_BUTTON, "分享", CLICK_SELF, true);
-
+                                    if (!find) {
+                                        return;
+                                    }
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            final boolean find = findTargetNode(NODE_BUTTON, "留在微信", CLICK_SELF, true);
+                                        }
+                                    }, 3000);
                                 }
                             }, 3000);
                         }
@@ -5491,3 +5509,4 @@ public class AutoReplyService extends AccessibilityService {
         }
     }
 }
+

@@ -115,6 +115,7 @@ import static cn.kiway.robot.util.Constant.TICK_PERSON_GROUP_CMD;
 import static cn.kiway.robot.util.Constant.UPDATE_GROUP_NOTICE_CMD;
 import static cn.kiway.robot.util.Constant.backdoors;
 import static cn.kiway.robot.util.Constant.clientUrl;
+import static cn.kiway.robot.util.Constant.host;
 import static cn.kiway.robot.util.RootCmd.execRootCmdSilent;
 import static com.mob.tools.utils.ResHelper.copyFile;
 import static net.sqlcipher.database.SQLiteDatabase.OPEN_READONLY;
@@ -335,7 +336,13 @@ public class Utils {
                         rabbitMQUtils.consumeMsg(new DefaultConsumer(channel) {
                             @Override
                             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                                String msg = new String(body, "utf-8");
+                                String msg;
+                                if (host.equals("robot.kiway.cn")) {
+                                    msg = new String(body, "utf-8");
+                                } else {
+                                    //zsrobot
+                                    msg = new String(body);
+                                }
                                 Log.d("test", "handleDelivery msg = " + msg);
                                 //手动消息确认
                                 channel.basicAck(envelope.getDeliveryTag(), false);
@@ -360,7 +367,7 @@ public class Utils {
             JSONObject o = new JSONObject(msg);
             int index = o.optInt("indexs");
             if (index == 0) {
-                Log.d("test", "index = 0 , error");//心跳回复的index=0
+                Log.d("test", "index = 0 , heartbeat");
                 return false;
             }
             boolean existed = new MyDBHelper(c).isIndexExisted(index);
