@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity {
     private static final int MSG_CHECK_APPKEY = 115;//检测key是否有效
     private static final int MSG_GET_ALL_WODIS = 116;//获取所有卧底
     private static final int MSG_CLEAR_CHAT_HISTORY = 117;//删除聊天历史记录
-    private static final int MSG_CLEAR_CACHE_FILE = 118;    //漏网之鱼
+    private static final int MSG_CLEAR_CACHE_FILE = 118;
     private static final int MSG_RECONNECT = 119;//重连MQ
     private static final int MSG_UPDATE_TRANSFER_NICKNAME = 120;//修改转发使者的昵称
 
@@ -713,7 +713,7 @@ public class MainActivity extends BaseActivity {
             } else if (msg.what == MSG_MISSING_FISH) {
                 mHandler.removeMessages(MSG_MISSING_FISH);
                 doMissingFish();
-                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 2 * 60 * 60 * 1000);
+                mHandler.sendEmptyMessageDelayed(MSG_MISSING_FISH, 30 * 60 * 1000);//30分钟一次，每次30人
             } else if (msg.what == MSG_CHECK_APPKEY) {
                 mHandler.removeMessages(MSG_CHECK_APPKEY);
                 checkAPPKey();
@@ -1256,14 +1256,16 @@ public class MainActivity extends BaseActivity {
 //        getAllFriends(false, true);
 
         //应急，设置所有状态3
-        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
-        for (ServerMsg sm : sms) {
-            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
-        }
+//        ArrayList<ServerMsg> sms = new MyDBHelper(this).getAllServerMsg(0);
+//        for (ServerMsg sm : sms) {
+//            new MyDBHelper(this).updateServerMsgStatusByIndex(sm.index, ServerMsg.ACTION_STATUS_3);
+//        }
 
 //        new MyDBHelper(this).deleteServerMsg();
 
 //        AutoReplyService.instance.restartWechat();
+
+        getBaseData();
     }
 
     public void renameTask(View view) {
@@ -1353,7 +1355,6 @@ public class MainActivity extends BaseActivity {
         deleteAllCachedFiles(DOWNLOAD);
         deleteAllCachedFiles(DCIM);
         deleteUselessDBFiles(ROOT);
-
     }
 
     private void deleteAllCachedFiles(String folder) {
@@ -1407,10 +1408,12 @@ public class MainActivity extends BaseActivity {
                 if (o2 == null) {
                     return 0;
                 }
+                if (o1.lastModified() == o2.lastModified()) {
+                    return 0;
+                }
                 return (int) (o1.lastModified() - o2.lastModified());
             }
         });
-        Log.d("test", "=============================");
         for (File f : files) {
             Log.d("test", "f = " + f.getAbsolutePath());
         }

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import cn.kiway.robot.db.MyDBHelper;
 import cn.kiway.robot.entity.ServerMsg;
-import cn.kiway.robot.util.CrashHandler;
 
 import static cn.kiway.robot.R.mipmap.file;
 import static cn.kiway.robot.entity.ServerMsg.ACTION_STATUS_0;
@@ -57,7 +56,7 @@ public class KWApplication extends Application {
         x.Ext.init(this);
         initImageCache();
         MobSDK.init(this);
-        CrashHandler.getInstance().init(this);
+        //CrashHandler.getInstance().init(this);
 
         saveDefaultFile(this, "file.png", file);
         saveDefaultFile(this, "video.png", R.mipmap.video);
