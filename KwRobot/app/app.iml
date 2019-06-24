@@ -104,30 +104,30 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="ShareSDK-3.5.2" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.5.2" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-3.6.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-3.6.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="dom4j-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="logback-classic-1.1.11" level="project" />
+    <orderEntry type="library" exported="" name="OneKeyShare-3.6.0" level="project" />
     <orderEntry type="library" exported="" name="xutils-3.5.0" level="project" />
-    <orderEntry type="library" exported="" name="OneKeyShare-3.5.2" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.25" level="project" />
-    <orderEntry type="library" exported="" name="MobTools-2019.0505.1729" level="project" />
     <orderEntry type="library" exported="" name="SDKWrapper-2018.0801.1824" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="MobGUI-2019.0306.1850" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.5.2" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-3.6.0" level="project" />
     <orderEntry type="library" exported="" name="android-database-sqlcipher-3.5.4" level="project" />
     <orderEntry type="library" exported="" name="logback-core-1.1.11" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.2.47" level="project" />
     <orderEntry type="library" exported="" name="hutool-all-3.2.3" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.5" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.5.2" level="project" />
-    <orderEntry type="library" exported="" name="MobCommons-2019.0423.2029" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-3.6.0" level="project" />
+    <orderEntry type="library" exported="" name="MobCommons-2019.0611.2141" level="project" />
     <orderEntry type="library" exported="" name="support-v4-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-media-compat-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="MobTools-2019.0611.2141" level="project" />
     <orderEntry type="library" exported="" name="amqp-client-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.3.1" level="project" />
