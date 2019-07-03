@@ -34,6 +34,7 @@ import cn.kiway.robot.guard.util.ShowMessageDailog;
 import static cn.kiway.robot.guard.util.Constant.clientUrl;
 import static cn.kiway.robot.guard.util.ShowMessageDailog.MessageId.YUXUNFANWENJLU;
 import static cn.kiway.robot.guard.util.Utils.getCurrentVersion;
+import static cn.kiway.robot.guard.util.Utils.upgradeRootPermission;
 
 public class MainActivity extends BaseActivity {
 
@@ -49,7 +50,7 @@ public class MainActivity extends BaseActivity {
 
         versionTV = (TextView) findViewById(R.id.version);
         versionTV.setText("当前版本号：" + getCurrentVersion(this));
-
+        upgradeRootPermission(getPackageCodePath());
         startService();
     }
 
