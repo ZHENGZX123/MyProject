@@ -58,7 +58,7 @@ public class GuideService_4 extends Service {
                         if (!isRun1) {
                             Log.d("test", "启动机器人");
                             Intent intent = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot");
-                            startActivity(intent);
+                            //startActivity(intent);
                         }
                         sleep(5000);
                         //2.检查微信是否启动
@@ -67,14 +67,14 @@ public class GuideService_4 extends Service {
                         if (!isRun2) {
                             Log.d("test", "启动微信");
                             Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
-                            startActivity(intent);
+                           // startActivity(intent);
                             try {
                                 sleep(5000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                             Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
-                            startActivity(intent2);
+                         //startActivity(intent2);
                         }
 
                         //3. 检查微信是否一直在前台
@@ -86,7 +86,7 @@ public class GuideService_4 extends Service {
                             Log.d("test", "repeat = " + repeat);
                             if (repeat % 5 == 0) {
                                 Intent intent2 = getPackageManager().getLaunchIntentForPackage("cn.kiway.robot.guard");
-                                startActivity(intent2);
+                                //startActivity(intent2);
                                 repeat = 0;
                             }
                         } else {

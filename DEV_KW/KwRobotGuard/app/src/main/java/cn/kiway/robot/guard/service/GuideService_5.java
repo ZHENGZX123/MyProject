@@ -7,20 +7,24 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.transition.TransitionSet;
 import android.util.Log;
 
+import com.jaredrummler.android.processes.ProcessManager;
+import com.jaredrummler.android.processes.models.AndroidAppProcess;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
 
 import cn.kiway.robot.guard.KWApplication;
 import cn.kiway.robot.guard.util.FileUtils;
+import cn.kiway.robot.guard.util.Utils;
+
+import static com.jaredrummler.android.processes.ProcessManager.getRunningAppProcesses;
 
 /**
  * Created by Administrator on 2018/4/2.
@@ -30,6 +34,7 @@ public class GuideService_5 extends Service {
 
     private boolean stop = false;
     private int repeat = 0;
+    List<AndroidAppProcess> processes = new ArrayList<>();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -115,7 +120,8 @@ public class GuideService_5 extends Service {
     }
 
     private boolean getRobotActioningFlag() {
-        String actioningFlag = FileUtils.readSDCardFile(KWApplication.ROOT_ROBOT + "actioningFlag.txt", GuideService_5.this.getApplicationContext());
+        String actioningFlag = FileUtils.readSDCardFile(KWApplication.ROOT_ROBOT + "actioningFlag.txt",
+                GuideService_5.this.getApplicationContext());
         Log.d("test", "actioningFlag = " + actioningFlag);
         if (TextUtils.isEmpty(actioningFlag)) {
             return false;
@@ -125,36 +131,93 @@ public class GuideService_5 extends Service {
 
     private boolean isRun(Context context, String pkgName) {
         boolean isRun = false;
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
-            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
-                    || processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE
-                    || processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND
-                    ) {
-                for (String activeProcess : processInfo.pkgList) {
-                    if (activeProcess.equals(pkgName)) {
-                        isRun = true;
-                    }
-                }
+//        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+//        for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+//            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+//                    || processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE
+//                    || processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND
+//                    ) {
+//                for (String activeProcess : processInfo.pkgList) {
+//                    if (activeProcess.equals(pkgName)) {
+//                        isRun = true;
+//                    }
+//                }
+//            }
+//        }
+        processes = ProcessManager.getRunningAppProcesses();
+        for (AndroidAppProcess process : processes) {
+            if (pkgName.equals(process.getPackageName())) {
+                isRun = true;
+                break;
             }
+        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N){
+            isRun = Utils.checkProcess(pkgName);
         }
         return isRun;
     }
 
+
+    public boolean isUIProcess(String mainProcessName) {
+        ActivityManager am = ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
+        List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
+        int myPid = android.os.Process.myPid();
+        for (ActivityManager.RunningAppProcessInfo info : processInfos) {
+            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断应用是否已经启动
+     *
+     * @param context     一个context
+     * @param packageName 要判断应用的包名
+     * @return boolean
+     */
+    private boolean isAppAlive(Context context, String packageName) {
+        ActivityManager activityManager =
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> processInfos
+                = activityManager.getRunningAppProcesses();
+        for (int i = 0; i < processInfos.size(); i++) {
+            if (processInfos.get(i).processName.equals(packageName)) {
+                Log.i("NotificationLaunch",
+                        String.format("the %s is running, isAppAlive return true", packageName));
+                return true;
+            }
+        }
+        Log.i("NotificationLaunch",
+                String.format("the %s is not running, isAppAlive return false", packageName));
+        return false;
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static boolean isApplicationShowing(Context context, String packageName) {
+//        boolean isShow = false;
+//        List<AndroidAppProcess> processes = AndroidProcesses.getRunningAppProcesses();
+//        for (AndroidAppProcess process : processes) {
+//            if (packageName.equals(process.getPackageName())) {
+//                isShow = true;
+//                break;
+//            }
+//        }
         class RecentUseComparator implements Comparator<UsageStats> {
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public int compare(UsageStats lhs, UsageStats rhs) {
-                return (lhs.getLastTimeUsed() > rhs.getLastTimeUsed()) ? -1 : (lhs.getLastTimeUsed() == rhs.getLastTimeUsed()) ? 0 : 1;
+                return (lhs.getLastTimeUsed() > rhs.getLastTimeUsed()) ? -1 : (lhs.getLastTimeUsed() == rhs
+                        .getLastTimeUsed()) ? 0 : 1;
             }
         }
         RecentUseComparator mRecentComp = new RecentUseComparator();
         long ts = System.currentTimeMillis();
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) context.getSystemService("usagestats");
-        List<UsageStats> usageStats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, ts - 1000 * 10, ts);
+        List<UsageStats> usageStats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, ts - 1000 *
+                10, ts);
         if (usageStats == null || usageStats.size() == 0) {
             return false;
         }
